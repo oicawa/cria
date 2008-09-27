@@ -1,0 +1,721 @@
+#ifndef PRIVATE_CRIA_H_INCLUDED
+#define PRIVATE_CRIA_H_INCLUDED
+
+
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdarg.h>
+#include <ctype.h>
+#include <memory.h>
+
+
+
+#include "Cria.h"
+//#include "../Core/Core.h"
+
+
+
+struct StringTag {
+    char*       pointer;
+};
+
+
+
+struct ItemTag {
+    void    *object;
+    Item    next;
+};
+
+
+
+struct ListTag {
+    Item        item;
+    Item*       last;
+    int         count;
+};
+
+
+
+struct InterpreterTag
+{
+    List    statementList;
+    //List    variableList;      //VariableDefinitionStatement
+    List    functionList;     //FunctionDEfinitionStatement
+    //List    classList;        //ClassDefinitionStatement
+    //File    file;
+    String  buffer;
+    int     lineNumber;
+    int     column;
+    int     indentLevel;
+    int     error;
+};
+
+
+
+//==================================================
+//Tokenizer
+//==================================================
+struct TokenTag
+{
+    TokenType   type;
+    int         row;
+    int         column;
+    String      buffer;
+};
+
+
+
+struct TokenizerTag
+{
+    FILE            *file;
+    int             row;
+    int             column;
+    char            next;
+    StringBuffer    buffer;
+    String          error;
+    int             indentLevel;
+    List            tokens;
+};
+
+
+
+//==================================================
+//Parser
+//==================================================
+struct ParserTag
+{
+    List    tokens;
+    Item    current;
+    Item    next;
+    Item    turningPoint;
+};
+
+
+
+
+//Statement構造体
+struct StatementTag
+{
+    StatementKind   kind;
+    int             line;
+    union {
+        ReturnStatement         _return_;
+        CatchStatement          _catch_;
+        FinallyStatement        _finally_;
+        IfStatement             _if_;
+        WhileStatement          _while_;
+        ForStatement            _for_;
+        FunctionCallStatement   _functionCall_;
+        SubstituteStatement     _substitute_;
+    } of;
+};
+
+
+
+struct ReturnStatementTag
+{
+    Expression  expression;
+};
+
+
+
+struct CatchStatementTag
+{
+    List    statements;
+};
+
+
+
+struct FinallyStatementTag
+{
+    List    statements;
+};
+
+
+
+struct IfStatementTag
+{
+    Expression  condition;
+    List        statements;
+    IfStatement _if_;
+};
+
+
+
+struct WhileStatementTag
+{
+    Expression  condition;
+    List        statements;
+};
+
+
+/*
+struct VariableDefinitionTag
+{
+    char*       name;
+    char*       type;
+    AccessLevel access;
+    Object      object;
+};
+//*/
+
+
+//*
+struct FunctionDefinitionTag
+{
+    char*               name;
+    Boolean             isNative;
+    AccessLevel         access;
+    union {
+        struct {
+            List        parameterList;
+            List        statementList;
+        } cria;
+        struct {
+            CriaObject  pointer;
+        } native;
+    } of;
+    CriaObject          returnValue;
+};
+//*/
+
+
+
+struct ClassDefinitionTag
+{
+    char*   name;
+    List    bases;
+    List    fields;
+    List    methods;
+};
+
+
+
+struct ExpressionTag
+{
+    ExpressionKind  kind;
+    union {
+        StringLiteralExpression     _stringLiteral_;
+        //IntegerLiteralExpression    _integerLiteral_;
+        //RealLiteralExpression       _realLiteral_;
+        //BooleanLiteralExpression    _booleanLiteral_;
+        //NullLiteralExpression       _nullLiteral_;
+        //OperationExpression         _operation_;
+        //GenerateExpression          _generate_;
+        FunctionCallExpression      _functionCall_;
+        //VariableExpression          _variable_;
+    } of;
+};
+
+
+
+struct SubstituteStatementTag
+{
+    VariableExpression  left;
+    Expression          right;
+};
+
+
+
+struct FunctionCallStatementTag
+{
+    FunctionCallExpression  expression;
+};
+
+
+
+struct FunctionCallExpressionTag
+{
+    String                  name;
+    ParametersExpression    parameters;
+};
+
+
+
+struct ParametersExpressionTag
+{
+    List    list;   //Expression
+};
+
+
+
+struct StringLiteralExpressionTag
+{
+    String  value;
+};
+
+
+
+struct VariableExpressionTag
+{
+    char*   name;
+};
+
+
+
+//==============================
+//String
+//==============================
+String
+string_newFunction(
+    char    *input,
+    char    *fileName,
+    int     line
+);
+#define string_new(string)\
+    (string_newFunction(string, __FILE__, __LINE__))
+
+
+
+void
+string_dispose(
+    String  string
+);
+
+
+
+long
+string_length(
+    String  string
+);
+
+
+
+String
+string_cloneFunction(
+    String  source,
+    char    *fileName,
+    int     line
+);
+#define string_clone(source)\
+    (string_cloneFunction(source, __FILE__, __LINE__))
+
+
+
+//==============================
+//Item
+//==============================
+Item
+item_newFunction(
+    void    *object,
+    char    *fileName,
+    int     line
+);
+
+
+
+void
+item_dispose(
+    Item    item
+);
+
+
+
+//==============================
+//List
+//==============================
+List
+list_newFunction(
+    char    *fileName,
+    int     line
+);
+#define list_new()\
+    (list_newFunction(__FILE__, __LINE__))
+
+
+
+void
+list_dispose(
+    List    list
+);
+
+
+
+//オブジェクトを追加
+void
+list_addFunction(
+    List    list,
+    void    *object,
+    char    *fileName,
+    int     line
+);
+#define list_add(list, object)\
+    (list_addFunction(list, object, __FILE__, __LINE__))
+
+
+
+//オブジェクトを追加
+int
+list_countFunction(
+    List    list,
+    char    *fileName,
+    int     line
+);
+#define list_count(list)\
+    (list_countFunction(list, __FILE__, __LINE__))
+
+
+
+
+//Listの内容を文字列で返却
+void*
+list_get(
+    List    list,
+    int     index
+);
+
+
+
+char*
+list_toStringFunction(
+    List    list,
+    char*   fileName,
+    int     line
+);
+#define list_toString(list)\
+    (list_toStringFunction(list, __FILE__, __LINE__))
+
+
+
+//==============================
+//StringBuffer
+//==============================
+//StringBufferを生成
+StringBuffer
+stringBuffer_newFunction(
+    char    *fileName,
+    int     line
+);
+#define stringBuffer_new()\
+    (stringBuffer_newFunction(__FILE__, __LINE__))
+
+
+
+//StringBufferの破棄
+void
+stringBuffer_dispose(
+    StringBuffer    stringBuffer
+);
+
+
+
+void
+stringBuffer_appendChar(
+    StringBuffer    stringBuffer,
+    char            charactor,
+    char*           fileName,
+    int             line
+);
+
+
+//文字列を追記
+void
+stringBuffer_appendFunction(
+    StringBuffer    stringBuffer,
+    String          string,
+    char*           fileName,
+    int             line
+);
+#define StringBuffer_append(buffer, string)\
+    (StringBuffer_appendFunction(buffer, string, __FILE__, __LINE__))
+
+
+
+//StringBufferが保持している文字列群を一つの文字列として返却
+String
+stringBuffer_toStringFunction(
+    StringBuffer    stringBuffer,
+    char*           fileName,
+    int             line
+);
+#define stringBuffer_toString(buffer)\
+    (stringBuffer_toStringFunction(buffer, __FILE__, __LINE__))
+
+
+
+//==================================================
+//Interpreter
+//==================================================
+char*
+interpreter_readLine(
+    Interpreter interpreter
+);
+
+
+
+//==================================================
+//Token
+//==================================================
+void
+token_log(
+    Token token
+);
+
+
+
+//==================================================
+//Tokenizer
+//==================================================
+Tokenizer
+tokenizer_new(
+    char*   filePath
+);
+
+
+
+void
+tokenizer_dispose(
+    Tokenizer   tokenizer
+);
+
+
+
+Boolean
+tokenizer_parse(
+    Tokenizer   tokenizer
+);
+
+
+
+//==================================================
+//Parser
+//==================================================
+Parser
+parser_new(
+    List    list
+);
+
+
+
+void
+parser_dispose(
+    Parser  parser
+);
+
+
+
+Boolean
+parser_parse(
+    Parser      parser,
+    Interpreter interpreter
+);
+
+
+
+Token
+parser_getCurrent(
+    Parser  parser
+);
+
+
+
+Boolean
+parser_next(
+    Parser  parser
+);
+
+
+
+//==================================================
+//Statement
+//==================================================
+Statement
+statement_parse(
+    Parser  parser
+);
+
+
+
+Boolean
+commentStatement_parse(
+    char*       buffer,
+    int         offset
+);
+
+
+
+
+//==================================================
+//ReturnStatement
+//==================================================
+ReturnStatement
+returnStatement_parse(
+    char*       buffer,
+    int         offset
+);
+
+
+
+void
+returnStatement_dispose(
+    ReturnStatement statement
+);
+
+
+
+//==================================================
+//WhileStatement
+//==================================================
+WhileStatement
+whileStatement_parse(
+    Interpreter interpreter,
+    char*       buffer,
+    int         offset
+);
+
+
+
+void
+whileStatement_dispose(
+    WhileStatement  statement
+);
+
+
+
+//==================================================
+//FunctionCallStatement
+//==================================================
+void
+functionCallStatement_dispose(
+    FunctionCallStatement  statement
+);
+
+
+
+FunctionCallStatement
+functionCallStatement_parse(
+    Parser  parser
+);
+
+
+
+//==================================================
+//Expression
+//==================================================
+void
+expression_dispose(
+    Expression expression
+);
+
+
+
+Expression
+expression_parse(
+    Parser  parser
+);
+
+
+
+//==================================================
+//ObjectExpression
+//==================================================
+ObjectExpression
+objectExpression_parse(
+    char*       buffer,
+    int         offset
+);
+
+
+
+void
+objectExpression_dispose(
+    ObjectExpression  expression
+);
+
+
+
+//==================================================
+//OperationExpression
+//==================================================
+OperationExpression
+operationExpression_new(
+    OperationKind   kind
+);
+
+
+
+void
+operationExpression_dispose(
+    OperationExpression     expression
+);
+
+
+
+//==================================================
+//StringLiteralExpression
+//==================================================
+void
+stringLiteralExpression_dispose(
+    StringLiteralExpression expression
+);
+
+
+
+StringLiteralExpression
+stringLiteralExpression_parse(
+    Parser  parser
+);
+
+
+
+//==================================================
+//FunctionCallExpression
+//==================================================
+void
+functionCallExpression_dispose(
+    FunctionCallExpression  expression
+);
+
+
+
+FunctionCallExpression
+functionCallExpression_parse(
+    Parser  parser
+);
+
+
+
+//==================================================
+//ParametersExpression
+//==================================================
+ParametersExpression
+parametersExpression_parse(
+    Parser  parser
+);
+
+
+
+void
+parametersExpression_dispose(
+    ParametersExpression    expression
+);
+
+
+
+//==================================================
+//FunctionDefinition
+//==================================================
+FunctionDefinition
+functionDefinition_new(
+    char*       name,
+    Boolean     isNative,
+    AccessLevel access,
+    List        parameterList,
+    List        statementList,
+    CriaObject  returnValue
+);
+
+
+
+//==================================================
+//FunctionDefinition
+//==================================================
+CriaObject
+io_print(
+    Interpreter interpreter,
+    List        args
+);
+
+
+
+#endif /* PRIVATE_CRIA_H_INCLUDED */

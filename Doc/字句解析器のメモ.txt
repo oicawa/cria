@@ -1,0 +1,252 @@
+■一行ごとに解析
+
+インデントのチェックを先に行う。
+
+Statement・・・文（一行分の処理）
+    [Empty] [NewLine]
+    [Commnet] [NewLine]
+    [Return] Expression [NewLine]
+    [Break] [NewLine]
+    [Continue] [NewLine]
+    [Catch] [NewLine]
+    [Finally] [NewLine]
+    [If] Expression [NewLine]
+    [Elif] Expression [NewLine]
+    [Else] [NewLine]
+    [While] Expression [NewLine]
+    [For] VariableDeclare [In] Variable [NewLine]
+    VariableReference [Substitute] Expression [NewLine]
+    VariableReference [Increment] Expression [NewLine]
+    VariableReference [Decrement] Expression [NewLine]
+    VariableDeclare
+        NotClassLiteral [Colon] [NewLine]
+        NotClassLiteral [Colon] ClassLiteral [NewLine]
+    FunctionDefine
+        NotClassLiteral [ParenthesisLeft] [ParenthesisRight] [NewLine]
+        NotClassLiteral [ParenthesisLeft] VariableDeclareEnumeration [ParenthesisRight] [NewLine]
+    ClassDefine
+        ClassLiteral [NewLine]
+        ClassLiteral [Extends] ClassLiteralEnumeration [NewLine]
+
+
+
+    Expression
+        Expression [Plus] Expression
+        Expression [Minus] Expression
+        Expression [Multiply] Expression
+        Expression [Devide] Expression
+        Expression [Modulo] Expression
+        Expression [Equal] Expression
+        Expression [LessThan] Expression
+        Expression [LessEqual] Expression
+        Value
+            ObjectGenerate
+            FunctionReference
+            VariableReference
+            StringLiteral
+            IntegerLiteral
+            RealLiteral
+            ListLiteral
+            HashLiteral
+            Boolean
+            Integer
+            Real
+            String
+            List
+            Hash
+            Object
+
+
+
+
+
+
+
+
+
+Indent                              
+Space                            
+IntegerLiteral                  0 | -?[1-9][0-9]?
+DoubleQuat                      ""
+StringLiteral                   DoubleQuat .* DoubleQuat
+
+If                              if Space 
+For                             for Space
+While                           while Space
+Return                          return Space
+Break                           break NewLine
+Continue                        continue NewLine
+Catch                           !catch
+Finally                         !finally
+
+Substitute                      Space = Space
+Increment                       Space += Space
+Decrement                       Space -= Space
+
+Plus                            Space + Space
+Minus                           Space - Space
+Multiply                        Space * Space
+Devide                          Space / Space
+Modulo                          Space % Space
+
+ParenthesisLeft                 (
+ParenthesisRight                )
+BracketLeft                     [
+BracketRight                    ]
+BracesLeft                      {
+BracesRight                     }
+
+LessThan                        Space < Space
+LessEqual                       Space <= Space
+Equal                           Space == Space
+GreaterEqual                    Space >= Space
+GreaterThan                     Space > Space
+Extends                         Space -> Space
+Colon                           :
+Member                          @
+Period                          .
+Comma                           , Space
+Under                           Space _ NewLine
+
+ClassLiteral                    [A-Z][A-Za-z0-9]+
+NotClassLiteral                 [a-z][A-Za-z0-9]+
+
+
+VariableReference               NotClassLiteral
+VariableDeclaration             NotClassLiteral Type |
+                                NotClassLiteral Type ClassLiteral
+
+MemberVariableReference         Period VariableReference
+MemberVariableDeclaration       Member VariableDeclaration
+
+
+ParameterReference              VariableReference |
+                                MemberVariableReference |
+                                FunctionReference
+ParameterReferenceEnumeration   ParameterReference |
+                                ParameterReference Comma ParameterReferenceEnumeration
+
+ParameterDeclaration            VariableDeclaration |
+                                MemberVariableDeclaration |
+                                FunctionReference
+ParameterDeclarationEnumeration VariableDeclaration |
+                                VariableDeclaration Comma VariableDeclarationEnumeration
+
+FunctionReference               Period NotClassLiteral ParenthesisLeft ParenthesisRight
+                                Period NotClassLiteral ParenthesisLeft ParameterEnumeration ParenthesisRight
+FunctionDeclaration             NotClassLiteral ParenthesisLeft ParenthesisRight Type
+                                NotClassLiteral ParenthesisLeft ParenthesisRight Type ClassLiteral
+                                NotClassLiteral ParenthesisLeft VariableDeclarationEnumeration ParenthesisRight Type ClassLiteral
+
+
+ClassEnumeration    ClassLiteral | ClassLiteral, ClassEnumeration
+ClassDeclaration    ClassLiteral | ClassLiteral Extends ClassEnumeration
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//typedef struct 
+//{
+//    char_stream_t   cs;             // ここから文字を読み出す
+//    char_buf_t      tok_buf;        // 現在構築中の字句を構成する文字を保持
+//    char_buf_t      str_buf;        // 現在読み込み中の行を構成する文字を保持
+//    int_vec_t       indents;        // 字下げスタック
+//    int             leading_spaces; // 現在の行の先頭の空白の数
+//    token           tok;            // 現在の字句
+//} tokenizer, * Tokeniser;
+
+
+
+struct TokenizerTag
+{
+    CharStream  stream;         // ここから文字を読み出す
+    CharBuffer  tokenBuffer;    // 現在構築中の字句を構成する文字を保持
+    CharBuffer  lineBuffer;     // 現在読み込み中の行を構成する文字を保持
+    Stack       indents;        // 字下げスタック
+    int         leadingSpaces;  // 現在の行の先頭の空白の数
+    Token       token;          // 現在の字句
+};
+typedef struct TokeniserTag*    Tokeniser;
+
+
+
+void tok_next(Tokeniser tokeniser)
+{
+    // 現在の字句をためておくバッファを空にする
+    char_buf_reset(tokeniser->tokenBuffer);
+    
+    
+    // 空白読み飛ばし
+    skip_whitespaces(tokeniser);
+    
+    
+    // indent/dedent 字句を生成する必要があればそれで終わり
+    if (tokeniser->leadingSpaces > int_stack_peek(tokeniser->indents))
+    {
+        int_stack_push(tokeniser->indents, tokeniser->leadingSpaces);
+        tokeniser->token.k = TOK_INDENT;
+        return;
+    }
+    else if (tokeniser->leadingSpaces < int_stack_peek(tokeniser->indents))
+    {
+        int_stack_pop_last(tokeniser->indents);
+        if (tokeniser->leadingSpaces > int_stack_peek(tokeniser->indents)) {
+            err_wrong_indent(tokeniser);
+        }
+        tokeniser->token.k = TOK_DEDENT;
+        return 0;
+    }
+    
+    // ここからがいわば本題．文字を読んでいきながら場合わけ
+    switch(cs_cur_char(tokeniser->stream))
+    {
+    case '0'...'9':
+        scan_number(tokeniser);
+        break;
+    case ...
+    case ...
+    ...
+    }
+}
+
+
+
+
+void scan_number(Tokeniser tokeniser)
+{
+    scan_digits(tokeniser);
+    if (cs_cur_char(tokeniser->stream) == '.')
+    {
+        /* 浮動小数点数*/
+        eat_char(tokeniser);
+        scan_digits(tokeniser);
+        tokeniser->token.k = TOK_LITERAL_FLOAT;
+        tokeniser->token.v.v_float = atof(char_buf_get_string(tokeniser->tokenBuffer));
+    }
+    else
+    {
+        /* 整数．0123 などを排除*/
+        char * s = char_buf_get_string(tokeniser->tokenBuffer);
+        if (s[0] == '0' && strlen(s) > 1)
+        {
+            err_wrong_token(tokeniser);
+        }
+        tokeniser->token.k = TOK_LITERAL_INT;
+        tokeniser->token.v.v_int = atoi(char_buf_get_string(tokeniser->tokenBuffer));
+    }
+}
+
+
+
+

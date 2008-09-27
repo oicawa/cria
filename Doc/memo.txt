@@ -1,0 +1,264 @@
+■■■要求■■■
+環境構築でストレスを感じないようにしたい。
+	インストール⇒プログラム作成⇒デバッグ⇒デプロイにストレスを感じないこと。
+	インストール直後の状態で、一通りのこと（ファイルアクセス、DBアクセス、ネットワークアクセス、GUI作成、帳票印刷）ができること。
+		実行時に不足しているライブラリ等は、ネット上のリポジトリを見に行って、勝手にインストールしてくれると幸せ。（rubyのgemみたいなやつ？）
+
+開発環境を同梱すること。
+	基本的にゴテゴテした機能は付けたくないが、コード補完機能だけは欲しい。
+	（初期の学習コストが低くなるし、個人的には便利だと思っているので。。）
+
+Python以上に文法的制限を設け、（命名センスは別として）誰が書いても同じようなコードになること。
+	着目しているモノ（変数、メソッドなど）がどこに所属しているかが分かること。
+
+ログ出力機能を標準で付けたい。。（基本はこれでデバッグ。コメント代わりにお願いします。）
+
+完全なオブジェクト指向言語としたい。
+
+パッケージ管理はJavaと同じ？かなり考えどころかも。
+    基本的にはフォルダ一つがパッケージパス一つ分。
+    そうすると何が嬉しいかというとパッケージ一つにつき、複数のファイルを格納することが可能。
+    １パッケージ１ファイルという構成も考えたけど、一個のファイルが冗長になりすぎる可能性が高い。。
+        いや、その場合はパッケージ階層を分ければいいのか。。例えば次のような感じ。
+            ○Stla.Gui.stl
+                Form
+                Layout
+                TextBox
+                Button
+
+アクセス制御（public protected private package）が可能
+
+
+
+■■■言語仕様■■■
+環境構築
+	次の手順で実行可能な状態になって欲しい。
+		zipアーカイブを展開。
+		環境変数PATHにzaccoの展開ディレクトリを追加
+
+    
+    
+    
+    
+クラス
+	宣言
+		大文字半角英字で始まり、以降アルファベット、アンダーバー、及び数字で記述。
+		必ず行の最左端に記述する。
+		継承の記号は '<'を使用する。
+		継承元クラスは '<'の後ろに記述する。
+		継承元クラスが複数存在
+
+staticなフィールド、メソッドは先頭に^をつける。
+
+
+ガーベッジコレクション機構。
+例外処理機構。
+
+
+全てのクラスの基底クラスをObjectとする。
+Object型で宣言した変数は任意の名称、パラメータのメソッドを呼び出せる。
+（Object型で宣言した変数のみ、型無し変数のように使えるということ。）
+
+
+
+
+■■■表記ルール■■■
+
+終端トークン
+	コメント
+		BLOCK_COMMENT		/\*.*\*/
+		DEBUGLOG_COMMENT	//.*$
+
+	演算子
+		SUBSTITUTE			=		代入
+		PLUS				\+		加算
+		MINUS				-		減算
+		MULTIPLY			*		乗算
+		DIVIDE				/		除算
+		MOD					%		余算
+
+	アクセス制御子
+		PUBLIC				+
+		PACKAGE				~
+		PROTECTED			#
+		PRIVATE				-
+
+	クラス
+		CLASS_NAME			[A-Z][a-zA-Z0-9_]+
+		
+	定数（必ずPublicレベルになるものとする）
+		CONSTANT_NAME		[A-Z][A-Z0-9_]+
+	
+	変数
+		VARIABLE_NAME		[a-zA-Z][a-zA-Z0-9_]+
+	
+	整数リテラル
+		INTEGER				-?([0-9]|[1-9][0-9]+)
+	
+	実数リテラル
+		REAL				-?([0-9]|[1-9][0-9]+)\.[0-9]+
+	
+	文字列リテラル
+		STRING				".*"
+	
+	メソッド名
+		METHOD_NAME		[a-zA-Z][a-zA-Z0-9_]*
+		
+	
+
+その他のトークン
+
+	クラス群
+		CLASSES				CLASS_NAME, CLASS_NAME
+							CLASS_NAME, CLASSES
+	
+	クラス宣言
+		CLASS_NAME
+		CLASS_NAME < CLASS_NAME
+		CLASS_NAME < CLASS_NAME, CLASSES
+		
+	変数
+		VARIABLE:CLASS_NAME
+	
+	メソッド
+		METHOD():CLASS
+		METHOD():CLASS:EXCEPTION
+
+
+
+
+
+■■■インターフェース■■■
+インターフェースはなし！欲しけりゃ空メソッドのクラスを作るべし。
+    
+    ↓↓↓
+    
+    従って、多重継承ありとなる！
+    フィールド名称、メソッドが競合した場合は、'<' 以降に出現するクラスのメソッド名称をチェックして、
+    そのフィールド、メソッドがオーバーライドされていなければエラーにする。
+    どちらのメソッドかは、基底クラス名の先頭を小文字にした暗黙オブジェクトに対して処理を行う。
+		例）
+			------------------------------
+			Class1
+				values:List<String>
+				
+				hoge(value:String)
+					.values.add(value)
+			
+			Class2
+				value:String
+				hoge(value:String)
+					.value = value
+			
+			Class3 < Class1, Class2
+				hoge(value:String)
+					class1.hoge(value)	//class1は継承元Class1の暗黙オブジェクト
+					class2.hoge(value)	//class2は継承元Class2の暗黙オブジェクト
+					//上述の２行を書かずに、まったく別の処理をさせることも可能。
+			------------------------------
+
+
+
+
+■■■サンプルコード■■■
+import
+	F.Core
+	F.Gui.Form
+	F.Gui.Grid
+	F.Gui.Button
+
+
+package
+	Test.Package
+
+
+//クラス定義
+Email
+	PATTERN:Regex		//Emailアドレス文字列の正規表現
+
+	email:String		//Emailアドレス文字列
+
+
+	//コンストラクタ
+	#this(email:String)
+		.email = email
+
+
+	//スタティックコンストラクタ
+	static()
+		.PATTERN = Regex("[a-zA-Z0-9.\-_]+@(?<" + domain.name + ">[a-zA-Z0-9.\-_]+?)", Regex.singleLine);
+
+
+    //Emailオブジェクト生成
+	^parse(email:String):Email:ParseException
+		if PATTERN.isMatch(email) == false
+			throw ParseException()
+		
+		.email = email
+
+	getDomain():String
+		match = .PATTERN.Match(.email)
+		return match.group[domain.name].value
+
+	toString():String
+		return .email
+
+
+Person
+	name:String
+	age:Integer
+	sex:Boolean
+	emails:List<Email>
+
+	this(name:String, age:Integer, sex:Boolean, emails:List<Email>)
+		.name = name
+		.age = age
+		.sex = sex
+		.emails = emails
+
+
+
+
+MainForm < Form
+	grid:Grid
+	emails:ListBox
+	addButton:Button
+	deleteButton:Button
+	editButton:Button
+	endButton:Button
+
+	this()
+		.setLayout(4, 3)
+
+		.grid = Grid(this)
+		.grid.setPosition(0, 0)
+		.grid.setSpan(4, 1)
+		.grid.setDock(Dock.FILL)
+		.grid.addColumHeader("名前", String.Type)
+		.grid.addColumHeader("年齢", Integer.Type)
+		.grid.addColumHeader("性別", String.Type)
+
+		.emails = ListBox()
+        
+		.endButton = Button(this)
+		.endButton.text = "終了"
+		//イベントの登録の仕方はPython風
+		.endButton.event(Button.MOUSE_UP, .close())
+
+
+	showEmails()
+		.emails.clear()
+
+
+	//画面を閉じる
+	close()
+		if (Dialog.OK == .dialog.show("終了します。", Dialog.OK|Dialog.Cancel, Dialog.ICON_QUESTION))
+			.dispose()
+
+	showEntryForm()
+		
+		
+
+//子のスクリプトを単体プログラムとして出力したい場合のエントリ。
+//      
+main(argv:List<String>)
