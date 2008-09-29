@@ -20,13 +20,15 @@ main(
     //Logger_set(LOG_LEVEL_DEBUG, NULL);
     //Logger_set(LOG_LEVEL_TRACE, NULL);
     //Logger_set(LOG_LEVEL_DEBUG, "addStatement, Interpreter_compile");
-    Logger_set(LOG_LEVEL_DEBUG, "token_log");
+    //Logger_set(LOG_LEVEL_DEBUG, "token_log");
     //Logger_set(LOG_LEVEL_DEBUG, "parseIndentDident");
     //Logger_set(LOG_LEVEL_DEBUG, "parseClassOrConstant");
     //Logger_set(LOG_LEVEL_DEBUG, "parseSpace,skipSpaceAndNewLine");
     //Logger_set(LOG_LEVEL_DEBUG, "parseOther");
     //Logger_set(LOG_LEVEL_DEBUG, "parser_parse, statement_parse, functionCallStatement_parse, functionCallExpression_parse, token_log");
     //Logger_set(LOG_LEVEL_CORE, "Interpreter_dispose, Interpreter_compile, tokenizer_dispose, parser_dispose, List_dispose, addStatement, List_addFunction");
+    Logger_set(LOG_LEVEL_DEBUG, "io_print, expression_new, expression_parse, evaluator_evaluateFunctionCallExpression, evaluator_evaluateParametersExpression, evaluator_evaluateStringLiteralExpression, ");
+    
     
     
     //*
@@ -58,23 +60,18 @@ main(
     }
     
     
-    result = Interpreter_run(interpreter);
-    if (result == FALSE)
-    {
-        printf("Cria interpreter running error.\n");
-        goto END;
-    }
+    Interpreter_run(interpreter);
     
     
     endCode = 1;
     
 END:
-    Memory_dumpBlocks(stdout);
+    //Memory_dumpBlocks(stdout);
     Interpreter_dispose(interpreter);
     interpreter = NULL;
     
     
-    printf("!!! Memory_dispose() !!!\n");
+    //printf("!!! Memory_dispose() !!!\n");
     Memory_dispose();
     
     return endCode;

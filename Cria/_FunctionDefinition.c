@@ -2,12 +2,12 @@
 
 FunctionDefinition
 functionDefinition_new(
-    char*       name,
-    Boolean     isNative,
-    AccessLevel access,
-    List        parameterList,
-    List        statementList,
-    CriaObject  returnValue
+    char*               name,
+    Boolean             isNative,
+    AccessLevel         access,
+    List                parameterList,
+    List                statementList,
+    CriaNativeFunction* nativeFunctionPoint
 )
 {
     FunctionDefinition definition = Memory_malloc(sizeof(struct FunctionDefinitionTag));
@@ -16,12 +16,15 @@ functionDefinition_new(
     definition->isNative = isNative;
     definition->access = access;
     if (isNative == TRUE)
-        goto END;
-    
-    definition->of.cria.parameterList = parameterList;
-    definition->of.cria.statementList = statementList;
-    definition->returnValue = returnValue;
-END:
+    {
+        definition->of.native.function = nativeFunctionPoint;
+    }
+    else
+    {
+        definition->of.cria.parameterList = parameterList;
+        definition->of.cria.statementList = statementList;
+    }
+
     return definition;
 }
 

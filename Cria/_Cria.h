@@ -39,9 +39,9 @@ struct ListTag {
 struct InterpreterTag
 {
     List    statementList;
-    //List    variableList;      //VariableDefinitionStatement
-    List    functionList;     //FunctionDEfinitionStatement
-    //List    classList;        //ClassDefinitionStatement
+    //List    variableList;      //VariableDefinition
+    List    functionList;     //FunctionDefinition
+    //List    classList;        //ClassDefinition
     //File    file;
     String  buffer;
     int     lineNumber;
@@ -163,19 +163,19 @@ struct VariableDefinitionTag
 //*
 struct FunctionDefinitionTag
 {
-    char*               name;
-    Boolean             isNative;
-    AccessLevel         access;
+    char*                       name;
+    Boolean                     isNative;
+    AccessLevel                 access;
     union {
         struct {
-            List        parameterList;
-            List        statementList;
+            List                parameterList;
+            List                statementList;
         } cria;
         struct {
-            CriaObject  pointer;
+            CriaNativeFunction* function;
         } native;
     } of;
-    CriaObject          returnValue;
+    CriaObject                  returnValue;
 };
 //*/
 
@@ -250,6 +250,24 @@ struct VariableExpressionTag
 {
     char*   name;
 };
+
+
+
+typedef enum {
+    STATEMENT_RESULT_NORMAL = 1,
+    STATEMENT_RESULT_RETURN,
+    STATEMENT_RESULT_BREAK,
+    STATEMENT_RESULT_CONTINUE,
+} StatementResultType;
+
+
+
+typedef struct {
+    StatementResultType type;
+    union {
+        CriaObject  object;
+    } returns;
+} StatementResult;
 
 
 
@@ -697,12 +715,12 @@ parametersExpression_dispose(
 //==================================================
 FunctionDefinition
 functionDefinition_new(
-    char*       name,
-    Boolean     isNative,
-    AccessLevel access,
-    List        parameterList,
-    List        statementList,
-    CriaObject  returnValue
+    char*               name,
+    Boolean             isNative,
+    AccessLevel         access,
+    List                parameterList,
+    List                statementList,
+    CriaNativeFunction* nativeFunctionPoint
 );
 
 
@@ -714,6 +732,30 @@ CriaObject
 io_print(
     Interpreter interpreter,
     List        args
+);
+
+
+
+//==================================================
+//Executor
+//==================================================
+StatementResult
+executor_executeStatement(
+    Interpreter interpreter,
+    List        local,
+    Statement   statement
+);
+
+
+
+//==================================================
+//Evaluator
+//==================================================
+CriaObject
+evaluator_evaluateFunctionCallExpression(
+    Interpreter             interpreter,
+    List                    local,
+    FunctionCallExpression  expression
 );
 
 

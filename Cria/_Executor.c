@@ -2,33 +2,6 @@
 
 #include "_Cria.h"
 
-typedef enum {
-    STATEMENT_RESULT_NORMAL = 1,
-    STATEMENT_RESULT_RETURN,
-    STATEMENT_RESULT_BREAK,
-    STATEMENT_RESULT_CONTINUE,
-} StatementResultType;
-
-
-
-typedef struct {
-    StatementResultType type;
-    union {
-        CriaObject  object;
-    } returns;
-} StatementResult;
-
-
-
-void
-evaluator_evaluateFunctionCallExpression(
-    Interpreter             interpreter,
-    List                    local,
-    FunctionCallExpression  expression
-)
-{
-    
-}
 
 
 void
@@ -38,7 +11,9 @@ executor_executeFunctionCallStatement(
     FunctionCallStatement   statement
 )
 {
+    Logger_trc("[ START ]%s", __func__);
     evaluator_evaluateFunctionCallExpression(interpreter, local, statement->expression);
+    Logger_trc("[  END  ]%s", __func__);
 }
 
 
@@ -50,6 +25,7 @@ executor_executeStatement(
     Statement   statement
 )
 {
+    Logger_trc("[ START ]%s", __func__);
     StatementResult result;
 
     result.type = STATEMENT_RESULT_NORMAL;
@@ -95,5 +71,6 @@ executor_executeStatement(
         exit(1);
     }
 
+    Logger_trc("[  END  ]%s", __func__);
     return result;
 }

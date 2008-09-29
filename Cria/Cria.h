@@ -60,22 +60,6 @@ typedef struct  StringLiteralExpressionTag  *StringLiteralExpression;
 typedef struct  ParametersExpressionTag     *ParametersExpression;
 
 
-typedef struct CriaBooleanTag   *CriaBoolean;
-struct CriaBooleanTag
-{
-    Boolean value;
-};
-
-
-
-typedef struct CriaStringTag    *CriaString;
-struct CriaStringTag
-{
-    String      value;
-    CriaBoolean isLiteral;
-};
-
-
 
 typedef enum
 {
@@ -92,14 +76,38 @@ typedef enum
 
 
 
-typedef struct CriaObjectTag    *CriaObject;
-struct CriaObjectTag
+typedef struct
 {
     String          name;
     CriaDataType    type;
     int             refCount;
+} CriaIdentifier;
+
+
+
+typedef struct
+{
+    CriaIdentifier  id;
+    Boolean         value;
+} CriaBoolean;
+
+
+
+typedef struct
+{
+    CriaIdentifier  id;
+    Boolean         isLiteral;
+    String          value;
+} CriaString;
+
+
+
+typedef struct
+{
+    CriaIdentifier  id;
     void*           object;
-};
+} CriaObject;
+
 
 
 typedef CriaObject CriaNativeFunction(Interpreter interpreter, List args);
@@ -251,14 +259,22 @@ Interpreter_compile(
 
 
 //実行
-Boolean
+void
 Interpreter_run(
     Interpreter interpreter
 );
 
 
 
-CriaObject
+FunctionDefinition
+Interpreter_searchFunction(
+    Interpreter interpreter,
+    char*       name
+);
+
+
+
+CriaObject*
 CriaObject_new(
     String          name,
     CriaDataType    type,
@@ -271,5 +287,16 @@ void
 CriaObject_dispose(
     CriaObject  criaObject
 );
+
+
+
+CriaString*
+CriaString_new(
+    String          name,
+    Boolean         isLiteral,
+    String          value
+);
+
+
 
 #endif //PUBLIC_CRIA_H_INCLUDED

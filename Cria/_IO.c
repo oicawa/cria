@@ -17,32 +17,34 @@ io_print(
     List        args
 )
 {
-    CriaObject  returnValue = CriaObject_new(NULL, CRIA_DATA_TYPE_VOID, NULL);
-    CriaObject  criaObject = NULL;
+    CriaObject  returnObject;
+    returnObject.id.type = CRIA_DATA_TYPE_VOID;
+    
+    CriaObject* criaObject;
     char*       start = NULL;
     char*       end = NULL;
     long        index = 0;
-    long        count = args->count;
+    int count = args->count;
     
     //引数が０だった場合は実行時エラー
     if (count == 0)
     {
         Logger_err("Runtime error. (Argument count is 0.)");
         perror("Runtime error. (Argument count is 0.)");
-        exit(1);
+        goto END;
     }
-
+    
     //第一引数がStringでなかった場合はエラー    
-    criaObject = (CriaObject)list_get(args, 0);
-    if (criaObject->type != CRIA_DATA_TYPE_STRING)
+    criaObject = (CriaObject*)list_get(args, 0);
+    if (criaObject->id.type != CRIA_DATA_TYPE_STRING)
     {
-        Logger_err("Runtime error. (First argument is not String.)");
+        Logger_err("Runtime error. (First argument is not String.) [%d]", criaObject->id.type);
         perror("Runtime error. (First argument is not String.)");
-        exit(1);
+        goto END;
     }
     
     //第一引数の文字列型データを抽出
-    start = ((CriaString)(criaObject->object))->value->pointer;
+    start = ((CriaString*)(criaObject))->value->pointer;
     while((end = strstr(start, "%s")) != NULL)
     {
         long size = end - start;
@@ -63,7 +65,7 @@ io_print(
         }
         
         index += 1;
-        criaObject = (CriaObject)list_get(args, index);
+        criaObject = (CriaObject*)list_get(args, index);
         
         //NULLチェック
         if (criaObject == NULL)
@@ -73,7 +75,7 @@ io_print(
         }
         
         //型チェック
-        if (criaObject->type != CRIA_DATA_TYPE_STRING)
+        if (criaObject->id.type != CRIA_DATA_TYPE_STRING)
         {
             Logger_err("Runtime error. (First argument is not String.)");
             perror("Runtime error. (First argument is not String.)");
@@ -81,12 +83,12 @@ io_print(
         }
         
         //出力
-        printf("%s", ((CriaString)(criaObject->object))->value->pointer);
+        printf("%s", ((CriaString*)(criaObject))->value->pointer);
     }
     printf(start);
     
-    
-    return returnValue;
+END:
+    return returnObject;
 }
 
 

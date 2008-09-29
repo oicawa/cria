@@ -1,8 +1,8 @@
 #include "_Cria.h"
 
 
-
-CriaObject
+//*
+CriaObject*
 CriaObject_new(
     String          name,
     CriaDataType    type,
@@ -10,21 +10,22 @@ CriaObject_new(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaObject  criaObject = NULL;
-    criaObject = Memory_malloc(sizeof(struct CriaObjectTag));
-    memset(criaObject, 0x00, sizeof(struct CriaObjectTag));
-    criaObject->name = string_clone(name);
-    criaObject->type = type;
+    CriaObject* criaObject;
+    memset(criaObject, 0x00, sizeof(CriaObject));
+    criaObject->id.name = string_clone(name);
+    criaObject->id.type = type;
     criaObject->object = object;
     Logger_trc("[  END  ]%s", __func__);
     return criaObject;
 }
+//*/
 
 
 
+/*
 void
 CriaObject_dispose(
-    CriaObject  criaObject
+    CriaObject* criaObject
 )
 {
     Logger_cor("[ START ]%s", __func__);
@@ -51,4 +52,4 @@ CriaObject_dispose(
 END:
     Logger_cor("[  END  ]%s", __func__);
 }
-
+//*/

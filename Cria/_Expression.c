@@ -9,9 +9,12 @@ expression_new(
     ExpressionKind  kind
 )
 {
+    Logger_trc("[ START ]%s", __func__);
     Expression expression = Memory_malloc(sizeof(struct ExpressionTag));
     memset(expression, 0x00, sizeof(struct ExpressionTag));
     expression->kind = kind;
+    Logger_trc("expression kind is '%d'", expression->kind);
+    Logger_trc("[  END  ]%s", __func__);
     return expression;
 }
 
@@ -22,8 +25,6 @@ expression_dispose(
     Expression  expression
 )
 {
-    Logger_trc("[ START ]%s", __func__);
-    Logger_trc("[  END  ]%s", __func__);
     Logger_trc("[ START ]%s", __func__);
     if (expression == NULL)
     {

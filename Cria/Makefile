@@ -17,9 +17,11 @@ OBJS =\
     _FunctionCallExpression.o\
     _Expression.o\
     _Executor.o\
+    _Evaluator.o\
     _IO.o\
     _CriaObject.o\
     _FunctionDefinition.o\
+    _CriaString.o\
 #    _Hash.o\
 #    _CommentStatement.o\
 #    _ReturnStatement.o\
@@ -52,9 +54,11 @@ _ParametersExpression.o: _ParametersExpression.c _Cria.h Cria.h ../Memory/Memory
 _FunctionCallExpression.o: _FunctionCallExpression.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Expression.o: _Expression.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Executor.o: _Executor.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+_Evaluator.o: _Evaluator.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _IO.o: _IO.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaObject.o: _CriaObject.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _FunctionDefinition.o: _FunctionDefinition.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+_CriaString.o: _CriaString.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 #_Hash.o: _Hash.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 #_ReturnStatement.o: _ReturnStatement.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 #_WhileStatement.o: _WhileStatement.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h

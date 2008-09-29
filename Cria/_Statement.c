@@ -129,7 +129,8 @@ statement_parse(
     if (functionCallStatement != NULL)
     {
         Logger_dbg("Create 'FunctionCallStatement'");
-        statement = statement_new(EXPRESSION_KIND_FUNCTION_CALL);
+        //statement = statement_new(EXPRESSION_KIND_FUNCTION_CALL);
+        statement = statement_new(STATEMENT_KIND_FUNCTION_CALL);
         statement->of._functionCall_ = functionCallStatement;
         goto END;
     }

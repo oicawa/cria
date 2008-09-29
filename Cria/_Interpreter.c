@@ -22,9 +22,14 @@ void
 Interpreter_addFunction(
     Interpreter         interpreter,
     char*               functionName,
-    CriaNativeFunction  functionPoint
+    CriaNativeFunction* functionPoint
 )
 {
+    Logger_trc("[ START ]%s", __func__);
+    FunctionDefinition definition = NULL;
+    definition = functionDefinition_new(functionName, TRUE, ACCESS_LEVEL_PUBLIC, NULL, NULL, functionPoint);
+    list_add(interpreter->functionList, definition);
+    Logger_trc("[  END  ]%s", __func__);
 }
 
 
@@ -34,7 +39,9 @@ interpreter_loadCore(
     Interpreter interpreter
 )
 {
+    Logger_trc("[ START ]%s", __func__);
     Interpreter_addFunction(interpreter, "print", io_print);
+    Logger_trc("[  END  ]%s", __func__);
 }
 
 
@@ -141,18 +148,54 @@ END:
 
 
 //実行
-Boolean
+void
 Interpreter_run(
     Interpreter interpreter
 )
 {
-    return TRUE;
+    Logger_trc("[ START ]%s", __func__);
+    StatementResult result;
+    
+    int count = interpreter->statementList->count;
+    int index = 0;
+    
+    for (index = 0; index < count; index++)
+    {
+        Statement statement = (Statement)(list_get(interpreter->statementList, index));
+        result = executor_executeStatement(interpreter, NULL, statement);
+    }
+    Logger_trc("[  END  ]%s", __func__);
 }
 
 
 
 
-//interpreter_searchFunction(expression->name);
+//本当はHashを使いたいが、とにかく動くものを先に作りたいので、
+//線形検索を行う。遅いけど。
+FunctionDefinition
+Interpreter_searchFunction(
+    Interpreter interpreter,
+    char*       name
+)
+{
+    int count = interpreter->functionList->count;
+    int index = 0;
+    FunctionDefinition definition = NULL;
+    FunctionDefinition tmp = NULL;
+    
+    for (index = 0; index < count; index++)
+    {
+        tmp = (FunctionDefinition)(list_get(interpreter->functionList, index));
+        if (strcmp(tmp->name, name) == 0)
+        {
+            definition = tmp;
+            break;
+        }
+    }
+    
+    
+    return definition;
+}
 
 
 
