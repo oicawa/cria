@@ -2,7 +2,7 @@
 
 
 //*
-CriaObject*
+CriaObject
 CriaObject_new(
     String          name,
     CriaDataType    type,
@@ -10,8 +10,8 @@ CriaObject_new(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaObject* criaObject;
-    memset(criaObject, 0x00, sizeof(CriaObject));
+    CriaObject criaObject = NULL;
+    memset(criaObject, 0x00, sizeof(struct CriaObjectTag));
     criaObject->id.name = string_clone(name);
     criaObject->id.type = type;
     criaObject->object = object;

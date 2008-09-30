@@ -76,41 +76,41 @@ typedef enum
 
 
 
-typedef struct
+typedef struct CriaIdTag
 {
     String          name;
     CriaDataType    type;
     int             refCount;
-} CriaIdentifier;
+} *CriaId;
 
 
 
-typedef struct
+typedef struct CriaBooleanTag
 {
-    CriaIdentifier  id;
-    Boolean         value;
-} CriaBoolean;
+    struct CriaIdTag    id;
+    Boolean             value;
+} *CriaBoolean;
 
 
 
-typedef struct
+typedef struct CriaStringTag
 {
-    CriaIdentifier  id;
-    Boolean         isLiteral;
-    String          value;
-} CriaString;
+    struct CriaIdTag    id;
+    Boolean             isLiteral;
+    String              value;
+} *CriaString;
 
 
 
-typedef struct
+typedef struct CriaObjectTag
 {
-    CriaIdentifier  id;
-    void*           object;
-} CriaObject;
+    struct CriaIdTag    id;
+    void*               object;
+} *CriaObject;
 
 
 
-typedef CriaObject CriaNativeFunction(Interpreter interpreter, List args);
+typedef CriaId CriaNativeFunction(Interpreter interpreter, List args);
 
 
 
@@ -274,7 +274,15 @@ Interpreter_searchFunction(
 
 
 
-CriaObject*
+CriaId
+CriaId_new(
+    String          name,
+    CriaDataType    type
+);
+
+
+
+CriaObject
 CriaObject_new(
     String          name,
     CriaDataType    type,
@@ -290,7 +298,7 @@ CriaObject_dispose(
 
 
 
-CriaString*
+CriaString
 CriaString_new(
     String          name,
     Boolean         isLiteral,

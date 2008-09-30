@@ -78,7 +78,7 @@ stringBuffer_dispose(
 
 //文字、文字列を連結
 void
-stringBuffer_append(
+stringBuffer_appendFunction(
     StringBuffer    stringBuffer,
     char*           string,
     char*           fileName,
@@ -122,11 +122,11 @@ stringBuffer_append(
     buffer = Memory_mallocAt(fileName, line, STRING_BUFFER_SIZE);
     memset(buffer, 0x00, STRING_BUFFER_SIZE);
     list_addFunction(list, buffer, fileName, line);
-    stringBuffer_append(stringBuffer, &(string[filler]), fileName, line);
+    stringBuffer_append(stringBuffer, &(string[filler]));
 
 }
 void
-stringBuffer_appendChar(
+stringBuffer_appendCharFunction(
     StringBuffer    stringBuffer,
     char            charactor,
     char*           fileName,
@@ -137,17 +137,7 @@ stringBuffer_appendChar(
     memset(buffer, 0x00, sizeof(buffer));
     sprintf(buffer, "%c", charactor);
     Logger_cor("buffer = [%s]", buffer);
-    stringBuffer_append(stringBuffer, buffer, fileName, line);
-}
-void
-stringBuffer_appendFunction(
-    StringBuffer    stringBuffer,
-    String          string,
-    char*           fileName,
-    int             line
-)
-{
-    stringBuffer_append(stringBuffer, string->pointer, fileName, line);
+    stringBuffer_append(stringBuffer, buffer);
 }
 
 

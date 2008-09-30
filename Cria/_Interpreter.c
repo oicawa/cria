@@ -40,7 +40,8 @@ interpreter_loadCore(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    Interpreter_addFunction(interpreter, "print", io_print);
+    Interpreter_addFunction(interpreter, "write", io_write);
+    Interpreter_addFunction(interpreter, "read", io_read);
     Logger_trc("[  END  ]%s", __func__);
 }
 

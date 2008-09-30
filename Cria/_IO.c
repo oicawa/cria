@@ -1,26 +1,21 @@
 #include "_Cria.h"
 
 
+#define BUFFER_SIZE 5
 
-//==============================
-//IO
-//==============================
-//標準出力へ文字列を出力。
-//★問題点★
-//可変長引数のフォーマットだと引数の数が取得できない為、
-//フォーマット文字列中にある埋め込み文字の識別子？（%s）
-//よりも引数が少なかった場合、Segmentation faultが発生してしまう。
-//解決策あるのかな。。Listで渡す？最終的にはその方がいいかもなぁ。
-CriaObject
-io_print(
+
+CriaId
+io_write(
     Interpreter interpreter,
     List        args
 )
 {
-    CriaObject  returnObject;
-    returnObject.id.type = CRIA_DATA_TYPE_VOID;
+    Logger_trc("[ START ]%s", __func__);
+    CriaId returnId;
+    returnId = CriaId_new(NULL, CRIA_DATA_TYPE_VOID);
     
-    CriaObject* criaObject;
+    
+    CriaId id;
     char*       start = NULL;
     char*       end = NULL;
     long        index = 0;
@@ -35,16 +30,16 @@ io_print(
     }
     
     //第一引数がStringでなかった場合はエラー    
-    criaObject = (CriaObject*)list_get(args, 0);
-    if (criaObject->id.type != CRIA_DATA_TYPE_STRING)
+    id = (CriaId)list_get(args, 0);
+    if (id->type != CRIA_DATA_TYPE_STRING)
     {
-        Logger_err("Runtime error. (First argument is not String.) [%d]", criaObject->id.type);
+        Logger_err("Runtime error. (First argument is not String.) [%d]", id->type);
         perror("Runtime error. (First argument is not String.)");
         goto END;
     }
     
     //第一引数の文字列型データを抽出
-    start = ((CriaString*)(criaObject))->value->pointer;
+    start = ((CriaString)id)->value->pointer;
     while((end = strstr(start, "%s")) != NULL)
     {
         long size = end - start;
@@ -65,17 +60,17 @@ io_print(
         }
         
         index += 1;
-        criaObject = (CriaObject*)list_get(args, index);
+        id = (CriaId)list_get(args, index);
         
         //NULLチェック
-        if (criaObject == NULL)
+        if (id == NULL)
         {
             printf("(null)");
             continue;
         }
         
         //型チェック
-        if (criaObject->id.type != CRIA_DATA_TYPE_STRING)
+        if (id->type != CRIA_DATA_TYPE_STRING)
         {
             Logger_err("Runtime error. (First argument is not String.)");
             perror("Runtime error. (First argument is not String.)");
@@ -83,12 +78,54 @@ io_print(
         }
         
         //出力
-        printf("%s", ((CriaString*)(criaObject))->value->pointer);
+        printf("%s", ((CriaString)id)->value->pointer);
     }
     printf(start);
     
 END:
-    return returnObject;
+    Logger_trc("[  END  ]%s", __func__);
+    return returnId;
+}
+
+
+
+CriaId
+io_read(
+    Interpreter interpreter,
+    List        args
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaString  returnString = NULL;
+    StringBuffer stringBuffer = NULL;
+    char buffer[BUFFER_SIZE];
+    
+    //引数が０でない場合はエラー
+    if (args->count != 0)
+    {
+        Logger_err("Runtime error. (Argument count is not 0.)");
+        perror("Runtime error. (Argument count is not 0.)");
+        goto END;
+    }
+    
+    
+    stringBuffer = stringBuffer_new();
+    
+    //標準入力から文字列を取得
+    memset(buffer, 0x00, sizeof(buffer));
+    while (fgets(buffer, sizeof(buffer), stdin) != NULL)
+    {
+        Logger_dbg("input = '%s'", buffer);
+        stringBuffer_append(stringBuffer, buffer);
+        memset(buffer, 0x00, sizeof(buffer));
+    }
+    
+    returnString = CriaString_new(NULL, TRUE, stringBuffer_toString(stringBuffer));
+    
+END:
+    stringBuffer_dispose(stringBuffer);
+    Logger_trc("[  END  ]%s", __func__);
+    return (CriaId)returnString;
 }
 
 

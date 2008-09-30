@@ -261,7 +261,7 @@ parseNumber(
     
     
     //まずは内部バッファに登録
-    stringBuffer_appendChar(tokenizer->buffer, tokenizer->next, __FILE__, __LINE__);
+    stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
     
     
     //次の文字を読み出す。
@@ -275,7 +275,7 @@ parseNumber(
             break;
         }
         //数字ならばバッファに追記。
-        stringBuffer_appendChar(tokenizer->buffer, tokenizer->next, __FILE__, __LINE__);
+        stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
     }
     Logger_dbg("Loop end.");
     
@@ -599,7 +599,7 @@ parseIdentifier(
     
     
     //まずは内部バッファに登録
-    stringBuffer_appendChar(tokenizer->buffer, tokenizer->next, __FILE__, __LINE__);
+    stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
     
     
     //次の文字を読み出す。
@@ -612,7 +612,7 @@ parseIdentifier(
             || tokenizer->next == '_')
         {
             //アルファベット、または数字ならばバッファに追記して継続
-            stringBuffer_appendChar(tokenizer->buffer, tokenizer->next, __FILE__, __LINE__);
+            stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
             continue;
         }
         //アルファベット、数字、アンダーバー以外だった場合は識別子以外のゾーンに入ったということなのでブレーク。
@@ -699,7 +699,7 @@ parseSpace(
     
     
     //まずは内部バッファに登録
-    stringBuffer_appendChar(tokenizer->buffer, tokenizer->next, __FILE__, __LINE__);
+    stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
     Logger_dbg("tokenizer->next = '%c'", tokenizer->next);
     
     
@@ -712,7 +712,7 @@ parseSpace(
         goto NO_TOKEN;
     }
     Logger_dbg("2nd charactor = '%c'", tokenizer->next);
-    stringBuffer_appendChar(tokenizer->buffer, tokenizer->next, __FILE__, __LINE__);
+    stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
     tmp = stringBuffer_toString(tokenizer->buffer);
     if (tokenizer->next == '_')
     {
@@ -733,7 +733,7 @@ parseSpace(
         goto NO_TOKEN;
     }
     Logger_dbg("3rd charactor = '%c'", tokenizer->next);
-    stringBuffer_appendChar(tokenizer->buffer, tokenizer->next, __FILE__, __LINE__);
+    stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
     tmp = stringBuffer_toString(tokenizer->buffer);
     buffer = tmp->pointer;
     if (strcmp(buffer, TOKEN_LITERAL_SUBSTITUTE) == 0)
@@ -801,7 +801,7 @@ parseSpace(
         Logger_dbg("No 4th charactor.");
         goto NO_TOKEN;
     }
-    stringBuffer_appendChar(tokenizer->buffer, tokenizer->next, __FILE__, __LINE__);
+    stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
     tmp = stringBuffer_toString(tokenizer->buffer);
     buffer = tmp->pointer;
     if (strcmp(buffer, TOKEN_LITERAL_EQUAL) == 0)
@@ -910,7 +910,7 @@ parseStringLiteral(
     while (read(tokenizer) == TRUE)
     {
         //まずは読んだ文字列を追記
-        stringBuffer_appendChar(tokenizer->buffer, tokenizer->next, __FILE__, __LINE__);
+        stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
         
         
         //「\」（エスケープシーケンス）だった場合は、
@@ -922,7 +922,7 @@ parseStringLiteral(
                 Logger_dbg("No string literal");
                 goto NO_TOKEN;
             }
-            stringBuffer_appendChar(tokenizer->buffer, tokenizer->next, __FILE__, __LINE__);
+            stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
             continue;
         }
         
@@ -980,7 +980,7 @@ parseIndentDedent(
         if (tokenizer->next == ' ')
         {
             Logger_dbg("Add space charactor.");
-            stringBuffer_appendChar(tokenizer->buffer, tokenizer->next, __FILE__, __LINE__);
+            stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
             continue;
         }
         
@@ -1082,7 +1082,7 @@ parseOther(
     //１文字目
     //--------------------------------------------------
     Logger_trc("Check first charactor.(%c)", tokenizer->next);
-    stringBuffer_appendChar(tokenizer->buffer, tokenizer->next, __FILE__, __LINE__);
+    stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
     tmp = stringBuffer_toString(tokenizer->buffer);
     buffer = tmp->pointer;
     if (strcmp(buffer, TOKEN_LITERAL_PARENTHESIS_LEFT) == 0)
@@ -1183,7 +1183,7 @@ parseOther(
 
         string_dispose(tmp);
         tmp = NULL;
-        stringBuffer_appendChar(tokenizer->buffer, tokenizer->next, __FILE__, __LINE__);
+        stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
         tmp = stringBuffer_toString(tokenizer->buffer);
         Logger_trc("Create 'TOKEN_TYPE_COMMA'");
         token = token_new(TOKEN_TYPE_COMMA, row, column, tmp);

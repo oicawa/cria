@@ -310,6 +310,19 @@ string_cloneFunction(
 
 
 
+String
+string_subStringFunction(
+    String  source,
+    long    start,
+    long    length,
+    char    *fileName,
+    int     line
+);
+#define string_subString(source, start, length)\
+    (string_subStringFunction(source, start, length, __FILE__, __LINE__))
+
+
+
 //==============================
 //Item
 //==============================
@@ -418,24 +431,27 @@ stringBuffer_dispose(
 
 
 void
-stringBuffer_appendChar(
+stringBuffer_appendCharFunction(
     StringBuffer    stringBuffer,
     char            charactor,
     char*           fileName,
     int             line
 );
+#define stringBuffer_appendChar(buffer, charctor)\
+    (stringBuffer_appendCharFunction(buffer, charctor, __FILE__, __LINE__))
+
 
 
 //文字列を追記
 void
 stringBuffer_appendFunction(
     StringBuffer    stringBuffer,
-    String          string,
+    char*           string,
     char*           fileName,
     int             line
 );
-#define StringBuffer_append(buffer, string)\
-    (StringBuffer_appendFunction(buffer, string, __FILE__, __LINE__))
+#define stringBuffer_append(buffer, string)\
+    (stringBuffer_appendFunction(buffer, string, __FILE__, __LINE__))
 
 
 
@@ -726,10 +742,18 @@ functionDefinition_new(
 
 
 //==================================================
-//FunctionDefinition
+//IO
 //==================================================
-CriaObject
-io_print(
+CriaId
+io_write(
+    Interpreter interpreter,
+    List        args
+);
+
+
+
+CriaId
+io_read(
     Interpreter interpreter,
     List        args
 );
@@ -751,7 +775,7 @@ executor_executeStatement(
 //==================================================
 //Evaluator
 //==================================================
-CriaObject
+CriaId
 evaluator_evaluateFunctionCallExpression(
     Interpreter             interpreter,
     List                    local,

@@ -4,17 +4,68 @@
 
 
 
-CriaString*
+CriaId
 evaluator_evaluateStringLiteralExpression(
     Interpreter             interpreter,
     StringLiteralExpression expression
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaString* string = NULL;
-    string = CriaString_new(NULL, TRUE, string_clone(expression->value));
+    CriaString string = NULL;
+    //long length = string_length(expression->value);
+    char* buffer = expression->value->pointer;
+    char* start = &buffer[1];   //先頭の'"'は読み飛ばす
+    char* next = NULL;
+    StringBuffer stringBuffer = stringBuffer_new();
+    
+    
+    Logger_dbg("Literal is '%s'", buffer);
+    
+    while (*start != '\0')
+    {
+        Logger_dbg("literal check");
+        next = strchr(start, '\\');
+        if (next == NULL)
+        {
+            Logger_dbg("set all ");
+            stringBuffer_append(stringBuffer, start);
+            break;
+        }
+        
+        //ヒットした場合はそこまでの文字列を生成して連結
+        long length = next - start;
+        char* tmp = Memory_malloc(length + 1);
+        memset(tmp, 0x00, length + 1);
+        strncpy(tmp, start, length);
+        stringBuffer_append(stringBuffer, tmp);
+        
+        switch (*(next + 1))
+        {
+        case 'n':
+            stringBuffer_appendChar(stringBuffer, '\n');
+            break;
+        case '"':
+            stringBuffer_appendChar(stringBuffer, '"');
+            break;
+        default:
+            stringBuffer_appendChar(stringBuffer, *(next + 1));
+            break;
+        }
+        
+        start = next + 2;
+    }
+    
+    
+    //最後の'"'を消去
+    String value = stringBuffer_toString(stringBuffer);
+    stringBuffer_dispose(stringBuffer);
+    value->pointer[strlen(value->pointer) - 1] = '\0';
+    Logger_dbg("Edited string is '%s'", value->pointer);
+    
+    
+    string = CriaString_new(NULL, TRUE, value);
     Logger_trc("[  END  ]%s", __func__);
-    return string;
+    return (CriaId)string;
 }
 
 
@@ -22,6 +73,7 @@ evaluator_evaluateStringLiteralExpression(
 List
 evaluator_evaluateParametersExpression(
     Interpreter             interpreter,
+    List                    local,
     ParametersExpression    parametersExpression
 )
 {
@@ -31,7 +83,7 @@ evaluator_evaluateParametersExpression(
     Item item = expressions->item;
     
     List list = list_new();
-    CriaString* string = NULL;
+    CriaId id = NULL;
     
     while (item != NULL)
     {
@@ -40,9 +92,9 @@ evaluator_evaluateParametersExpression(
         {
         case EXPRESSION_KIND_STRING_LITERAL:
             Logger_dbg("Do 'String literal expression'");
-            string = evaluator_evaluateStringLiteralExpression(interpreter, expression->of._stringLiteral_);
+            id = (CriaId)evaluator_evaluateStringLiteralExpression(interpreter, expression->of._stringLiteral_);
             Logger_dbg("Done 'String literal expression'");
-            list_add(list, string);
+            list_add(list, id);
             Logger_dbg("Add 'Cria String'");
             break;
         /*
@@ -58,6 +110,11 @@ evaluator_evaluateParametersExpression(
             break;
         //*/
         case EXPRESSION_KIND_FUNCTION_CALL:
+            Logger_dbg("Do 'Function call expression'");
+            id = evaluator_evaluateFunctionCallExpression(interpreter, local, expression->of._functionCall_);
+            Logger_dbg("Done 'Function call expression'");
+            list_add(list, id);
+            Logger_dbg("Add 'Cria String'");
             break;
         /*
         case EXPRESSION_KIND_VARIABLE:
@@ -78,7 +135,7 @@ evaluator_evaluateParametersExpression(
 
 
 
-CriaObject
+CriaId
 evaluator_evaluateFunctionCallExpression(
     Interpreter             interpreter,
     List                    local,
@@ -86,10 +143,11 @@ evaluator_evaluateFunctionCallExpression(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaObject          object;
+    CriaId id = NULL;
     FunctionDefinition  function;
     
     
+    Logger_dbg("Function name is '%s'", expression->name->pointer);
     function = Interpreter_searchFunction(interpreter, expression->name->pointer);
     if (function == NULL)
     {
@@ -100,7 +158,7 @@ evaluator_evaluateFunctionCallExpression(
     
     
     //引数の式を実行
-    List parameters = evaluator_evaluateParametersExpression(interpreter, expression->parameters);
+    List parameters = evaluator_evaluateParametersExpression(interpreter, local, expression->parameters);
     
     Logger_dbg("execute parameters count is '%d'", parameters->count);
     
@@ -108,7 +166,7 @@ evaluator_evaluateFunctionCallExpression(
     if (function->isNative == TRUE)
     {
         Logger_dbg("Call native function.(%s)", expression->name->pointer);
-        object = (*(function->of.native.function))(interpreter, parameters);
+        id = (*(function->of.native.function))(interpreter, parameters);
     }
     else
     {
@@ -118,7 +176,7 @@ evaluator_evaluateFunctionCallExpression(
     
 END:
     Logger_trc("[  END  ]%s", __func__);
-    return object;
+    return id;
 }
 
 

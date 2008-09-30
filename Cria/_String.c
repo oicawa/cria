@@ -92,3 +92,32 @@ string_cloneFunction(
 
 
 
+String
+string_subStringFunction(
+    String  source,
+    long    start,
+    long    length,
+    char    *fileName,
+    int     line
+)
+{
+    if (source == NULL)
+        return NULL;
+    
+    long size = strlen(source->pointer);
+    
+    if (size < start + length)
+        return NULL;
+    
+    char* buffer = Memory_mallocAt(fileName, line, length + 1);
+    memset(buffer, 0x00, length + 1);
+    strncpy(buffer, &(source->pointer[start]), length);
+    
+    String string = string_newFunction(buffer, fileName, line);
+    Memory_free(buffer);
+    buffer = NULL;
+    return string;
+}
+
+
+
