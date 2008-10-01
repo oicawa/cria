@@ -108,7 +108,6 @@ statement_parse(
     //*/
     
     //代入式
-    /*
     Logger_dbg("Check 'SubstituteStatement'");
     SubstituteStatement substituteStatement = NULL;
     substituteStatement = substituteStatement_parse(parser);
@@ -119,7 +118,6 @@ statement_parse(
         statement->of._substitute_ = substituteStatement;
         goto END;
     }
-    //*/
     
     
     //関数呼び出し文

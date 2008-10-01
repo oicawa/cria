@@ -5,6 +5,26 @@
 
 
 void
+executor_executeSubstituteStatement(
+    Interpreter         interpreter,
+    List                local,
+    SubstituteStatement statement
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId variable = NULL;
+    CriaId id = NULL;
+    
+    
+    id = evaluator_evaluateExpression(interpreter, local, statement->right);
+    
+    
+    Logger_trc("[  END  ]%s", __func__);
+}
+
+
+
+void
 executor_executeFunctionCallStatement(
     Interpreter             interpreter,
     List                    local,
@@ -30,12 +50,11 @@ executor_executeStatement(
 
     result.type = STATEMENT_RESULT_NORMAL;
 
-    switch (statement->kind) {
-    /*
+    switch (statement->kind)
+    {
     case STATEMENT_KIND_SUBSTITUTE:
         executor_executeSubstituteStatement(interpreter, local, statement->of._substitute_);
         break;
-    //*/
     case STATEMENT_KIND_FUNCTION_CALL:
         executor_executeFunctionCallStatement(interpreter, local, statement->of._functionCall_);
         break;

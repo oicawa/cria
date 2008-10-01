@@ -1,3 +1,5 @@
+T[                     _Executor.c(   28): executor_executeStatement       ] [ START ]executor_executeStatement
+T[                     _Executor.c(   14): executor_executeFunctionCallStatement] [ START ]executor_executeFunctionCallStatement
 T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
 D[                    _Evaluator.c(  150): evaluator_evaluateFunctionCallExpression] Function name is 'write'
 T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
@@ -11,11 +13,19 @@ D[                    _Evaluator.c(   63): evaluator_evaluateStringLiteralExpres
 '
 T[                    _Evaluator.c(   67): evaluator_evaluateStringLiteralExpression] [  END  ]evaluator_evaluateStringLiteralExpression
 D[                    _Evaluator.c(   96): evaluator_evaluateParametersExpression] Done 'String literal expression'
-D[                    _Evaluator.c(   98): evaluator_evaluateParametersExpression] Add 'Cria String'
+D[                    _Evaluator.c(   98): evaluator_evaluateParametersExpression] Add 'Cria Id'
 T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
 D[                    _Evaluator.c(  163): evaluator_evaluateFunctionCallExpression] execute parameters count is '1'
 D[                    _Evaluator.c(  168): evaluator_evaluateFunctionCallExpression] Call native function.(write)
+T[                           _IO.c(   13): io_write                        ] [ START ]io_write
+D[                           _IO.c(   84): io_write                        ] [print]Welcome to Cria World!
+
+T[                           _IO.c(   89): io_write                        ] [  END  ]io_write
 T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
+T[                     _Executor.c(   16): executor_executeFunctionCallStatement] [  END  ]executor_executeFunctionCallStatement
+T[                     _Executor.c(   74): executor_executeStatement       ] [  END  ]executor_executeStatement
+T[                     _Executor.c(   28): executor_executeStatement       ] [ START ]executor_executeStatement
+T[                     _Executor.c(   14): executor_executeFunctionCallStatement] [ START ]executor_executeFunctionCallStatement
 T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
 D[                    _Evaluator.c(  150): evaluator_evaluateFunctionCallExpression] Function name is 'write'
 T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
@@ -27,11 +37,18 @@ D[                    _Evaluator.c(   30): evaluator_evaluateStringLiteralExpres
 D[                    _Evaluator.c(   63): evaluator_evaluateStringLiteralExpression] Edited string is 'What's your name? > '
 T[                    _Evaluator.c(   67): evaluator_evaluateStringLiteralExpression] [  END  ]evaluator_evaluateStringLiteralExpression
 D[                    _Evaluator.c(   96): evaluator_evaluateParametersExpression] Done 'String literal expression'
-D[                    _Evaluator.c(   98): evaluator_evaluateParametersExpression] Add 'Cria String'
+D[                    _Evaluator.c(   98): evaluator_evaluateParametersExpression] Add 'Cria Id'
 T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
 D[                    _Evaluator.c(  163): evaluator_evaluateFunctionCallExpression] execute parameters count is '1'
 D[                    _Evaluator.c(  168): evaluator_evaluateFunctionCallExpression] Call native function.(write)
+T[                           _IO.c(   13): io_write                        ] [ START ]io_write
+D[                           _IO.c(   84): io_write                        ] [print]What's your name? > 
+T[                           _IO.c(   89): io_write                        ] [  END  ]io_write
 T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
+T[                     _Executor.c(   16): executor_executeFunctionCallStatement] [  END  ]executor_executeFunctionCallStatement
+T[                     _Executor.c(   74): executor_executeStatement       ] [  END  ]executor_executeStatement
+T[                     _Executor.c(   28): executor_executeStatement       ] [ START ]executor_executeStatement
+T[                     _Executor.c(   14): executor_executeFunctionCallStatement] [ START ]executor_executeFunctionCallStatement
 T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
 D[                    _Evaluator.c(  150): evaluator_evaluateFunctionCallExpression] Function name is 'write'
 T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
@@ -45,7 +62,7 @@ D[                    _Evaluator.c(   63): evaluator_evaluateStringLiteralExpres
 '
 T[                    _Evaluator.c(   67): evaluator_evaluateStringLiteralExpression] [  END  ]evaluator_evaluateStringLiteralExpression
 D[                    _Evaluator.c(   96): evaluator_evaluateParametersExpression] Done 'String literal expression'
-D[                    _Evaluator.c(   98): evaluator_evaluateParametersExpression] Add 'Cria String'
+D[                    _Evaluator.c(   98): evaluator_evaluateParametersExpression] Add 'Cria Id'
 D[                    _Evaluator.c(  113): evaluator_evaluateParametersExpression] Do 'Function call expression'
 T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
 D[                    _Evaluator.c(  150): evaluator_evaluateFunctionCallExpression] Function name is 'read'
@@ -53,10 +70,117 @@ T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpressio
 T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
 D[                    _Evaluator.c(  163): evaluator_evaluateFunctionCallExpression] execute parameters count is '0'
 D[                    _Evaluator.c(  168): evaluator_evaluateFunctionCallExpression] Call native function.(read)
-T[                           _IO.c(   98): io_read                         ] [ START ]io_read
-D[                           _IO.c(  118): io_read                         ] input = 'Oika'
-D[                           _IO.c(  118): io_read                         ] input = 'wa M'
-D[                           _IO.c(  118): io_read                         ] input = 'asam'
-D[                           _IO.c(  118): io_read                         ] input = 'itsu'
-D[                           _IO.c(  118): io_read                         ] input = ']
+T[                           _IO.c(  101): io_read                         ] [ START ]io_read
+D[                           _IO.c(  121): io_read                         ] input = 'Masa'
+D[                           _IO.c(  121): io_read                         ] input = 'mits'
+D[                           _IO.c(  121): io_read                         ] input = 'u
 '
+T[                           _IO.c(  136): io_read                         ] [  END  ]io_read
+T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
+D[                    _Evaluator.c(  115): evaluator_evaluateParametersExpression] Done 'Function call expression'
+D[                    _Evaluator.c(  117): evaluator_evaluateParametersExpression] Add 'Cria Id'
+T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
+D[                    _Evaluator.c(  163): evaluator_evaluateFunctionCallExpression] execute parameters count is '2'
+D[                    _Evaluator.c(  168): evaluator_evaluateFunctionCallExpression] Call native function.(write)
+T[                           _IO.c(   13): io_write                        ] [ START ]io_write
+D[                           _IO.c(   81): io_write                        ] [print]Masamitsu
+D[                           _IO.c(   84): io_write                        ] [print]!
+
+T[                           _IO.c(   89): io_write                        ] [  END  ]io_write
+T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
+T[                     _Executor.c(   16): executor_executeFunctionCallStatement] [  END  ]executor_executeFunctionCallStatement
+T[                     _Executor.c(   74): executor_executeStatement       ] [  END  ]executor_executeStatement
+T[                     _Executor.c(   28): executor_executeStatement       ] [ START ]executor_executeStatement
+T[                     _Executor.c(   14): executor_executeFunctionCallStatement] [ START ]executor_executeFunctionCallStatement
+T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
+D[                    _Evaluator.c(  150): evaluator_evaluateFunctionCallExpression] Function name is 'write'
+T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
+D[                    _Evaluator.c(   94): evaluator_evaluateParametersExpression] Do 'String literal expression'
+T[                    _Evaluator.c(   13): evaluator_evaluateStringLiteralExpression] [ START ]evaluator_evaluateStringLiteralExpression
+D[                    _Evaluator.c(   22): evaluator_evaluateStringLiteralExpression] Literal is '"Welcome to Cria World!\n"'
+D[                    _Evaluator.c(   26): evaluator_evaluateStringLiteralExpression] literal check
+D[                    _Evaluator.c(   26): evaluator_evaluateStringLiteralExpression] literal check
+D[                    _Evaluator.c(   30): evaluator_evaluateStringLiteralExpression] set all 
+D[                    _Evaluator.c(   63): evaluator_evaluateStringLiteralExpression] Edited string is 'Welcome to Cria World!
+'
+T[                    _Evaluator.c(   67): evaluator_evaluateStringLiteralExpression] [  END  ]evaluator_evaluateStringLiteralExpression
+D[                    _Evaluator.c(   96): evaluator_evaluateParametersExpression] Done 'String literal expression'
+D[                    _Evaluator.c(   98): evaluator_evaluateParametersExpression] Add 'Cria Id'
+T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
+D[                    _Evaluator.c(  163): evaluator_evaluateFunctionCallExpression] execute parameters count is '1'
+D[                    _Evaluator.c(  168): evaluator_evaluateFunctionCallExpression] Call native function.(write)
+T[                           _IO.c(   13): io_write                        ] [ START ]io_write
+D[                           _IO.c(   84): io_write                        ] [print]Welcome to Cria World!
+
+T[                           _IO.c(   89): io_write                        ] [  END  ]io_write
+T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
+T[                     _Executor.c(   16): executor_executeFunctionCallStatement] [  END  ]executor_executeFunctionCallStatement
+T[                     _Executor.c(   74): executor_executeStatement       ] [  END  ]executor_executeStatement
+T[                     _Executor.c(   28): executor_executeStatement       ] [ START ]executor_executeStatement
+T[                     _Executor.c(   14): executor_executeFunctionCallStatement] [ START ]executor_executeFunctionCallStatement
+T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
+D[                    _Evaluator.c(  150): evaluator_evaluateFunctionCallExpression] Function name is 'write'
+T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
+D[                    _Evaluator.c(   94): evaluator_evaluateParametersExpression] Do 'String literal expression'
+T[                    _Evaluator.c(   13): evaluator_evaluateStringLiteralExpression] [ START ]evaluator_evaluateStringLiteralExpression
+D[                    _Evaluator.c(   22): evaluator_evaluateStringLiteralExpression] Literal is '"What's your name? > "'
+D[                    _Evaluator.c(   26): evaluator_evaluateStringLiteralExpression] literal check
+D[                    _Evaluator.c(   30): evaluator_evaluateStringLiteralExpression] set all 
+D[                    _Evaluator.c(   63): evaluator_evaluateStringLiteralExpression] Edited string is 'What's your name? > '
+T[                    _Evaluator.c(   67): evaluator_evaluateStringLiteralExpression] [  END  ]evaluator_evaluateStringLiteralExpression
+D[                    _Evaluator.c(   96): evaluator_evaluateParametersExpression] Done 'String literal expression'
+D[                    _Evaluator.c(   98): evaluator_evaluateParametersExpression] Add 'Cria Id'
+T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
+D[                    _Evaluator.c(  163): evaluator_evaluateFunctionCallExpression] execute parameters count is '1'
+D[                    _Evaluator.c(  168): evaluator_evaluateFunctionCallExpression] Call native function.(write)
+T[                           _IO.c(   13): io_write                        ] [ START ]io_write
+D[                           _IO.c(   84): io_write                        ] [print]What's your name? > 
+T[                           _IO.c(   89): io_write                        ] [  END  ]io_write
+T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
+T[                     _Executor.c(   16): executor_executeFunctionCallStatement] [  END  ]executor_executeFunctionCallStatement
+T[                     _Executor.c(   74): executor_executeStatement       ] [  END  ]executor_executeStatement
+T[                     _Executor.c(   28): executor_executeStatement       ] [ START ]executor_executeStatement
+T[                     _Executor.c(   14): executor_executeFunctionCallStatement] [ START ]executor_executeFunctionCallStatement
+T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
+D[                    _Evaluator.c(  150): evaluator_evaluateFunctionCallExpression] Function name is 'write'
+T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
+D[                    _Evaluator.c(   94): evaluator_evaluateParametersExpression] Do 'String literal expression'
+T[                    _Evaluator.c(   13): evaluator_evaluateStringLiteralExpression] [ START ]evaluator_evaluateStringLiteralExpression
+D[                    _Evaluator.c(   22): evaluator_evaluateStringLiteralExpression] Literal is '"Nice to meet you, %s!\n"'
+D[                    _Evaluator.c(   26): evaluator_evaluateStringLiteralExpression] literal check
+D[                    _Evaluator.c(   26): evaluator_evaluateStringLiteralExpression] literal check
+D[                    _Evaluator.c(   30): evaluator_evaluateStringLiteralExpression] set all 
+D[                    _Evaluator.c(   63): evaluator_evaluateStringLiteralExpression] Edited string is 'Nice to meet you, %s!
+'
+T[                    _Evaluator.c(   67): evaluator_evaluateStringLiteralExpression] [  END  ]evaluator_evaluateStringLiteralExpression
+D[                    _Evaluator.c(   96): evaluator_evaluateParametersExpression] Done 'String literal expression'
+D[                    _Evaluator.c(   98): evaluator_evaluateParametersExpression] Add 'Cria Id'
+D[                    _Evaluator.c(  113): evaluator_evaluateParametersExpression] Do 'Function call expression'
+T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
+D[                    _Evaluator.c(  150): evaluator_evaluateFunctionCallExpression] Function name is 'read'
+T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
+T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
+D[                    _Evaluator.c(  163): evaluator_evaluateFunctionCallExpression] execute parameters count is '0'
+D[                    _Evaluator.c(  168): evaluator_evaluateFunctionCallExpression] Call native function.(read)
+T[                           _IO.c(  101): io_read                         ] [ START ]io_read
+D[                           _IO.c(  121): io_read                         ] input = 'Masa'
+D[                           _IO.c(  121): io_read                         ] input = 'mits'
+D[                           _IO.c(  121): io_read                         ] input = 'u Oi'
+D[                           _IO.c(  121): io_read                         ] input = 'kawa'
+D[                           _IO.c(  121): io_read                         ] input = '
+'
+T[                           _IO.c(  136): io_read                         ] [  END  ]io_read
+T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
+D[                    _Evaluator.c(  115): evaluator_evaluateParametersExpression] Done 'Function call expression'
+D[                    _Evaluator.c(  117): evaluator_evaluateParametersExpression] Add 'Cria Id'
+T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
+D[                    _Evaluator.c(  163): evaluator_evaluateFunctionCallExpression] execute parameters count is '2'
+D[                    _Evaluator.c(  168): evaluator_evaluateFunctionCallExpression] Call native function.(write)
+T[                           _IO.c(   13): io_write                        ] [ START ]io_write
+D[                           _IO.c(   81): io_write                        ] [print]Masamitsu Oikawa
+D[                           _IO.c(   84): io_write                        ] [print]!
+
+T[                           _IO.c(   89): io_write                        ] [  END  ]io_write
+T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
+T[                     _Executor.c(   16): executor_executeFunctionCallStatement] [  END  ]executor_executeFunctionCallStatement
+T[                     _Executor.c(   74): executor_executeStatement       ] [  END  ]executor_executeStatement

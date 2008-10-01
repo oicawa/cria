@@ -39,8 +39,8 @@ struct ListTag {
 struct InterpreterTag
 {
     List    statementList;
-    //List    variableList;      //VariableDefinition
-    List    functionList;     //FunctionDefinition
+    List    variableList;       //VariableDefinition
+    List    functionList;       //FunctionDefinition
     //List    classList;        //ClassDefinition
     //File    file;
     String  buffer;
@@ -149,15 +149,15 @@ struct WhileStatementTag
 };
 
 
-/*
+
 struct VariableDefinitionTag
 {
     char*       name;
     char*       type;
     AccessLevel access;
-    Object      object;
+    CriaId      object;
 };
-//*/
+
 
 
 //*
@@ -200,11 +200,20 @@ struct ExpressionTag
         //RealLiteralExpression       _realLiteral_;
         //BooleanLiteralExpression    _booleanLiteral_;
         //NullLiteralExpression       _nullLiteral_;
-        //OperationExpression         _operation_;
+        OperationExpression         _operation_;
         //GenerateExpression          _generate_;
         FunctionCallExpression      _functionCall_;
-        //VariableExpression          _variable_;
+        VariableExpression          _variable_;
     } of;
+};
+
+
+
+struct OperationExpressionTag
+{
+    OperationKind   kind;
+    Expression      left;
+    Expression      right;
 };
 
 
@@ -248,7 +257,7 @@ struct StringLiteralExpressionTag
 
 struct VariableExpressionTag
 {
-    char*   name;
+    String  name;
 };
 
 
@@ -624,6 +633,16 @@ functionCallStatement_parse(
 
 
 //==================================================
+//FunctionCallStatement
+//==================================================
+SubstituteStatement
+substituteStatement_parse(
+    Parser parser
+);
+
+
+
+//==================================================
 //Expression
 //==================================================
 void
@@ -663,7 +682,9 @@ objectExpression_dispose(
 //==================================================
 OperationExpression
 operationExpression_new(
-    OperationKind   kind
+    OperationKind   kind,
+    Expression      left,
+    Expression      right
 );
 
 
@@ -722,6 +743,30 @@ parametersExpression_parse(
 void
 parametersExpression_dispose(
     ParametersExpression    expression
+);
+
+
+
+//==================================================
+//VariableExpression
+//==================================================
+VariableExpression
+variableExpression_new(
+    String                  name
+);
+
+
+
+void
+variableExpression_dispose(
+    VariableExpression   expression
+);
+
+
+
+VariableExpression
+variableExpression_parse(
+    Parser  parser
 );
 
 

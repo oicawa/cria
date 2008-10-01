@@ -200,6 +200,33 @@ Interpreter_searchFunction(
 
 
 
+VariableDefinition
+Interpreter_searchVariable(
+    Interpreter interpreter,
+    char*       name
+)
+{
+    int count = interpreter->variableList->count;
+    int index = 0;
+    VariableDefinition definition = NULL;
+    VariableDefinition tmp = NULL;
+    
+    for (index = 0; index < count; index++)
+    {
+        tmp = (VariableDefinition)(list_get(interpreter->variableList, index));
+        if (strcmp(tmp->name, name) == 0)
+        {
+            definition = tmp;
+            break;
+        }
+    }
+    
+    
+    return definition;
+}
+
+
+
 
 
 

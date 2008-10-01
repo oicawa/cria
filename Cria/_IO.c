@@ -78,11 +78,14 @@ io_write(
         }
         
         //出力
+        Logger_dbg("[print]%s", ((CriaString)id)->value->pointer);
         printf("%s", ((CriaString)id)->value->pointer);
     }
+    Logger_dbg("[print]%s", start);
     printf(start);
     
 END:
+    fflush(stdout);
     Logger_trc("[  END  ]%s", __func__);
     return returnId;
 }
@@ -116,6 +119,12 @@ io_read(
     while (fgets(buffer, sizeof(buffer), stdin) != NULL)
     {
         Logger_dbg("input = '%s'", buffer);
+        if (buffer[strlen(buffer) - 1] == '\n')
+        {
+            buffer[strlen(buffer) - 1] = '\0';
+            stringBuffer_append(stringBuffer, buffer);
+            break;
+        }
         stringBuffer_append(stringBuffer, buffer);
         memset(buffer, 0x00, sizeof(buffer));
     }

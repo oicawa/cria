@@ -78,6 +78,16 @@ expression_parse(
     
     while (1)
     {
+        Logger_dbg("Check 'OperationExpression'");
+        OperationExpression operationExpression = NULL;
+        operationExpression = operationExpression_parse(parser);
+        if (operationExpression != NULL)
+        {
+            Logger_dbg("Create 'StringLiteralExpression'");
+            expression = expression_new(EXPRESSION_KIND_OPERATION);
+            expression->of._operation_ = operationExpression;
+            goto END;
+        }
     
         Logger_dbg("Check 'StringLiteralExpression'");
         StringLiteralExpression stringLiteralExpression = NULL;

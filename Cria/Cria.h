@@ -47,7 +47,7 @@ typedef struct  WhileStatementTag           *WhileStatement;
 typedef struct  ForStatementTag             *ForStatement;
 typedef struct  FunctionCallStatementTag    *FunctionCallStatement;
 typedef struct  SubstituteStatementTag      *SubstituteStatement;
-typedef struct  VariableDefineTag           *VariableDefinition;
+typedef struct  VariableDefinitionTag       *VariableDefinition;
 typedef struct  FunctionDefinitionTag       *FunctionDefinition;
 typedef struct  ClassDefineTag              *ClassDefinition;
 

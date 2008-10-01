@@ -95,7 +95,7 @@ evaluator_evaluateParametersExpression(
             id = (CriaId)evaluator_evaluateStringLiteralExpression(interpreter, expression->of._stringLiteral_);
             Logger_dbg("Done 'String literal expression'");
             list_add(list, id);
-            Logger_dbg("Add 'Cria String'");
+            Logger_dbg("Add 'Cria Id'");
             break;
         /*
         case EXPRESSION_KIND_INTEGER_LITERAL:
@@ -114,7 +114,7 @@ evaluator_evaluateParametersExpression(
             id = evaluator_evaluateFunctionCallExpression(interpreter, local, expression->of._functionCall_);
             Logger_dbg("Done 'Function call expression'");
             list_add(list, id);
-            Logger_dbg("Add 'Cria String'");
+            Logger_dbg("Add 'Cria Id'");
             break;
         /*
         case EXPRESSION_KIND_VARIABLE:
@@ -140,6 +140,52 @@ evaluator_evaluateFunctionCallExpression(
     Interpreter             interpreter,
     List                    local,
     FunctionCallExpression  expression
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    FunctionDefinition  function;
+    
+    
+    Logger_dbg("Function name is '%s'", expression->name->pointer);
+    function = Interpreter_searchFunction(interpreter, expression->name->pointer);
+    if (function == NULL)
+    {
+        Logger_dbg("Function is not found.");
+        perror("Function is not found.\n");
+        goto END;
+    }
+    
+    
+    //ˆø”‚ÌŽ®‚ðŽÀs
+    List parameters = evaluator_evaluateParametersExpression(interpreter, local, expression->parameters);
+    
+    Logger_dbg("execute parameters count is '%d'", parameters->count);
+    
+    
+    if (function->isNative == TRUE)
+    {
+        Logger_dbg("Call native function.(%s)", expression->name->pointer);
+        id = (*(function->of.native.function))(interpreter, parameters);
+    }
+    else
+    {
+        Logger_dbg("Call cria function.(%s)", expression->name);
+        //object = interpreter_callCriaFunction(interpreter, local, expression, function);
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
+CriaId
+evaluator_evaluateExpression(
+    Interpreter             interpreter,
+    List                    local,
+    Expression              expression
 )
 {
     Logger_trc("[ START ]%s", __func__);
