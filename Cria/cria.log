@@ -1,186 +1,795 @@
-T[                     _Executor.c(   28): executor_executeStatement       ] [ START ]executor_executeStatement
-T[                     _Executor.c(   14): executor_executeFunctionCallStatement] [ START ]executor_executeFunctionCallStatement
-T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
-D[                    _Evaluator.c(  150): evaluator_evaluateFunctionCallExpression] Function name is 'write'
-T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
-D[                    _Evaluator.c(   94): evaluator_evaluateParametersExpression] Do 'String literal expression'
-T[                    _Evaluator.c(   13): evaluator_evaluateStringLiteralExpression] [ START ]evaluator_evaluateStringLiteralExpression
-D[                    _Evaluator.c(   22): evaluator_evaluateStringLiteralExpression] Literal is '"Welcome to Cria World!\n"'
-D[                    _Evaluator.c(   26): evaluator_evaluateStringLiteralExpression] literal check
-D[                    _Evaluator.c(   26): evaluator_evaluateStringLiteralExpression] literal check
-D[                    _Evaluator.c(   30): evaluator_evaluateStringLiteralExpression] set all 
-D[                    _Evaluator.c(   63): evaluator_evaluateStringLiteralExpression] Edited string is 'Welcome to Cria World!
-'
-T[                    _Evaluator.c(   67): evaluator_evaluateStringLiteralExpression] [  END  ]evaluator_evaluateStringLiteralExpression
-D[                    _Evaluator.c(   96): evaluator_evaluateParametersExpression] Done 'String literal expression'
-D[                    _Evaluator.c(   98): evaluator_evaluateParametersExpression] Add 'Cria Id'
-T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
-D[                    _Evaluator.c(  163): evaluator_evaluateFunctionCallExpression] execute parameters count is '1'
-D[                    _Evaluator.c(  168): evaluator_evaluateFunctionCallExpression] Call native function.(write)
-T[                           _IO.c(   13): io_write                        ] [ START ]io_write
-D[                           _IO.c(   84): io_write                        ] [print]Welcome to Cria World!
-
-T[                           _IO.c(   89): io_write                        ] [  END  ]io_write
-T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
-T[                     _Executor.c(   16): executor_executeFunctionCallStatement] [  END  ]executor_executeFunctionCallStatement
-T[                     _Executor.c(   74): executor_executeStatement       ] [  END  ]executor_executeStatement
-T[                     _Executor.c(   28): executor_executeStatement       ] [ START ]executor_executeStatement
-T[                     _Executor.c(   14): executor_executeFunctionCallStatement] [ START ]executor_executeFunctionCallStatement
-T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
-D[                    _Evaluator.c(  150): evaluator_evaluateFunctionCallExpression] Function name is 'write'
-T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
-D[                    _Evaluator.c(   94): evaluator_evaluateParametersExpression] Do 'String literal expression'
-T[                    _Evaluator.c(   13): evaluator_evaluateStringLiteralExpression] [ START ]evaluator_evaluateStringLiteralExpression
-D[                    _Evaluator.c(   22): evaluator_evaluateStringLiteralExpression] Literal is '"What's your name? > "'
-D[                    _Evaluator.c(   26): evaluator_evaluateStringLiteralExpression] literal check
-D[                    _Evaluator.c(   30): evaluator_evaluateStringLiteralExpression] set all 
-D[                    _Evaluator.c(   63): evaluator_evaluateStringLiteralExpression] Edited string is 'What's your name? > '
-T[                    _Evaluator.c(   67): evaluator_evaluateStringLiteralExpression] [  END  ]evaluator_evaluateStringLiteralExpression
-D[                    _Evaluator.c(   96): evaluator_evaluateParametersExpression] Done 'String literal expression'
-D[                    _Evaluator.c(   98): evaluator_evaluateParametersExpression] Add 'Cria Id'
-T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
-D[                    _Evaluator.c(  163): evaluator_evaluateFunctionCallExpression] execute parameters count is '1'
-D[                    _Evaluator.c(  168): evaluator_evaluateFunctionCallExpression] Call native function.(write)
-T[                           _IO.c(   13): io_write                        ] [ START ]io_write
-D[                           _IO.c(   84): io_write                        ] [print]What's your name? > 
-T[                           _IO.c(   89): io_write                        ] [  END  ]io_write
-T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
-T[                     _Executor.c(   16): executor_executeFunctionCallStatement] [  END  ]executor_executeFunctionCallStatement
-T[                     _Executor.c(   74): executor_executeStatement       ] [  END  ]executor_executeStatement
-T[                     _Executor.c(   28): executor_executeStatement       ] [ START ]executor_executeStatement
-T[                     _Executor.c(   14): executor_executeFunctionCallStatement] [ START ]executor_executeFunctionCallStatement
-T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
-D[                    _Evaluator.c(  150): evaluator_evaluateFunctionCallExpression] Function name is 'write'
-T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
-D[                    _Evaluator.c(   94): evaluator_evaluateParametersExpression] Do 'String literal expression'
-T[                    _Evaluator.c(   13): evaluator_evaluateStringLiteralExpression] [ START ]evaluator_evaluateStringLiteralExpression
-D[                    _Evaluator.c(   22): evaluator_evaluateStringLiteralExpression] Literal is '"Nice to meet you, %s!\n"'
-D[                    _Evaluator.c(   26): evaluator_evaluateStringLiteralExpression] literal check
-D[                    _Evaluator.c(   26): evaluator_evaluateStringLiteralExpression] literal check
-D[                    _Evaluator.c(   30): evaluator_evaluateStringLiteralExpression] set all 
-D[                    _Evaluator.c(   63): evaluator_evaluateStringLiteralExpression] Edited string is 'Nice to meet you, %s!
-'
-T[                    _Evaluator.c(   67): evaluator_evaluateStringLiteralExpression] [  END  ]evaluator_evaluateStringLiteralExpression
-D[                    _Evaluator.c(   96): evaluator_evaluateParametersExpression] Done 'String literal expression'
-D[                    _Evaluator.c(   98): evaluator_evaluateParametersExpression] Add 'Cria Id'
-D[                    _Evaluator.c(  113): evaluator_evaluateParametersExpression] Do 'Function call expression'
-T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
-D[                    _Evaluator.c(  150): evaluator_evaluateFunctionCallExpression] Function name is 'read'
-T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
-T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
-D[                    _Evaluator.c(  163): evaluator_evaluateFunctionCallExpression] execute parameters count is '0'
-D[                    _Evaluator.c(  168): evaluator_evaluateFunctionCallExpression] Call native function.(read)
-T[                           _IO.c(  101): io_read                         ] [ START ]io_read
-D[                           _IO.c(  121): io_read                         ] input = 'Masa'
-D[                           _IO.c(  121): io_read                         ] input = 'mits'
-D[                           _IO.c(  121): io_read                         ] input = 'u
-'
-T[                           _IO.c(  136): io_read                         ] [  END  ]io_read
-T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
-D[                    _Evaluator.c(  115): evaluator_evaluateParametersExpression] Done 'Function call expression'
-D[                    _Evaluator.c(  117): evaluator_evaluateParametersExpression] Add 'Cria Id'
-T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
-D[                    _Evaluator.c(  163): evaluator_evaluateFunctionCallExpression] execute parameters count is '2'
-D[                    _Evaluator.c(  168): evaluator_evaluateFunctionCallExpression] Call native function.(write)
-T[                           _IO.c(   13): io_write                        ] [ START ]io_write
-D[                           _IO.c(   81): io_write                        ] [print]Masamitsu
-D[                           _IO.c(   84): io_write                        ] [print]!
-
-T[                           _IO.c(   89): io_write                        ] [  END  ]io_write
-T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
-T[                     _Executor.c(   16): executor_executeFunctionCallStatement] [  END  ]executor_executeFunctionCallStatement
-T[                     _Executor.c(   74): executor_executeStatement       ] [  END  ]executor_executeStatement
-T[                     _Executor.c(   28): executor_executeStatement       ] [ START ]executor_executeStatement
-T[                     _Executor.c(   14): executor_executeFunctionCallStatement] [ START ]executor_executeFunctionCallStatement
-T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
-D[                    _Evaluator.c(  150): evaluator_evaluateFunctionCallExpression] Function name is 'write'
-T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
-D[                    _Evaluator.c(   94): evaluator_evaluateParametersExpression] Do 'String literal expression'
-T[                    _Evaluator.c(   13): evaluator_evaluateStringLiteralExpression] [ START ]evaluator_evaluateStringLiteralExpression
-D[                    _Evaluator.c(   22): evaluator_evaluateStringLiteralExpression] Literal is '"Welcome to Cria World!\n"'
-D[                    _Evaluator.c(   26): evaluator_evaluateStringLiteralExpression] literal check
-D[                    _Evaluator.c(   26): evaluator_evaluateStringLiteralExpression] literal check
-D[                    _Evaluator.c(   30): evaluator_evaluateStringLiteralExpression] set all 
-D[                    _Evaluator.c(   63): evaluator_evaluateStringLiteralExpression] Edited string is 'Welcome to Cria World!
-'
-T[                    _Evaluator.c(   67): evaluator_evaluateStringLiteralExpression] [  END  ]evaluator_evaluateStringLiteralExpression
-D[                    _Evaluator.c(   96): evaluator_evaluateParametersExpression] Done 'String literal expression'
-D[                    _Evaluator.c(   98): evaluator_evaluateParametersExpression] Add 'Cria Id'
-T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
-D[                    _Evaluator.c(  163): evaluator_evaluateFunctionCallExpression] execute parameters count is '1'
-D[                    _Evaluator.c(  168): evaluator_evaluateFunctionCallExpression] Call native function.(write)
-T[                           _IO.c(   13): io_write                        ] [ START ]io_write
-D[                           _IO.c(   84): io_write                        ] [print]Welcome to Cria World!
-
-T[                           _IO.c(   89): io_write                        ] [  END  ]io_write
-T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
-T[                     _Executor.c(   16): executor_executeFunctionCallStatement] [  END  ]executor_executeFunctionCallStatement
-T[                     _Executor.c(   74): executor_executeStatement       ] [  END  ]executor_executeStatement
-T[                     _Executor.c(   28): executor_executeStatement       ] [ START ]executor_executeStatement
-T[                     _Executor.c(   14): executor_executeFunctionCallStatement] [ START ]executor_executeFunctionCallStatement
-T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
-D[                    _Evaluator.c(  150): evaluator_evaluateFunctionCallExpression] Function name is 'write'
-T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
-D[                    _Evaluator.c(   94): evaluator_evaluateParametersExpression] Do 'String literal expression'
-T[                    _Evaluator.c(   13): evaluator_evaluateStringLiteralExpression] [ START ]evaluator_evaluateStringLiteralExpression
-D[                    _Evaluator.c(   22): evaluator_evaluateStringLiteralExpression] Literal is '"What's your name? > "'
-D[                    _Evaluator.c(   26): evaluator_evaluateStringLiteralExpression] literal check
-D[                    _Evaluator.c(   30): evaluator_evaluateStringLiteralExpression] set all 
-D[                    _Evaluator.c(   63): evaluator_evaluateStringLiteralExpression] Edited string is 'What's your name? > '
-T[                    _Evaluator.c(   67): evaluator_evaluateStringLiteralExpression] [  END  ]evaluator_evaluateStringLiteralExpression
-D[                    _Evaluator.c(   96): evaluator_evaluateParametersExpression] Done 'String literal expression'
-D[                    _Evaluator.c(   98): evaluator_evaluateParametersExpression] Add 'Cria Id'
-T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
-D[                    _Evaluator.c(  163): evaluator_evaluateFunctionCallExpression] execute parameters count is '1'
-D[                    _Evaluator.c(  168): evaluator_evaluateFunctionCallExpression] Call native function.(write)
-T[                           _IO.c(   13): io_write                        ] [ START ]io_write
-D[                           _IO.c(   84): io_write                        ] [print]What's your name? > 
-T[                           _IO.c(   89): io_write                        ] [  END  ]io_write
-T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
-T[                     _Executor.c(   16): executor_executeFunctionCallStatement] [  END  ]executor_executeFunctionCallStatement
-T[                     _Executor.c(   74): executor_executeStatement       ] [  END  ]executor_executeStatement
-T[                     _Executor.c(   28): executor_executeStatement       ] [ START ]executor_executeStatement
-T[                     _Executor.c(   14): executor_executeFunctionCallStatement] [ START ]executor_executeFunctionCallStatement
-T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
-D[                    _Evaluator.c(  150): evaluator_evaluateFunctionCallExpression] Function name is 'write'
-T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
-D[                    _Evaluator.c(   94): evaluator_evaluateParametersExpression] Do 'String literal expression'
-T[                    _Evaluator.c(   13): evaluator_evaluateStringLiteralExpression] [ START ]evaluator_evaluateStringLiteralExpression
-D[                    _Evaluator.c(   22): evaluator_evaluateStringLiteralExpression] Literal is '"Nice to meet you, %s!\n"'
-D[                    _Evaluator.c(   26): evaluator_evaluateStringLiteralExpression] literal check
-D[                    _Evaluator.c(   26): evaluator_evaluateStringLiteralExpression] literal check
-D[                    _Evaluator.c(   30): evaluator_evaluateStringLiteralExpression] set all 
-D[                    _Evaluator.c(   63): evaluator_evaluateStringLiteralExpression] Edited string is 'Nice to meet you, %s!
-'
-T[                    _Evaluator.c(   67): evaluator_evaluateStringLiteralExpression] [  END  ]evaluator_evaluateStringLiteralExpression
-D[                    _Evaluator.c(   96): evaluator_evaluateParametersExpression] Done 'String literal expression'
-D[                    _Evaluator.c(   98): evaluator_evaluateParametersExpression] Add 'Cria Id'
-D[                    _Evaluator.c(  113): evaluator_evaluateParametersExpression] Do 'Function call expression'
-T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
-D[                    _Evaluator.c(  150): evaluator_evaluateFunctionCallExpression] Function name is 'read'
-T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
-T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
-D[                    _Evaluator.c(  163): evaluator_evaluateFunctionCallExpression] execute parameters count is '0'
-D[                    _Evaluator.c(  168): evaluator_evaluateFunctionCallExpression] Call native function.(read)
-T[                           _IO.c(  101): io_read                         ] [ START ]io_read
-D[                           _IO.c(  121): io_read                         ] input = 'Masa'
-D[                           _IO.c(  121): io_read                         ] input = 'mits'
-D[                           _IO.c(  121): io_read                         ] input = 'u Oi'
-D[                           _IO.c(  121): io_read                         ] input = 'kawa'
-D[                           _IO.c(  121): io_read                         ] input = '
-'
-T[                           _IO.c(  136): io_read                         ] [  END  ]io_read
-T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
-D[                    _Evaluator.c(  115): evaluator_evaluateParametersExpression] Done 'Function call expression'
-D[                    _Evaluator.c(  117): evaluator_evaluateParametersExpression] Add 'Cria Id'
-T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
-D[                    _Evaluator.c(  163): evaluator_evaluateFunctionCallExpression] execute parameters count is '2'
-D[                    _Evaluator.c(  168): evaluator_evaluateFunctionCallExpression] Call native function.(write)
-T[                           _IO.c(   13): io_write                        ] [ START ]io_write
-D[                           _IO.c(   81): io_write                        ] [print]Masamitsu Oikawa
-D[                           _IO.c(   84): io_write                        ] [print]!
-
-T[                           _IO.c(   89): io_write                        ] [  END  ]io_write
-T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
-T[                     _Executor.c(   16): executor_executeFunctionCallStatement] [  END  ]executor_executeFunctionCallStatement
-T[                     _Executor.c(   74): executor_executeStatement       ] [  END  ]executor_executeStatement
+T[                       _Parser.c(  163): parser_parse                    ] [ START ]parser_parse
+D[                       _Parser.c(  170): parser_parse                    ] Loop start.
+D[                       _Parser.c(  177): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  0,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  0,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  0,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  0,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  0,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  0,  7) ["Welcome to Cria World!\n"]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  0, 33) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   80): functionCallStatement_parse     ] Get last token.
+D[        _FunctionCallStatement.c(   82): functionCallStatement_parse     ] Token type=52(  0, 34) [<<NEW_LINE>>]
+D[        _FunctionCallStatement.c(   83): functionCallStatement_parse     ] Got last token.
+D[        _FunctionCallStatement.c(   95): functionCallStatement_parse     ] Create 'FunctionCallExpression'
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=52(  0, 34) [<<NEW_LINE>>]
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+D[                    _Statement.c(  134): statement_parse                 ] Create 'FunctionCallStatement'
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+D[                       _Parser.c(  181): parser_parse                    ] Add created statement and parse next.
+D[                       _Parser.c(  183): parser_parse                    ] Set new turning point.
+D[                       _Parser.c(  177): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  2,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  2,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  2,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  2,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  2,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  2,  7) ["What's your name? > "]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  2, 29) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   80): functionCallStatement_parse     ] Get last token.
+D[        _FunctionCallStatement.c(   82): functionCallStatement_parse     ] Token type=52(  2, 30) [<<NEW_LINE>>]
+D[        _FunctionCallStatement.c(   83): functionCallStatement_parse     ] Got last token.
+D[        _FunctionCallStatement.c(   95): functionCallStatement_parse     ] Create 'FunctionCallExpression'
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=52(  2, 30) [<<NEW_LINE>>]
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+D[                    _Statement.c(  134): statement_parse                 ] Create 'FunctionCallStatement'
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+D[                       _Parser.c(  181): parser_parse                    ] Add created statement and parse next.
+D[                       _Parser.c(  183): parser_parse                    ] Set new turning point.
+D[                       _Parser.c(  177): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  4,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  4,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  4,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  4,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  4,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  4,  7) ["Nice to meet you, %s!\n"]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 0(  4, 38) [read]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   60): stringLiteralExpression_parse   ] This is not a string literal token.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  4, 38) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  4, 39) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  4, 40) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   80): functionCallStatement_parse     ] Get last token.
+D[        _FunctionCallStatement.c(   82): functionCallStatement_parse     ] Token type=52(  4, 41) [<<NEW_LINE>>]
+D[        _FunctionCallStatement.c(   83): functionCallStatement_parse     ] Got last token.
+D[        _FunctionCallStatement.c(   95): functionCallStatement_parse     ] Create 'FunctionCallExpression'
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=52(  4, 41) [<<NEW_LINE>>]
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+D[                    _Statement.c(  134): statement_parse                 ] Create 'FunctionCallStatement'
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+D[                       _Parser.c(  181): parser_parse                    ] Add created statement and parse next.
+D[                       _Parser.c(  183): parser_parse                    ] Set new turning point.
+D[                       _Parser.c(  212): parser_parse                    ] Loop end.
+D[                       _Parser.c(  216): parser_parse                    ] Parse Successed.
+T[                       _Parser.c(  220): parser_parse                    ] [  END  ]parser_parse
+T[                       _Parser.c(  163): parser_parse                    ] [ START ]parser_parse
+D[                       _Parser.c(  170): parser_parse                    ] Loop start.
+D[                       _Parser.c(  177): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  0,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  0,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  0,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  0,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  0,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  0,  7) ["Welcome to Cria World!\n"]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  0, 33) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   80): functionCallStatement_parse     ] Get last token.
+D[        _FunctionCallStatement.c(   82): functionCallStatement_parse     ] Token type=52(  0, 34) [<<NEW_LINE>>]
+D[        _FunctionCallStatement.c(   83): functionCallStatement_parse     ] Got last token.
+D[        _FunctionCallStatement.c(   95): functionCallStatement_parse     ] Create 'FunctionCallExpression'
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=52(  0, 34) [<<NEW_LINE>>]
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+D[                    _Statement.c(  134): statement_parse                 ] Create 'FunctionCallStatement'
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+D[                       _Parser.c(  181): parser_parse                    ] Add created statement and parse next.
+D[                       _Parser.c(  183): parser_parse                    ] Set new turning point.
+D[                       _Parser.c(  177): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  2,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  2,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  2,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  2,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  2,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  2,  7) ["What's your name? > "]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  2, 29) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   80): functionCallStatement_parse     ] Get last token.
+D[        _FunctionCallStatement.c(   82): functionCallStatement_parse     ] Token type=52(  2, 30) [<<NEW_LINE>>]
+D[        _FunctionCallStatement.c(   83): functionCallStatement_parse     ] Got last token.
+D[        _FunctionCallStatement.c(   95): functionCallStatement_parse     ] Create 'FunctionCallExpression'
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=52(  2, 30) [<<NEW_LINE>>]
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+D[                    _Statement.c(  134): statement_parse                 ] Create 'FunctionCallStatement'
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+D[                       _Parser.c(  181): parser_parse                    ] Add created statement and parse next.
+D[                       _Parser.c(  183): parser_parse                    ] Set new turning point.
+D[                       _Parser.c(  177): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  4,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  4,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  4,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  4,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  4,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  4,  7) ["Nice to meet you, %s!\n"]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 0(  4, 38) [read]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   60): stringLiteralExpression_parse   ] This is not a string literal token.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  4, 38) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  4, 39) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  4, 40) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   80): functionCallStatement_parse     ] Get last token.
+D[        _FunctionCallStatement.c(   82): functionCallStatement_parse     ] Token type=52(  4, 41) [<<NEW_LINE>>]
+D[        _FunctionCallStatement.c(   83): functionCallStatement_parse     ] Got last token.
+D[        _FunctionCallStatement.c(   95): functionCallStatement_parse     ] Create 'FunctionCallExpression'
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=52(  4, 41) [<<NEW_LINE>>]
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+D[                    _Statement.c(  134): statement_parse                 ] Create 'FunctionCallStatement'
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+D[                       _Parser.c(  181): parser_parse                    ] Add created statement and parse next.
+D[                       _Parser.c(  183): parser_parse                    ] Set new turning point.
+D[                       _Parser.c(  212): parser_parse                    ] Loop end.
+D[                       _Parser.c(  216): parser_parse                    ] Parse Successed.
+T[                       _Parser.c(  220): parser_parse                    ] [  END  ]parser_parse
+T[                       _Parser.c(  163): parser_parse                    ] [ START ]parser_parse
+D[                       _Parser.c(  171): parser_parse                    ] Loop start.
+D[                       _Parser.c(  178): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  0,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  0,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  0,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  0,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  0,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  0,  7) ["Welcome to Cria World!\n"]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  0, 33) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   80): functionCallStatement_parse     ] Get last token.
+D[        _FunctionCallStatement.c(   82): functionCallStatement_parse     ] Token type=52(  0, 34) [<<NEW_LINE>>]
+D[        _FunctionCallStatement.c(   83): functionCallStatement_parse     ] Got last token.
+D[        _FunctionCallStatement.c(   95): functionCallStatement_parse     ] Create 'FunctionCallExpression'
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=52(  0, 34) [<<NEW_LINE>>]
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+D[                    _Statement.c(  134): statement_parse                 ] Create 'FunctionCallStatement'
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+D[                       _Parser.c(  182): parser_parse                    ] Add created statement and parse next.
+D[                       _Parser.c(  184): parser_parse                    ] Set new turning point.
+D[                       _Parser.c(  178): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  2,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  2,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  2,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  2,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  2,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  2,  7) ["What's your name? > "]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  2, 29) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   80): functionCallStatement_parse     ] Get last token.
+D[        _FunctionCallStatement.c(   82): functionCallStatement_parse     ] Token type=52(  2, 30) [<<NEW_LINE>>]
+D[        _FunctionCallStatement.c(   83): functionCallStatement_parse     ] Got last token.
+D[        _FunctionCallStatement.c(   95): functionCallStatement_parse     ] Create 'FunctionCallExpression'
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=52(  2, 30) [<<NEW_LINE>>]
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+D[                    _Statement.c(  134): statement_parse                 ] Create 'FunctionCallStatement'
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+D[                       _Parser.c(  182): parser_parse                    ] Add created statement and parse next.
+D[                       _Parser.c(  184): parser_parse                    ] Set new turning point.
+D[                       _Parser.c(  178): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  4,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  4,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  4,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  4,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  4,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  4,  7) ["Nice to meet you, %s!\n"]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 0(  4, 38) [read]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   60): stringLiteralExpression_parse   ] This is not a string literal token.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  4, 38) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  4, 39) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  4, 40) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   80): functionCallStatement_parse     ] Get last token.
+D[        _FunctionCallStatement.c(   82): functionCallStatement_parse     ] Token type=52(  4, 41) [<<NEW_LINE>>]
+D[        _FunctionCallStatement.c(   83): functionCallStatement_parse     ] Got last token.
+D[        _FunctionCallStatement.c(   95): functionCallStatement_parse     ] Create 'FunctionCallExpression'
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=52(  4, 41) [<<NEW_LINE>>]
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+D[                    _Statement.c(  134): statement_parse                 ] Create 'FunctionCallStatement'
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+D[                       _Parser.c(  182): parser_parse                    ] Add created statement and parse next.
+D[                       _Parser.c(  184): parser_parse                    ] Set new turning point.
+D[                       _Parser.c(  215): parser_parse                    ] Loop end.
+D[                       _Parser.c(  219): parser_parse                    ] Parse Successed.
+T[                       _Parser.c(  223): parser_parse                    ] [  END  ]parser_parse
+T[                       _Parser.c(  163): parser_parse                    ] [ START ]parser_parse
+D[                       _Parser.c(  171): parser_parse                    ] Loop start.
+D[                       _Parser.c(  178): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  0,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  0,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  0,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  0,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  0,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  0,  7) ["Welcome to Cria World!\n"]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  0, 33) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   80): functionCallStatement_parse     ] Get last token.
+D[        _FunctionCallStatement.c(   82): functionCallStatement_parse     ] Token type=52(  0, 34) [<<NEW_LINE>>]
+D[        _FunctionCallStatement.c(   83): functionCallStatement_parse     ] Got last token.
+D[        _FunctionCallStatement.c(   95): functionCallStatement_parse     ] Create 'FunctionCallExpression'
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=52(  0, 34) [<<NEW_LINE>>]
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+D[                    _Statement.c(  134): statement_parse                 ] Create 'FunctionCallStatement'
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+D[                       _Parser.c(  182): parser_parse                    ] Add created statement and parse next.
+D[                       _Parser.c(  184): parser_parse                    ] Set new turning point.
+D[                       _Parser.c(  178): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  2,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  2,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  2,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  2,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  2,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  2,  7) ["What's your name? > "]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  2, 29) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   80): functionCallStatement_parse     ] Get last token.
+D[        _FunctionCallStatement.c(   82): functionCallStatement_parse     ] Token type=52(  2, 30) [<<NEW_LINE>>]
+D[        _FunctionCallStatement.c(   83): functionCallStatement_parse     ] Got last token.
+D[        _FunctionCallStatement.c(   95): functionCallStatement_parse     ] Create 'FunctionCallExpression'
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=52(  2, 30) [<<NEW_LINE>>]
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+D[                    _Statement.c(  134): statement_parse                 ] Create 'FunctionCallStatement'
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+D[                       _Parser.c(  182): parser_parse                    ] Add created statement and parse next.
+D[                       _Parser.c(  184): parser_parse                    ] Set new turning point.
+D[                       _Parser.c(  178): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  4,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  4,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  4,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  4,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  4,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  4,  7) ["Nice to meet you, %s!\n"]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 0(  4, 38) [read]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   60): stringLiteralExpression_parse   ] This is not a string literal token.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  4, 38) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  4, 39) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  4, 40) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   80): functionCallStatement_parse     ] Get last token.
+D[        _FunctionCallStatement.c(   82): functionCallStatement_parse     ] Token type=52(  4, 41) [<<NEW_LINE>>]
+D[        _FunctionCallStatement.c(   83): functionCallStatement_parse     ] Got last token.
+D[        _FunctionCallStatement.c(   95): functionCallStatement_parse     ] Create 'FunctionCallExpression'
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=52(  4, 41) [<<NEW_LINE>>]
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+D[                    _Statement.c(  134): statement_parse                 ] Create 'FunctionCallStatement'
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+D[                       _Parser.c(  182): parser_parse                    ] Add created statement and parse next.
+D[                       _Parser.c(  184): parser_parse                    ] Set new turning point.
+D[                       _Parser.c(  215): parser_parse                    ] Loop end.
+D[                       _Parser.c(  219): parser_parse                    ] Parse Successed.
+T[                       _Parser.c(  223): parser_parse                    ] [  END  ]parser_parse
+T[                       _Parser.c(  163): parser_parse                    ] [ START ]parser_parse
+D[                       _Parser.c(  171): parser_parse                    ] Loop start.
+D[                       _Parser.c(  178): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  0,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  0,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  0,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  0,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  0,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  0,  7) ["Welcome to Cria World!\n"]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  0, 33) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   80): functionCallStatement_parse     ] Get last token.
+D[        _FunctionCallStatement.c(   82): functionCallStatement_parse     ] Token type=52(  0, 34) [<<NEW_LINE>>]
+D[        _FunctionCallStatement.c(   83): functionCallStatement_parse     ] Got last token.
+D[        _FunctionCallStatement.c(   95): functionCallStatement_parse     ] Create 'FunctionCallExpression'
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=52(  0, 34) [<<NEW_LINE>>]
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+D[                    _Statement.c(  134): statement_parse                 ] Create 'FunctionCallStatement'
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+D[                       _Parser.c(  182): parser_parse                    ] Add created statement and parse next.
+D[                       _Parser.c(  184): parser_parse                    ] Set new turning point.
+D[                       _Parser.c(  178): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  2,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  2,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  2,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  2,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  2,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  2,  7) ["What's your name? > "]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  2, 29) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   80): functionCallStatement_parse     ] Get last token.
+D[        _FunctionCallStatement.c(   82): functionCallStatement_parse     ] Token type=52(  2, 30) [<<NEW_LINE>>]
+D[        _FunctionCallStatement.c(   83): functionCallStatement_parse     ] Got last token.
+D[        _FunctionCallStatement.c(   95): functionCallStatement_parse     ] Create 'FunctionCallExpression'
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=52(  2, 30) [<<NEW_LINE>>]
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+D[                    _Statement.c(  134): statement_parse                 ] Create 'FunctionCallStatement'
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+D[                       _Parser.c(  182): parser_parse                    ] Add created statement and parse next.
+D[                       _Parser.c(  184): parser_parse                    ] Set new turning point.
+D[                       _Parser.c(  178): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  4,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  4,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  4,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  4,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  4,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  4,  7) ["Nice to meet you, %s!\n"]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 0(  4, 38) [read]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   60): stringLiteralExpression_parse   ] This is not a string literal token.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  4, 38) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  4, 39) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  4, 40) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   80): functionCallStatement_parse     ] Get last token.
+D[        _FunctionCallStatement.c(   82): functionCallStatement_parse     ] Token type=52(  4, 41) [<<NEW_LINE>>]
+D[        _FunctionCallStatement.c(   83): functionCallStatement_parse     ] Got last token.
+D[        _FunctionCallStatement.c(   95): functionCallStatement_parse     ] Create 'FunctionCallExpression'
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=52(  4, 41) [<<NEW_LINE>>]
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+D[                    _Statement.c(  134): statement_parse                 ] Create 'FunctionCallStatement'
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+D[                       _Parser.c(  182): parser_parse                    ] Add created statement and parse next.
+D[                       _Parser.c(  184): parser_parse                    ] Set new turning point.
+D[                       _Parser.c(  215): parser_parse                    ] Loop end.
+D[                       _Parser.c(  219): parser_parse                    ] Parse Successed.
+T[                       _Parser.c(  223): parser_parse                    ] [  END  ]parser_parse
+T[                       _Parser.c(  163): parser_parse                    ] [ START ]parser_parse
+D[                       _Parser.c(  171): parser_parse                    ] Loop start.
+D[                       _Parser.c(  178): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  0,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  0,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  0,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  0,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  0,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  0,  7) ["Welcome to Cria World!\n"]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  0, 33) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   80): functionCallStatement_parse     ] Get last token.
+D[        _FunctionCallStatement.c(   82): functionCallStatement_parse     ] Token type=52(  0, 34) [<<NEW_LINE>>]
+D[        _FunctionCallStatement.c(   83): functionCallStatement_parse     ] Got last token.
+D[        _FunctionCallStatement.c(   95): functionCallStatement_parse     ] Create 'FunctionCallExpression'
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=52(  0, 34) [<<NEW_LINE>>]
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+D[                    _Statement.c(  134): statement_parse                 ] Create 'FunctionCallStatement'
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+D[                       _Parser.c(  182): parser_parse                    ] Add created statement and parse next.
+D[                       _Parser.c(  184): parser_parse                    ] Set new turning point.
+D[                       _Parser.c(  178): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  2,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  2,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  2,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  2,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  2,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  2,  7) ["What's your name? > "]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+D[       _FunctionCallExpression.c(  113): functionCallExpression_parse    ] Get last token.
+D[       _FunctionCallExpression.c(  115): functionCallExpression_parse    ] Token type=29(  2, 29) [)]
+D[       _FunctionCallExpression.c(  116): functionCallExpression_parse    ] Got last token.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   80): functionCallStatement_parse     ] Get last token.
+D[        _FunctionCallStatement.c(   82): functionCallStatement_parse     ] Token type=52(  2, 30) [<<NEW_LINE>>]
+D[        _FunctionCallStatement.c(   83): functionCallStatement_parse     ] Got last token.
+D[        _FunctionCallStatement.c(   95): functionCallStatement_parse     ] Create 'FunctionCallExpression'
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=52(  2, 30) [<<NEW_LINE>>]
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+D[                    _Statement.c(  134): statement_parse                 ] Create 'FunctionCallStatement'
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+D[                       _Parser.c(  182): parser_parse                    ] Add created statement and parse next.
+D[                       _Parser.c(  184): parser_parse                    ] Set new turning point.
+D[                       _Parser.c(  178): parser_parse                    ] Check statement.
+T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
+D[                    _Statement.c(  112): statement_parse                 ] Check 'SubstituteStatement'
+D[                    _Statement.c(  113): statement_parse                 ] Token type= 0(  4,  6) [write]
+T[          _SubstituteStatement.c(   63): substituteStatement_parse       ] [ START ]substituteStatement_parse
+D[          _SubstituteStatement.c(   74): substituteStatement_parse       ] Check 'Variable Name'
+D[          _SubstituteStatement.c(   89): substituteStatement_parse       ] Get last token.
+D[          _SubstituteStatement.c(   91): substituteStatement_parse       ] Token type=28(  4,  6) [(]
+D[          _SubstituteStatement.c(   92): substituteStatement_parse       ] Got last token.
+D[          _SubstituteStatement.c(   95): substituteStatement_parse       ] It is not substitute token.
+D[          _SubstituteStatement.c(  114): substituteStatement_parse       ] Token type=28(  4,  6) [(]
+T[          _SubstituteStatement.c(  115): substituteStatement_parse       ] [  END  ]substituteStatement_parse
+D[                    _Statement.c(  127): statement_parse                 ] Check 'FunctionCallStatement'
+D[                    _Statement.c(  128): statement_parse                 ] Token type= 0(  4,  6) [write]
+T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
+D[        _FunctionCallStatement.c(   59): functionCallStatement_parse     ] Check 'FunctionCallExpression'
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   85): functionCallExpression_parse    ] Get second token.
+D[       _FunctionCallExpression.c(   87): functionCallExpression_parse    ] Token type=28(  4,  6) [(]
+D[       _FunctionCallExpression.c(   88): functionCallExpression_parse    ] Got second token.
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 6(  4,  7) ["Nice to meet you, %s!\n"]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   65): stringLiteralExpression_parse   ] Create string literal.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
+D[      _StringLiteralExpression.c(   55): stringLiteralExpression_parse   ] Token type= 5(  4, 34) [1]
+D[      _StringLiteralExpression.c(   56): stringLiteralExpression_parse   ] Compare token type is 6
+D[      _StringLiteralExpression.c(   60): stringLiteralExpression_parse   ] This is not a string literal token.
+T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
+T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(   70): functionCallExpression_parse    ] First token is not identifier.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[       _FunctionCallExpression.c(  108): functionCallExpression_parse    ] The tokens that before right parenthesis are not parameters.
+T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
+D[        _FunctionCallStatement.c(   64): functionCallStatement_parse     ] Not function call expression.
+D[        _FunctionCallStatement.c(   99): functionCallStatement_parse     ] Token type=NULL.
+T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
+T[                    _Statement.c(  141): statement_parse                 ] [  END  ]statement_parse
+T[                       _Parser.c(  223): parser_parse                    ] [  END  ]parser_parse

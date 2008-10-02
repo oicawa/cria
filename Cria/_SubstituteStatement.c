@@ -6,16 +6,16 @@
 
 SubstituteStatement
 substituteStatement_new(
-    VariableExpression  variableExpression,
-    Expression          expression
+    String      variable,
+    Expression  expression
 )
 {
     Logger_trc("[ START ]%s", __func__);
     SubstituteStatement statement = NULL;
     statement = Memory_malloc(sizeof(struct SubstituteStatementTag));
     memset(statement, 0x00, sizeof(struct SubstituteStatementTag));
-    statement->left = variableExpression;
-    statement->right = expression;
+    statement->variable = variable;
+    statement->expression = expression;
     Logger_trc("[  END  ]%s", __func__);
     return statement;
 }
@@ -34,16 +34,16 @@ substituteStatement_dispose(
         goto END;
     }
     
-    if (statement->left != NULL)
+    if (statement->variable != NULL)
     {
-        variableExpression_dispose(statement->left);
-        statement->left = NULL;
+        string_dispose(statement->variable);
+        statement->variable = NULL;
     }
     
-    if (statement->right != NULL)
+    if (statement->expression != NULL)
     {
-        expression_dispose(statement->right);
-        statement->right = NULL;
+        expression_dispose(statement->expression);
+        statement->expression = NULL;
     }
     
     Memory_free(statement);
@@ -62,40 +62,42 @@ substituteStatement_parse(
 {
     Logger_trc("[ START ]%s", __func__);
     SubstituteStatement  substituteStatement = NULL;
-    VariableExpression variableExpression = NULL;
-    Expression expression = NULL;
     Token token = NULL;
+    String variableName = NULL;
+    Expression expression = NULL;
+    
+    //トークン取得
+    token = parser_getCurrent(parser);
     
     
-    Logger_dbg("Check 'VariableExpression'");
-    variableExpression = variableExpression_parse(parser);
-    if (variableExpression == NULL)
+    //左辺の変数名を取得
+    Logger_dbg("Check 'Variable Name'");
+    if (token->type != TOKEN_TYPE_IDENTIFIER)
     {
-        Logger_dbg("Not variable expression.");
+        Logger_dbg("First token is not identifier.");
         goto END;
     }
+    variableName = string_clone(token->buffer);
     
     
+    //次のトークンが代入でなければ終了
     if (parser_next(parser) == FALSE)
     {
         Logger_dbg("Next token does not exist.");
         goto END;
     }
-    
-    
     Logger_dbg("Get last token.");
     token = parser_getCurrent(parser);
     token_log(token);
     Logger_dbg("Got last token.");
-    
-    
     if (token->type != TOKEN_TYPE_SUBSTITUTE)
     {
-        Logger_dbg("It is not new line token.");
+        Logger_dbg("It is not substitute token.");
         goto END;
     }
     
     
+    //以降のトークンを式としてパース
     Logger_dbg("Check 'Expression'");
     expression = expression_parse(parser);
     if (expression == NULL)
@@ -106,9 +108,10 @@ substituteStatement_parse(
     
     
     Logger_dbg("Create 'SubstituteStatement'");
-    substituteStatement = substituteStatement_new(variableExpression, expression);
+    substituteStatement = substituteStatement_new(variableName, expression);
     
 END:
+    token_log(token);
     Logger_trc("[  END  ]%s", __func__);
     return substituteStatement;
 }

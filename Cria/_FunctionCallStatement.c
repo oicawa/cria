@@ -96,6 +96,7 @@ functionCallStatement_parse(
     functionCallStatement = functionCallStatement_new(functionCallExpression);
     
 END:
+    token_log(token);
     Logger_trc("[  END  ]%s", __func__);
     return functionCallStatement;
 }

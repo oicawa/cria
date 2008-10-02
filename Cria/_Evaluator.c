@@ -190,37 +190,8 @@ evaluator_evaluateExpression(
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
-    FunctionDefinition  function;
     
     
-    Logger_dbg("Function name is '%s'", expression->name->pointer);
-    function = Interpreter_searchFunction(interpreter, expression->name->pointer);
-    if (function == NULL)
-    {
-        Logger_dbg("Function is not found.");
-        perror("Function is not found.\n");
-        goto END;
-    }
-    
-    
-    //ˆø”‚ÌŽ®‚ðŽÀs
-    List parameters = evaluator_evaluateParametersExpression(interpreter, local, expression->parameters);
-    
-    Logger_dbg("execute parameters count is '%d'", parameters->count);
-    
-    
-    if (function->isNative == TRUE)
-    {
-        Logger_dbg("Call native function.(%s)", expression->name->pointer);
-        id = (*(function->of.native.function))(interpreter, parameters);
-    }
-    else
-    {
-        Logger_dbg("Call cria function.(%s)", expression->name);
-        //object = interpreter_callCriaFunction(interpreter, local, expression, function);
-    }
-    
-END:
     Logger_trc("[  END  ]%s", __func__);
     return id;
 }

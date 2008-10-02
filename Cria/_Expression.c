@@ -76,6 +76,35 @@ expression_parse(
     Logger_trc("[ START ]%s", __func__);
     Expression  expression = NULL;
     
+    
+    //次のトークンをチェック
+    
+    
+    Logger_dbg("Check 'StringLiteralExpression'");
+    StringLiteralExpression stringLiteralExpression = NULL;
+    stringLiteralExpression = stringLiteralExpression_parse(parser);
+    if (stringLiteralExpression != NULL)
+    {
+        Logger_dbg("Create 'StringLiteralExpression'");
+        expression = expression_new(EXPRESSION_KIND_STRING_LITERAL);
+        expression->of._stringLiteral_ = stringLiteralExpression;
+        goto END;
+    }
+    
+    
+    Logger_dbg("Check 'FunctionCallExpression'");
+    FunctionCallExpression functionCallExpression = NULL;
+    functionCallExpression = functionCallExpression_parse(parser);
+    if (functionCallExpression != NULL)
+    {
+        Logger_dbg("Create 'FunctionCallExpression'");
+        expression = expression_new(EXPRESSION_KIND_FUNCTION_CALL);
+        expression->of._functionCall_ = functionCallExpression;
+        goto END;
+    }
+    
+    
+    /*
     while (1)
     {
         Logger_dbg("Check 'OperationExpression'");
@@ -113,6 +142,7 @@ expression_parse(
         }
         
     }
+    //*/
     
 END:
     Logger_trc("[  END  ]%s", __func__);

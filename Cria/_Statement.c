@@ -73,6 +73,7 @@ statement_parse(
 {
     Logger_trc("[ START ]%s", __func__);
     Statement statement = NULL;
+    Item mark = parser->mark;
     
     
     /*
@@ -109,6 +110,8 @@ statement_parse(
     
     //代入式
     Logger_dbg("Check 'SubstituteStatement'");
+    token_log(((Token)(mark->object)));
+    parser_returnToMark(parser, mark);
     SubstituteStatement substituteStatement = NULL;
     substituteStatement = substituteStatement_parse(parser);
     if (substituteStatement != NULL)
@@ -122,12 +125,13 @@ statement_parse(
     
     //関数呼び出し文
     Logger_dbg("Check 'FunctionCallStatement'");
+    token_log(((Token)(mark->object)));
+    parser_returnToMark(parser, mark);
     FunctionCallStatement functionCallStatement = NULL;
     functionCallStatement = functionCallStatement_parse(parser);
     if (functionCallStatement != NULL)
     {
         Logger_dbg("Create 'FunctionCallStatement'");
-        //statement = statement_new(EXPRESSION_KIND_FUNCTION_CALL);
         statement = statement_new(STATEMENT_KIND_FUNCTION_CALL);
         statement->of._functionCall_ = functionCallStatement;
         goto END;

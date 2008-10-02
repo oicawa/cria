@@ -1256,27 +1256,6 @@ isEndOfFile(
 
 
 void
-token_log(
-    Token token
-)
-{
-    char* buffer = NULL;
-    
-    if (token == NULL)
-    {
-        Logger_dbg("Token type=NULL.");
-        return;
-    }
-    
-    if (token->buffer != NULL)
-        buffer = token->buffer->pointer;
-    
-    Logger_dbg("Token type=%2d(%3d, %2d) [%s]", token->type, token->row, token->column, buffer);
-}
-
-
-
-void
 logAllTokens(
     Tokenizer   tokenizer
 )

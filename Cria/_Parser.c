@@ -17,7 +17,7 @@ parser_new(
     parser->tokens = list;
     parser->current = NULL;
     parser->next = list->item;
-    parser->turningPoint = NULL;
+    parser->mark = NULL;
     
     Logger_trc("[  END  ]%s", __func__);
     return parser;
@@ -80,7 +80,7 @@ parser_next(
     
     
     Item current = parser->next;
-    token_log((Token)(current->object));
+    token_log(((Token)(current->object)));
     parser->current = current;
     parser->next = current->next;
     return TRUE;
@@ -109,13 +109,23 @@ parser_getNext(
 
 
 void
-returnToTurningPoint(
+parser_returnToMark(
     Parser  parser,
-    Item    turningPoint
+    Item    mark
 )
 {
-    parser->current = turningPoint;
-    parser->next = turningPoint->next;
+    Logger_trc("[ START ]%s", __func__);
+    if (parser == NULL)
+        return;
+    
+    parser->current = mark;
+    
+    if (mark == NULL)
+        parser->next = parser->tokens->item;
+    else
+        parser->next = mark->next;
+    
+    Logger_trc("[  END  ]%s", __func__);
 }
 
 
@@ -125,7 +135,7 @@ setNewTurningPoint(
     Parser  parser
 )
 {
-    parser->turningPoint = parser->current;
+    parser->mark = parser->current;
 }
 
 
@@ -152,15 +162,17 @@ parser_parse(
 {
     Logger_trc("[ START ]%s", __func__);
     Boolean result = FALSE;
-    Token turningPoint = NULL;
+    Item mark = NULL;
     Statement statement = NULL;
+    Token errorToken = NULL;
     
     
     //次のトークンがある間はループ
     Logger_dbg("Loop start.");
     while (parser_next(parser) == TRUE)
     {
-        turningPoint = parser_getCurrent(parser);
+        setNewTurningPoint(parser);
+        mark = parser->mark;
         
         //ステートメント        
         Logger_dbg("Check statement.");
@@ -168,10 +180,8 @@ parser_parse(
         if (statement != NULL)
         {
             Logger_dbg("Add created statement and parse next.");
-            //statement->line = ((Token)(turningPoint->object))->row;
             addStatement(interpreter, statement);
             Logger_dbg("Set new turning point.");
-            setNewTurningPoint(parser);
             continue;
         }
         
@@ -196,7 +206,9 @@ parser_parse(
         //*/
         
         //何れにも当てはまらない場合はエラー扱い
-        perror("Syntax error.\n");
+        errorToken = parser_getCurrent(parser);
+        fprintf(stderr, "Syntax error near '%s'. (Line:%d, column:%d)\n", errorToken->buffer->pointer, errorToken->row, errorToken->column);
+        
         goto END;
     }
     

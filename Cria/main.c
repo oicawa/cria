@@ -18,7 +18,6 @@ main(
     //Logger_set(LOG_LEVEL_CORE, "addStatement, List_addFunction");
     //Logger_set(LOG_LEVEL_CORE, "StringBuffer_dispose, List_dispose, String_dispose, item_dispose");
     //Logger_set(LOG_LEVEL_DEBUG, NULL);
-    //Logger_set(LOG_LEVEL_TRACE, NULL);
     //Logger_set(LOG_LEVEL_DEBUG, "addStatement, Interpreter_compile");
     //Logger_set(LOG_LEVEL_DEBUG, "token_log");
     //Logger_set(LOG_LEVEL_DEBUG, "parseIndentDident");
@@ -28,7 +27,8 @@ main(
     //Logger_set(LOG_LEVEL_DEBUG, "parser_parse, statement_parse, functionCallStatement_parse, functionCallExpression_parse, token_log");
     //Logger_set(LOG_LEVEL_CORE, "Interpreter_dispose, Interpreter_compile, tokenizer_dispose, parser_dispose, List_dispose, addStatement, List_addFunction");
     //Logger_set(LOG_LEVEL_DEBUG, "io_print, expression_new, expression_parse, evaluator_evaluateFunctionCallExpression, evaluator_evaluateParametersExpression, evaluator_evaluateStringLiteralExpression, ");
-    Logger_set(LOG_LEVEL_DEBUG, "executor_executeStatement, executor_executeFunctionCallStatement, evaluator_evaluateStringLiteralExpression, evaluator_evaluateParametersExpression, evaluator_evaluateFunctionCallExpression, io_write, io_read");
+    Logger_set(LOG_LEVEL_DEBUG, "functionCallExpression_parse, substituteStatement_parse, functionCallStatement_parse, statement_parse, stringLiteralExpression_parse, parser_parse");
+    //Logger_set(LOG_LEVEL_TRACE, NULL);
     
     
     

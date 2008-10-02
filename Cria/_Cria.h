@@ -87,7 +87,7 @@ struct ParserTag
     List    tokens;
     Item    current;
     Item    next;
-    Item    turningPoint;
+    Item    mark;
 };
 
 
@@ -220,8 +220,8 @@ struct OperationExpressionTag
 
 struct SubstituteStatementTag
 {
-    VariableExpression  left;
-    Expression          right;
+    String      variable;
+    Expression  expression;
 };
 
 
@@ -559,6 +559,14 @@ parser_next(
 
 
 
+void
+parser_returnToMark(
+    Parser  parser,
+    Item    mark
+);
+
+
+
 //==================================================
 //Statement
 //==================================================
@@ -826,6 +834,21 @@ evaluator_evaluateFunctionCallExpression(
     List                    local,
     FunctionCallExpression  expression
 );
+
+
+
+#define token_log(token) \
+    do \
+    { \
+        char* buffer = NULL; \
+        if (token == NULL) \
+            Logger_dbg("Token type=NULL."); \
+        else if (token->buffer != NULL) \
+        { \
+            buffer = token->buffer->pointer; \
+            Logger_dbg("Token type=%2d(%3d, %2d) [%s]", token->type, token->row, token->column, buffer); \
+        } \
+    } while(0) \
 
 
 
