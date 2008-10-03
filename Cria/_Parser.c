@@ -207,8 +207,7 @@ parser_parse(
         
         //何れにも当てはまらない場合はエラー扱い
         errorToken = parser_getCurrent(parser);
-        fprintf(stderr, "Syntax error near '%s'. (Line:%d, column:%d)\n", errorToken->buffer->pointer, errorToken->row, errorToken->column);
-        
+        parser_error(errorToken);
         goto END;
     }
     
@@ -226,7 +225,15 @@ END:
 
 
 
-
+void
+parser_error(
+    Token token
+)
+{
+    fprintf(stderr, "Syntax error near '%s'. (line:%d, column:%d)\n", token->buffer->pointer, token->row, token->column);
+    Memory_dispose();
+    exit(1);
+}
 
 
 

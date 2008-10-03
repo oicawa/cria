@@ -51,7 +51,10 @@
 
 #define TOKEN_LITERAL_IF                    "if "
 #define TOKEN_LITERAL_FOR                   "for "
+#define TOKEN_LITERAL_VAR                   "var "
+#define TOKEN_LITERAL_DEF                   "def "
 #define TOKEN_LITERAL_ELIF                  "elif "
+#define TOKEN_LITERAL_CLASS                 "class "
 #define TOKEN_LITERAL_THROW                 "throw "
 #define TOKEN_LITERAL_WHILE                 "while "
 #define TOKEN_LITERAL_RETURN_VALUE          "return "
@@ -405,6 +408,21 @@ parseReserved(
     {
         Logger_dbg("create TOKEN_TYPE_RETURN_VALUE");
         token = token_new(TOKEN_TYPE_RETURN_VALUE, row, column, tmp);
+    }
+    else if (strncmp(buffer, TOKEN_LITERAL_CLASS, strlen(TOKEN_LITERAL_CLASS) - 1) == 0)
+    {
+        Logger_dbg("create TOKEN_TYPE_CLASS_DEFINITION");
+        token = token_new(TOKEN_TYPE_CLASS_DEFINITION, row, column, tmp);
+    }
+    else if (strncmp(buffer, TOKEN_LITERAL_VAR, strlen(TOKEN_LITERAL_VAR) - 1) == 0)
+    {
+        Logger_dbg("create TOKEN_TYPE_VARIABLE_DEFINITION");
+        token = token_new(TOKEN_TYPE_VARIABLE_DEFINITION, row, column, tmp);
+    }
+    else if (strncmp(buffer, TOKEN_LITERAL_DEF, strlen(TOKEN_LITERAL_DEF) - 1) == 0)
+    {
+        Logger_dbg("create TOKEN_TYPE_FUNCTION_DEFINITION");
+        token = token_new(TOKEN_TYPE_FUNCTION_DEFINITION, row, column, tmp);
     }
     else
     {

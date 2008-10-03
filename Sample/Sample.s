@@ -9,10 +9,10 @@ File
         .filePath = filePath
         .openMode = openMode
         
-    @open(mode:OpenMode)
+    @open(mode:OpenMode):
         file = File_open(.filePath, getNativeOpenMode(mode))
     
-    #getNativeOpenMode(mode:OpenMode):String
+    getNativeOpenMode(mode:OpenMode)
         if mode == OpenMode.READ
             return "r"
         elif mode == OpenMode.WRITE
@@ -135,37 +135,49 @@ MainFrame -> Frame
         
         
 
-Email
-    ID:String = "ID"
-    DOMAIN:String = "DOMAIN"
-    #regex:Regex
+class Email
+    var ID:String +
+    var DOMAIN:String +
+    var regex:Regex #
     
-    #@email:String
-    #@match:Match
+    var @email:String -
+    var @match:Match -
     
-    #new(email:String)
+    
+    static()
+        .ID = "ID"
+        .DOMAIN = "DOMAIN"
+        .regex = Regex("^(?<" + .ID + ">[A-Za-z0-9_-.]+?)@(?<" + .DOMAIN + >[A-Za-z0-9_-.]+?)$", Regex.SINGLE_LINE)
+        
+    new(email:String) #
         .email = email
         .match = .regex.getMatch(.email)
     
-    static()
-        .regex = Regex("^(?<" + .ID + ">[A-Za-z0-9_-.]+?)@(?<" + .DOMAIN + >[A-Za-z0-9_-.]+?)$", Regex.SINGLE_LINE)
-        
-    parse(email:String):Email
+    def parse(email:String):Email +
         if .regex.isMatch(email) == false
             return null
         return Email(email)
-    
-    @getId():String
+
+    def @getId():String +
         return .match.group[.ID]
 
-    @getDomain():String
+    def @getDomain():String +
         return .match.group[.DOMAIN]
 
-    @toString():String
+    def @toString():String +
         return .email
 
 
-main(args:[]<String>)
+
+
+
+
+
+
+
+
+
+def main(args:[]<String>)
     while true
         io.write("Please input email address. > ")
         input:String = io.readLine()

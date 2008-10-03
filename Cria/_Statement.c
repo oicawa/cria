@@ -73,7 +73,39 @@ statement_parse(
 {
     Logger_trc("[ START ]%s", __func__);
     Statement statement = NULL;
-    Item mark = parser->mark;
+    //Item mark = parser->mark;
+    
+    
+    //行先頭のトークンをチェック。
+    Token current = parser_getCurrent(parser);
+    switch (current->type)
+    {
+    case TOKEN_TYPE_IF:                     //if文
+        break;
+    case TOKEN_TYPE_FOR:                    //for文
+        break;
+    case TOKEN_TYPE_WHILE:                  //while文
+        break;
+    case TOKEN_TYPE_RETURN:                 //返却文（値なし）
+        break;
+    case TOKEN_TYPE_RETURN_VALUE:           //返却文（値あり）
+        break;
+    case TOKEN_TYPE_VARIABLE_DEFINITION:    //変数定義
+        break;
+    case TOKEN_TYPE_FUNCTION_DEFINITION:    //関数定義
+        break;
+    case TOKEN_TYPE_CLASS_DEFINITION:       //クラス定義
+        break;
+    case TOKEN_TYPE_IDENTIFIER:             //変数参照／関数呼び出し
+    case TOKEN_TYPE_CLASS_LITERAL:          //クラス参照
+        statement = ExecutableStatement_parser(parser)
+        break;
+    default:
+        //構文エラーじゃね？
+        parser_error(current);
+        break;
+    }
+    
     
     
     /*
@@ -107,7 +139,7 @@ statement_parse(
         return statement;
     }
     //*/
-    
+    /*
     //代入式
     Logger_dbg("Check 'SubstituteStatement'");
     token_log(((Token)(mark->object)));
@@ -136,8 +168,8 @@ statement_parse(
         statement->of._functionCall_ = functionCallStatement;
         goto END;
     }
-    
 END:
+    */
     Logger_trc("[  END  ]%s", __func__);
     return statement;
 }
