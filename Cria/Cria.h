@@ -56,7 +56,9 @@ typedef struct  OperationExpressionTag      *OperationExpression;
 typedef struct  ObjectExpressionTag         *ObjectExpression;
 typedef struct  VariableExpressionTag       *VariableExpression;
 typedef struct  ReferenceExpressionTag      *ReferenceExpression;
+typedef struct  ClassExpressionTag          *ClassExpression;
 typedef struct  FunctionCallExpressionTag   *FunctionCallExpression;
+typedef struct  GenerateExpressionTag       *GenerateExpression;
 typedef struct  StringLiteralExpressionTag  *StringLiteralExpression;
 typedef struct  IntegerLiteralExpressionTag *IntegerLiteralExpression;
 typedef struct  ParametersExpressionTag     *ParametersExpression;
@@ -232,6 +234,9 @@ typedef enum
     OPERATION_KIND_EQUAL,
     OPERATION_KIND_LESS_THAN,
     OPERATION_KIND_LESS_EQUAL,
+    OPERATION_KIND_NOT_EQUAL,
+    OPERATION_KIND_OR,
+    OPERATION_KIND_AND,
 } OperationKind;
 
 
