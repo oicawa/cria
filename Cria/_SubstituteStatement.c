@@ -115,5 +115,49 @@ END:
     Logger_trc("[  END  ]%s", __func__);
     return substituteStatement;
 }
+
+
+
+Boolean
+substituteStatement_isMatch(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Boolean result = FALSE;
+    Item mark = NULL;
+    Token token = NULL;
     
+    //NULLチェック
+    if (parser == NULL)
+    {
+        goto END;
+    }
+    
+    //現在のトークンを復帰位置としてバックアップ
+    mark = parser->current;
+    
+    //改行トークンが検知される前に、代入演算子トークンが検知されればOK。
+    while (parser_next(parser) == TRUE)
+    {
+        //改行トークン？
+        token = parser_getCurrent(parser);
+        if (token->type == TOKEN_TYPE_NEW_LINE)
+        {
+            goto END;
+        }
+        if (token->type == TOKEN_TYPE_SUBSTITUTE)
+        {
+            result = TRUE;
+            break;
+        }
+    }
+    
+END:
+    parser_returnToMark(parser, mark);
+    Logger_trc("[  END  ]%s", __func__);
+    return result;
+}
+
+
 

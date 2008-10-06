@@ -121,3 +121,12 @@ string_subStringFunction(
 
 
 
+int
+string_toInteger(
+    String  source
+)
+{
+    return atoi(source->pointer);
+}
+
+

@@ -174,6 +174,31 @@ parser_parse(
         setNewTurningPoint(parser);
         mark = parser->mark;
         
+        
+        //クラス定義？
+        if (classDefinition_isMatch(parser) == TRUE)
+        {
+            Logger_dbg("Parse class definition.");
+            continue;
+        }
+        
+        
+        //変数＆定数定義？
+        if (variableDefinition_isMatch(parser) == TRUE)
+        {
+            Logger_dbg("Parse function definition.");
+            continue;
+        }
+        
+        
+        //関数定義？
+        if (functionDefinition_isMatch(parser) == TRUE)
+        {
+            Logger_dbg("Parse function definition.");
+            continue;
+        }
+        
+        
         //ステートメント        
         Logger_dbg("Check statement.");
         statement = statement_parse(parser);
@@ -185,25 +210,6 @@ parser_parse(
             continue;
         }
         
-        
-        /*
-        //関数宣言文
-        if (parseFunctionDefinition(parser) == TRUE)
-        {
-            setTurningPoint(parser);
-            continue;
-        }
-        returnToTurningPoint(turningPoint);
-        
-        
-        //クラス宣言文
-        if (parseClassDefinition(parser) == TRUE)
-        {
-            setTurningPoint(parser);
-            continue;
-        }
-        returnToTurningPoint(turningPoint);
-        //*/
         
         //何れにも当てはまらない場合はエラー扱い
         errorToken = parser_getCurrent(parser);

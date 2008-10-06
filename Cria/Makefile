@@ -21,7 +21,9 @@ OBJS =\
     _Executor.o\
     _Evaluator.o\
     _IO.o\
+    _VariableDefinition.o\
     _FunctionDefinition.o\
+    _ClassDefinition.o\
     _CriaId.o\
     _CriaObject.o\
     _CriaString.o\
@@ -61,7 +63,9 @@ _Expression.o: _Expression.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.
 _Executor.o: _Executor.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Evaluator.o: _Evaluator.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _IO.o: _IO.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+_VariableDefinition.o: _VariableDefinition.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _FunctionDefinition.o: _FunctionDefinition.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+_ClassDefinition.o: _ClassDefinition.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaId.o: _CriaId.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaObject.o: _CriaObject.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaString.o: _CriaString.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h

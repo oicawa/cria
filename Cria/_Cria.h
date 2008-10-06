@@ -184,9 +184,9 @@ struct FunctionDefinitionTag
 struct ClassDefinitionTag
 {
     char*   name;
-    List    bases;
-    List    fields;
-    List    methods;
+    List    baseList;
+    List    fieldList;
+    List    methodList;
 };
 
 
@@ -196,7 +196,7 @@ struct ExpressionTag
     ExpressionKind  kind;
     union {
         StringLiteralExpression     _stringLiteral_;
-        //IntegerLiteralExpression    _integerLiteral_;
+        IntegerLiteralExpression    _integerLiteral_;
         //RealLiteralExpression       _realLiteral_;
         //BooleanLiteralExpression    _booleanLiteral_;
         //NullLiteralExpression       _nullLiteral_;
@@ -204,6 +204,7 @@ struct ExpressionTag
         //GenerateExpression          _generate_;
         FunctionCallExpression      _functionCall_;
         VariableExpression          _variable_;
+        ReferenceExpression         _reference_;
     } of;
 };
 
@@ -255,10 +256,41 @@ struct StringLiteralExpressionTag
 
 
 
+struct IntegerLiteralExpressionTag
+{
+    int     value;
+};
+
+
+
 struct VariableExpressionTag
 {
     String  name;
 };
+
+
+
+typedef enum {
+    REFERENCE_TYPE_SELF,
+    REFERENCE_TYPE_VARIABLE,
+    REFERENCE_TYPE_FUNCTION_CALL,
+    REFERENCE_TYPE_CLASS,
+    REFERENCE_TYPE_GENERATE,
+} ReferenceTyep;
+
+
+
+struct ReferenceExpressionTag
+{
+    ReferenceType               type;
+    union {
+        VariableExpression      variable;
+        FunctionCallExpression  function;
+        ClassExpression         klass;
+        GenerateExpression      generate;
+    } of;
+    ReferenceExpression         next;
+}
 
 
 
@@ -329,6 +361,13 @@ string_subStringFunction(
 );
 #define string_subString(source, start, length)\
     (string_subStringFunction(source, start, length, __FILE__, __LINE__))
+
+
+
+int
+string_toInteger(
+    String  source
+);
 
 
 
@@ -657,6 +696,13 @@ substituteStatement_parse(
 
 
 
+Boolean
+substituteStatement_isMatch(
+    Parser  parser
+);
+
+
+
 //==================================================
 //Expression
 //==================================================
@@ -797,6 +843,33 @@ functionDefinition_new(
     List                parameterList,
     List                statementList,
     CriaNativeFunction* nativeFunctionPoint
+);
+
+
+
+Boolean
+functionDefinition_isMatch(
+    Parser parser
+);
+
+
+
+//==================================================
+//VariableDefinition
+//==================================================
+Boolean
+variableDefinition_isMatch(
+    Parser parser
+);
+
+
+
+//==================================================
+//ClassDefinition
+//==================================================
+Boolean
+classDefinition_isMatch(
+    Parser parser
 );
 
 

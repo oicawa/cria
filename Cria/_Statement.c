@@ -90,15 +90,34 @@ statement_parse(
         break;
     case TOKEN_TYPE_RETURN_VALUE:           //返却文（値あり）
         break;
-    case TOKEN_TYPE_VARIABLE_DEFINITION:    //変数定義
-        break;
-    case TOKEN_TYPE_FUNCTION_DEFINITION:    //関数定義
-        break;
-    case TOKEN_TYPE_CLASS_DEFINITION:       //クラス定義
-        break;
-    case TOKEN_TYPE_IDENTIFIER:             //変数参照／関数呼び出し
-    case TOKEN_TYPE_CLASS_LITERAL:          //クラス参照
-        statement = ExecutableStatement_parser(parser)
+    case TOKEN_TYPE_IDENTIFIER:             //変数参照（代入）／メソッド呼び出し
+    case TOKEN_TYPE_CLASS_LITERAL:          //クラス参照（メンバ参照、メソッド実行）
+        if (substituteStatement_isMatch(parser) == TRUE)
+        {
+            //関数呼び出し文
+            Logger_dbg("Check 'FunctionCallStatement'");
+            SubstituteStatement substituteStatement = NULL;
+            substituteStatement = substituteStatement_parse(parser);
+            if (substituteStatement != NULL)
+            {
+                Logger_dbg("Create 'FunctionCallStatement'");
+                statement = statement_new(STATEMENT_KIND_SUBSTITUTE);
+                statement->of._substitute_ = substituteStatement;
+            }
+        }
+        else
+        {
+            //関数呼び出し文
+            Logger_dbg("Check 'FunctionCallStatement'");
+            FunctionCallStatement functionCallStatement = NULL;
+            functionCallStatement = functionCallStatement_parse(parser);
+            if (functionCallStatement != NULL)
+            {
+                Logger_dbg("Create 'FunctionCallStatement'");
+                statement = statement_new(STATEMENT_KIND_FUNCTION_CALL);
+                statement->of._functionCall_ = functionCallStatement;
+            }
+        }
         break;
     default:
         //構文エラーじゃね？

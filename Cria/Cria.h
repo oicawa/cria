@@ -49,14 +49,16 @@ typedef struct  FunctionCallStatementTag    *FunctionCallStatement;
 typedef struct  SubstituteStatementTag      *SubstituteStatement;
 typedef struct  VariableDefinitionTag       *VariableDefinition;
 typedef struct  FunctionDefinitionTag       *FunctionDefinition;
-typedef struct  ClassDefineTag              *ClassDefinition;
+typedef struct  ClassDefinitionTag          *ClassDefinition;
 
 typedef struct  ExpressionTag               *Expression;
 typedef struct  OperationExpressionTag      *OperationExpression;
 typedef struct  ObjectExpressionTag         *ObjectExpression;
 typedef struct  VariableExpressionTag       *VariableExpression;
+typedef struct  ReferenceExpressionTag      *ReferenceExpression;
 typedef struct  FunctionCallExpressionTag   *FunctionCallExpression;
 typedef struct  StringLiteralExpressionTag  *StringLiteralExpression;
+typedef struct  IntegerLiteralExpressionTag *IntegerLiteralExpression;
 typedef struct  ParametersExpressionTag     *ParametersExpression;
 
 
@@ -205,6 +207,7 @@ typedef enum
     EXPRESSION_KIND_FUNCTION_CALL,
     EXPRESSION_KIND_VARIABLE,
     EXPRESSION_KIND_OPERATION,
+    EXPRESSION_KIND_REFERENCE,
 } ExpressionKind;
 
 
