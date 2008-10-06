@@ -242,6 +242,14 @@ struct FunctionCallExpressionTag
 
 
 
+struct GenerateExpressionTag
+{
+    String                  name;
+    ParametersExpression    parameters;
+};
+
+
+
 struct ParametersExpressionTag
 {
     List    list;   //Expression
@@ -270,13 +278,20 @@ struct VariableExpressionTag
 
 
 
+struct ClassExpressionTag
+{
+    String  name;
+};
+
+
+
 typedef enum {
     REFERENCE_TYPE_SELF,
     REFERENCE_TYPE_VARIABLE,
     REFERENCE_TYPE_FUNCTION_CALL,
     REFERENCE_TYPE_CLASS,
     REFERENCE_TYPE_GENERATE,
-} ReferenceTyep;
+} ReferenceType;
 
 
 
@@ -290,7 +305,7 @@ struct ReferenceExpressionTag
         GenerateExpression      generate;
     } of;
     ReferenceExpression         next;
-}
+};
 
 
 
@@ -593,6 +608,13 @@ parser_getCurrent(
 
 Boolean
 parser_next(
+    Parser  parser
+);
+
+
+
+Token
+parser_getNext(
     Parser  parser
 );
 
