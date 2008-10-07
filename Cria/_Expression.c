@@ -170,6 +170,8 @@ parseParametersExpression(
     }
     Logger_dbg("Loop end.");
     
+    Logger_dbg("list count = %d", list->count);
+    
     //次のトークンへ移動。
     //parser_next(parser);
     

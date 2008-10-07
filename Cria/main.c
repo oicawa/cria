@@ -26,7 +26,7 @@ main(
     //Logger_set(LOG_LEVEL_DEBUG, "parseOther");
     //Logger_set(LOG_LEVEL_DEBUG, "parser_parse, statement_parse, functionCallStatement_parse, functionCallExpression_parse, token_log");
     //Logger_set(LOG_LEVEL_CORE, "Interpreter_dispose, Interpreter_compile, tokenizer_dispose, parser_dispose, List_dispose, addStatement, List_addFunction");
-    Logger_set(LOG_LEVEL_DEBUG, "io_print, evaluator_functionCall, evaluator_parameters, evaluator_stringLiteral, ");
+    Logger_set(LOG_LEVEL_DEBUG, "parseParametersExpression, io_print, evaluator_functionCall, evaluator_parameters, evaluator_stringLiteral, ");
     //Logger_set(LOG_LEVEL_DEBUG, "parser_parse, parser_next, logAllTokens, statement_parse, parseFunctionCallExpression, parseParametersExpression, parseFunctionCallStatement, parseFactor, expression_parseReferenceExpression");
     //Logger_set(LOG_LEVEL_TRACE, NULL);
     

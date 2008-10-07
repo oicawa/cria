@@ -116,6 +116,13 @@ evaluator_parameters(
             list_add(list, id);
             Logger_dbg("Add 'Cria Id'");
             break;
+        case EXPRESSION_KIND_REFERENCE:
+            Logger_dbg("Do reference expression");
+            id = evaluator_reference(interpreter, local, expression->of._reference_);
+            Logger_dbg("Done reference expression");
+            list_add(list, id);
+            Logger_dbg("Add 'Cria Id'");
+            break;
         /*
         case EXPRESSION_KIND_VARIABLE:
             break;

@@ -1,5 +1,49 @@
-T[                    _Evaluator.c(  145): evaluator_functionCall          ] [ START ]evaluator_functionCall
-D[                    _Evaluator.c(  150): evaluator_functionCall          ] Function name is 'write'
+T[                   _Expression.c(  111): parseParametersExpression       ] [ START ]parseParametersExpression
+D[                   _Expression.c(  119): parseParametersExpression       ] Token type= 9(  0,  7) ["Welcome to Cria World!\n"]
+D[                   _Expression.c(  120): parseParametersExpression       ] Loop start.
+D[                   _Expression.c(  123): parseParametersExpression       ] Parse expression.
+D[                   _Expression.c(  133): parseParametersExpression       ] Add expression.
+D[                   _Expression.c(  147): parseParametersExpression       ] Get current token.
+D[                   _Expression.c(  149): parseParametersExpression       ] Token type=32(  0, 33) [)]
+D[                   _Expression.c(  163): parseParametersExpression       ] Token is not right parenthesis.
+D[                   _Expression.c(  171): parseParametersExpression       ] Loop end.
+D[                   _Expression.c(  173): parseParametersExpression       ] list count = 1
+T[                   _Expression.c(  183): parseParametersExpression       ] [  END  ]parseParametersExpression
+T[                   _Expression.c(  111): parseParametersExpression       ] [ START ]parseParametersExpression
+D[                   _Expression.c(  119): parseParametersExpression       ] Token type= 9(  2,  7) ["What's your name? > "]
+D[                   _Expression.c(  120): parseParametersExpression       ] Loop start.
+D[                   _Expression.c(  123): parseParametersExpression       ] Parse expression.
+D[                   _Expression.c(  133): parseParametersExpression       ] Add expression.
+D[                   _Expression.c(  147): parseParametersExpression       ] Get current token.
+D[                   _Expression.c(  149): parseParametersExpression       ] Token type=32(  2, 29) [)]
+D[                   _Expression.c(  163): parseParametersExpression       ] Token is not right parenthesis.
+D[                   _Expression.c(  171): parseParametersExpression       ] Loop end.
+D[                   _Expression.c(  173): parseParametersExpression       ] list count = 1
+T[                   _Expression.c(  183): parseParametersExpression       ] [  END  ]parseParametersExpression
+T[                   _Expression.c(  111): parseParametersExpression       ] [ START ]parseParametersExpression
+D[                   _Expression.c(  119): parseParametersExpression       ] Token type= 9(  4,  7) ["Nice to meet you, %s!\n"]
+D[                   _Expression.c(  120): parseParametersExpression       ] Loop start.
+D[                   _Expression.c(  123): parseParametersExpression       ] Parse expression.
+D[                   _Expression.c(  133): parseParametersExpression       ] Add expression.
+D[                   _Expression.c(  147): parseParametersExpression       ] Get current token.
+D[                   _Expression.c(  149): parseParametersExpression       ] Token type=51(  4, 32) [, ]
+D[                   _Expression.c(  153): parseParametersExpression       ] Token is not Comma.
+D[                   _Expression.c(  123): parseParametersExpression       ] Parse expression.
+T[                   _Expression.c(  111): parseParametersExpression       ] [ START ]parseParametersExpression
+D[                   _Expression.c(  119): parseParametersExpression       ] Token type=32(  4, 39) [)]
+D[                   _Expression.c(  120): parseParametersExpression       ] Loop start.
+D[                   _Expression.c(  171): parseParametersExpression       ] Loop end.
+D[                   _Expression.c(  173): parseParametersExpression       ] list count = 0
+T[                   _Expression.c(  183): parseParametersExpression       ] [  END  ]parseParametersExpression
+D[                   _Expression.c(  133): parseParametersExpression       ] Add expression.
+D[                   _Expression.c(  147): parseParametersExpression       ] Get current token.
+D[                   _Expression.c(  149): parseParametersExpression       ] Token type=32(  4, 40) [)]
+D[                   _Expression.c(  163): parseParametersExpression       ] Token is not right parenthesis.
+D[                   _Expression.c(  171): parseParametersExpression       ] Loop end.
+D[                   _Expression.c(  173): parseParametersExpression       ] list count = 2
+T[                   _Expression.c(  183): parseParametersExpression       ] [  END  ]parseParametersExpression
+T[                    _Evaluator.c(  152): evaluator_functionCall          ] [ START ]evaluator_functionCall
+D[                    _Evaluator.c(  157): evaluator_functionCall          ] Function name is 'write'
 T[                    _Evaluator.c(   80): evaluator_parameters            ] [ START ]evaluator_parameters
 D[                    _Evaluator.c(   94): evaluator_parameters            ] Do 'String literal expression'
 T[                    _Evaluator.c(   13): evaluator_stringLiteral         ] [ START ]evaluator_stringLiteral
@@ -12,12 +56,12 @@ D[                    _Evaluator.c(   63): evaluator_stringLiteral         ] Edi
 T[                    _Evaluator.c(   67): evaluator_stringLiteral         ] [  END  ]evaluator_stringLiteral
 D[                    _Evaluator.c(   96): evaluator_parameters            ] Done 'String literal expression'
 D[                    _Evaluator.c(   98): evaluator_parameters            ] Add 'Cria Id'
-T[                    _Evaluator.c(  132): evaluator_parameters            ] [  END  ]evaluator_parameters
-D[                    _Evaluator.c(  163): evaluator_functionCall          ] execute parameters count is '1'
-D[                    _Evaluator.c(  168): evaluator_functionCall          ] Call native function.(write)
-T[                    _Evaluator.c(  178): evaluator_functionCall          ] [  END  ]evaluator_functionCall
-T[                    _Evaluator.c(  145): evaluator_functionCall          ] [ START ]evaluator_functionCall
-D[                    _Evaluator.c(  150): evaluator_functionCall          ] Function name is 'write'
+T[                    _Evaluator.c(  139): evaluator_parameters            ] [  END  ]evaluator_parameters
+D[                    _Evaluator.c(  170): evaluator_functionCall          ] execute parameters count is '1'
+D[                    _Evaluator.c(  175): evaluator_functionCall          ] Call native function.(write)
+T[                    _Evaluator.c(  185): evaluator_functionCall          ] [  END  ]evaluator_functionCall
+T[                    _Evaluator.c(  152): evaluator_functionCall          ] [ START ]evaluator_functionCall
+D[                    _Evaluator.c(  157): evaluator_functionCall          ] Function name is 'write'
 T[                    _Evaluator.c(   80): evaluator_parameters            ] [ START ]evaluator_parameters
 D[                    _Evaluator.c(   94): evaluator_parameters            ] Do 'String literal expression'
 T[                    _Evaluator.c(   13): evaluator_stringLiteral         ] [ START ]evaluator_stringLiteral
@@ -28,12 +72,12 @@ D[                    _Evaluator.c(   63): evaluator_stringLiteral         ] Edi
 T[                    _Evaluator.c(   67): evaluator_stringLiteral         ] [  END  ]evaluator_stringLiteral
 D[                    _Evaluator.c(   96): evaluator_parameters            ] Done 'String literal expression'
 D[                    _Evaluator.c(   98): evaluator_parameters            ] Add 'Cria Id'
-T[                    _Evaluator.c(  132): evaluator_parameters            ] [  END  ]evaluator_parameters
-D[                    _Evaluator.c(  163): evaluator_functionCall          ] execute parameters count is '1'
-D[                    _Evaluator.c(  168): evaluator_functionCall          ] Call native function.(write)
-T[                    _Evaluator.c(  178): evaluator_functionCall          ] [  END  ]evaluator_functionCall
-T[                    _Evaluator.c(  145): evaluator_functionCall          ] [ START ]evaluator_functionCall
-D[                    _Evaluator.c(  150): evaluator_functionCall          ] Function name is 'write'
+T[                    _Evaluator.c(  139): evaluator_parameters            ] [  END  ]evaluator_parameters
+D[                    _Evaluator.c(  170): evaluator_functionCall          ] execute parameters count is '1'
+D[                    _Evaluator.c(  175): evaluator_functionCall          ] Call native function.(write)
+T[                    _Evaluator.c(  185): evaluator_functionCall          ] [  END  ]evaluator_functionCall
+T[                    _Evaluator.c(  152): evaluator_functionCall          ] [ START ]evaluator_functionCall
+D[                    _Evaluator.c(  157): evaluator_functionCall          ] Function name is 'write'
 T[                    _Evaluator.c(   80): evaluator_parameters            ] [ START ]evaluator_parameters
 D[                    _Evaluator.c(   94): evaluator_parameters            ] Do 'String literal expression'
 T[                    _Evaluator.c(   13): evaluator_stringLiteral         ] [ START ]evaluator_stringLiteral
@@ -46,7 +90,123 @@ D[                    _Evaluator.c(   63): evaluator_stringLiteral         ] Edi
 T[                    _Evaluator.c(   67): evaluator_stringLiteral         ] [  END  ]evaluator_stringLiteral
 D[                    _Evaluator.c(   96): evaluator_parameters            ] Done 'String literal expression'
 D[                    _Evaluator.c(   98): evaluator_parameters            ] Add 'Cria Id'
-T[                    _Evaluator.c(  132): evaluator_parameters            ] [  END  ]evaluator_parameters
-D[                    _Evaluator.c(  163): evaluator_functionCall          ] execute parameters count is '1'
-D[                    _Evaluator.c(  168): evaluator_functionCall          ] Call native function.(write)
-T[                    _Evaluator.c(  178): evaluator_functionCall          ] [  END  ]evaluator_functionCall
+D[                    _Evaluator.c(  120): evaluator_parameters            ] Do reference expression
+T[                    _Evaluator.c(  152): evaluator_functionCall          ] [ START ]evaluator_functionCall
+D[                    _Evaluator.c(  157): evaluator_functionCall          ] Function name is 'read'
+T[                    _Evaluator.c(   80): evaluator_parameters            ] [ START ]evaluator_parameters
+T[                    _Evaluator.c(  139): evaluator_parameters            ] [  END  ]evaluator_parameters
+D[                    _Evaluator.c(  170): evaluator_functionCall          ] execute parameters count is '0'
+D[                    _Evaluator.c(  175): evaluator_functionCall          ] Call native function.(read)
+T[                    _Evaluator.c(  185): evaluator_functionCall          ] [  END  ]evaluator_functionCall
+D[                    _Evaluator.c(  122): evaluator_parameters            ] Done reference expression
+D[                    _Evaluator.c(  124): evaluator_parameters            ] Add 'Cria Id'
+T[                    _Evaluator.c(  139): evaluator_parameters            ] [  END  ]evaluator_parameters
+D[                    _Evaluator.c(  170): evaluator_functionCall          ] execute parameters count is '2'
+D[                    _Evaluator.c(  175): evaluator_functionCall          ] Call native function.(write)
+T[                    _Evaluator.c(  185): evaluator_functionCall          ] [  END  ]evaluator_functionCall
+T[                   _Expression.c(  111): parseParametersExpression       ] [ START ]parseParametersExpression
+D[                   _Expression.c(  119): parseParametersExpression       ] Token type= 9(  0,  7) ["Welcome to Cria World!\n"]
+D[                   _Expression.c(  120): parseParametersExpression       ] Loop start.
+D[                   _Expression.c(  123): parseParametersExpression       ] Parse expression.
+D[                   _Expression.c(  133): parseParametersExpression       ] Add expression.
+D[                   _Expression.c(  147): parseParametersExpression       ] Get current token.
+D[                   _Expression.c(  149): parseParametersExpression       ] Token type=32(  0, 33) [)]
+D[                   _Expression.c(  163): parseParametersExpression       ] Token is not right parenthesis.
+D[                   _Expression.c(  171): parseParametersExpression       ] Loop end.
+D[                   _Expression.c(  173): parseParametersExpression       ] list count = 1
+T[                   _Expression.c(  183): parseParametersExpression       ] [  END  ]parseParametersExpression
+T[                   _Expression.c(  111): parseParametersExpression       ] [ START ]parseParametersExpression
+D[                   _Expression.c(  119): parseParametersExpression       ] Token type= 9(  2,  7) ["What's your name? > "]
+D[                   _Expression.c(  120): parseParametersExpression       ] Loop start.
+D[                   _Expression.c(  123): parseParametersExpression       ] Parse expression.
+D[                   _Expression.c(  133): parseParametersExpression       ] Add expression.
+D[                   _Expression.c(  147): parseParametersExpression       ] Get current token.
+D[                   _Expression.c(  149): parseParametersExpression       ] Token type=32(  2, 29) [)]
+D[                   _Expression.c(  163): parseParametersExpression       ] Token is not right parenthesis.
+D[                   _Expression.c(  171): parseParametersExpression       ] Loop end.
+D[                   _Expression.c(  173): parseParametersExpression       ] list count = 1
+T[                   _Expression.c(  183): parseParametersExpression       ] [  END  ]parseParametersExpression
+T[                   _Expression.c(  111): parseParametersExpression       ] [ START ]parseParametersExpression
+D[                   _Expression.c(  119): parseParametersExpression       ] Token type= 9(  4,  7) ["Nice to meet you, %s!\n"]
+D[                   _Expression.c(  120): parseParametersExpression       ] Loop start.
+D[                   _Expression.c(  123): parseParametersExpression       ] Parse expression.
+D[                   _Expression.c(  133): parseParametersExpression       ] Add expression.
+D[                   _Expression.c(  147): parseParametersExpression       ] Get current token.
+D[                   _Expression.c(  149): parseParametersExpression       ] Token type=51(  4, 32) [, ]
+D[                   _Expression.c(  153): parseParametersExpression       ] Token is not Comma.
+D[                   _Expression.c(  123): parseParametersExpression       ] Parse expression.
+T[                   _Expression.c(  111): parseParametersExpression       ] [ START ]parseParametersExpression
+D[                   _Expression.c(  119): parseParametersExpression       ] Token type=32(  4, 39) [)]
+D[                   _Expression.c(  120): parseParametersExpression       ] Loop start.
+D[                   _Expression.c(  171): parseParametersExpression       ] Loop end.
+D[                   _Expression.c(  173): parseParametersExpression       ] list count = 0
+T[                   _Expression.c(  183): parseParametersExpression       ] [  END  ]parseParametersExpression
+D[                   _Expression.c(  133): parseParametersExpression       ] Add expression.
+D[                   _Expression.c(  147): parseParametersExpression       ] Get current token.
+D[                   _Expression.c(  149): parseParametersExpression       ] Token type=32(  4, 40) [)]
+D[                   _Expression.c(  163): parseParametersExpression       ] Token is not right parenthesis.
+D[                   _Expression.c(  171): parseParametersExpression       ] Loop end.
+D[                   _Expression.c(  173): parseParametersExpression       ] list count = 2
+T[                   _Expression.c(  183): parseParametersExpression       ] [  END  ]parseParametersExpression
+T[                    _Evaluator.c(  152): evaluator_functionCall          ] [ START ]evaluator_functionCall
+D[                    _Evaluator.c(  157): evaluator_functionCall          ] Function name is 'write'
+T[                    _Evaluator.c(   80): evaluator_parameters            ] [ START ]evaluator_parameters
+D[                    _Evaluator.c(   94): evaluator_parameters            ] Do 'String literal expression'
+T[                    _Evaluator.c(   13): evaluator_stringLiteral         ] [ START ]evaluator_stringLiteral
+D[                    _Evaluator.c(   22): evaluator_stringLiteral         ] Literal is '"Welcome to Cria World!\n"'
+D[                    _Evaluator.c(   26): evaluator_stringLiteral         ] literal check
+D[                    _Evaluator.c(   26): evaluator_stringLiteral         ] literal check
+D[                    _Evaluator.c(   30): evaluator_stringLiteral         ] set all 
+D[                    _Evaluator.c(   63): evaluator_stringLiteral         ] Edited string is 'Welcome to Cria World!
+'
+T[                    _Evaluator.c(   67): evaluator_stringLiteral         ] [  END  ]evaluator_stringLiteral
+D[                    _Evaluator.c(   96): evaluator_parameters            ] Done 'String literal expression'
+D[                    _Evaluator.c(   98): evaluator_parameters            ] Add 'Cria Id'
+T[                    _Evaluator.c(  139): evaluator_parameters            ] [  END  ]evaluator_parameters
+D[                    _Evaluator.c(  170): evaluator_functionCall          ] execute parameters count is '1'
+D[                    _Evaluator.c(  175): evaluator_functionCall          ] Call native function.(write)
+T[                    _Evaluator.c(  185): evaluator_functionCall          ] [  END  ]evaluator_functionCall
+T[                    _Evaluator.c(  152): evaluator_functionCall          ] [ START ]evaluator_functionCall
+D[                    _Evaluator.c(  157): evaluator_functionCall          ] Function name is 'write'
+T[                    _Evaluator.c(   80): evaluator_parameters            ] [ START ]evaluator_parameters
+D[                    _Evaluator.c(   94): evaluator_parameters            ] Do 'String literal expression'
+T[                    _Evaluator.c(   13): evaluator_stringLiteral         ] [ START ]evaluator_stringLiteral
+D[                    _Evaluator.c(   22): evaluator_stringLiteral         ] Literal is '"What's your name? > "'
+D[                    _Evaluator.c(   26): evaluator_stringLiteral         ] literal check
+D[                    _Evaluator.c(   30): evaluator_stringLiteral         ] set all 
+D[                    _Evaluator.c(   63): evaluator_stringLiteral         ] Edited string is 'What's your name? > '
+T[                    _Evaluator.c(   67): evaluator_stringLiteral         ] [  END  ]evaluator_stringLiteral
+D[                    _Evaluator.c(   96): evaluator_parameters            ] Done 'String literal expression'
+D[                    _Evaluator.c(   98): evaluator_parameters            ] Add 'Cria Id'
+T[                    _Evaluator.c(  139): evaluator_parameters            ] [  END  ]evaluator_parameters
+D[                    _Evaluator.c(  170): evaluator_functionCall          ] execute parameters count is '1'
+D[                    _Evaluator.c(  175): evaluator_functionCall          ] Call native function.(write)
+T[                    _Evaluator.c(  185): evaluator_functionCall          ] [  END  ]evaluator_functionCall
+T[                    _Evaluator.c(  152): evaluator_functionCall          ] [ START ]evaluator_functionCall
+D[                    _Evaluator.c(  157): evaluator_functionCall          ] Function name is 'write'
+T[                    _Evaluator.c(   80): evaluator_parameters            ] [ START ]evaluator_parameters
+D[                    _Evaluator.c(   94): evaluator_parameters            ] Do 'String literal expression'
+T[                    _Evaluator.c(   13): evaluator_stringLiteral         ] [ START ]evaluator_stringLiteral
+D[                    _Evaluator.c(   22): evaluator_stringLiteral         ] Literal is '"Nice to meet you, %s!\n"'
+D[                    _Evaluator.c(   26): evaluator_stringLiteral         ] literal check
+D[                    _Evaluator.c(   26): evaluator_stringLiteral         ] literal check
+D[                    _Evaluator.c(   30): evaluator_stringLiteral         ] set all 
+D[                    _Evaluator.c(   63): evaluator_stringLiteral         ] Edited string is 'Nice to meet you, %s!
+'
+T[                    _Evaluator.c(   67): evaluator_stringLiteral         ] [  END  ]evaluator_stringLiteral
+D[                    _Evaluator.c(   96): evaluator_parameters            ] Done 'String literal expression'
+D[                    _Evaluator.c(   98): evaluator_parameters            ] Add 'Cria Id'
+D[                    _Evaluator.c(  120): evaluator_parameters            ] Do reference expression
+T[                    _Evaluator.c(  152): evaluator_functionCall          ] [ START ]evaluator_functionCall
+D[                    _Evaluator.c(  157): evaluator_functionCall          ] Function name is 'read'
+T[                    _Evaluator.c(   80): evaluator_parameters            ] [ START ]evaluator_parameters
+T[                    _Evaluator.c(  139): evaluator_parameters            ] [  END  ]evaluator_parameters
+D[                    _Evaluator.c(  170): evaluator_functionCall          ] execute parameters count is '0'
+D[                    _Evaluator.c(  175): evaluator_functionCall          ] Call native function.(read)
+T[                    _Evaluator.c(  185): evaluator_functionCall          ] [  END  ]evaluator_functionCall
+D[                    _Evaluator.c(  122): evaluator_parameters            ] Done reference expression
+D[                    _Evaluator.c(  124): evaluator_parameters            ] Add 'Cria Id'
+T[                    _Evaluator.c(  139): evaluator_parameters            ] [  END  ]evaluator_parameters
+D[                    _Evaluator.c(  170): evaluator_functionCall          ] execute parameters count is '2'
+D[                    _Evaluator.c(  175): evaluator_functionCall          ] Call native function.(write)
+T[                    _Evaluator.c(  185): evaluator_functionCall          ] [  END  ]evaluator_functionCall
