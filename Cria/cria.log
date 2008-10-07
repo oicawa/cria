@@ -1,475 +1,52 @@
-T[                  _Interpreter.c(   42): interpreter_loadCore            ] [ START ]interpreter_loadCore
-T[                  _Interpreter.c(   28): Interpreter_addFunction         ] [ START ]Interpreter_addFunction
-T[                  _Interpreter.c(   32): Interpreter_addFunction         ] [  END  ]Interpreter_addFunction
-T[                  _Interpreter.c(   28): Interpreter_addFunction         ] [ START ]Interpreter_addFunction
-T[                  _Interpreter.c(   32): Interpreter_addFunction         ] [  END  ]Interpreter_addFunction
-T[                  _Interpreter.c(   45): interpreter_loadCore            ] [  END  ]interpreter_loadCore
-T[                  _Interpreter.c(  107): Interpreter_compile             ] [ START ]Interpreter_compile
-T[                    _Tokenizer.c(  128): tokenizer_new                   ] [ START ]tokenizer_new
-T[                    _Tokenizer.c(  149): tokenizer_new                   ] [  END  ]tokenizer_new
-T[                    _Tokenizer.c( 1300): tokenizer_parse                 ] [ START ]tokenizer_parse
-T[                    _Tokenizer.c(  613): parseIdentifier                 ] [ START ]parseIdentifier
-T[                    _Tokenizer.c(  308): parseReserved                   ] [ START ]parseReserved
-T[                    _Tokenizer.c(  450): parseReserved                   ] [  END  ]parseReserved
-T[                    _Tokenizer.c(  462): parseVariableOrFunction         ] [ START ]parseVariableOrFunction
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c(  507): parseVariableOrFunction         ] [  END  ]parseVariableOrFunction
-T[                    _Tokenizer.c(  670): parseIdentifier                 ] [  END  ]parseIdentifier
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(()
-T[                    _Tokenizer.c( 1108): parseOther                      ] Create 'TOKEN_TYPE_PARENTHESIS_LEFT'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(")
-T[                    _Tokenizer.c( 1213): parseOther                      ] Try string literal.
-T[                    _Tokenizer.c(  917): parseStringLiteral              ] [ START ]parseStringLiteral
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c(  968): parseStringLiteral              ] [  END  ]parseStringLiteral
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.())
-T[                    _Tokenizer.c( 1114): parseOther                      ] Create 'TOKEN_TYPE_PARENTHESIS_RIGHT'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(
-)
-T[                    _Tokenizer.c( 1220): parseOther                      ] Create 'TOKEN_TYPE_NEW_LINE'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1229): parseOther                      ] Try indent/dedent literal.
-T[                    _Tokenizer.c(  979): parseIndentDedent               ] [ START ]parseIndentDedent
-T[                    _Tokenizer.c( 1077): parseIndentDedent               ] [  END  ]parseIndentDedent
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c(  613): parseIdentifier                 ] [ START ]parseIdentifier
-T[                    _Tokenizer.c(  308): parseReserved                   ] [ START ]parseReserved
-T[                    _Tokenizer.c(  450): parseReserved                   ] [  END  ]parseReserved
-T[                    _Tokenizer.c(  462): parseVariableOrFunction         ] [ START ]parseVariableOrFunction
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c(  507): parseVariableOrFunction         ] [  END  ]parseVariableOrFunction
-T[                    _Tokenizer.c(  670): parseIdentifier                 ] [  END  ]parseIdentifier
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(()
-T[                    _Tokenizer.c( 1108): parseOther                      ] Create 'TOKEN_TYPE_PARENTHESIS_LEFT'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(")
-T[                    _Tokenizer.c( 1213): parseOther                      ] Try string literal.
-T[                    _Tokenizer.c(  917): parseStringLiteral              ] [ START ]parseStringLiteral
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c(  968): parseStringLiteral              ] [  END  ]parseStringLiteral
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.())
-T[                    _Tokenizer.c( 1114): parseOther                      ] Create 'TOKEN_TYPE_PARENTHESIS_RIGHT'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(
-)
-T[                    _Tokenizer.c( 1220): parseOther                      ] Create 'TOKEN_TYPE_NEW_LINE'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1229): parseOther                      ] Try indent/dedent literal.
-T[                    _Tokenizer.c(  979): parseIndentDedent               ] [ START ]parseIndentDedent
-T[                    _Tokenizer.c( 1077): parseIndentDedent               ] [  END  ]parseIndentDedent
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c(  613): parseIdentifier                 ] [ START ]parseIdentifier
-T[                    _Tokenizer.c(  308): parseReserved                   ] [ START ]parseReserved
-T[                    _Tokenizer.c(  450): parseReserved                   ] [  END  ]parseReserved
-T[                    _Tokenizer.c(  462): parseVariableOrFunction         ] [ START ]parseVariableOrFunction
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c(  507): parseVariableOrFunction         ] [  END  ]parseVariableOrFunction
-T[                    _Tokenizer.c(  670): parseIdentifier                 ] [  END  ]parseIdentifier
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(()
-T[                    _Tokenizer.c( 1108): parseOther                      ] Create 'TOKEN_TYPE_PARENTHESIS_LEFT'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(")
-T[                    _Tokenizer.c( 1213): parseOther                      ] Try string literal.
-T[                    _Tokenizer.c(  917): parseStringLiteral              ] [ START ]parseStringLiteral
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c(  968): parseStringLiteral              ] [  END  ]parseStringLiteral
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(,)
-T[                    _Tokenizer.c( 1186): parseOther                      ] Try comma literal.
-T[                    _Tokenizer.c( 1206): parseOther                      ] Create 'TOKEN_TYPE_COMMA'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c(  613): parseIdentifier                 ] [ START ]parseIdentifier
-T[                    _Tokenizer.c(  308): parseReserved                   ] [ START ]parseReserved
-T[                    _Tokenizer.c(  450): parseReserved                   ] [  END  ]parseReserved
-T[                    _Tokenizer.c(  462): parseVariableOrFunction         ] [ START ]parseVariableOrFunction
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c(  507): parseVariableOrFunction         ] [  END  ]parseVariableOrFunction
-T[                    _Tokenizer.c(  670): parseIdentifier                 ] [  END  ]parseIdentifier
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(()
-T[                    _Tokenizer.c( 1108): parseOther                      ] Create 'TOKEN_TYPE_PARENTHESIS_LEFT'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.())
-T[                    _Tokenizer.c( 1114): parseOther                      ] Create 'TOKEN_TYPE_PARENTHESIS_RIGHT'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.())
-T[                    _Tokenizer.c( 1114): parseOther                      ] Create 'TOKEN_TYPE_PARENTHESIS_RIGHT'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(
-)
-T[                    _Tokenizer.c( 1220): parseOther                      ] Create 'TOKEN_TYPE_NEW_LINE'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1229): parseOther                      ] Try indent/dedent literal.
-T[                    _Tokenizer.c(  979): parseIndentDedent               ] [ START ]parseIndentDedent
-T[                    _Tokenizer.c( 1077): parseIndentDedent               ] [  END  ]parseIndentDedent
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1359): tokenizer_parse                 ] result = 1
-T[                    _Tokenizer.c( 1360): tokenizer_parse                 ] [  END  ]tokenizer_parse
-T[                       _Parser.c(   13): parser_new                      ] [ START ]parser_new
-T[                       _Parser.c(   22): parser_new                      ] [  END  ]parser_new
-T[                       _Parser.c(  163): parser_parse                    ] [ START ]parser_parse
-T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
-T[                    _Statement.c(  177): statement_parse                 ] [  END  ]statement_parse
-T[                  _Interpreter.c(   42): interpreter_loadCore            ] [ START ]interpreter_loadCore
-T[                  _Interpreter.c(   28): Interpreter_addFunction         ] [ START ]Interpreter_addFunction
-T[                  _Interpreter.c(   32): Interpreter_addFunction         ] [  END  ]Interpreter_addFunction
-T[                  _Interpreter.c(   28): Interpreter_addFunction         ] [ START ]Interpreter_addFunction
-T[                  _Interpreter.c(   32): Interpreter_addFunction         ] [  END  ]Interpreter_addFunction
-T[                  _Interpreter.c(   45): interpreter_loadCore            ] [  END  ]interpreter_loadCore
-T[                  _Interpreter.c(  107): Interpreter_compile             ] [ START ]Interpreter_compile
-T[                    _Tokenizer.c(  128): tokenizer_new                   ] [ START ]tokenizer_new
-T[                    _Tokenizer.c(  149): tokenizer_new                   ] [  END  ]tokenizer_new
-T[                    _Tokenizer.c( 1300): tokenizer_parse                 ] [ START ]tokenizer_parse
-T[                    _Tokenizer.c(  613): parseIdentifier                 ] [ START ]parseIdentifier
-T[                    _Tokenizer.c(  308): parseReserved                   ] [ START ]parseReserved
-T[                    _Tokenizer.c(  450): parseReserved                   ] [  END  ]parseReserved
-T[                    _Tokenizer.c(  462): parseVariableOrFunction         ] [ START ]parseVariableOrFunction
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c(  507): parseVariableOrFunction         ] [  END  ]parseVariableOrFunction
-T[                    _Tokenizer.c(  670): parseIdentifier                 ] [  END  ]parseIdentifier
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(()
-T[                    _Tokenizer.c( 1108): parseOther                      ] Create 'TOKEN_TYPE_PARENTHESIS_LEFT'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(")
-T[                    _Tokenizer.c( 1213): parseOther                      ] Try string literal.
-T[                    _Tokenizer.c(  917): parseStringLiteral              ] [ START ]parseStringLiteral
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c(  968): parseStringLiteral              ] [  END  ]parseStringLiteral
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.())
-T[                    _Tokenizer.c( 1114): parseOther                      ] Create 'TOKEN_TYPE_PARENTHESIS_RIGHT'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(
-)
-T[                    _Tokenizer.c( 1220): parseOther                      ] Create 'TOKEN_TYPE_NEW_LINE'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1229): parseOther                      ] Try indent/dedent literal.
-T[                    _Tokenizer.c(  979): parseIndentDedent               ] [ START ]parseIndentDedent
-T[                    _Tokenizer.c( 1077): parseIndentDedent               ] [  END  ]parseIndentDedent
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c(  613): parseIdentifier                 ] [ START ]parseIdentifier
-T[                    _Tokenizer.c(  308): parseReserved                   ] [ START ]parseReserved
-T[                    _Tokenizer.c(  450): parseReserved                   ] [  END  ]parseReserved
-T[                    _Tokenizer.c(  462): parseVariableOrFunction         ] [ START ]parseVariableOrFunction
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c(  507): parseVariableOrFunction         ] [  END  ]parseVariableOrFunction
-T[                    _Tokenizer.c(  670): parseIdentifier                 ] [  END  ]parseIdentifier
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(()
-T[                    _Tokenizer.c( 1108): parseOther                      ] Create 'TOKEN_TYPE_PARENTHESIS_LEFT'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(")
-T[                    _Tokenizer.c( 1213): parseOther                      ] Try string literal.
-T[                    _Tokenizer.c(  917): parseStringLiteral              ] [ START ]parseStringLiteral
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c(  968): parseStringLiteral              ] [  END  ]parseStringLiteral
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.())
-T[                    _Tokenizer.c( 1114): parseOther                      ] Create 'TOKEN_TYPE_PARENTHESIS_RIGHT'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(
-)
-T[                    _Tokenizer.c( 1220): parseOther                      ] Create 'TOKEN_TYPE_NEW_LINE'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1229): parseOther                      ] Try indent/dedent literal.
-T[                    _Tokenizer.c(  979): parseIndentDedent               ] [ START ]parseIndentDedent
-T[                    _Tokenizer.c( 1077): parseIndentDedent               ] [  END  ]parseIndentDedent
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c(  613): parseIdentifier                 ] [ START ]parseIdentifier
-T[                    _Tokenizer.c(  308): parseReserved                   ] [ START ]parseReserved
-T[                    _Tokenizer.c(  450): parseReserved                   ] [  END  ]parseReserved
-T[                    _Tokenizer.c(  462): parseVariableOrFunction         ] [ START ]parseVariableOrFunction
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c(  507): parseVariableOrFunction         ] [  END  ]parseVariableOrFunction
-T[                    _Tokenizer.c(  670): parseIdentifier                 ] [  END  ]parseIdentifier
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(()
-T[                    _Tokenizer.c( 1108): parseOther                      ] Create 'TOKEN_TYPE_PARENTHESIS_LEFT'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(")
-T[                    _Tokenizer.c( 1213): parseOther                      ] Try string literal.
-T[                    _Tokenizer.c(  917): parseStringLiteral              ] [ START ]parseStringLiteral
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c(  968): parseStringLiteral              ] [  END  ]parseStringLiteral
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(,)
-T[                    _Tokenizer.c( 1186): parseOther                      ] Try comma literal.
-T[                    _Tokenizer.c( 1206): parseOther                      ] Create 'TOKEN_TYPE_COMMA'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c(  613): parseIdentifier                 ] [ START ]parseIdentifier
-T[                    _Tokenizer.c(  308): parseReserved                   ] [ START ]parseReserved
-T[                    _Tokenizer.c(  450): parseReserved                   ] [  END  ]parseReserved
-T[                    _Tokenizer.c(  462): parseVariableOrFunction         ] [ START ]parseVariableOrFunction
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c(  507): parseVariableOrFunction         ] [  END  ]parseVariableOrFunction
-T[                    _Tokenizer.c(  670): parseIdentifier                 ] [  END  ]parseIdentifier
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(()
-T[                    _Tokenizer.c( 1108): parseOther                      ] Create 'TOKEN_TYPE_PARENTHESIS_LEFT'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.())
-T[                    _Tokenizer.c( 1114): parseOther                      ] Create 'TOKEN_TYPE_PARENTHESIS_RIGHT'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.())
-T[                    _Tokenizer.c( 1114): parseOther                      ] Create 'TOKEN_TYPE_PARENTHESIS_RIGHT'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1088): parseOther                      ] [ START ]parseOther
-T[                    _Tokenizer.c( 1102): parseOther                      ] Check first charactor.(
-)
-T[                    _Tokenizer.c( 1220): parseOther                      ] Create 'TOKEN_TYPE_NEW_LINE'
-T[                    _Tokenizer.c(   81): token_new                       ] [ START ]token_new
-T[                    _Tokenizer.c(   87): token_new                       ] [  END  ]token_new
-T[                    _Tokenizer.c( 1229): parseOther                      ] Try indent/dedent literal.
-T[                    _Tokenizer.c(  979): parseIndentDedent               ] [ START ]parseIndentDedent
-T[                    _Tokenizer.c( 1077): parseIndentDedent               ] [  END  ]parseIndentDedent
-T[                    _Tokenizer.c( 1253): parseOther                      ] [  END  ]parseOther
-T[                    _Tokenizer.c( 1359): tokenizer_parse                 ] result = 1
-T[                    _Tokenizer.c( 1360): tokenizer_parse                 ] [  END  ]tokenizer_parse
-T[                       _Parser.c(   13): parser_new                      ] [ START ]parser_new
-T[                       _Parser.c(   22): parser_new                      ] [  END  ]parser_new
-T[                       _Parser.c(  163): parser_parse                    ] [ START ]parser_parse
-T[                       _Parser.c(  117): parser_returnToMark             ] [ START ]parser_returnToMark
-T[                       _Parser.c(  128): parser_returnToMark             ] [  END  ]parser_returnToMark
-T[                       _Parser.c(  117): parser_returnToMark             ] [ START ]parser_returnToMark
-T[                       _Parser.c(  128): parser_returnToMark             ] [  END  ]parser_returnToMark
-T[                       _Parser.c(  117): parser_returnToMark             ] [ START ]parser_returnToMark
-T[                       _Parser.c(  128): parser_returnToMark             ] [  END  ]parser_returnToMark
-T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
-T[          _SubstituteStatement.c(  126): substituteStatement_isMatch     ] [ START ]substituteStatement_isMatch
-T[                       _Parser.c(  117): parser_returnToMark             ] [ START ]parser_returnToMark
-T[                       _Parser.c(  128): parser_returnToMark             ] [  END  ]parser_returnToMark
-T[          _SubstituteStatement.c(  158): substituteStatement_isMatch     ] [  END  ]substituteStatement_isMatch
-T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
-T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
-T[         _ParametersExpression.c(   50): parametersExpression_parse      ] [ START ]parametersExpression_parse
-T[                   _Expression.c(   76): expression_parse                ] [ START ]expression_parse
-T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
-T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
-T[                   _Expression.c(   12): expression_new                  ] [ START ]expression_new
-T[                   _Expression.c(   16): expression_new                  ] expression kind is '0'
-T[                   _Expression.c(   17): expression_new                  ] [  END  ]expression_new
-T[                   _Expression.c(  148): expression_parse                ] [  END  ]expression_parse
-T[         _ParametersExpression.c(  105): parametersExpression_parse      ] [  END  ]parametersExpression_parse
-T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
-T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
-T[                    _Statement.c(  192): statement_parse                 ] [  END  ]statement_parse
-T[                       _Parser.c(  149): addStatement                    ] [ START ]addStatement
-T[                       _Parser.c(  150): addStatement                    ] statement is [003D6718]
-T[                       _Parser.c(  152): addStatement                    ] [  END  ]addStatement
-T[                       _Parser.c(  117): parser_returnToMark             ] [ START ]parser_returnToMark
-T[                       _Parser.c(  128): parser_returnToMark             ] [  END  ]parser_returnToMark
-T[                       _Parser.c(  117): parser_returnToMark             ] [ START ]parser_returnToMark
-T[                       _Parser.c(  128): parser_returnToMark             ] [  END  ]parser_returnToMark
-T[                       _Parser.c(  117): parser_returnToMark             ] [ START ]parser_returnToMark
-T[                       _Parser.c(  128): parser_returnToMark             ] [  END  ]parser_returnToMark
-T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
-T[          _SubstituteStatement.c(  126): substituteStatement_isMatch     ] [ START ]substituteStatement_isMatch
-T[                       _Parser.c(  117): parser_returnToMark             ] [ START ]parser_returnToMark
-T[                       _Parser.c(  128): parser_returnToMark             ] [  END  ]parser_returnToMark
-T[          _SubstituteStatement.c(  158): substituteStatement_isMatch     ] [  END  ]substituteStatement_isMatch
-T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
-T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
-T[         _ParametersExpression.c(   50): parametersExpression_parse      ] [ START ]parametersExpression_parse
-T[                   _Expression.c(   76): expression_parse                ] [ START ]expression_parse
-T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
-T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
-T[                   _Expression.c(   12): expression_new                  ] [ START ]expression_new
-T[                   _Expression.c(   16): expression_new                  ] expression kind is '0'
-T[                   _Expression.c(   17): expression_new                  ] [  END  ]expression_new
-T[                   _Expression.c(  148): expression_parse                ] [  END  ]expression_parse
-T[         _ParametersExpression.c(  105): parametersExpression_parse      ] [  END  ]parametersExpression_parse
-T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
-T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
-T[                    _Statement.c(  192): statement_parse                 ] [  END  ]statement_parse
-T[                       _Parser.c(  149): addStatement                    ] [ START ]addStatement
-T[                       _Parser.c(  150): addStatement                    ] statement is [003D69D8]
-T[                       _Parser.c(  152): addStatement                    ] [  END  ]addStatement
-T[                       _Parser.c(  117): parser_returnToMark             ] [ START ]parser_returnToMark
-T[                       _Parser.c(  128): parser_returnToMark             ] [  END  ]parser_returnToMark
-T[                       _Parser.c(  117): parser_returnToMark             ] [ START ]parser_returnToMark
-T[                       _Parser.c(  128): parser_returnToMark             ] [  END  ]parser_returnToMark
-T[                       _Parser.c(  117): parser_returnToMark             ] [ START ]parser_returnToMark
-T[                       _Parser.c(  128): parser_returnToMark             ] [  END  ]parser_returnToMark
-T[                    _Statement.c(   74): statement_parse                 ] [ START ]statement_parse
-T[          _SubstituteStatement.c(  126): substituteStatement_isMatch     ] [ START ]substituteStatement_isMatch
-T[                       _Parser.c(  117): parser_returnToMark             ] [ START ]parser_returnToMark
-T[                       _Parser.c(  128): parser_returnToMark             ] [  END  ]parser_returnToMark
-T[          _SubstituteStatement.c(  158): substituteStatement_isMatch     ] [  END  ]substituteStatement_isMatch
-T[        _FunctionCallStatement.c(   53): functionCallStatement_parse     ] [ START ]functionCallStatement_parse
-T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
-T[         _ParametersExpression.c(   50): parametersExpression_parse      ] [ START ]parametersExpression_parse
-T[                   _Expression.c(   76): expression_parse                ] [ START ]expression_parse
-T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
-T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
-T[                   _Expression.c(   12): expression_new                  ] [ START ]expression_new
-T[                   _Expression.c(   16): expression_new                  ] expression kind is '0'
-T[                   _Expression.c(   17): expression_new                  ] [  END  ]expression_new
-T[                   _Expression.c(  148): expression_parse                ] [  END  ]expression_parse
-T[                   _Expression.c(   76): expression_parse                ] [ START ]expression_parse
-T[      _StringLiteralExpression.c(   50): stringLiteralExpression_parse   ] [ START ]stringLiteralExpression_parse
-T[      _StringLiteralExpression.c(   71): stringLiteralExpression_parse   ] [  END  ]stringLiteralExpression_parse
-T[       _FunctionCallExpression.c(   60): functionCallExpression_parse    ] [ START ]functionCallExpression_parse
-T[         _ParametersExpression.c(   50): parametersExpression_parse      ] [ START ]parametersExpression_parse
-T[         _ParametersExpression.c(  105): parametersExpression_parse      ] [  END  ]parametersExpression_parse
-T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
-T[                   _Expression.c(   12): expression_new                  ] [ START ]expression_new
-T[                   _Expression.c(   16): expression_new                  ] expression kind is '6'
-T[                   _Expression.c(   17): expression_new                  ] [  END  ]expression_new
-T[                   _Expression.c(  148): expression_parse                ] [  END  ]expression_parse
-T[         _ParametersExpression.c(  105): parametersExpression_parse      ] [  END  ]parametersExpression_parse
-T[       _FunctionCallExpression.c(  129): functionCallExpression_parse    ] [  END  ]functionCallExpression_parse
-T[        _FunctionCallStatement.c(  100): functionCallStatement_parse     ] [  END  ]functionCallStatement_parse
-T[                    _Statement.c(  192): statement_parse                 ] [  END  ]statement_parse
-T[                       _Parser.c(  149): addStatement                    ] [ START ]addStatement
-T[                       _Parser.c(  150): addStatement                    ] statement is [003D6DD8]
-T[                       _Parser.c(  152): addStatement                    ] [  END  ]addStatement
-T[                       _Parser.c(  228): parser_parse                    ] [  END  ]parser_parse
-T[                       _Parser.c(   33): parser_dispose                  ] [ START ]parser_dispose
-T[                       _Parser.c(   58): parser_dispose                  ] [  END  ]parser_dispose
-T[                    _Tokenizer.c(  161): tokenizer_dispose               ] [ START ]tokenizer_dispose
-T[                    _Tokenizer.c(  207): tokenizer_dispose               ] [  END  ]tokenizer_dispose
-T[                  _Interpreter.c(  145): Interpreter_compile             ] [  END  ]Interpreter_compile
-T[                  _Interpreter.c(  157): Interpreter_run                 ] [ START ]Interpreter_run
-T[                     _Executor.c(   48): executor_executeStatement       ] [ START ]executor_executeStatement
-T[                     _Executor.c(   34): executor_executeFunctionCallStatement] [ START ]executor_executeFunctionCallStatement
-T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
-T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
-T[                    _Evaluator.c(   13): evaluator_evaluateStringLiteralExpression] [ START ]evaluator_evaluateStringLiteralExpression
-T[                   _CriaString.c(   12): CriaString_new                  ] [ START ]CriaString_new
-T[                   _CriaString.c(   21): CriaString_new                  ] [  END  ]CriaString_new
-T[                    _Evaluator.c(   67): evaluator_evaluateStringLiteralExpression] [  END  ]evaluator_evaluateStringLiteralExpression
-T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
-T[                           _IO.c(   13): io_write                        ] [ START ]io_write
-T[                       _CriaId.c(   11): CriaId_new                      ] [ START ]CriaId_new
-T[                       _CriaId.c(   16): CriaId_new                      ] [  END  ]CriaId_new
-T[                           _IO.c(   89): io_write                        ] [  END  ]io_write
-T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
-T[                     _Executor.c(   36): executor_executeFunctionCallStatement] [  END  ]executor_executeFunctionCallStatement
-T[                     _Executor.c(   93): executor_executeStatement       ] [  END  ]executor_executeStatement
-T[                     _Executor.c(   48): executor_executeStatement       ] [ START ]executor_executeStatement
-T[                     _Executor.c(   34): executor_executeFunctionCallStatement] [ START ]executor_executeFunctionCallStatement
-T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
-T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
-T[                    _Evaluator.c(   13): evaluator_evaluateStringLiteralExpression] [ START ]evaluator_evaluateStringLiteralExpression
-T[                   _CriaString.c(   12): CriaString_new                  ] [ START ]CriaString_new
-T[                   _CriaString.c(   21): CriaString_new                  ] [  END  ]CriaString_new
-T[                    _Evaluator.c(   67): evaluator_evaluateStringLiteralExpression] [  END  ]evaluator_evaluateStringLiteralExpression
-T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
-T[                           _IO.c(   13): io_write                        ] [ START ]io_write
-T[                       _CriaId.c(   11): CriaId_new                      ] [ START ]CriaId_new
-T[                       _CriaId.c(   16): CriaId_new                      ] [  END  ]CriaId_new
-T[                           _IO.c(   89): io_write                        ] [  END  ]io_write
-T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
-T[                     _Executor.c(   36): executor_executeFunctionCallStatement] [  END  ]executor_executeFunctionCallStatement
-T[                     _Executor.c(   93): executor_executeStatement       ] [  END  ]executor_executeStatement
-T[                     _Executor.c(   48): executor_executeStatement       ] [ START ]executor_executeStatement
-T[                     _Executor.c(   34): executor_executeFunctionCallStatement] [ START ]executor_executeFunctionCallStatement
-T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
-T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
-T[                    _Evaluator.c(   13): evaluator_evaluateStringLiteralExpression] [ START ]evaluator_evaluateStringLiteralExpression
-T[                   _CriaString.c(   12): CriaString_new                  ] [ START ]CriaString_new
-T[                   _CriaString.c(   21): CriaString_new                  ] [  END  ]CriaString_new
-T[                    _Evaluator.c(   67): evaluator_evaluateStringLiteralExpression] [  END  ]evaluator_evaluateStringLiteralExpression
-T[                    _Evaluator.c(  145): evaluator_evaluateFunctionCallExpression] [ START ]evaluator_evaluateFunctionCallExpression
-T[                    _Evaluator.c(   80): evaluator_evaluateParametersExpression] [ START ]evaluator_evaluateParametersExpression
-T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
-T[                           _IO.c(  101): io_read                         ] [ START ]io_read
-T[                   _CriaString.c(   12): CriaString_new                  ] [ START ]CriaString_new
-T[                   _CriaString.c(   21): CriaString_new                  ] [  END  ]CriaString_new
-T[                           _IO.c(  136): io_read                         ] [  END  ]io_read
-T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
-T[                    _Evaluator.c(  132): evaluator_evaluateParametersExpression] [  END  ]evaluator_evaluateParametersExpression
-T[                           _IO.c(   13): io_write                        ] [ START ]io_write
-T[                       _CriaId.c(   11): CriaId_new                      ] [ START ]CriaId_new
-T[                       _CriaId.c(   16): CriaId_new                      ] [  END  ]CriaId_new
-T[                           _IO.c(   89): io_write                        ] [  END  ]io_write
-T[                    _Evaluator.c(  178): evaluator_evaluateFunctionCallExpression] [  END  ]evaluator_evaluateFunctionCallExpression
-T[                     _Executor.c(   36): executor_executeFunctionCallStatement] [  END  ]executor_executeFunctionCallStatement
-T[                     _Executor.c(   93): executor_executeStatement       ] [  END  ]executor_executeStatement
-T[                  _Interpreter.c(  168): Interpreter_run                 ] [  END  ]Interpreter_run
-T[                  _Interpreter.c(   80): Interpreter_dispose             ] [ START ]Interpreter_dispose
-T[                  _Interpreter.c(   96): Interpreter_dispose             ] [  END  ]Interpreter_dispose
+T[                    _Evaluator.c(  145): evaluator_functionCall          ] [ START ]evaluator_functionCall
+D[                    _Evaluator.c(  150): evaluator_functionCall          ] Function name is 'write'
+T[                    _Evaluator.c(   80): evaluator_parameters            ] [ START ]evaluator_parameters
+D[                    _Evaluator.c(   94): evaluator_parameters            ] Do 'String literal expression'
+T[                    _Evaluator.c(   13): evaluator_stringLiteral         ] [ START ]evaluator_stringLiteral
+D[                    _Evaluator.c(   22): evaluator_stringLiteral         ] Literal is '"Welcome to Cria World!\n"'
+D[                    _Evaluator.c(   26): evaluator_stringLiteral         ] literal check
+D[                    _Evaluator.c(   26): evaluator_stringLiteral         ] literal check
+D[                    _Evaluator.c(   30): evaluator_stringLiteral         ] set all 
+D[                    _Evaluator.c(   63): evaluator_stringLiteral         ] Edited string is 'Welcome to Cria World!
+'
+T[                    _Evaluator.c(   67): evaluator_stringLiteral         ] [  END  ]evaluator_stringLiteral
+D[                    _Evaluator.c(   96): evaluator_parameters            ] Done 'String literal expression'
+D[                    _Evaluator.c(   98): evaluator_parameters            ] Add 'Cria Id'
+T[                    _Evaluator.c(  132): evaluator_parameters            ] [  END  ]evaluator_parameters
+D[                    _Evaluator.c(  163): evaluator_functionCall          ] execute parameters count is '1'
+D[                    _Evaluator.c(  168): evaluator_functionCall          ] Call native function.(write)
+T[                    _Evaluator.c(  178): evaluator_functionCall          ] [  END  ]evaluator_functionCall
+T[                    _Evaluator.c(  145): evaluator_functionCall          ] [ START ]evaluator_functionCall
+D[                    _Evaluator.c(  150): evaluator_functionCall          ] Function name is 'write'
+T[                    _Evaluator.c(   80): evaluator_parameters            ] [ START ]evaluator_parameters
+D[                    _Evaluator.c(   94): evaluator_parameters            ] Do 'String literal expression'
+T[                    _Evaluator.c(   13): evaluator_stringLiteral         ] [ START ]evaluator_stringLiteral
+D[                    _Evaluator.c(   22): evaluator_stringLiteral         ] Literal is '"What's your name? > "'
+D[                    _Evaluator.c(   26): evaluator_stringLiteral         ] literal check
+D[                    _Evaluator.c(   30): evaluator_stringLiteral         ] set all 
+D[                    _Evaluator.c(   63): evaluator_stringLiteral         ] Edited string is 'What's your name? > '
+T[                    _Evaluator.c(   67): evaluator_stringLiteral         ] [  END  ]evaluator_stringLiteral
+D[                    _Evaluator.c(   96): evaluator_parameters            ] Done 'String literal expression'
+D[                    _Evaluator.c(   98): evaluator_parameters            ] Add 'Cria Id'
+T[                    _Evaluator.c(  132): evaluator_parameters            ] [  END  ]evaluator_parameters
+D[                    _Evaluator.c(  163): evaluator_functionCall          ] execute parameters count is '1'
+D[                    _Evaluator.c(  168): evaluator_functionCall          ] Call native function.(write)
+T[                    _Evaluator.c(  178): evaluator_functionCall          ] [  END  ]evaluator_functionCall
+T[                    _Evaluator.c(  145): evaluator_functionCall          ] [ START ]evaluator_functionCall
+D[                    _Evaluator.c(  150): evaluator_functionCall          ] Function name is 'write'
+T[                    _Evaluator.c(   80): evaluator_parameters            ] [ START ]evaluator_parameters
+D[                    _Evaluator.c(   94): evaluator_parameters            ] Do 'String literal expression'
+T[                    _Evaluator.c(   13): evaluator_stringLiteral         ] [ START ]evaluator_stringLiteral
+D[                    _Evaluator.c(   22): evaluator_stringLiteral         ] Literal is '"Nice to meet you, %s!\n"'
+D[                    _Evaluator.c(   26): evaluator_stringLiteral         ] literal check
+D[                    _Evaluator.c(   26): evaluator_stringLiteral         ] literal check
+D[                    _Evaluator.c(   30): evaluator_stringLiteral         ] set all 
+D[                    _Evaluator.c(   63): evaluator_stringLiteral         ] Edited string is 'Nice to meet you, %s!
+'
+T[                    _Evaluator.c(   67): evaluator_stringLiteral         ] [  END  ]evaluator_stringLiteral
+D[                    _Evaluator.c(   96): evaluator_parameters            ] Done 'String literal expression'
+D[                    _Evaluator.c(   98): evaluator_parameters            ] Add 'Cria Id'
+T[                    _Evaluator.c(  132): evaluator_parameters            ] [  END  ]evaluator_parameters
+D[                    _Evaluator.c(  163): evaluator_functionCall          ] execute parameters count is '1'
+D[                    _Evaluator.c(  168): evaluator_functionCall          ] Call native function.(write)
+T[                    _Evaluator.c(  178): evaluator_functionCall          ] [  END  ]evaluator_functionCall

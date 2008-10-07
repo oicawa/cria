@@ -11,7 +11,6 @@ OBJS =\
     _Tokenizer.o\
     _Parser.o\
     _Statement.o\
-    _FunctionCallStatement.o\
     _SubstituteStatement.o\
     _StringLiteralExpression.o\
     _VariableExpression.o\
@@ -52,7 +51,6 @@ _Interpreter.o: _Interpreter.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logge
 _Tokenizer.o: _Tokenizer.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Parser.o: _Parser.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Statement.o: _Statement.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
-_FunctionCallStatement.o: _FunctionCallStatement.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _SubstituteStatement.o: _SubstituteStatement.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _ExpressionStatement.o: _ExpressionStatement.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _StringLiteralExpression.o: _StringLiteralExpression.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h

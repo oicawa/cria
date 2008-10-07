@@ -13,7 +13,6 @@ expression_new(
     Expression expression = Memory_malloc(sizeof(struct ExpressionTag));
     memset(expression, 0x00, sizeof(struct ExpressionTag));
     expression->kind = kind;
-    Logger_trc("expression kind is '%d'", expression->kind);
     Logger_trc("[  END  ]%s", __func__);
     return expression;
 }
@@ -73,12 +72,14 @@ parseVariableExpression(
     String  name
 )
 {
+    Logger_trc("[ START ]%s", __func__);
     VariableExpression variable = NULL;
     
     variable = Memory_malloc(sizeof(struct VariableExpressionTag));
     memset(variable, 0x00, sizeof(struct VariableExpressionTag));
     variable->name = name;
     
+    Logger_trc("[  END  ]%s", __func__);
     return variable;
 }
 
@@ -89,12 +90,14 @@ parseClassExpression(
     String  name
 )
 {
+    Logger_trc("[ START ]%s", __func__);
     ClassExpression expression = NULL;
     
     expression = Memory_malloc(sizeof(struct ClassExpressionTag));
     memset(expression, 0x00, sizeof(struct ClassExpressionTag));
     expression->name = name;
     
+    Logger_trc("[  END  ]%s", __func__);
     return expression;
 }
 
@@ -113,49 +116,62 @@ parseParametersExpression(
     
     //右括弧のトークンが出現するまで繰り返し
     token = parser_getCurrent(parser);
+    token_log(token);
+    Logger_dbg("Loop start.");
     while (token->type != TOKEN_TYPE_PARENTHESIS_RIGHT)
     {
-        //式解析。
+        Logger_dbg("Parse expression.");
         expression = expression_parse(parser);
         if (expression == NULL)
         {
-            Logger_dbg("Not expression.");
+            Logger_dbg("expression is NULL.");
+            parser_error(token);
             goto END;
         }
         
         //解析できたらパラメータとして追加
+        Logger_dbg("Add expression.");
         list_add(list, expression);
         
+        /*
         //次のトークンへ
+        Logger_dbg("Next token.");
         if (parser_next(parser) == FALSE)
         {
-            Logger_err("Next token is nothing.");
-            perror("Next token is nothing.");
+            parser_error(token);
             goto END;
         }
+        */
         
         //トークンが', 'であれば更に読み出しを行って継続
+        Logger_dbg("Get current token.");
         token = parser_getCurrent(parser);
+        token_log(token);
         if (token->type == TOKEN_TYPE_COMMA)
         {
             //次のトークンへ
+            Logger_dbg("Token is not Comma.");
             if (parser_next(parser) == FALSE)
             {
-                Logger_err("Next token is nothing.");
-                perror("Next token is nothing.");
+                parser_error(token);
                 goto END;
             }
             continue;
         }
         
         //トークンが', 'でも右括弧でもない場合はエラー
+        Logger_dbg("Token is not right parenthesis.");
         if (token->type != TOKEN_TYPE_PARENTHESIS_RIGHT)
         {
-            Logger_err("Next token is illegal.");
-            perror("Next token is illegal.");
+            token_log(token);
+            parser_error(token);
             goto END;
         }
     }
+    Logger_dbg("Loop end.");
+    
+    //次のトークンへ移動。
+    //parser_next(parser);
     
     parameters = Memory_malloc(sizeof(struct ParametersExpressionTag));
     memset(parameters, 0x00, sizeof(struct ParametersExpressionTag));
@@ -198,10 +214,7 @@ parseFunctionCallExpression(
     }
     
     //あればそれを取得
-    Logger_dbg("Get second token.");
     token = parser_getCurrent(parser);
-    token_log(token);
-    Logger_dbg("Got second token.");
     
     //左括弧でなければFALSE返却
     if (token->type != TOKEN_TYPE_PARENTHESIS_LEFT)
@@ -237,6 +250,10 @@ parseFunctionCallExpression(
         Logger_dbg("Last token is not right parenthesis.");
         goto END;
     }
+    
+    
+    //次のトークンへ移動しておく。
+    parser_next(parser);
     
     
     expression = Memory_malloc(sizeof(struct FunctionCallExpressionTag));
@@ -322,6 +339,10 @@ parseGenerateExpression(
     }
     
     
+    //次のトークンへ移動しておく。
+    parser_next(parser);
+    
+    
     expression = Memory_malloc(sizeof(struct FunctionCallExpressionTag));
     memset(expression, 0x00, sizeof(struct FunctionCallExpressionTag));
     expression->name = className;
@@ -335,10 +356,11 @@ END:
 
 
 ReferenceExpression
-parseReferenceExpression(
+expression_parseReferenceExpression(
     Parser  parser
 )
 {
+    Logger_trc("[ START ]%s", __func__);
     ReferenceExpression reference = NULL;
     FunctionCallExpression function = NULL;
     VariableExpression variable = NULL;
@@ -350,14 +372,23 @@ parseReferenceExpression(
     
     
     //現在のトークンと次のトークンへの参照を取得
+    Logger_dbg("Get current token.");
     token = parser_getCurrent(parser);
+    token_log(token);
+    if (token == NULL)
+    {
+        Logger_dbg("Token is NULL.");
+        goto END;
+    }
+    
+    
     next = parser_getNext(parser);
     
     
     //ピリオドの場合（自己インスタンス参照）
-    Logger_dbg("Check identifier expression.");
     if (token->type == TOKEN_TYPE_PERIOD)
     {
+        Logger_dbg("Token is period.");
         //次のトークンからの解析
         if (parser_next(parser) == FALSE)
         {
@@ -366,6 +397,7 @@ parseReferenceExpression(
         }
         
         //先頭のトークンがピリオドだった場合は自己インスタンス、またはクラスへの参照とみなす。
+        Logger_dbg("Create self reference.");
         reference = Memory_malloc(sizeof(struct ReferenceExpressionTag));
         memset(reference, 0x00, sizeof(struct ReferenceExpressionTag));
         reference->type = REFERENCE_TYPE_SELF;
@@ -377,62 +409,81 @@ parseReferenceExpression(
     //識別子の場合
     if (token->type == TOKEN_TYPE_IDENTIFIER)
     {
+        Logger_dbg("Token is Identifier.");
         //次のトークンがピリオドならオブジェクト参照、左括弧ならメソッド呼び出し、
         if (next->type == TOKEN_TYPE_PERIOD)
         {
+            Logger_dbg("Create variable reference.");
             variable = parseVariableExpression(token->buffer);
             
             reference = Memory_malloc(sizeof(struct ReferenceExpressionTag));
             memset(reference, 0x00, sizeof(struct ReferenceExpressionTag));
             reference->type = REFERENCE_TYPE_VARIABLE;
             reference->of.variable = variable;
+            
+            goto NEXT_REFERENCE;
         }
         else if (next->type == TOKEN_TYPE_PARENTHESIS_LEFT)
         {
-            //次のトークンが左括弧だった場合は関数呼び出し
+            Logger_dbg("Create function call reference.");
             function = parseFunctionCallExpression(parser);
             
             reference = Memory_malloc(sizeof(struct ReferenceExpressionTag));
             memset(reference, 0x00, sizeof(struct ReferenceExpressionTag));
             reference->type = REFERENCE_TYPE_FUNCTION_CALL;
             reference->of.function = function;
+            
+            token_log(parser_getCurrent(parser));
+            
+            goto NEXT_REFERENCE;
         }
         else
         {
-            //どちらでもなければ変数で終端
+            Logger_dbg("Create variable reference.");
+            variable = parseVariableExpression(token->buffer);
+            
+            reference = Memory_malloc(sizeof(struct ReferenceExpressionTag));
+            memset(reference, 0x00, sizeof(struct ReferenceExpressionTag));
+            reference->type = REFERENCE_TYPE_VARIABLE;
+            reference->of.variable = variable;
+            
+            Logger_dbg("End of reference..");
             goto END;
         }
-        goto NEXT_REFERENCE;
     }
     else if (token->type == TOKEN_TYPE_CLASS_LITERAL)
     {
-        //次のトークンがピリオドなら、クラス参照、左括弧ならオブジェクト生成
+        Logger_dbg("Token is Class literal.");
         if (next->type == TOKEN_TYPE_PERIOD)
         {
+            Logger_dbg("Create class reference.");
             klass = parseClassExpression(token->buffer);
             
             reference = Memory_malloc(sizeof(struct ReferenceExpressionTag));
             memset(reference, 0x00, sizeof(struct ReferenceExpressionTag));
             reference->type = REFERENCE_TYPE_CLASS;
             reference->of.klass = klass;
+            
+            goto NEXT_REFERENCE;
         }
         else if (next->type == TOKEN_TYPE_PARENTHESIS_LEFT)
         {
-            //次のトークンが左括弧だった場合は関数呼び出し
+            Logger_dbg("Create generate reference.");
             generate = parseGenerateExpression(parser);
             
             reference = Memory_malloc(sizeof(struct ReferenceExpressionTag));
             memset(reference, 0x00, sizeof(struct ReferenceExpressionTag));
             reference->type = REFERENCE_TYPE_GENERATE;
             reference->of.generate = generate;
+            
+            goto NEXT_REFERENCE;
         }
         else
         {
-            //どちらでもなければエラー
+            Logger_dbg("No match reference expression.");
             parser_error(next);
             goto END;
         }
-        goto NEXT_REFERENCE;
     }
     
     //上記いずれのパターンにも当てはまらない場合はNULLを返却
@@ -440,9 +491,11 @@ parseReferenceExpression(
     
 NEXT_REFERENCE:
     //次の参照を確認
-    reference->next = parseReferenceExpression(parser);
+    Logger_dbg("Create next reference expression.");
+    reference->next = expression_parseReferenceExpression(parser);
     
 END:
+    Logger_trc("[  END  ]%s", __func__);
     return reference;
 }
 
@@ -468,6 +521,8 @@ parseFactor(
         
         expression = expression_new(EXPRESSION_KIND_STRING_LITERAL);
         expression->of._integerLiteral_ = integerLiteral;
+        
+        parser_next(parser);
         goto END;
     }
     
@@ -482,6 +537,8 @@ parseFactor(
         
         expression = expression_new(EXPRESSION_KIND_STRING_LITERAL);
         expression->of._stringLiteral_ = stringLiteral;
+        
+        parser_next(parser);
         goto END;
     }
     
@@ -501,7 +558,7 @@ parseFactor(
         token->type == TOKEN_TYPE_CLASS_LITERAL ||
         token->type == TOKEN_TYPE_CONSTANT)
     {
-        ReferenceExpression reference = parseReferenceExpression(parser);
+        ReferenceExpression reference = expression_parseReferenceExpression(parser);
         if (reference == NULL)
         {
             Logger_err("Not reference expression.");
@@ -526,6 +583,7 @@ parseMultiplyDivide(
     Parser  parser
 )
 {
+    Logger_trc("[ START ]%s", __func__);
     Expression expression = NULL;
     Expression left = NULL;
     Expression right = NULL;
@@ -534,12 +592,14 @@ parseMultiplyDivide(
     OperationKind kind;
     
     left = parseFactor(parser);
+    /*
     if (parser_next(parser) == FALSE)
     {
-        parser_error(parser_getCurrent(parser));
+        //parser_error(parser_getCurrent(parser));
+        expression = left;
         goto END;
     }
-    
+    */
     
     //次のトークンが乗算・除算のいずれかだった場合は新たにExpressionを生成
     token = parser_getCurrent(parser);
@@ -571,6 +631,7 @@ parseMultiplyDivide(
     expression->of._operation_ = operation;
     
 END:
+    Logger_trc("[  END  ]%s", __func__);
     return expression;
 }
 
@@ -581,6 +642,7 @@ parsePlusMinus(
     Parser  parser
 )
 {
+    Logger_trc("[ START ]%s", __func__);
     Expression expression = NULL;
     Expression left = NULL;
     Expression right = NULL;
@@ -589,12 +651,14 @@ parsePlusMinus(
     OperationKind kind;
     
     left = parseMultiplyDivide(parser);
+    /*
     if (parser_next(parser) == FALSE)
     {
-        parser_error(parser_getCurrent(parser));
+        //parser_error(parser_getCurrent(parser));
+        expression = left;
         goto END;
     }
-    
+    */
     
     //次のトークンが加算・減算のいずれかだった場合は新たにExpressionを生成
     token = parser_getCurrent(parser);
@@ -626,6 +690,7 @@ parsePlusMinus(
     expression->of._operation_ = operation;
     
 END:
+    Logger_trc("[  END  ]%s", __func__);
     return expression;
 }
 
@@ -636,6 +701,7 @@ parseCompare(
     Parser  parser
 )
 {
+    Logger_trc("[ START ]%s", __func__);
     Expression expression = NULL;
     Expression left = NULL;
     Expression right = NULL;
@@ -644,12 +710,14 @@ parseCompare(
     OperationKind kind;
     
     left = parsePlusMinus(parser);
+    /*
     if (parser_next(parser) == FALSE)
     {
-        parser_error(parser_getCurrent(parser));
+        //parser_error(parser_getCurrent(parser));
+        expression = left;
         goto END;
     }
-    
+    */
     
     //次のトークンが加算・減算のいずれかだった場合は新たにExpressionを生成
     token = parser_getCurrent(parser);
@@ -685,6 +753,7 @@ parseCompare(
     expression->of._operation_ = operation;
     
 END:
+    Logger_trc("[  END  ]%s", __func__);
     return expression;
 }
 
@@ -695,6 +764,7 @@ parseNot(
     Parser  parser
 )
 {
+    Logger_trc("[ START ]%s", __func__);
     Expression expression = NULL;
     Expression left = NULL;
     Expression right = NULL;
@@ -703,12 +773,14 @@ parseNot(
     OperationKind kind;
     
     left = parseCompare(parser);
+    /*
     if (parser_next(parser) == FALSE)
     {
-        parser_error(parser_getCurrent(parser));
+        //parser_error(parser_getCurrent(parser));
+        expression = left;
         goto END;
     }
-    
+    */
     
     //次のトークンが加算・減算のいずれかだった場合は新たにExpressionを生成
     token = parser_getCurrent(parser);
@@ -736,6 +808,7 @@ parseNot(
     expression->of._operation_ = operation;
     
 END:
+    Logger_trc("[  END  ]%s", __func__);
     return expression;
 }
 
@@ -746,6 +819,7 @@ parseAndOr(
     Parser  parser
 )
 {
+    Logger_trc("[ START ]%s", __func__);
     Expression expression = NULL;
     Expression left = NULL;
     Expression right = NULL;
@@ -754,12 +828,14 @@ parseAndOr(
     OperationKind kind;
     
     left = parseNot(parser);
+    /*
     if (parser_next(parser) == FALSE)
     {
-        parser_error(parser_getCurrent(parser));
+        //parser_error(parser_getCurrent(parser));
+        expression = left;
         goto END;
     }
-    
+    */
     
     //次のトークンが加算・減算のいずれかだった場合は新たにExpressionを生成
     token = parser_getCurrent(parser);
@@ -791,6 +867,7 @@ parseAndOr(
     expression->of._operation_ = operation;
     
 END:
+    Logger_trc("[  END  ]%s", __func__);
     return expression;
 }
 

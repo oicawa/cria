@@ -83,6 +83,7 @@ parser_next(
     token_log(((Token)(current->object)));
     parser->current = current;
     parser->next = current->next;
+    
     return TRUE;
 }
 
@@ -93,7 +94,30 @@ parser_getCurrent(
     Parser  parser
 )
 {
-    return (Token)(parser->current->object);
+    Logger_dbg("[ START ]%s", __func__);
+    if (parser == NULL)
+    {
+        Logger_dbg("parser is NULL.");
+        return NULL;
+    }
+    Logger_dbg("parser is not NULL.");
+    Item item = parser->current;
+    if (item == NULL)
+    {
+        Logger_dbg("item is NULL.");
+        return NULL;
+    }
+    Logger_dbg("item is not NULL.");
+    Token token = (Token)(item->object);
+    if (token == NULL)
+    {
+        Logger_dbg("token is NULL.");
+        return NULL;
+    }
+    Logger_dbg("token is not NULL.");
+    
+    Logger_dbg("[  END  ]%s", __func__);
+    return token;
 }
 
 
@@ -103,7 +127,30 @@ parser_getNext(
     Parser  parser
 )
 {
-    return (Token)(parser->next->object);
+    Logger_dbg("[ START ]%s", __func__);
+    if (parser == NULL)
+    {
+        Logger_dbg("parser is NULL.");
+        return NULL;
+    }
+    Logger_dbg("parser is not NULL.");
+    Item item = parser->next;
+    if (item == NULL)
+    {
+        Logger_dbg("item is NULL.");
+        return NULL;
+    }
+    Logger_dbg("item is not NULL.");
+    Token token = (Token)(item->object);
+    if (token == NULL)
+    {
+        Logger_dbg("token is NULL.");
+        return NULL;
+    }
+    Logger_dbg("token is not NULL.");
+    
+    Logger_dbg("[  END  ]%s", __func__);
+    return token;
 }
 
 
@@ -169,7 +216,8 @@ parser_parse(
     
     //次のトークンがある間はループ
     Logger_dbg("Loop start.");
-    while (parser_next(parser) == TRUE)
+    parser_next(parser);
+    while (1)
     {
         setNewTurningPoint(parser);
         mark = parser->mark;
@@ -209,6 +257,11 @@ parser_parse(
             Logger_dbg("Set new turning point.");
             continue;
         }
+        else
+        {
+            //最後のトークンまで来た。
+            break;
+        }
         
         
         //何れにも当てはまらない場合はエラー扱い
@@ -231,15 +284,6 @@ END:
 
 
 
-void
-parser_error(
-    Token token
-)
-{
-    fprintf(stderr, "Syntax error near '%s'. (line:%d, column:%d)\n", token->buffer->pointer, token->row, token->column);
-    Memory_dispose();
-    exit(1);
-}
 
 
 

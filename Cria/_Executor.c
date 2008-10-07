@@ -32,7 +32,7 @@ executor_executeFunctionCallStatement(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    evaluator_evaluateFunctionCallExpression(interpreter, local, statement->expression);
+    evaluator_reference(interpreter, local, statement->expression);
     Logger_trc("[  END  ]%s", __func__);
 }
 

@@ -78,6 +78,7 @@ parametersExpression_parse(
         
         //トークンが', 'であれば更に読み出しを行って継続
         token = parser_getCurrent(parser);
+        token_log(token);
         if (token->type == TOKEN_TYPE_COMMA)
         {
             //次のトークンへ

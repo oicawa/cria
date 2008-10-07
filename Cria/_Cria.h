@@ -229,7 +229,7 @@ struct SubstituteStatementTag
 
 struct FunctionCallStatementTag
 {
-    FunctionCallExpression  expression;
+    ReferenceExpression  expression;
 };
 
 
@@ -742,6 +742,13 @@ expression_parse(
 
 
 
+ReferenceExpression
+expression_parseReferenceExpression(
+    Parser  parser
+);
+
+
+
 //==================================================
 //ObjectExpression
 //==================================================
@@ -931,10 +938,19 @@ executor_executeStatement(
 //Evaluator
 //==================================================
 CriaId
-evaluator_evaluateFunctionCallExpression(
+evaluator_functionCall(
     Interpreter             interpreter,
     List                    local,
     FunctionCallExpression  expression
+);
+
+
+
+CriaId
+evaluator_reference(
+    Interpreter         interpreter,
+    List                local,
+    ReferenceExpression expression
 );
 
 
@@ -953,5 +969,12 @@ evaluator_evaluateFunctionCallExpression(
     } while(0) \
 
 
+#define parser_error(token) \
+    do { \
+        fprintf(stderr, "Syntax error near '%s'. (line:%d, column:%d)\n", (token)->buffer->pointer, (token)->row, (token)->column); \
+        Logger_err("Syntax error near '%s'. (line:%d, column:%d)\n", (token)->buffer->pointer, (token)->row, (token)->column); \
+        Memory_dispose(); \
+        exit(1); \
+} while(0) \
 
 #endif /* PRIVATE_CRIA_H_INCLUDED */

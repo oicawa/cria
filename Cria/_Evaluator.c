@@ -5,7 +5,7 @@
 
 
 CriaId
-evaluator_evaluateStringLiteralExpression(
+evaluator_stringLiteral(
     Interpreter             interpreter,
     StringLiteralExpression expression
 )
@@ -71,7 +71,7 @@ evaluator_evaluateStringLiteralExpression(
 
 
 List
-evaluator_evaluateParametersExpression(
+evaluator_parameters(
     Interpreter             interpreter,
     List                    local,
     ParametersExpression    parametersExpression
@@ -92,7 +92,7 @@ evaluator_evaluateParametersExpression(
         {
         case EXPRESSION_KIND_STRING_LITERAL:
             Logger_dbg("Do 'String literal expression'");
-            id = (CriaId)evaluator_evaluateStringLiteralExpression(interpreter, expression->of._stringLiteral_);
+            id = (CriaId)evaluator_stringLiteral(interpreter, expression->of._stringLiteral_);
             Logger_dbg("Done 'String literal expression'");
             list_add(list, id);
             Logger_dbg("Add 'Cria Id'");
@@ -111,7 +111,7 @@ evaluator_evaluateParametersExpression(
         //*/
         case EXPRESSION_KIND_FUNCTION_CALL:
             Logger_dbg("Do 'Function call expression'");
-            id = evaluator_evaluateFunctionCallExpression(interpreter, local, expression->of._functionCall_);
+            id = evaluator_functionCall(interpreter, local, expression->of._functionCall_);
             Logger_dbg("Done 'Function call expression'");
             list_add(list, id);
             Logger_dbg("Add 'Cria Id'");
@@ -136,7 +136,7 @@ evaluator_evaluateParametersExpression(
 
 
 CriaId
-evaluator_evaluateFunctionCallExpression(
+evaluator_functionCall(
     Interpreter             interpreter,
     List                    local,
     FunctionCallExpression  expression
@@ -158,7 +158,7 @@ evaluator_evaluateFunctionCallExpression(
     
     
     //ˆø”‚ÌŽ®‚ðŽÀs
-    List parameters = evaluator_evaluateParametersExpression(interpreter, local, expression->parameters);
+    List parameters = evaluator_parameters(interpreter, local, expression->parameters);
     
     Logger_dbg("execute parameters count is '%d'", parameters->count);
     
@@ -182,7 +182,41 @@ END:
 
 
 CriaId
-evaluator_evaluateExpression(
+evaluator_reference(
+    Interpreter         interpreter,
+    List                local,
+    ReferenceExpression expression
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    
+    switch (expression->type)
+    {
+    case REFERENCE_TYPE_SELF:
+        break;
+    case REFERENCE_TYPE_VARIABLE:
+        break;
+    case REFERENCE_TYPE_FUNCTION_CALL:
+        id = evaluator_functionCall(interpreter, local, expression->of.function);
+        break;
+    case REFERENCE_TYPE_CLASS:
+        break;
+    case REFERENCE_TYPE_GENERATE:
+        break;
+    default:
+        break;
+    }
+    
+
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
+CriaId
+evaluator_expression(
     Interpreter             interpreter,
     List                    local,
     Expression              expression
