@@ -70,6 +70,92 @@ evaluator_stringLiteral(
 
 
 
+CriaId
+evaluator_variable(
+    Interpreter         interpreter,
+    List                local,
+    VariableExpression  expression
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    VariableDefinition variable;
+    
+    
+    Logger_dbg("Function name is '%s'", expression->name->pointer);
+    variable = variableDefinition_search(interpreter->variableList, expression->name);
+    if (variable == NULL)
+    {
+        Logger_dbg("Variable is not found.");
+        perror("Variable is not found.\n");
+        goto END;
+    }
+    
+    id = variable->object;
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
+CriaId
+evaluator_operation(
+    Interpreter         interpreter,
+    List                local,
+    OperationExpression expression
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    
+    CriaId left = evaluator_expression(interpreter, local, expression->left);
+    CriaId right = evaluator_expression(interpreter, local, expression->right);
+    
+    //式の左辺右辺の型チェック
+    if (left->type != right->type)
+    {
+        runtime_error(interpreter);
+    }
+    
+    //演算可能・不可能のチェック
+    if (left->type == CRIA_DATA_TYPE_FUNCTION
+        || left->type == CRIA_DATA_TYPE_CRIA_OBJECT
+        || left->type == CRIA_DATA_TYPE_CRIA_FUNCTION)
+    {
+        runtime_error(interpreter);
+    }
+    
+    switch (left->type)
+    {
+    case CRIA_DATA_TYPE_BOOLEAN:
+        id = CriaBoolean_operate(interpreter, expression->kind, (CriaBoolean)left, (CriaBoolean)right);
+        break;
+    case CRIA_DATA_TYPE_INTEGER:
+        id = CriaInteger_operate(interpreter, expression->kind, (CriaInteger)left, (CriaInteger)right);
+        break;
+    case CRIA_DATA_TYPE_STRING:
+        id = CriaString_operate(interpreter, expression->kind, (CriaString)left, (CriaString)right);
+        break;
+    case CRIA_DATA_TYPE_NULL:
+    case CRIA_DATA_TYPE_VOID:
+    case CRIA_DATA_TYPE_LIST:
+    case CRIA_DATA_TYPE_FUNCTION:
+    case CRIA_DATA_TYPE_CRIA_OBJECT:
+    case CRIA_DATA_TYPE_CRIA_FUNCTION:
+    default:
+        runtime_error(interpreter);
+        break;
+    }
+    
+    
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
 List
 evaluator_parameters(
     Interpreter             interpreter,
@@ -203,6 +289,7 @@ evaluator_reference(
     case REFERENCE_TYPE_SELF:
         break;
     case REFERENCE_TYPE_VARIABLE:
+        id = evaluator_variable(interpreter, local, expression->of.variable);
         break;
     case REFERENCE_TYPE_FUNCTION_CALL:
         id = evaluator_functionCall(interpreter, local, expression->of.function);
@@ -231,6 +318,51 @@ evaluator_expression(
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
+    
+    
+    switch (expression->kind)
+    {
+    case EXPRESSION_KIND_STRING_LITERAL:
+        Logger_dbg("Do 'String literal expression'");
+        id = (CriaId)evaluator_stringLiteral(interpreter, expression->of._stringLiteral_);
+        Logger_dbg("Done 'String literal expression'");
+        break;
+    /*
+    case EXPRESSION_KIND_INTEGER_LITERAL:
+        break;
+    case EXPRESSION_KIND_REAL_LITERAL:
+        break;
+    case EXPRESSION_KIND_BOOLEAN_LITERAL:
+        break;
+    case EXPRESSION_KIND_NULL_LITERAL:
+        break;
+    case EXPRESSION_KIND_GENERATE:
+        break;
+    //*/
+    case EXPRESSION_KIND_FUNCTION_CALL:
+        Logger_dbg("Do 'Function call expression'");
+        id = evaluator_functionCall(interpreter, local, expression->of._functionCall_);
+        Logger_dbg("Done 'Function call expression'");
+        break;
+    case EXPRESSION_KIND_REFERENCE:
+        Logger_dbg("Do reference expression");
+        id = evaluator_reference(interpreter, local, expression->of._reference_);
+        Logger_dbg("Done reference expression");
+        break;
+    case EXPRESSION_KIND_VARIABLE:
+        Logger_dbg("Do variable expression");
+        id = evaluator_variable(interpreter, local, expression->of._variable_);
+        Logger_dbg("Done variable expression");
+        break;
+    case EXPRESSION_KIND_OPERATION:
+        Logger_dbg("Do operation expression");
+        id = evaluator_operation(interpreter, local, expression->of._operation_);
+        Logger_dbg("Done operation expression");
+        break;
+    default:
+        break;
+    }
+
     
     
     Logger_trc("[  END  ]%s", __func__);

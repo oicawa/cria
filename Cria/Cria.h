@@ -33,35 +33,35 @@ typedef struct  ListTag         *List;
 typedef struct  ListTag         *StringBuffer;
 
 //インスタンスへのポインタ
-typedef struct  InterpreterTag              *Interpreter;
-typedef struct  TokenizerTag                *Tokenizer;
-typedef struct  TokenTag                    *Token;
-typedef struct  ParserTag                   *Parser;
+typedef struct  InterpreterTag                  *Interpreter;
+typedef struct  TokenizerTag                    *Tokenizer;
+typedef struct  TokenTag                        *Token;
+typedef struct  ParserTag                       *Parser;
 
-typedef struct  StatementTag                *Statement;
-typedef struct  ReturnStatementTag          *ReturnStatement;
-typedef struct  CatchStatementTag           *CatchStatement;
-typedef struct  FinallyStatementTag         *FinallyStatement;
-typedef struct  IfStatementTag              *IfStatement;
-typedef struct  WhileStatementTag           *WhileStatement;
-typedef struct  ForStatementTag             *ForStatement;
-typedef struct  FunctionCallStatementTag    *FunctionCallStatement;
-typedef struct  SubstituteStatementTag      *SubstituteStatement;
-typedef struct  VariableDefinitionTag       *VariableDefinition;
-typedef struct  FunctionDefinitionTag       *FunctionDefinition;
-typedef struct  ClassDefinitionTag          *ClassDefinition;
+typedef struct  StatementTag                    *Statement;
+typedef struct  ReturnStatementTag              *ReturnStatement;
+typedef struct  CatchStatementTag               *CatchStatement;
+typedef struct  FinallyStatementTag             *FinallyStatement;
+typedef struct  IfStatementTag                  *IfStatement;
+typedef struct  WhileStatementTag               *WhileStatement;
+typedef struct  ForStatementTag                 *ForStatement;
+typedef struct  FunctionCallStatementTag        *FunctionCallStatement;
+typedef struct  SubstituteStatementTag          *SubstituteStatement;
+typedef struct  VariableDefinitionTag           *VariableDefinition;
+typedef struct  FunctionDefinitionTag           *FunctionDefinition;
+typedef struct  ClassDefinitionTag              *ClassDefinition;
 
-typedef struct  ExpressionTag               *Expression;
-typedef struct  OperationExpressionTag      *OperationExpression;
-typedef struct  ObjectExpressionTag         *ObjectExpression;
-typedef struct  VariableExpressionTag       *VariableExpression;
-typedef struct  ReferenceExpressionTag      *ReferenceExpression;
-typedef struct  ClassExpressionTag          *ClassExpression;
-typedef struct  FunctionCallExpressionTag   *FunctionCallExpression;
-typedef struct  GenerateExpressionTag       *GenerateExpression;
-typedef struct  StringLiteralExpressionTag  *StringLiteralExpression;
-typedef struct  IntegerLiteralExpressionTag *IntegerLiteralExpression;
-typedef struct  ParametersExpressionTag     *ParametersExpression;
+typedef struct  ExpressionTag                   *Expression;
+typedef struct  OperationExpressionTag          *OperationExpression;
+typedef struct  ObjectExpressionTag             *ObjectExpression;
+typedef struct  VariableExpressionTag           *VariableExpression;
+typedef struct  ReferenceExpressionTag          *ReferenceExpression;
+typedef struct  ClassExpressionTag              *ClassExpression;
+typedef struct  FunctionCallExpressionTag       *FunctionCallExpression;
+typedef struct  GenerateExpressionTag           *GenerateExpression;
+typedef struct  StringLiteralExpressionTag      *StringLiteralExpression;
+typedef struct  IntegerLiteralExpressionTag     *IntegerLiteralExpression;
+typedef struct  ParametersExpressionTag         *ParametersExpression;
 
 
 
@@ -92,6 +92,7 @@ typedef struct CriaIdTag
 typedef struct CriaBooleanTag
 {
     struct CriaIdTag    id;
+    Boolean             isLiteral;
     Boolean             value;
 } *CriaBoolean;
 
@@ -103,6 +104,15 @@ typedef struct CriaStringTag
     Boolean             isLiteral;
     String              value;
 } *CriaString;
+
+
+
+typedef struct CriaIntegerTag
+{
+    struct CriaIdTag    id;
+    Boolean             isLiteral;
+    int                 value;
+} *CriaInteger;
 
 
 
@@ -314,6 +324,54 @@ CriaString_new(
     String          name,
     Boolean         isLiteral,
     String          value
+);
+
+
+
+CriaId
+CriaString_operate(
+    Interpreter     interpreter,
+    OperationKind   kind,
+    CriaString      left,
+    CriaString      right
+);
+
+
+
+CriaInteger
+CriaInteger_new(
+    String          name,
+    Boolean         isLiteral,
+    int             value
+);
+
+
+
+CriaId
+CriaInteger_operate(
+    Interpreter     interpreter,
+    OperationKind   kind,
+    CriaInteger     left,
+    CriaInteger     right
+);
+
+
+
+CriaBoolean
+CriaBoolean_new(
+    String          name,
+    Boolean         isLiteral,
+    Boolean         value
+);
+
+
+
+CriaId
+CriaBoolean_operate(
+    Interpreter     interpreter,
+    OperationKind   kind,
+    CriaBoolean     left,
+    CriaBoolean     right
 );
 
 

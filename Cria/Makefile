@@ -11,7 +11,6 @@ OBJS =\
     _Tokenizer.o\
     _Parser.o\
     _Statement.o\
-    _SubstituteStatement.o\
     _StringLiteralExpression.o\
     _VariableExpression.o\
     _ParametersExpression.o\
@@ -26,11 +25,14 @@ OBJS =\
     _CriaId.o\
     _CriaObject.o\
     _CriaString.o\
+    _CriaInteger.o\
+    _CriaBoolean.o\
 #    _Hash.o\
 #    _CommentStatement.o\
 #    _ReturnStatement.o\
 #    _WhileStatement.o\
 #    ../Core/Core.o\
+#    _SubstituteStatement.o\
 
 $(TARGET):$(OBJS)
 	cd ../Logger; make;
@@ -51,7 +53,6 @@ _Interpreter.o: _Interpreter.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logge
 _Tokenizer.o: _Tokenizer.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Parser.o: _Parser.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Statement.o: _Statement.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
-_SubstituteStatement.o: _SubstituteStatement.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _ExpressionStatement.o: _ExpressionStatement.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _StringLiteralExpression.o: _StringLiteralExpression.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _VariableExpression.o: _VariableExpression.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
@@ -67,7 +68,10 @@ _ClassDefinition.o: _ClassDefinition.c _Cria.h Cria.h ../Memory/Memory.h ../Logg
 _CriaId.o: _CriaId.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaObject.o: _CriaObject.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaString.o: _CriaString.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+_CriaInteger.o: _CriaInteger.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+_CriaBoolean.o: _CriaBoolean.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 #_Hash.o: _Hash.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 #_ReturnStatement.o: _ReturnStatement.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 #_WhileStatement.o: _WhileStatement.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 #_ObjectExpression.o: _ObjectExpression.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+#_SubstituteStatement.o: _SubstituteStatement.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h

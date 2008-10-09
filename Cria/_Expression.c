@@ -69,6 +69,7 @@ END:
 
 VariableExpression
 parseVariableExpression(
+    Parser  parser,
     String  name
 )
 {
@@ -79,6 +80,8 @@ parseVariableExpression(
     memset(variable, 0x00, sizeof(struct VariableExpressionTag));
     variable->name = name;
     
+    parser_next(parser);
+    
     Logger_trc("[  END  ]%s", __func__);
     return variable;
 }
@@ -87,6 +90,7 @@ parseVariableExpression(
 
 ClassExpression
 parseClassExpression(
+    Parser  parser,
     String  name
 )
 {
@@ -96,6 +100,8 @@ parseClassExpression(
     expression = Memory_malloc(sizeof(struct ClassExpressionTag));
     memset(expression, 0x00, sizeof(struct ClassExpressionTag));
     expression->name = name;
+    
+    parser_next(parser);
     
     Logger_trc("[  END  ]%s", __func__);
     return expression;
@@ -416,12 +422,14 @@ expression_parseReferenceExpression(
         if (next->type == TOKEN_TYPE_PERIOD)
         {
             Logger_dbg("Create variable reference.");
-            variable = parseVariableExpression(token->buffer);
+            variable = parseVariableExpression(parser, token->buffer);
             
             reference = Memory_malloc(sizeof(struct ReferenceExpressionTag));
             memset(reference, 0x00, sizeof(struct ReferenceExpressionTag));
             reference->type = REFERENCE_TYPE_VARIABLE;
             reference->of.variable = variable;
+            
+            parser_next(parser);
             
             goto NEXT_REFERENCE;
         }
@@ -442,7 +450,7 @@ expression_parseReferenceExpression(
         else
         {
             Logger_dbg("Create variable reference.");
-            variable = parseVariableExpression(token->buffer);
+            variable = parseVariableExpression(parser, token->buffer);
             
             reference = Memory_malloc(sizeof(struct ReferenceExpressionTag));
             memset(reference, 0x00, sizeof(struct ReferenceExpressionTag));
@@ -459,7 +467,7 @@ expression_parseReferenceExpression(
         if (next->type == TOKEN_TYPE_PERIOD)
         {
             Logger_dbg("Create class reference.");
-            klass = parseClassExpression(token->buffer);
+            klass = parseClassExpression(parser, token->buffer);
             
             reference = Memory_malloc(sizeof(struct ReferenceExpressionTag));
             memset(reference, 0x00, sizeof(struct ReferenceExpressionTag));
@@ -891,7 +899,16 @@ expression_parse(
 
 
 
-
+ReferenceType
+expression_getLastReferenceType(
+    ReferenceExpression expression
+)
+{
+    if (expression->next == NULL)
+        return expression->type;
+    
+    return expression_getLastReferenceType(expression->next);
+}
 
 
 

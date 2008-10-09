@@ -1,7 +1,7 @@
 #include "_Cria.h"
 
 
-//*
+
 CriaString
 CriaString_new(
     String          name,
@@ -21,38 +21,51 @@ CriaString_new(
     Logger_trc("[  END  ]%s", __func__);
     return criaString;
 }
-//*/
 
 
 
-/*
-void
-CriaObject_dispose(
-    CriaObject* criaObject
+
+CriaId
+CriaString_operate(
+    Interpreter     interpreter,
+    OperationKind   kind,
+    CriaString      left,
+    CriaString      right
 )
 {
-    Logger_cor("[ START ]%s", __func__);
-    if (criaObject == NULL)
+    String leftValue = left->value;
+    String rightValue = right->value;
+    StringBuffer buffer = NULL;
+    Boolean result = FALSE;
+    CriaId id = NULL;
+    
+    switch (kind)
     {
-        Logger_cor("Cria object is NULL.");
-        goto END;
+    case OPERATION_KIND_PLUS:
+        buffer = stringBuffer_new();
+        stringBuffer_append(buffer, leftValue->pointer);
+        stringBuffer_append(buffer, rightValue->pointer);
+        id = (CriaId)CriaString_new(NULL, FALSE, stringBuffer_toString(buffer));
+        stringBuffer_dispose(buffer);
+        break;
+    case OPERATION_KIND_EQUAL:
+        if (strcmp(leftValue->pointer, rightValue->pointer) == 0)
+            result = TRUE;
+        id = (CriaId)CriaBoolean_new(NULL, FALSE, result);
+        break;
+    case OPERATION_KIND_NOT_EQUAL:
+        if (strcmp(leftValue->pointer, rightValue->pointer) != 0)
+            result = TRUE;
+        id = (CriaId)CriaBoolean_new(NULL, FALSE, result);
+        break;
+    default:
+        runtime_error(interpreter);
+        break;
     }
     
-    Logger_cor("Check criaObject->name.");
-    if (criaObject->name != NULL)
-    {
-        Logger_cor("Free criaObject->name.");
-        string_dispose(criaObject->name);
-        Logger_cor("Set NULL to criaObject->name.");
-        criaObject->name = NULL;
-    }
     
-    Logger_cor("Free criaObject.");
-    Memory_free(criaObject);
-    Logger_cor("Set NULL to criaObject.");
-    criaObject = NULL;
-    
-END:
-    Logger_cor("[  END  ]%s", __func__);
+    return id;
 }
-//*/
+
+
+

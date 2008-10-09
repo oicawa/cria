@@ -152,8 +152,8 @@ struct WhileStatementTag
 
 struct VariableDefinitionTag
 {
-    char*       name;
-    char*       type;
+    String      name;
+    String      type;
     AccessLevel access;
     CriaId      object;
 };
@@ -221,8 +221,8 @@ struct OperationExpressionTag
 
 struct SubstituteStatementTag
 {
-    String      variable;
-    Expression  expression;
+    ReferenceExpression reference;
+    Expression          expression;
 };
 
 
@@ -749,6 +749,13 @@ expression_parseReferenceExpression(
 
 
 
+ReferenceType
+expression_getLastReferenceType(
+    ReferenceExpression expression
+);
+
+
+
 //==================================================
 //ObjectExpression
 //==================================================
@@ -893,6 +900,22 @@ variableDefinition_isMatch(
 
 
 
+void
+variableDefinition_parse(
+    List    variableList,
+    Parser  parser
+);
+
+
+
+VariableDefinition
+variableDefinition_search(
+    List    variableList,
+    String  name
+);
+
+
+
 //==================================================
 //ClassDefinition
 //==================================================
@@ -938,6 +961,15 @@ executor_executeStatement(
 //Evaluator
 //==================================================
 CriaId
+evaluator_expression(
+    Interpreter             interpreter,
+    List                    local,
+    Expression              expression
+);
+
+
+
+CriaId
 evaluator_functionCall(
     Interpreter             interpreter,
     List                    local,
@@ -951,6 +983,14 @@ evaluator_reference(
     Interpreter         interpreter,
     List                local,
     ReferenceExpression expression
+);
+
+
+
+VariableDefinition
+variableDefinition_search(
+    List    variableList,
+    String  name
 );
 
 
@@ -969,12 +1009,26 @@ evaluator_reference(
     } while(0) \
 
 
+
+
 #define parser_error(token) \
     do { \
         fprintf(stderr, "Syntax error near '%s'. (line:%d, column:%d)\n", (token)->buffer->pointer, (token)->row, (token)->column); \
         Logger_err("Syntax error near '%s'. (line:%d, column:%d)\n", (token)->buffer->pointer, (token)->row, (token)->column); \
         Memory_dispose(); \
         exit(1); \
-} while(0) \
+    } while(0) \
+
+
+
+#define runtime_error(interpreter) \
+    do { \
+        fprintf(stderr, "Runtime error. (line:%d)\n", (interpreter)->lineNumber); \
+        Logger_err("Runtime error. (line:%d)\n", (interpreter)->lineNumber); \
+        Memory_dispose(); \
+        exit(1); \
+    } while(0) \
+
+
 
 #endif /* PRIVATE_CRIA_H_INCLUDED */

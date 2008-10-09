@@ -235,6 +235,7 @@ parser_parse(
         if (variableDefinition_isMatch(parser) == TRUE)
         {
             Logger_dbg("Parse function definition.");
+            variableDefinition_parse(interpreter->variableList, parser);
             continue;
         }
         

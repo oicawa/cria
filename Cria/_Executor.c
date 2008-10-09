@@ -3,7 +3,7 @@
 #include "_Cria.h"
 
 
-/*
+
 void
 executor_executeSubstituteStatement(
     Interpreter         interpreter,
@@ -12,16 +12,20 @@ executor_executeSubstituteStatement(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaId variable = NULL;
+    VariableDefinition definition = NULL;
     CriaId id = NULL;
     
+    definition = variableDefinition_search(interpreter->variableList, statement->reference->of.variable->name);
     
-    id = evaluator_evaluateExpression(interpreter, local, statement->right);
+    id = evaluator_expression(interpreter, local, statement->expression);
+    
+    
+    definition->object = id;
     
     
     Logger_trc("[  END  ]%s", __func__);
 }
-*/
+
 
 
 void
@@ -49,11 +53,13 @@ executor_executeStatement(
     StatementResult result;
 
     result.type = STATEMENT_RESULT_NORMAL;
+    
+    interpreter->lineNumber = statement->line;
 
     switch (statement->kind)
     {
     case STATEMENT_KIND_SUBSTITUTE:
-        //executor_executeSubstituteStatement(interpreter, local, statement->of._substitute_);
+        executor_executeSubstituteStatement(interpreter, local, statement->of._substitute_);
         break;
     case STATEMENT_KIND_FUNCTION_CALL:
         executor_executeFunctionCallStatement(interpreter, local, statement->of._functionCall_);
