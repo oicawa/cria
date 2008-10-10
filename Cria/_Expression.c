@@ -529,7 +529,7 @@ parseFactor(
         memset(integerLiteral, 0x00, sizeof(struct IntegerLiteralExpressionTag));
         integerLiteral->value = string_toInteger(token->buffer);
         
-        expression = expression_new(EXPRESSION_KIND_STRING_LITERAL);
+        expression = expression_new(EXPRESSION_KIND_INTEGER_LITERAL);
         expression->of._integerLiteral_ = integerLiteral;
         
         parser_next(parser);
@@ -580,7 +580,6 @@ parseFactor(
         goto END;
     }
     
-    
 END:
     Logger_trc("[  END  ]%s", __func__);
     return expression;
@@ -627,10 +626,14 @@ parseMultiplyDivide(
         goto END;
     }
 
+    //右辺開始位置へ移動
+    parser_next(parser);
+    
     //右辺の式をパース
     right = expression_parse(parser);
     
     //演算式を生成
+    Logger_dbg("Create MultiplyDivide Expression.");
     operation = Memory_malloc(sizeof(struct OperationExpressionTag));
     memset(operation, 0x00, sizeof(struct OperationExpressionTag));
     operation->kind = kind;
@@ -661,17 +664,10 @@ parsePlusMinus(
     OperationKind kind;
     
     left = parseMultiplyDivide(parser);
-    /*
-    if (parser_next(parser) == FALSE)
-    {
-        //parser_error(parser_getCurrent(parser));
-        expression = left;
-        goto END;
-    }
-    */
     
     //次のトークンが加算・減算のいずれかだった場合は新たにExpressionを生成
     token = parser_getCurrent(parser);
+    token_log(token);
     if (token->type == TOKEN_TYPE_PLUS)
     {
         kind = OPERATION_KIND_PLUS;
@@ -686,10 +682,14 @@ parsePlusMinus(
         goto END;
     }
 
+    //右辺開始位置へ移動
+    parser_next(parser);
+    
     //右辺の式をパース
     right = expression_parse(parser);
     
     //演算式を生成
+    Logger_dbg("Create PlusMinus Expression.");
     operation = Memory_malloc(sizeof(struct OperationExpressionTag));
     memset(operation, 0x00, sizeof(struct OperationExpressionTag));
     operation->kind = kind;
@@ -749,10 +749,14 @@ parseCompare(
         goto END;
     }
 
+    //右辺開始位置へ移動
+    parser_next(parser);
+    
     //右辺の式をパース
     right = expression_parse(parser);
     
     //演算式を生成
+    Logger_dbg("Create Compare Expression.");
     operation = Memory_malloc(sizeof(struct OperationExpressionTag));
     memset(operation, 0x00, sizeof(struct OperationExpressionTag));
     operation->kind = kind;
@@ -770,7 +774,7 @@ END:
 
 
 Expression
-parseNot(
+parseNotEqual(
     Parser  parser
 )
 {
@@ -804,10 +808,14 @@ parseNot(
         goto END;
     }
 
+    //右辺開始位置へ移動
+    parser_next(parser);
+    
     //右辺の式をパース
     right = expression_parse(parser);
     
     //演算式を生成
+    Logger_dbg("Create NotEqual Expression.");
     operation = Memory_malloc(sizeof(struct OperationExpressionTag));
     memset(operation, 0x00, sizeof(struct OperationExpressionTag));
     operation->kind = kind;
@@ -837,7 +845,7 @@ parseAndOr(
     Token token = NULL;
     OperationKind kind;
     
-    left = parseNot(parser);
+    left = parseNotEqual(parser);
     /*
     if (parser_next(parser) == FALSE)
     {
@@ -863,10 +871,14 @@ parseAndOr(
         goto END;
     }
 
+    //右辺開始位置へ移動
+    parser_next(parser);
+    
     //右辺の式をパース
     right = expression_parse(parser);
     
     //演算式を生成
+    Logger_dbg("Create AndOr Expression.");
     operation = Memory_malloc(sizeof(struct OperationExpressionTag));
     memset(operation, 0x00, sizeof(struct OperationExpressionTag));
     operation->kind = kind;

@@ -5,6 +5,24 @@
 
 
 CriaId
+evaluator_integerLiteral(
+    Interpreter             interpreter,
+    IntegerLiteralExpression expression
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaInteger integer = NULL;
+    int value = expression->value;
+    
+    integer = CriaInteger_new(NULL, TRUE, value);
+
+    Logger_trc("[  END  ]%s", __func__);
+    return (CriaId)integer;
+}
+
+
+
+CriaId
 evaluator_stringLiteral(
     Interpreter             interpreter,
     StringLiteralExpression expression
@@ -110,8 +128,22 @@ evaluator_operation(
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
     
+    if (expression->left == NULL)
+    {
+        Logger_dbg("expression->left is NULL!");
+    }
     CriaId left = evaluator_expression(interpreter, local, expression->left);
+    Logger_dbg("Evaluated left expression.");
     CriaId right = evaluator_expression(interpreter, local, expression->right);
+    Logger_dbg("Evaluated right expression.");
+    
+    if (left == NULL)
+    {
+        Logger_dbg("Left is NULL!");
+    }
+    Logger_dbg("Check data type.");
+    Logger_dbg("Data type = %d. (INTEGER is %d)", left->type, CRIA_DATA_TYPE_INTEGER);
+    Logger_dbg("Checked data type.");
     
     //式の左辺右辺の型チェック
     if (left->type != right->type)
@@ -133,6 +165,7 @@ evaluator_operation(
         id = CriaBoolean_operate(interpreter, expression->kind, (CriaBoolean)left, (CriaBoolean)right);
         break;
     case CRIA_DATA_TYPE_INTEGER:
+        Logger_dbg("Operate of integer.");
         id = CriaInteger_operate(interpreter, expression->kind, (CriaInteger)left, (CriaInteger)right);
         break;
     case CRIA_DATA_TYPE_STRING:
@@ -183,9 +216,14 @@ evaluator_parameters(
             list_add(list, id);
             Logger_dbg("Add 'Cria Id'");
             break;
-        /*
         case EXPRESSION_KIND_INTEGER_LITERAL:
+            Logger_dbg("Do 'Integer literal expression'");
+            id = evaluator_integerLiteral(interpreter, expression->of._integerLiteral_);
+            Logger_dbg("Done 'Integer literal expression'");
+            list_add(list, id);
+            Logger_dbg("Add 'Cria Id'");
             break;
+        /*
         case EXPRESSION_KIND_REAL_LITERAL:
             break;
         case EXPRESSION_KIND_BOOLEAN_LITERAL:
@@ -212,9 +250,14 @@ evaluator_parameters(
         /*
         case EXPRESSION_KIND_VARIABLE:
             break;
-        case EXPRESSION_KIND_OPERATION:
-            break;
         //*/
+        case EXPRESSION_KIND_OPERATION:
+            Logger_dbg("Do operation expression");
+            id = evaluator_operation(interpreter, local, expression->of._operation_);
+            Logger_dbg("Done operation expression");
+            list_add(list, id);
+            Logger_dbg("Add 'Cria Id'");
+            break;
         default:
             break;
         }
@@ -327,9 +370,12 @@ evaluator_expression(
         id = (CriaId)evaluator_stringLiteral(interpreter, expression->of._stringLiteral_);
         Logger_dbg("Done 'String literal expression'");
         break;
-    /*
     case EXPRESSION_KIND_INTEGER_LITERAL:
+        Logger_dbg("Do 'Integer literal expression'");
+        id = evaluator_integerLiteral(interpreter, expression->of._integerLiteral_);
+        Logger_dbg("Done 'Integer literal expression'");
         break;
+    /*
     case EXPRESSION_KIND_REAL_LITERAL:
         break;
     case EXPRESSION_KIND_BOOLEAN_LITERAL:
@@ -360,6 +406,7 @@ evaluator_expression(
         Logger_dbg("Done operation expression");
         break;
     default:
+        runtime_error(interpreter);
         break;
     }
 

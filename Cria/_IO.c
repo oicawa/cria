@@ -24,67 +24,70 @@ io_write(
     //引数が０だった場合は実行時エラー
     if (count == 0)
     {
-        Logger_err("Runtime error. (Argument count is 0.)");
-        perror("Runtime error. (Argument count is 0.)");
-        goto END;
+        runtime_error(interpreter);
     }
     
     //第一引数がStringでなかった場合はエラー    
     id = (CriaId)list_get(args, 0);
-    if (id->type != CRIA_DATA_TYPE_STRING)
+    
+    
+    if (id->type == CRIA_DATA_TYPE_INTEGER)
     {
-        Logger_err("Runtime error. (First argument is not String.) [%d]", id->type);
-        perror("Runtime error. (First argument is not String.)");
-        goto END;
+        Logger_dbg("Integer");
+        int value = ((CriaInteger)id)->value;
+        printf("%d", value);
+    }
+    else if (id->type == CRIA_DATA_TYPE_STRING)
+    {
+        Logger_dbg("String");
+        //第一引数の文字列型データを抽出
+        start = ((CriaString)id)->value->pointer;
+        while((end = strstr(start, "%s")) != NULL)
+        {
+            long size = end - start;
+            char* buffer = Memory_malloc(size + 1);
+            memset(buffer, 0x00, size + 1);
+            strncpy(buffer, start, size);
+            printf(buffer);
+            Memory_free(buffer);
+            buffer = NULL;
+            start = end + 2;
+            
+            //引数の個数が埋め込みフィールド数よりすくなかった場合はエラー
+            if (count < index)
+            {
+                runtime_error(interpreter);
+            }
+            
+            index += 1;
+            id = (CriaId)list_get(args, index);
+            
+            //NULLチェック
+            if (id == NULL)
+            {
+                printf("(null)");
+                continue;
+            }
+            
+            //型チェック
+            if (id->type != CRIA_DATA_TYPE_STRING)
+            {
+                runtime_error(interpreter);
+            }
+            
+            //出力
+            Logger_dbg("[print]%s", ((CriaString)id)->value->pointer);
+            printf("%s", ((CriaString)id)->value->pointer);
+        }
+        Logger_dbg("[print]%s", start);
+        printf(start);
+    }
+    else
+    {
+        runtime_error(interpreter);
     }
     
-    //第一引数の文字列型データを抽出
-    start = ((CriaString)id)->value->pointer;
-    while((end = strstr(start, "%s")) != NULL)
-    {
-        long size = end - start;
-        char* buffer = Memory_malloc(size + 1);
-        memset(buffer, 0x00, size + 1);
-        strncpy(buffer, start, size);
-        printf(buffer);
-        Memory_free(buffer);
-        buffer = NULL;
-        start = end + 2;
-        
-        //引数の個数が埋め込みフィールド数よりすくなかった場合はエラー
-        if (count < index)
-        {
-            Logger_err("Runtime error. (Argument is too few.)");
-            perror("Runtime error. (Argument is too few.)");
-            exit(1);
-        }
-        
-        index += 1;
-        id = (CriaId)list_get(args, index);
-        
-        //NULLチェック
-        if (id == NULL)
-        {
-            printf("(null)");
-            continue;
-        }
-        
-        //型チェック
-        if (id->type != CRIA_DATA_TYPE_STRING)
-        {
-            Logger_err("Runtime error. (First argument is not String.)");
-            perror("Runtime error. (First argument is not String.)");
-            exit(1);
-        }
-        
-        //出力
-        Logger_dbg("[print]%s", ((CriaString)id)->value->pointer);
-        printf("%s", ((CriaString)id)->value->pointer);
-    }
-    Logger_dbg("[print]%s", start);
-    printf(start);
     
-END:
     fflush(stdout);
     Logger_trc("[  END  ]%s", __func__);
     return returnId;

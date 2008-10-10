@@ -137,7 +137,7 @@ tokenizer_new(
     tokenizer = Memory_malloc(sizeof(struct TokenizerTag));
     memset(tokenizer, 0x00, sizeof(struct TokenizerTag));
     tokenizer->file = file;
-    tokenizer->row = 0;
+    tokenizer->row = 1;
     tokenizer->column = 0;
     tokenizer->next = '\0';
     tokenizer->buffer = NULL;

@@ -237,6 +237,7 @@ statement_parse(
     
     //行先頭のトークンをチェック。
     Token current = parser_getCurrent(parser);
+    int line = current->row;
     switch (current->type)
     {
     case TOKEN_TYPE_IF:                     //if文
@@ -261,6 +262,7 @@ statement_parse(
                 Logger_dbg("Substitute statement is created.");
                 statement = statement_new(STATEMENT_KIND_SUBSTITUTE);
                 statement->of._substitute_ = substituteStatement;
+                statement->line = line;
             }
         }
         else
@@ -273,6 +275,7 @@ statement_parse(
                 Logger_dbg("Function call statement is created.");
                 statement = statement_new(STATEMENT_KIND_FUNCTION_CALL);
                 statement->of._functionCall_ = functionCallStatement;
+                statement->line = line;
             }
         }
         break;
