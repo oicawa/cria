@@ -130,7 +130,7 @@ parseSubstituteStatement(
     token = parser_getCurrent(parser);
     
     
-    if (expression_getLastReferenceType(reference) != REFERENCE_TYPE_VARIABLE)
+    if (expression_getLastReferenceType(reference) != VARIABLE_TYPE_VARIABLE)
     {
         //代入できないのでエラー
         parser_error(token);

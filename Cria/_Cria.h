@@ -285,19 +285,32 @@ struct ClassExpressionTag
 
 
 
-typedef enum {
+typedef enum
+{
+    VARIABLE_TYPE_SELF,
+    VARIABLE_TYPE_VARIABLE,
+    VARIABLE_TYPE_FUNCTION_CALL,
+    VARIABLE_TYPE_CLASS,
+    VARIABLE_TYPE_GENERATE,
+} VariableType;
+
+
+
+/*
+typedef enum
+{
     REFERENCE_TYPE_SELF,
     REFERENCE_TYPE_VARIABLE,
     REFERENCE_TYPE_FUNCTION_CALL,
     REFERENCE_TYPE_CLASS,
     REFERENCE_TYPE_GENERATE,
 } ReferenceType;
-
+//*/
 
 
 struct ReferenceExpressionTag
 {
-    ReferenceType               type;
+    VariableType               type;
     union {
         VariableExpression      variable;
         FunctionCallExpression  function;
@@ -749,7 +762,7 @@ expression_parseReferenceExpression(
 
 
 
-ReferenceType
+VariableType
 expression_getLastReferenceType(
     ReferenceExpression expression
 );

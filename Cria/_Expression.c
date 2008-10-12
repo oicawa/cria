@@ -408,7 +408,7 @@ expression_parseReferenceExpression(
         Logger_dbg("Create self reference.");
         reference = Memory_malloc(sizeof(struct ReferenceExpressionTag));
         memset(reference, 0x00, sizeof(struct ReferenceExpressionTag));
-        reference->type = REFERENCE_TYPE_SELF;
+        reference->type = VARIABLE_TYPE_SELF;
         reference->of.variable = NULL;
         goto NEXT_REFERENCE;
     }
@@ -426,7 +426,7 @@ expression_parseReferenceExpression(
             
             reference = Memory_malloc(sizeof(struct ReferenceExpressionTag));
             memset(reference, 0x00, sizeof(struct ReferenceExpressionTag));
-            reference->type = REFERENCE_TYPE_VARIABLE;
+            reference->type = VARIABLE_TYPE_VARIABLE;
             reference->of.variable = variable;
             
             parser_next(parser);
@@ -440,7 +440,7 @@ expression_parseReferenceExpression(
             
             reference = Memory_malloc(sizeof(struct ReferenceExpressionTag));
             memset(reference, 0x00, sizeof(struct ReferenceExpressionTag));
-            reference->type = REFERENCE_TYPE_FUNCTION_CALL;
+            reference->type = VARIABLE_TYPE_FUNCTION_CALL;
             reference->of.function = function;
             
             token_log(parser_getCurrent(parser));
@@ -454,7 +454,7 @@ expression_parseReferenceExpression(
             
             reference = Memory_malloc(sizeof(struct ReferenceExpressionTag));
             memset(reference, 0x00, sizeof(struct ReferenceExpressionTag));
-            reference->type = REFERENCE_TYPE_VARIABLE;
+            reference->type = VARIABLE_TYPE_VARIABLE;
             reference->of.variable = variable;
             
             Logger_dbg("End of reference..");
@@ -471,7 +471,7 @@ expression_parseReferenceExpression(
             
             reference = Memory_malloc(sizeof(struct ReferenceExpressionTag));
             memset(reference, 0x00, sizeof(struct ReferenceExpressionTag));
-            reference->type = REFERENCE_TYPE_CLASS;
+            reference->type = VARIABLE_TYPE_CLASS;
             reference->of.klass = klass;
             
             goto NEXT_REFERENCE;
@@ -483,7 +483,7 @@ expression_parseReferenceExpression(
             
             reference = Memory_malloc(sizeof(struct ReferenceExpressionTag));
             memset(reference, 0x00, sizeof(struct ReferenceExpressionTag));
-            reference->type = REFERENCE_TYPE_GENERATE;
+            reference->type = VARIABLE_TYPE_GENERATE;
             reference->of.generate = generate;
             
             goto NEXT_REFERENCE;
@@ -557,7 +557,14 @@ parseFactor(
     if (token->type == TOKEN_TYPE_PARENTHESIS_LEFT)
     {
         Logger_dbg("This is a left parenthesis token.");
+        parser_next(parser);
         expression = expression_parse(parser);
+        token = parser_getCurrent(parser);
+        if (token->type != TOKEN_TYPE_PARENTHESIS_RIGHT)
+        {
+            parser_error(token);
+        }
+        parser_next(parser);
         goto END;
     }
     
@@ -911,7 +918,7 @@ expression_parse(
 
 
 
-ReferenceType
+VariableType
 expression_getLastReferenceType(
     ReferenceExpression expression
 )

@@ -329,17 +329,17 @@ evaluator_reference(
     
     switch (expression->type)
     {
-    case REFERENCE_TYPE_SELF:
+    case VARIABLE_TYPE_SELF:
         break;
-    case REFERENCE_TYPE_VARIABLE:
+    case VARIABLE_TYPE_VARIABLE:
         id = evaluator_variable(interpreter, local, expression->of.variable);
         break;
-    case REFERENCE_TYPE_FUNCTION_CALL:
+    case VARIABLE_TYPE_FUNCTION_CALL:
         id = evaluator_functionCall(interpreter, local, expression->of.function);
         break;
-    case REFERENCE_TYPE_CLASS:
+    case VARIABLE_TYPE_CLASS:
         break;
-    case REFERENCE_TYPE_GENERATE:
+    case VARIABLE_TYPE_GENERATE:
         break;
     default:
         break;

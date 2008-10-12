@@ -30,9 +30,9 @@ main(
     //Logger_set(LOG_LEVEL_DEBUG, "parser_parse, parser_next, logAllTokens, statement_parse, parseFunctionCallExpression, parseParametersExpression, parseFunctionCallStatement, parseFactor, expression_parseReferenceExpression");
     //Logger_set(LOG_LEVEL_DEBUG, "parseAndOr, parseNotEqual, parseCompare, parsePlusMinus, parseMultiplyDivide, parseFactor, expression_parseReferenceExpression, parseGenerateExpression, parseFunctionCallExpression, parseParametersExpression, parseClassExpression, parseVariableExpression, ");
     //Logger_set(LOG_LEVEL_DEBUG, "parseFunctionCallExpression, parseParametersExpression, expression_parseReferenceExpression");
-    Logger_set(LOG_LEVEL_DEBUG, "evaluator_expression, evaluator_operation, evaluator_parameters, evaluator_functionCall, evaluator_reference, evaluator_stringLiteral, evaluator_integerLiteral");
+    //Logger_set(LOG_LEVEL_DEBUG, "evaluator_expression, evaluator_operation, evaluator_parameters, evaluator_functionCall, evaluator_reference, evaluator_stringLiteral, evaluator_integerLiteral");
     //Logger_set(LOG_LEVEL_DEBUG, "evaluator_operation, parseNumber, evaluator_parameters, parseFactor, io_write");
-    //Logger_set(LOG_LEVEL_TRACE, NULL);
+    Logger_set(LOG_LEVEL_TRACE, NULL);
     
     
     

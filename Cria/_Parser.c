@@ -230,7 +230,7 @@ parser_parse(
             continue;
         }
         
-        
+        /*
         //変数＆定数定義？
         if (variableDefinition_isMatch(parser) == TRUE)
         {
@@ -238,7 +238,7 @@ parser_parse(
             variableDefinition_parse(interpreter->variableList, parser);
             continue;
         }
-        
+        //*/
         
         //関数定義？
         if (functionDefinition_isMatch(parser) == TRUE)
