@@ -63,6 +63,11 @@ typedef struct  StringLiteralExpressionTag      *StringLiteralExpression;
 typedef struct  IntegerLiteralExpressionTag     *IntegerLiteralExpression;
 typedef struct  ParametersExpressionTag         *ParametersExpression;
 
+typedef struct  ReferenceTag                    *Reference;
+typedef struct  ReferenceVariableTag            *ReferenceVariable;
+typedef struct  ReferenceFunctionCallTag        *ReferenceFunctionCall;
+typedef struct  ReferenceClassTag               *ReferenceClass;
+
 
 
 typedef enum

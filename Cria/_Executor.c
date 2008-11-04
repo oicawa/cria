@@ -7,18 +7,31 @@
 void
 executor_executeSubstituteStatement(
     Interpreter         interpreter,
-    List                local,
+    List                fieldList,
+    List                localList,
     SubstituteStatement statement
 )
 {
     Logger_trc("[ START ]%s", __func__);
     VariableDefinition definition = NULL;
+    Reference reference = statement->reference;
     CriaId id = NULL;
+
+    //値を取得    
+    id = evaluator_expression(interpreter, localList, statement->expression);
     
-    definition = variableDefinition_search(interpreter->variableList, statement->reference->of.variable->name);
     
-    id = evaluator_expression(interpreter, local, statement->expression);
-    
+    //変数を取得。なければ生成
+    definition = variableDefinition_search(interpreter->variableList, fieldList, localList, reference);
+    if (definition == NULL)
+    {
+        Reference tmp= reference_getLast(reference);
+        if (tmp->type != REFERENCE_TYPE_DEFINITION)
+            runtime_error(interpreter);
+        
+        definition = variableDefinition_new(tmp->variable->name, tmp->variable->type, access, NULL);
+        list_add(interpreter->variableList, definition);
+    }
     
     definition->object = id;
     

@@ -117,20 +117,20 @@ parseSubstituteStatement(
     Logger_trc("[ START ]%s", __func__);
     SubstituteStatement statement = NULL;
     Token token = NULL;
-    ReferenceExpression reference = NULL;
+    Reference reference = NULL;
     Expression expression = NULL;
     
     
     //左辺の式（参照）を取得
     Logger_dbg("Check reference expression.");
-    reference = expression_parseReferenceExpression(parser);
+    reference = reference_parse(parser);
     
     
     //トークン取得
     token = parser_getCurrent(parser);
     
     
-    if (expression_getLastReferenceType(reference) != VARIABLE_TYPE_VARIABLE)
+    if ((reference_getLast(reference))->type != REFERENCE_TYPE_VARIABLE)
     {
         //代入できないのでエラー
         parser_error(token);

@@ -221,8 +221,8 @@ struct OperationExpressionTag
 
 struct SubstituteStatementTag
 {
-    ReferenceExpression reference;
-    Expression          expression;
+    Reference   reference;
+    Expression  expression;
 };
 
 
@@ -287,30 +287,18 @@ struct ClassExpressionTag
 
 typedef enum
 {
-    VARIABLE_TYPE_SELF,
-    VARIABLE_TYPE_VARIABLE,
-    VARIABLE_TYPE_FUNCTION_CALL,
-    VARIABLE_TYPE_CLASS,
-    VARIABLE_TYPE_GENERATE,
-} VariableType;
+    REFERENCE_EXPRESSION_TYPE_SELF,
+    REFERENCE_EXPRESSION_TYPE_VARIABLE,
+    REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL,
+    REFERENCE_EXPRESSION_TYPE_CLASS,
+    REFERENCE_EXPRESSION_TYPE_GENERATE,
+} ReferenceExpressionType;
 
-
-
-/*
-typedef enum
-{
-    REFERENCE_TYPE_SELF,
-    REFERENCE_TYPE_VARIABLE,
-    REFERENCE_TYPE_FUNCTION_CALL,
-    REFERENCE_TYPE_CLASS,
-    REFERENCE_TYPE_GENERATE,
-} ReferenceType;
-//*/
 
 
 struct ReferenceExpressionTag
 {
-    VariableType               type;
+    ReferenceExpressionType     type;
     union {
         VariableExpression      variable;
         FunctionCallExpression  function;
@@ -318,6 +306,52 @@ struct ReferenceExpressionTag
         GenerateExpression      generate;
     } of;
     ReferenceExpression         next;
+};
+
+
+
+struct ReferenceVariableTag
+{
+    String  name;
+    String  type;
+};
+
+
+
+struct ReferenceFunctionCallTag
+{
+    String                  name;
+    ParametersExpression    parameters;
+};
+
+
+
+struct ReferenceClassTag
+{
+    String  name;
+};
+
+
+
+typedef enum
+{
+    REFERENCE_TYPE_SELF,
+    REFERENCE_TYPE_VARIABLE,
+    REFERENCE_TYPE_FUNCTION_CALL,
+    REFERENCE_TYPE_CLASS,
+} ReferenceType;
+
+
+
+struct ReferenceTag
+{
+    ReferenceType               type;
+    union {
+        ReferenceVariable       variable;
+        ReferenceFunctionCall   function;
+        ReferenceClass          klass;
+    } of;
+    Reference                   next;
 };
 
 
@@ -762,9 +796,9 @@ expression_parseReferenceExpression(
 
 
 
-VariableType
-expression_getLastReferenceType(
-    ReferenceExpression expression
+ParametersExpression
+expression_parseParametersExpression(
+    Parser  parser
 );
 
 
@@ -1004,6 +1038,20 @@ VariableDefinition
 variableDefinition_search(
     List    variableList,
     String  name
+);
+
+
+
+Reference
+reference_parse(
+    Parser  parser
+);
+
+
+
+Reference
+reference_getLast(
+    Reference reference
 );
 
 

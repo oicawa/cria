@@ -141,12 +141,40 @@ variableDefinition_parse(
 
 
 VariableDefinition
-variableDefinition_search(
-    List    variableList,
+definition_search(
+    List    list,
     String  name
 )
 {
-    int count = variableList->count;
+    int count = localList->count;
+    int index = 0;
+    VariableDefinition definition = NULL;
+    VariableDefinition tmp = NULL;
+    
+    for (index = 0; index < count; index++)
+    {
+        tmp = (VariableDefinition)(list_get(variableList, index));
+        if (strcmp(tmp->name->pointer, name->pointer) == 0)
+        {
+            definition = tmp;
+            break;
+        }
+    }
+    
+    
+    return definition;
+}
+
+
+VariableDefinition
+variableDefinition_search(
+    List        globalList,
+    List        fieldList,
+    List        localList,
+    Reference   reference
+)
+{
+    int count = localList->count;
     int index = 0;
     VariableDefinition definition = NULL;
     VariableDefinition tmp = NULL;

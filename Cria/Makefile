@@ -27,6 +27,7 @@ OBJS =\
     _CriaString.o\
     _CriaInteger.o\
     _CriaBoolean.o\
+    _Reference.o\
 #    _Hash.o\
 #    _CommentStatement.o\
 #    _ReturnStatement.o\
@@ -70,6 +71,7 @@ _CriaObject.o: _CriaObject.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.
 _CriaString.o: _CriaString.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaInteger.o: _CriaInteger.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaBoolean.o: _CriaBoolean.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+_Reference.o: _Reference.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 #_Hash.o: _Hash.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 #_ReturnStatement.o: _ReturnStatement.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 #_WhileStatement.o: _WhileStatement.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
