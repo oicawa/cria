@@ -155,6 +155,44 @@ parser_getNext(
 
 
 
+Item
+parser_getPosition(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    if (parser == NULL)
+        return;
+    
+    Logger_trc("[  END  ]%s", __func__);
+    return parser->current;
+}
+
+
+
+void
+parser_setPosition(
+    Parser  parser,
+    Item    position
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    if (parser == NULL)
+        return;
+    
+    parser->current = position;
+    
+    if (position == NULL)
+        parser->next = parser->tokens->item;
+    else
+        parser->next = position->next;
+    
+    Logger_trc("[  END  ]%s", __func__);
+}
+
+
+
+
 void
 parser_returnToMark(
     Parser  parser,
