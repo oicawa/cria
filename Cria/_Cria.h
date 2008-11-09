@@ -153,8 +153,6 @@ struct WhileStatementTag
 struct VariableDefinitionTag
 {
     String      name;
-    String      type;
-    AccessLevel access;
     CriaId      object;
 };
 
@@ -1020,6 +1018,16 @@ evaluator_functionCall(
     Interpreter             interpreter,
     List                    local,
     FunctionCallExpression  expression
+);
+
+
+
+CriaId
+evaluator_reference(
+    List        globalList,
+    List        fieldList,
+    List        localList,
+    Reference   reference
 );
 
 

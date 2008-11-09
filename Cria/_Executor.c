@@ -7,8 +7,9 @@
 void
 executor_executeSubstituteStatement(
     Interpreter         interpreter,
-    List                fieldList,
-    List                localList,
+    CriaId              id,
+    List                parameters,
+    List                locals,
     SubstituteStatement statement
 )
 {
@@ -18,11 +19,11 @@ executor_executeSubstituteStatement(
     CriaId id = NULL;
 
     //値を取得    
-    id = evaluator_expression(interpreter, localList, statement->expression);
+    id = evaluator_expression(interpreter, id, paraemters, locals, statement->expression);
     
     
     //変数を取得、なければ生成して値をセット。
-    definition = evaluator_reference(interpreter->variableList, fieldList, localList, reference);
+    definition = evaluator_reference(interpreter, id, parameters, locals, reference);
     definition->object = id;
     
     
@@ -34,12 +35,14 @@ executor_executeSubstituteStatement(
 void
 executor_executeFunctionCallStatement(
     Interpreter             interpreter,
-    List                    local,
+    CriaId                  id,
+    List                    parameters,
+    List                    locals,
     FunctionCallStatement   statement
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    evaluator_referenceExpression(interpreter, local, statement->expression);
+    evaluator_referenceExpression(interpreter, id, parameters, locals, statement->expression);
     Logger_trc("[  END  ]%s", __func__);
 }
 
@@ -48,7 +51,9 @@ executor_executeFunctionCallStatement(
 StatementResult
 executor_executeStatement(
     Interpreter interpreter,
-    List        local,
+    CriaId      id,
+    List        parameters,
+    List        locals,
     Statement   statement
 )
 {
@@ -62,10 +67,10 @@ executor_executeStatement(
     switch (statement->kind)
     {
     case STATEMENT_KIND_SUBSTITUTE:
-        executor_executeSubstituteStatement(interpreter, local, statement->of._substitute_);
+        executor_executeSubstituteStatement(interpreter, id, parameters, locals, statement->of._substitute_);
         break;
     case STATEMENT_KIND_FUNCTION_CALL:
-        executor_executeFunctionCallStatement(interpreter, local, statement->of._functionCall_);
+        executor_executeFunctionCallStatement(interpreter, id, parameters, locals, statement->of._functionCall_);
         break;
     /*
     case STATEMENT_KIND_IF:

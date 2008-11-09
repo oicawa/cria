@@ -163,7 +163,7 @@ Interpreter_run(
     for (index = 0; index < count; index++)
     {
         Statement statement = (Statement)(list_get(interpreter->statementList, index));
-        result = executor_executeStatement(interpreter, NULL, statement);
+        result = executor_executeStatement(interpreter, NULL, NULL, NULL, statement);
     }
     Logger_trc("[  END  ]%s", __func__);
 }

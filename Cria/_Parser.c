@@ -268,15 +268,6 @@ parser_parse(
             continue;
         }
         
-        /*
-        //変数＆定数定義？
-        if (variableDefinition_isMatch(parser) == TRUE)
-        {
-            Logger_dbg("Parse function definition.");
-            variableDefinition_parse(interpreter->variableList, parser);
-            continue;
-        }
-        //*/
         
         //関数定義？
         if (functionDefinition_isMatch(parser) == TRUE)
