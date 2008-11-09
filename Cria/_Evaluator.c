@@ -242,7 +242,7 @@ evaluator_parameters(
             break;
         case EXPRESSION_KIND_REFERENCE:
             Logger_dbg("Do reference expression");
-            id = evaluator_reference(interpreter, local, expression->of._reference_);
+            id = evaluator_referenceExpression(interpreter, local, expression->of._reference_);
             Logger_dbg("Done reference expression");
             list_add(list, id);
             Logger_dbg("Add 'Cria Id'");
@@ -319,6 +319,42 @@ END:
 
 CriaId
 evaluator_reference(
+    List        globalList,
+    List        fieldList,
+    List        localList,
+    Reference   reference
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    
+    switch (expression->type)
+    {
+    case REFERENCE_EXPRESSION_TYPE_SELF:
+        break;
+    case REFERENCE_EXPRESSION_TYPE_VARIABLE:
+        id = evaluator_variable(interpreter, local, expression->of.variable);
+        break;
+    case REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL:
+        id = evaluator_functionCall(interpreter, local, expression->of.function);
+        break;
+    case REFERENCE_EXPRESSION_TYPE_CLASS:
+        break;
+    case REFERENCE_EXPRESSION_TYPE_GENERATE:
+        break;
+    default:
+        break;
+    }
+    
+
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
+CriaId
+evaluator_referenceExpression(
     Interpreter         interpreter,
     List                local,
     ReferenceExpression expression
@@ -392,7 +428,7 @@ evaluator_expression(
         break;
     case EXPRESSION_KIND_REFERENCE:
         Logger_dbg("Do reference expression");
-        id = evaluator_reference(interpreter, local, expression->of._reference_);
+        id = evaluator_referenceExpression(interpreter, local, expression->of._reference_);
         Logger_dbg("Done reference expression");
         break;
     case EXPRESSION_KIND_VARIABLE:

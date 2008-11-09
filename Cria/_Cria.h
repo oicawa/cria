@@ -313,7 +313,6 @@ struct ReferenceExpressionTag
 struct ReferenceVariableTag
 {
     String  name;
-    String  type;
 };
 
 
@@ -1026,7 +1025,7 @@ evaluator_functionCall(
 
 
 CriaId
-evaluator_reference(
+evaluator_referenceExpression(
     Interpreter         interpreter,
     List                local,
     ReferenceExpression expression

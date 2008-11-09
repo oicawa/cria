@@ -21,18 +21,8 @@ executor_executeSubstituteStatement(
     id = evaluator_expression(interpreter, localList, statement->expression);
     
     
-    //変数を取得。なければ生成
-    definition = variableDefinition_search(interpreter->variableList, fieldList, localList, reference);
-    if (definition == NULL)
-    {
-        Reference tmp= reference_getLast(reference);
-        if (tmp->type != REFERENCE_TYPE_DEFINITION)
-            runtime_error(interpreter);
-        
-        definition = variableDefinition_new(tmp->variable->name, tmp->variable->type, access, NULL);
-        list_add(interpreter->variableList, definition);
-    }
-    
+    //変数を取得、なければ生成して値をセット。
+    definition = evaluator_reference(interpreter->variableList, fieldList, localList, reference);
     definition->object = id;
     
     
@@ -49,7 +39,7 @@ executor_executeFunctionCallStatement(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    evaluator_reference(interpreter, local, statement->expression);
+    evaluator_referenceExpression(interpreter, local, statement->expression);
     Logger_trc("[  END  ]%s", __func__);
 }
 

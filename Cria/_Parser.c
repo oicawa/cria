@@ -162,7 +162,7 @@ parser_getPosition(
 {
     Logger_trc("[ START ]%s", __func__);
     if (parser == NULL)
-        return;
+        return NULL;
     
     Logger_trc("[  END  ]%s", __func__);
     return parser->current;
