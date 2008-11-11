@@ -91,7 +91,6 @@ evaluator_stringLiteral(
 CriaId
 evaluator_variable(
     Interpreter         interpreter,
-    List                local,
     VariableExpression  expression
 )
 {
@@ -121,7 +120,6 @@ END:
 CriaId
 evaluator_operation(
     Interpreter         interpreter,
-    List                local,
     OperationExpression expression
 )
 {
@@ -132,9 +130,9 @@ evaluator_operation(
     {
         Logger_dbg("expression->left is NULL!");
     }
-    CriaId left = evaluator_expression(interpreter, local, expression->left);
+    CriaId left = evaluator_expression(interpreter, expression->left);
     Logger_dbg("Evaluated left expression.");
-    CriaId right = evaluator_expression(interpreter, local, expression->right);
+    CriaId right = evaluator_expression(interpreter, expression->right);
     Logger_dbg("Evaluated right expression.");
     
     if (left == NULL)
@@ -192,7 +190,6 @@ evaluator_operation(
 List
 evaluator_parameters(
     Interpreter             interpreter,
-    List                    local,
     ParametersExpression    parametersExpression
 )
 {
@@ -235,14 +232,14 @@ evaluator_parameters(
         //*/
         case EXPRESSION_KIND_FUNCTION_CALL:
             Logger_dbg("Do 'Function call expression'");
-            id = evaluator_functionCall(interpreter, local, expression->of._functionCall_);
+            id = evaluator_functionCall(interpreter, expression->of._functionCall_);
             Logger_dbg("Done 'Function call expression'");
             list_add(list, id);
             Logger_dbg("Add 'Cria Id'");
             break;
         case EXPRESSION_KIND_REFERENCE:
             Logger_dbg("Do reference expression");
-            id = evaluator_referenceExpression(interpreter, local, expression->of._reference_);
+            id = evaluator_referenceExpression(interpreter, expression->of._reference_);
             Logger_dbg("Done reference expression");
             list_add(list, id);
             Logger_dbg("Add 'Cria Id'");
@@ -253,7 +250,7 @@ evaluator_parameters(
         //*/
         case EXPRESSION_KIND_OPERATION:
             Logger_dbg("Do operation expression");
-            id = evaluator_operation(interpreter, local, expression->of._operation_);
+            id = evaluator_operation(interpreter, expression->of._operation_);
             Logger_dbg("Done operation expression");
             list_add(list, id);
             Logger_dbg("Add 'Cria Id'");
@@ -274,19 +271,16 @@ evaluator_parameters(
 CriaId
 evaluator_functionCall(
     Interpreter             interpreter,
-    CriaId                  id,
-    List                    parameters,
-    List                    locals,
     FunctionCallExpression  expression
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaId value = NULL;
+    CriaId id = NULL;
     FunctionDefinition  function;
     
     
     Logger_dbg("Function name is '%s'", expression->name->pointer);
-    function = Interpreter_searchFunction(interpreter, expression->name->pointer);
+    function = functionDefinition_search(interpreter->functionList, expression->name->pointer);
     if (function == NULL)
     {
         Logger_dbg("Function is not found.");
@@ -296,7 +290,7 @@ evaluator_functionCall(
     
     
     //ˆø”‚ÌŽ®‚ðŽÀs
-    List parameters = evaluator_parameters(interpreter, local, expression->parameters);
+    List parameters = evaluator_parameters(interpreter, expression->parameters);
     
     Logger_dbg("execute parameters count is '%d'", parameters->count);
     
@@ -314,7 +308,32 @@ evaluator_functionCall(
     
 END:
     Logger_trc("[  END  ]%s", __func__);
-    return value;
+    return id;
+}
+
+
+
+VariableDefinition
+evaluator_referenceVariable(
+    Interpreter         interpreter,
+    ReferenceVariable   variable
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    VariableDefinition definition = NULL;
+    
+    
+    definition = variableDefinition_search(interpreter->variableList, variable->name);
+    if (definition == NULL)
+    {
+        //‘¶Ý‚µ‚È‚©‚Á‚½ê‡‚Í“o˜^
+        definition = variableDefinition_new(variable->name);
+        list_add(interpreter->variableList, definition);
+    }
+    
+
+    Logger_trc("[  END  ]%s", __func__);
+    return definition;
 }
 
 
@@ -322,36 +341,31 @@ END:
 VariableDefinition
 evaluator_reference(
     Interpreter interpreter,
-    CriaId      id,
-    List        parameters,
-    List        locals,
     Reference   reference
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaId value = NULL;
+    VariableDefinition definition = NULL;
     
-    switch (expression->type)
+    switch (reference->type)
     {
-    case REFERENCE_EXPRESSION_TYPE_SELF:
+    //case REFERENCE_TYPE_SELF:
+    //    break;
+    case REFERENCE_TYPE_VARIABLE:
+        definition = evaluator_referenceVariable(interpreter, reference->of.variable);
         break;
-    case REFERENCE_EXPRESSION_TYPE_VARIABLE:
-        //value = evaluator_variable(interpreter, local, expression->of.variable);
-        break;
-    case REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL:
-        //value = evaluator_functionCall(interpreter, local, expression->of.function);
-        break;
-    case REFERENCE_EXPRESSION_TYPE_CLASS:
-        break;
-    case REFERENCE_EXPRESSION_TYPE_GENERATE:
-        break;
+    //case REFERENCE_TYPE_FUNCTION_CALL:
+    //    definition = evaluator_referenceFunctionCall(interpreter, reference->of.function);
+    //    break;
+    //case REFERENCE_TYPE_CLASS:
+    //    break;
     default:
         break;
     }
     
 
     Logger_trc("[  END  ]%s", __func__);
-    return value;
+    return definition;
 }
 
 
@@ -359,24 +373,21 @@ evaluator_reference(
 CriaId
 evaluator_referenceExpression(
     Interpreter         interpreter,
-    CriaId              id,
-    List                parameters,
-    List                locals,
     ReferenceExpression expression
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaId value = NULL;
+    CriaId id = NULL;
     
     switch (expression->type)
     {
     case REFERENCE_EXPRESSION_TYPE_SELF:
         break;
     case REFERENCE_EXPRESSION_TYPE_VARIABLE:
-        value = evaluator_variable(interpreter, id, parameters, locals, expression->of.variable);
+        id = evaluator_variable(interpreter, expression->of.variable);
         break;
     case REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL:
-        value = evaluator_functionCall(interpreter, id, parameters, locals, expression->of.function);
+        id = evaluator_functionCall(interpreter, expression->of.function);
         break;
     case REFERENCE_EXPRESSION_TYPE_CLASS:
         break;
@@ -388,34 +399,31 @@ evaluator_referenceExpression(
     
 
     Logger_trc("[  END  ]%s", __func__);
-    return value;
+    return id;
 }
 
 
 
 CriaId
 evaluator_expression(
-    Interpreter             interpreter,
-    CriaId                  id,
-    List                    parameters,
-    List                    locals,
-    Expression              expression
+    Interpreter interpreter,
+    Expression  expression
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaId value = NULL;
+    CriaId id = NULL;
     
     
     switch (expression->kind)
     {
     case EXPRESSION_KIND_STRING_LITERAL:
         Logger_dbg("Do 'String literal expression'");
-        value = (CriaId)evaluator_stringLiteral(interpreter, expression->of._stringLiteral_);
+        id = (CriaId)evaluator_stringLiteral(interpreter, expression->of._stringLiteral_);
         Logger_dbg("Done 'String literal expression'");
         break;
     case EXPRESSION_KIND_INTEGER_LITERAL:
         Logger_dbg("Do 'Integer literal expression'");
-        value = evaluator_integerLiteral(interpreter, expression->of._integerLiteral_);
+        id = evaluator_integerLiteral(interpreter, expression->of._integerLiteral_);
         Logger_dbg("Done 'Integer literal expression'");
         break;
     /*
@@ -430,22 +438,22 @@ evaluator_expression(
     //*/
     case EXPRESSION_KIND_FUNCTION_CALL:
         Logger_dbg("Do 'Function call expression'");
-        value = evaluator_functionCall(interpreter, id, parameters, locals, expression->of._functionCall_);
+        id = evaluator_functionCall(interpreter, expression->of._functionCall_);
         Logger_dbg("Done 'Function call expression'");
         break;
     case EXPRESSION_KIND_REFERENCE:
         Logger_dbg("Do reference expression");
-        value = evaluator_referenceExpression(interpreter, id, parameters, locals, expression->of._reference_);
+        id = evaluator_referenceExpression(interpreter, expression->of._reference_);
         Logger_dbg("Done reference expression");
         break;
     case EXPRESSION_KIND_VARIABLE:
         Logger_dbg("Do variable expression");
-        value = evaluator_variable(interpreter, id, parameters, locals, expression->of._variable_);
+        id = evaluator_variable(interpreter, expression->of._variable_);
         Logger_dbg("Done variable expression");
         break;
     case EXPRESSION_KIND_OPERATION:
         Logger_dbg("Do operation expression");
-        value = evaluator_operation(interpreter, id, parameters, locals, expression->of._operation_);
+        id = evaluator_operation(interpreter, expression->of._operation_);
         Logger_dbg("Done operation expression");
         break;
     default:
@@ -456,7 +464,7 @@ evaluator_expression(
     
     
     Logger_trc("[  END  ]%s", __func__);
-    return value;
+    return id;
 }
 
 
