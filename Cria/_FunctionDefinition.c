@@ -87,3 +87,35 @@ END:
     return result;
 }
 
+
+
+//本当はHashを使いたいが、とにかく動くものを先に作りたいので、
+//線形検索を行う。遅いけど。
+FunctionDefinition
+functionDefinition_search(
+    List    functions,
+    char*   name
+)
+{
+    int count = functions->count;
+    int index = 0;
+    FunctionDefinition definition = NULL;
+    FunctionDefinition tmp = NULL;
+    
+    for (index = 0; index < count; index++)
+    {
+        tmp = (FunctionDefinition)(list_get(functions, index));
+        if (strcmp(tmp->name, name) == 0)
+        {
+            definition = tmp;
+            break;
+        }
+    }
+    
+    
+    return definition;
+}
+
+
+
+
