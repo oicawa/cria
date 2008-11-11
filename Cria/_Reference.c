@@ -20,21 +20,20 @@ reference_new(
 
 Reference
 reference_variable(
-    Parser  parser,
-    String  name
+    Parser  parser
 )
 {
     Logger_trc("[ START ]%s", __func__);
     Reference reference = NULL;
     ReferenceVariable variable = NULL;
     Item position = parser_getPosition(parser); //バックアップ用
-    String name = null;
+    String name = NULL;
     
     Token token = parser_getCurrent(parser);
     if (token->type != TOKEN_TYPE_IDENTIFIER)
     {
-        parser_setPosition(position);
-        goto END:
+        parser_setPosition(parser, position);
+        goto END;
     }
     
     //変数名を保持
@@ -45,14 +44,14 @@ reference_variable(
     token = parser_getCurrent(parser);
     if (token->type != TOKEN_TYPE_PERIOD && token->type != TOKEN_TYPE_SUBSTITUTE)
     {
-        parser_setPosition(position);
-        goto END:
+        parser_setPosition(parser, position);
+        goto END;
     }
     
     //該当した場合はオブジェクトを生成
     variable = Memory_malloc(sizeof(struct ReferenceVariableTag));
     memset(variable, 0x00, sizeof(struct ReferenceVariableTag));
-    variable->name = String_clone(name);
+    variable->name = string_clone(name);
 
     //Referenceを生成
     reference = reference_new(REFERENCE_TYPE_VARIABLE);
@@ -66,7 +65,7 @@ reference_variable(
     //トークンを進めて改めてreferenceでパースし何も帰ってこなければエラー
     parser_next(parser);
     reference->next = reference_parse(parser);
-    if (reference->next == null)
+    if (reference->next == NULL)
         parser_error(token);
     
 END:
@@ -87,7 +86,7 @@ reference_parse(
     
     //現在のトークンと次のトークンへの参照を取得
     reference = reference_variable(parser);
-    if (reference != null)
+    if (reference != NULL)
         goto END;
     
     //★保留中
@@ -101,7 +100,7 @@ reference_parse(
     //    goto END;
         
     //いずれでもなかった場合はパーサー位置を戻す。
-    parser_setPosition(position);
+    parser_setPosition(parser, position);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
