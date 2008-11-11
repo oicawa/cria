@@ -300,8 +300,6 @@ struct ReferenceExpressionTag
     union {
         VariableExpression      variable;
         FunctionCallExpression  function;
-        ClassExpression         klass;
-        GenerateExpression      generate;
     } of;
     ReferenceExpression         next;
 };
@@ -672,6 +670,21 @@ parser_returnToMark(
 
 
 
+Item
+parser_getPosition(
+    Parser  parser
+);
+
+
+
+void
+parser_setPosition(
+    Parser  parser,
+    Item    position
+);
+
+
+
 void
 parser_error(
     Token token
@@ -934,20 +947,20 @@ functionDefinition_isMatch(
 
 
 
-//==================================================
-//VariableDefinition
-//==================================================
-Boolean
-variableDefinition_isMatch(
-    Parser parser
+FunctionDefinition
+functionDefinition_search(
+    List    functions,
+    char*   name
 );
 
 
 
-void
-variableDefinition_parse(
-    List    variableList,
-    Parser  parser
+//==================================================
+//VariableDefinition
+//==================================================
+VariableDefinition
+variableDefinition_new(
+    String  name
 );
 
 
@@ -995,8 +1008,23 @@ io_read(
 StatementResult
 executor_executeStatement(
     Interpreter interpreter,
-    List        local,
     Statement   statement
+);
+
+
+
+void
+executor_executeFunctionCallStatement(
+    Interpreter             interpreter,
+    FunctionCallStatement   statement
+);
+
+
+
+void
+executor_executeSubstituteStatement(
+    Interpreter         interpreter,
+    SubstituteStatement statement
 );
 
 
@@ -1007,26 +1035,14 @@ executor_executeStatement(
 CriaId
 evaluator_expression(
     Interpreter             interpreter,
-    List                    local,
     Expression              expression
 );
 
 
 
-CriaId
-evaluator_functionCall(
-    Interpreter             interpreter,
-    List                    local,
-    FunctionCallExpression  expression
-);
-
-
-
-CriaId
+VariableDefinition
 evaluator_reference(
-    List        globalList,
-    List        fieldList,
-    List        localList,
+    Interpreter interpreter,
     Reference   reference
 );
 
@@ -1035,12 +1051,22 @@ evaluator_reference(
 CriaId
 evaluator_referenceExpression(
     Interpreter         interpreter,
-    List                local,
     ReferenceExpression expression
 );
 
 
 
+CriaId
+evaluator_functionCall(
+    Interpreter             interpreter,
+    FunctionCallExpression  expression
+);
+
+
+
+//==================================================
+//VariableDefinition
+//==================================================
 VariableDefinition
 variableDefinition_search(
     List    variableList,
