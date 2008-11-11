@@ -261,22 +261,6 @@ parser_parse(
         mark = parser->mark;
         
         
-        //クラス定義？
-        if (classDefinition_isMatch(parser) == TRUE)
-        {
-            Logger_dbg("Parse class definition.");
-            continue;
-        }
-        
-        
-        //関数定義？
-        if (functionDefinition_isMatch(parser) == TRUE)
-        {
-            Logger_dbg("Parse function definition.");
-            continue;
-        }
-        
-        
         //ステートメント        
         Logger_dbg("Check statement.");
         statement = statement_parse(parser);
