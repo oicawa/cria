@@ -126,18 +126,8 @@ parseSubstituteStatement(
     reference = reference_parse(parser);
     
     
-    //トークン取得
-    token = parser_getCurrent(parser);
-    
-    
-    if ((reference_getLast(reference))->type != REFERENCE_TYPE_VARIABLE)
-    {
-        //代入できないのでエラー
-        parser_error(token);
-    }
-    
-    
     //代入トークンのチェック
+    token = parser_getCurrent(parser);
     if (token->type != TOKEN_TYPE_SUBSTITUTE)
     {
         Logger_dbg("It is not substitute token.");
@@ -147,6 +137,7 @@ parseSubstituteStatement(
     
     //以降のトークンを式としてパース
     Logger_dbg("Check 'Expression'");
+    parser_next(parser);
     expression = expression_parse(parser);
     if (expression == NULL)
     {
