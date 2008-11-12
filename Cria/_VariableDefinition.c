@@ -22,22 +22,60 @@ variableDefinition_search(
     String  name
 )
 {
-    int count = variables->count;
-    int index = 0;
+    Logger_trc("[ START ]%s", __func__);
     VariableDefinition definition = NULL;
     VariableDefinition tmp = NULL;
+    Item item = NULL;
     
-    for (index = 0; index < count; index++)
+    Logger_dbg("variables pointer = %p", variables);
+    if (variables == NULL)
     {
-        tmp = (VariableDefinition)(list_get(variables, index));
+        Logger_dbg("Variables is NULL.");
+        goto END;
+    }
+    
+    if (name == NULL)
+    {
+        Logger_dbg("'name' is NULL.");
+        goto END;
+    }
+    
+    Logger_dbg("Pre Loop start.");
+    item = variables->item;
+    Logger_dbg("Loop start.");
+    while (1)
+    {
+        if (item == NULL)
+        {
+            Logger_dbg("item is null.");
+            break;
+        }
+        
+        tmp = (VariableDefinition)(item->object);
+        if (tmp == NULL)
+        {
+            Logger_dbg("object is null.");
+            item = item->next;
+            continue;
+        }
+        
+        if (tmp->name == NULL)
+        {
+            Logger_dbg("object->name or name is null.");
+            item = item->next;
+            continue;
+        }
+        
         if (strcmp(tmp->name->pointer, name->pointer) == 0)
         {
             definition = tmp;
             break;
         }
     }
+    Logger_dbg("Loop end.");
     
-    
+END:
+    Logger_trc("[  END  ]%s", __func__);
     return definition;
 }
 
