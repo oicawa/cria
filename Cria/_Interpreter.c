@@ -57,7 +57,7 @@ Interpreter_new(
     interpreter = Memory_malloc(sizeof(struct InterpreterTag));
     interpreter->statementList = list_new();
     Logger_dbg("interpreter->statementList is [%p]", interpreter->statementList);
-    //interpreter->variableList = List_new();
+    interpreter->variableList = list_new();
     interpreter->functionList = list_new();
     //interpreter->classList = List_new();
     interpreter->buffer = NULL;
