@@ -66,56 +66,15 @@ END:
 
 
 
-Boolean
-isMatchSubstituteStatement(
-    Parser  parser
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    Boolean result = FALSE;
-    Item mark = NULL;
-    Token token = NULL;
-    
-    //NULLチェック
-    if (parser == NULL)
-    {
-        goto END;
-    }
-    
-    //現在のトークンを復帰位置としてバックアップ
-    mark = parser->current;
-    
-    //改行トークンが検知される前に、代入演算子トークンが検知されればOK。
-    while (parser_next(parser) == TRUE)
-    {
-        //改行トークン？
-        token = parser_getCurrent(parser);
-        if (token->type == TOKEN_TYPE_NEW_LINE)
-        {
-            goto END;
-        }
-        if (token->type == TOKEN_TYPE_SUBSTITUTE)
-        {
-            result = TRUE;
-            break;
-        }
-    }
-    
-END:
-    parser_returnToMark(parser, mark);
-    Logger_trc("[  END  ]%s", __func__);
-    return result;
-}
-
-
-
-SubstituteStatement
-parseSubstituteStatement(
+Statement
+statement_parseSubstitute(
     Parser parser
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    SubstituteStatement statement = NULL;
+    Statement statement = NULL;
+    SubstituteStatement substitute = NULL;
+    Item position = parser_getPosition(parser);
     Token token = NULL;
     Reference reference = NULL;
     Expression expression = NULL;
@@ -124,13 +83,20 @@ parseSubstituteStatement(
     //左辺の式（参照）を取得
     Logger_dbg("Check reference expression.");
     reference = reference_parse(parser);
+    if (reference == NULL)
+    {
+        Logger_dbg("Not reference expression.");
+        parser_setPosition(parser, position);
+        goto END;
+    }
     
     
     //代入トークンのチェック
     token = parser_getCurrent(parser);
     if (token->type != TOKEN_TYPE_SUBSTITUTE)
     {
-        Logger_dbg("It is not substitute token.");
+        Logger_dbg("Not substitution token.");
+        parser_setPosition(parser, position);
         goto END;
     }
     
@@ -142,18 +108,37 @@ parseSubstituteStatement(
     if (expression == NULL)
     {
         Logger_dbg("Not expression.");
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    token = parser_getCurrent(parser);
+    if (token->type != TOKEN_TYPE_NEW_LINE)
+    {
+        Logger_dbg("Not new line token.");
+        parser_setPosition(parser, position);
+        parser_error(token);
         goto END;
     }
     
     
+    //次のパースの為にカーソルを進める
+    parser_next(parser);
+    
+    
+    //生成
     Logger_dbg("Create 'SubstituteStatement'");
-    statement = Memory_malloc(sizeof(struct SubstituteStatementTag));
-    memset(statement, 0x00, sizeof(struct SubstituteStatementTag));
-    statement->reference = reference;
-    statement->expression = expression;
+    substitute = Memory_malloc(sizeof(struct SubstituteStatementTag));
+    memset(substitute, 0x00, sizeof(struct SubstituteStatementTag));
+    substitute->reference = reference;
+    substitute->expression = expression;
+    
+    statement = statement_new(STATEMENT_KIND_SUBSTITUTE);
+    statement->of._substitute_ = substitute;
+    statement->line = token->row;
+    
     
 END:
-    token_log(token);
     Logger_trc("[  END  ]%s", __func__);
     return statement;
 }
@@ -161,14 +146,16 @@ END:
 
 
 
-FunctionCallStatement
-parseFunctionCallStatement(
+Statement
+statement_parseFunctionCall(
     Parser parser
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    FunctionCallStatement  functionCallStatement = NULL;
+    Statement statement = NULL;
+    FunctionCallStatement  function = NULL;
     ReferenceExpression expression = NULL;
+    Item position = parser_getPosition(parser);
     Token token = NULL;
     
     
@@ -177,41 +164,40 @@ parseFunctionCallStatement(
     expression = expression_parseReferenceExpression(parser);
     if (expression == NULL)
     {
-        Logger_dbg("Not function call expression.");
+        Logger_dbg("Not reference expression.");
+        parser_setPosition(parser, position);
         goto END;
     }
     
     
-    //あればそれを取得
-    //現在のトークンを取得
-    Logger_dbg("Get last token.");
-    token = parser_getCurrent(parser);
-    token_log(token);
-    Logger_dbg("Got last token.");
-    
-    
     //改行でなければNULL返却
+    token = parser_getCurrent(parser);
     if (token->type != TOKEN_TYPE_NEW_LINE)
     {
+        Logger_dbg("Not new line token.");
+        parser_setPosition(parser, position);
         parser_error(token);
         goto END;
     }
     
     
-    //関数呼び出し文生成
-    Logger_dbg("Create 'FunctionCallExpression'");
-    functionCallStatement = Memory_malloc(sizeof(struct FunctionCallStatementTag));
-    memset(functionCallStatement, 0x00, sizeof(struct FunctionCallStatementTag));
-    functionCallStatement->expression = expression;
-    
-END:
-    //次のトークンへ移動
+    //次のパースの為にカーソルを進める
     parser_next(parser);
     
     
-    token_log(parser_getCurrent(parser));
+    //生成
+    Logger_dbg("Create 'FunctionCallExpression'");
+    function = Memory_malloc(sizeof(struct FunctionCallStatementTag));
+    memset(function, 0x00, sizeof(struct FunctionCallStatementTag));
+    function->expression = expression;
+    
+    statement = statement_new(STATEMENT_KIND_FUNCTION_CALL);
+    statement->of._functionCall_ = function;
+    statement->line = token->row;
+    
+END:
     Logger_trc("[  END  ]%s", __func__);
-    return functionCallStatement;
+    return statement;
 }
 
 
@@ -223,63 +209,21 @@ statement_parse(
 {
     Logger_trc("[ START ]%s", __func__);
     Statement statement = NULL;
-    //Item mark = parser->mark;
     
-    
-    //行先頭のトークンをチェック。
-    Token current = parser_getCurrent(parser);
-    int line = current->row;
-    switch (current->type)
+    statement = statement_parseSubstitute(parser);
+    if (statement != NULL)
     {
-    case TOKEN_TYPE_IF:                     //if文
-        break;
-    case TOKEN_TYPE_FOR:                    //for文
-        break;
-    case TOKEN_TYPE_WHILE:                  //while文
-        break;
-    case TOKEN_TYPE_RETURN:                 //返却文（値なし）
-        break;
-    case TOKEN_TYPE_RETURN_VALUE:           //返却文（値あり）
-        break;
-    case TOKEN_TYPE_IDENTIFIER:             //変数参照（代入）／メソッド呼び出し
-    case TOKEN_TYPE_CLASS_LITERAL:          //クラス参照（メンバ参照、メソッド実行）
-        if (isMatchSubstituteStatement(parser) == TRUE)
-        {
-            Logger_dbg("Substitute statement parse.");
-            SubstituteStatement substituteStatement = NULL;
-            substituteStatement = parseSubstituteStatement(parser);
-            if (substituteStatement != NULL)
-            {
-                Logger_dbg("Substitute statement is created.");
-                statement = statement_new(STATEMENT_KIND_SUBSTITUTE);
-                statement->of._substitute_ = substituteStatement;
-                statement->line = line;
-            }
-        }
-        else
-        {
-            Logger_dbg("Function call statement parse.");
-            FunctionCallStatement functionCallStatement = NULL;
-            functionCallStatement = parseFunctionCallStatement(parser);
-            if (functionCallStatement != NULL)
-            {
-                Logger_dbg("Function call statement is created.");
-                statement = statement_new(STATEMENT_KIND_FUNCTION_CALL);
-                statement->of._functionCall_ = functionCallStatement;
-                statement->line = line;
-            }
-        }
-        break;
-    default:
-        //構文エラーじゃね？
-        if (parser_getNext(parser) != NULL)
-        {
-            parser_error(current);
-        }
-        break;
+        Logger_dbg("Created SubstituteStatement.");
+        goto END;
     }
     
     
+    statement = statement_parseFunctionCall(parser);
+    if (statement != NULL)
+    {
+        Logger_dbg("Created FunctionCallStatement.");
+        goto END;
+    }
     
     /*
     //ReturnStatement?
@@ -341,8 +285,12 @@ statement_parse(
         statement->of._functionCall_ = functionCallStatement;
         goto END;
     }
-END:
     */
+    
+    Logger_dbg("No Statement.");
+    
+    
+END:
     Logger_trc("[  END  ]%s", __func__);
     return statement;
 }

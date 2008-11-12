@@ -75,6 +75,7 @@ expression_parseParametersExpression(
     Logger_trc("[ START ]%s", __func__);
     ParametersExpression parameters = NULL;
     Expression expression = NULL;
+    Item position = parser_getPosition(parser);
     Token token = NULL;
     List list = list_new();
     
@@ -97,16 +98,6 @@ expression_parseParametersExpression(
         Logger_dbg("Add expression.");
         list_add(list, expression);
         
-        /*
-        //次のトークンへ
-        Logger_dbg("Next token.");
-        if (parser_next(parser) == FALSE)
-        {
-            parser_error(token);
-            goto END;
-        }
-        */
-        
         //トークンが', 'であれば更に読み出しを行って継続
         Logger_dbg("Get current token.");
         token = parser_getCurrent(parser);
@@ -114,12 +105,13 @@ expression_parseParametersExpression(
         if (token->type == TOKEN_TYPE_COMMA)
         {
             //次のトークンへ
-            Logger_dbg("Token is not Comma.");
+            Logger_dbg("Token is Comma.");
             if (parser_next(parser) == FALSE)
             {
                 parser_error(token);
                 goto END;
             }
+            token = parser_getCurrent(parser);
             continue;
         }
         
@@ -321,6 +313,7 @@ expression_parseFactor(
     Logger_trc("[ START ]%s", __func__);
     Expression  expression = NULL;
     Token token = parser_getCurrent(parser);
+    token_log(token);
     
     
     Logger_dbg("Check integer literal.");
@@ -410,17 +403,10 @@ expression_parseMultiplyDivide(
     OperationKind kind;
     
     left = expression_parseFactor(parser);
-    /*
-    if (parser_next(parser) == FALSE)
-    {
-        //parser_error(parser_getCurrent(parser));
-        expression = left;
-        goto END;
-    }
-    */
     
     //次のトークンが乗算・除算のいずれかだった場合は新たにExpressionを生成
     token = parser_getCurrent(parser);
+    token_log(token);
     if (token->type == TOKEN_TYPE_MULTIPLY)
     {
         kind = OPERATION_KIND_MULTIPLY;
@@ -432,7 +418,6 @@ expression_parseMultiplyDivide(
     else
     {
         expression = left;
-        parser_next(parser);
         goto END;
     }
 
@@ -487,7 +472,6 @@ expression_parsePlusMinus(
     else
     {
         expression = left;
-        parser_next(parser);
         goto END;
     }
 
@@ -544,7 +528,6 @@ expression_parseCompare(
     else
     {
         expression = left;
-        parser_next(parser);
         goto END;
     }
 
@@ -593,7 +576,6 @@ expression_parseNotEqual(
     else
     {
         expression = left;
-        parser_next(parser);
         goto END;
     }
 
@@ -646,7 +628,6 @@ expression_parseAndOr(
     else
     {
         expression = left;
-        parser_next(parser);
         goto END;
     }
 

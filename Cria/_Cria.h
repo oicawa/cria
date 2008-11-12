@@ -1107,8 +1107,8 @@ reference_getLast(
 
 #define parser_error(token) \
     do { \
-        fprintf(stderr, "Syntax error near '%s'. (line:%d, column:%d)\n", (token)->buffer->pointer, (token)->row, (token)->column); \
-        Logger_err("Syntax error near '%s'. (line:%d, column:%d)\n", (token)->buffer->pointer, (token)->row, (token)->column); \
+        Logger_err("Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", (token)->buffer->pointer, (token)->row, (token)->column, __FILE__, __LINE__); \
+        fprintf(stderr, "Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", (token)->buffer->pointer, (token)->row, (token)->column, __FILE__, __LINE__); \
         Memory_dispose(); \
         exit(1); \
     } while(0) \
