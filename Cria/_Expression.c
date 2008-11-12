@@ -185,8 +185,7 @@ expression_parseVariable(
     expression->type = REFERENCE_EXPRESSION_TYPE_VARIABLE;
     expression->of.variable = variable;
 
-    //ピリオドだった場合は次のReferenceExpressionをパース    
-    parser_next(parser);
+    //ピリオドだった場合は次のReferenceExpressionをパース
     if (token->type == TOKEN_TYPE_PERIOD)
     {
         expression->next = expression_parseReferenceExpression(parser);
