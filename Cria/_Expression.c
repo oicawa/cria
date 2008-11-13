@@ -36,8 +36,6 @@ expression_dispose(
         //operationExpression_dispose(expression->of._operation_);
         break;
     case EXPRESSION_KIND_STRING_LITERAL:
-        stringLiteralExpression_dispose(expression->of._stringLiteral_);
-        expression->of._stringLiteral_ = NULL;
         break;
     case EXPRESSION_KIND_INTEGER_LITERAL:
         break;
@@ -50,7 +48,6 @@ expression_dispose(
     case EXPRESSION_KIND_GENERATE:
         break;
     case EXPRESSION_KIND_FUNCTION_CALL:
-        //functionCallExpression_dispose(expression->of._functionCall_);
         break;
     case EXPRESSION_KIND_VARIABLE:
         break;
