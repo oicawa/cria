@@ -23,6 +23,24 @@ evaluator_integerLiteral(
 
 
 CriaId
+evaluator_booleanLiteral(
+    Interpreter             interpreter,
+    BooleanLiteralExpression expression
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaBoolean boolean = NULL;
+    Boolean value = expression->value;
+    
+    boolean = CriaBoolean_new(NULL, TRUE, value);
+
+    Logger_trc("[  END  ]%s", __func__);
+    return (CriaId)boolean;
+}
+
+
+
+CriaId
 evaluator_stringLiteral(
     Interpreter             interpreter,
     StringLiteralExpression expression
@@ -429,8 +447,11 @@ evaluator_expression(
     /*
     case EXPRESSION_KIND_REAL_LITERAL:
         break;
+    //*/
     case EXPRESSION_KIND_BOOLEAN_LITERAL:
+        id = evaluator_booleanLiteral(interpreter, expression->of._booleanLiteral_);
         break;
+    /*
     case EXPRESSION_KIND_NULL_LITERAL:
         break;
     case EXPRESSION_KIND_GENERATE:

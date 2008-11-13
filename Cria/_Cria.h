@@ -196,7 +196,7 @@ struct ExpressionTag
         StringLiteralExpression     _stringLiteral_;
         IntegerLiteralExpression    _integerLiteral_;
         //RealLiteralExpression       _realLiteral_;
-        //BooleanLiteralExpression    _booleanLiteral_;
+        BooleanLiteralExpression    _booleanLiteral_;
         //NullLiteralExpression       _nullLiteral_;
         OperationExpression         _operation_;
         //GenerateExpression          _generate_;
@@ -265,6 +265,13 @@ struct StringLiteralExpressionTag
 struct IntegerLiteralExpressionTag
 {
     int     value;
+};
+
+
+
+struct BooleanLiteralExpressionTag
+{
+    Boolean value;
 };
 
 
@@ -423,6 +430,13 @@ string_subStringFunction(
 
 int
 string_toInteger(
+    String  source
+);
+
+
+
+Boolean
+string_toBoolean(
     String  source
 );
 
@@ -1005,6 +1019,14 @@ io_read(
 //==================================================
 //Executor
 //==================================================
+StatementResult
+executor_executeStatementList(
+    Interpreter interpreter,
+    List        statements
+);
+
+
+
 StatementResult
 executor_executeStatement(
     Interpreter interpreter,

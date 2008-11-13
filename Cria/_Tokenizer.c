@@ -344,6 +344,16 @@ parseReserved(
         Logger_dbg("create TOKEN_TYPE_ELSE");
         token = token_new(TOKEN_TYPE_ELSE, row, column, NULL);
     }
+    else if (strcmp(buffer, TOKEN_LITERAL_TRUE) == 0)
+    {
+        Logger_dbg("create TOKEN_TYPE_BOOLEAN_LITERAL");
+        token = token_new(TOKEN_TYPE_BOOLEAN_LITERAL, row, column, tmp);
+    }
+    else if (strcmp(buffer, TOKEN_LITERAL_FALSE) == 0)
+    {
+        Logger_dbg("create TOKEN_TYPE_BOOLEAN_LITERAL");
+        token = token_new(TOKEN_TYPE_BOOLEAN_LITERAL, row, column, tmp);
+    }
     else if (strcmp(buffer, TOKEN_LITERAL_RETURN) == 0)
     {
         //retrunについては、値を返すケースである、RETURN_VALUEがありうるので、

@@ -186,13 +186,140 @@ statement_parseFunctionCall(
     
     
     //生成
-    Logger_dbg("Create 'FunctionCallExpression'");
+    Logger_dbg("Create 'FunctionCallStatement'");
     function = Memory_malloc(sizeof(struct FunctionCallStatementTag));
     memset(function, 0x00, sizeof(struct FunctionCallStatementTag));
     function->expression = expression;
     
     statement = statement_new(STATEMENT_KIND_FUNCTION_CALL);
     statement->of._functionCall_ = function;
+    statement->line = token->row;
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return statement;
+}
+
+
+
+IfStatement
+statement_parseIfBlock(
+    Parser      parser,
+    TokenType   type
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Statement statement = NULL;
+    IfStatement ifStatement = NULL;
+    Expression condition = NULL;
+    List statements = list_new();
+    Item position = parser_getPosition(parser);
+    Token token = NULL;
+    
+    
+    token = parser_getCurrent(parser);
+    if (token->type == type)
+    {
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    parser_next(parser);
+    
+    
+    if (type != TOKEN_TYPE_ELSE)
+    {
+        condition = expression_parse(parser);
+        if (condition == NULL)
+        {
+            parser_setPosition(parser, position);
+            parser_error(token);
+            goto END;
+        }
+    }
+    
+    
+    token = parser_getCurrent(parser);
+    if (token->type != TOKEN_TYPE_NEW_LINE)
+    {
+        parser_setPosition(parser, position);
+        parser_error(token);
+        goto END;
+    }
+    parser_next(parser);
+    
+    
+    token = parser_getCurrent(parser);
+    if (token->type != TOKEN_TYPE_INDENT)
+    {
+        parser_setPosition(parser, position);
+        parser_error(token);
+        goto END;
+    }
+    parser_next(parser);
+    
+    
+    while(1)
+    {
+        token = parser_getCurrent(parser);
+        if (token->type == TOKEN_TYPE_DEDENT)
+            break;
+        
+        statement = statement_parse(parser);
+        if (statement == NULL)
+        {
+            parser_setPosition(parser, position);
+            parser_error(token);
+            goto END;
+        }
+        
+        list_add(statements, statement);
+    }
+    parser_next(parser);
+    
+    
+    //生成
+    Logger_dbg("Create 'IfStatement'");
+    ifStatement = Memory_malloc(sizeof(struct IfStatementTag));
+    memset(ifStatement, 0x00, sizeof(struct IfStatementTag));
+    ifStatement->condition = condition;
+    ifStatement->statements = statements;
+    
+    
+    token = parser_getCurrent(parser);
+    if (token->type == TOKEN_TYPE_ELIF || token->type == TOKEN_TYPE_ELSE)
+    {
+        ifStatement->_if_ = statement_parseIfBlock(parser, token->type);
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return ifStatement;
+}
+
+
+
+Statement
+statement_parseIf(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Statement statement = NULL;
+    IfStatement ifStatement = NULL;
+    Item position = parser_getPosition(parser);
+    Token token = parser_getCurrent(parser);
+    
+    
+    ifStatement = statement_parseIfBlock(parser, TOKEN_TYPE_IF);
+    if (ifStatement == NULL)
+    {
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    
+    statement = statement_new(STATEMENT_KIND_IF);
+    statement->of._if_ = ifStatement;
     statement->line = token->row;
     
 END:
@@ -225,6 +352,15 @@ statement_parse(
         goto END;
     }
     
+    
+    statement = statement_parseIf(parser);
+    if (statement != NULL)
+    {
+        Logger_dbg("Created FunctionCallStatement.");
+        goto END;
+    }
+    
+    
     /*
     //ReturnStatement?
     ReturnStatement returnStatement = returnStatement_parse(buffer, offset);
@@ -246,46 +382,6 @@ statement_parse(
     }
     //*/
     
-    /*
-    //IfStatement?
-    IfStatement ifStatement = ifStatement_parse(buffer, offset);
-    if (ifStatement != NULL)
-    {
-        statement = Statement_new(STATEMENT_KIND_IF);
-        statement->of._if_ = ifStatement;
-        return statement;
-    }
-    //*/
-    /*
-    //代入式
-    Logger_dbg("Check 'SubstituteStatement'");
-    token_log(((Token)(mark->object)));
-    parser_returnToMark(parser, mark);
-    SubstituteStatement substituteStatement = NULL;
-    substituteStatement = substituteStatement_parse(parser);
-    if (substituteStatement != NULL)
-    {
-        Logger_dbg("Create 'FunctionCallExpression'");
-        statement = statement_new(STATEMENT_KIND_SUBSTITUTE);
-        statement->of._substitute_ = substituteStatement;
-        goto END;
-    }
-    
-    
-    //関数呼び出し文
-    Logger_dbg("Check 'FunctionCallStatement'");
-    token_log(((Token)(mark->object)));
-    parser_returnToMark(parser, mark);
-    FunctionCallStatement functionCallStatement = NULL;
-    functionCallStatement = functionCallStatement_parse(parser);
-    if (functionCallStatement != NULL)
-    {
-        Logger_dbg("Create 'FunctionCallStatement'");
-        statement = statement_new(STATEMENT_KIND_FUNCTION_CALL);
-        statement->of._functionCall_ = functionCallStatement;
-        goto END;
-    }
-    */
     
     Logger_dbg("No Statement.");
     

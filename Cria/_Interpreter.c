@@ -155,16 +155,9 @@ Interpreter_run(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    StatementResult result;
     
-    int count = interpreter->statementList->count;
-    int index = 0;
+    executor_executeStatementList(interpreter, interpreter->statementList);
     
-    for (index = 0; index < count; index++)
-    {
-        Statement statement = (Statement)(list_get(interpreter->statementList, index));
-        result = executor_executeStatement(interpreter, statement);
-    }
     Logger_trc("[  END  ]%s", __func__);
 }
 

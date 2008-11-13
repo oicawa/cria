@@ -46,6 +46,64 @@ executor_executeFunctionCallStatement(
 
 
 StatementResult
+executor_executeIfStatement(
+    Interpreter interpreter,
+    IfStatement statement
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    StatementResult result;
+    CriaId id = NULL;
+    result.type = STATEMENT_RESULT_NORMAL;
+    
+    
+    if (statement == NULL)
+    {
+        goto END;
+    }
+    
+    
+    if (statement->condition == NULL)
+    {
+        id = (CriaId)CriaBoolean_new(NULL, TRUE, TRUE);
+    }
+    else
+    {
+        id = evaluator_expression(interpreter, statement->condition);
+        if (id->type != CRIA_DATA_TYPE_BOOLEAN)
+        {
+            runtime_error(interpreter);
+            goto END;
+        }
+    }
+    
+    
+    CriaBoolean boolean = (CriaBoolean)id;
+    if (boolean->value == TRUE)
+    {
+        result = executor_executeStatementList(interpreter, statement->statements);
+        goto END;
+    }
+    
+    
+    if (statement->_if_ != NULL)
+    {
+        result = executor_executeIfStatement(interpreter, statement->_if_);
+        goto END;
+    }
+    
+    
+    runtime_error(interpreter);
+    
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return result;
+}
+
+
+
+StatementResult
 executor_executeStatement(
     Interpreter interpreter,
     Statement   statement
@@ -66,10 +124,10 @@ executor_executeStatement(
     case STATEMENT_KIND_FUNCTION_CALL:
         executor_executeFunctionCallStatement(interpreter, statement->of._functionCall_);
         break;
-    /*
     case STATEMENT_KIND_IF:
         result = executor_executeIfStatement(interpreter, statement->of._if_);
         break;
+    /*
     case STATEMENT_KIND_WHILE:
         result = executor_executeWhileStatement(interpreter, statement->of._while_);
         break;
@@ -101,3 +159,29 @@ executor_executeStatement(
     Logger_trc("[  END  ]%s", __func__);
     return result;
 }
+
+
+
+StatementResult
+executor_executeStatementList(
+    Interpreter interpreter,
+    List        statements
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    StatementResult result;
+    
+    int count = interpreter->statementList->count;
+    int index = 0;
+    
+    for (index = 0; index < count; index++)
+    {
+        Statement statement = (Statement)(list_get(interpreter->statementList, index));
+        result = executor_executeStatement(interpreter, statement);
+    }
+    Logger_trc("[  END  ]%s", __func__);
+    return result;
+}
+
+
+

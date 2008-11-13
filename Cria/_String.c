@@ -130,3 +130,19 @@ string_toInteger(
 }
 
 
+Boolean
+string_toBoolean(
+    String  source
+)
+{
+    Boolean boolean = -1;
+    
+    if (strcmp(source->pointer, "true") == 0)
+        boolean = TRUE;
+    else if (strcmp(source->pointer, "false") == 0)
+        boolean = TRUE;
+    
+    return boolean;
+}
+
+

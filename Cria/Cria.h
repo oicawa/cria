@@ -61,6 +61,7 @@ typedef struct  FunctionCallExpressionTag       *FunctionCallExpression;
 typedef struct  GenerateExpressionTag           *GenerateExpression;
 typedef struct  StringLiteralExpressionTag      *StringLiteralExpression;
 typedef struct  IntegerLiteralExpressionTag     *IntegerLiteralExpression;
+typedef struct  BooleanLiteralExpressionTag     *BooleanLiteralExpression;
 typedef struct  ParametersExpressionTag         *ParametersExpression;
 
 typedef struct  ReferenceTag                    *Reference;
@@ -144,6 +145,7 @@ typedef enum
     TOKEN_TYPE_INDENT,
     TOKEN_TYPE_DEDENT,
     TOKEN_TYPE_INTEGER_LITERAL,
+    TOKEN_TYPE_BOOLEAN_LITERAL,
     TOKEN_TYPE_STRING_LITERAL,
     TOKEN_TYPE_IF,
     TOKEN_TYPE_FOR,

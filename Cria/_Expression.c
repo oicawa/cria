@@ -90,6 +90,7 @@ expression_parseParametersExpression(
         if (expression == NULL)
         {
             Logger_dbg("expression is NULL.");
+            parser_setPosition(parser, position);
             parser_error(token);
             goto END;
         }
@@ -108,6 +109,7 @@ expression_parseParametersExpression(
             Logger_dbg("Token is Comma.");
             if (parser_next(parser) == FALSE)
             {
+                parser_setPosition(parser, position);
                 parser_error(token);
                 goto END;
             }
@@ -120,6 +122,7 @@ expression_parseParametersExpression(
         if (token->type != TOKEN_TYPE_PARENTHESIS_RIGHT)
         {
             token_log(token);
+            parser_setPosition(parser, position);
             parser_error(token);
             goto END;
         }
@@ -325,6 +328,22 @@ expression_parseFactor(
         
         expression = expression_new(EXPRESSION_KIND_INTEGER_LITERAL);
         expression->of._integerLiteral_ = integerLiteral;
+        
+        parser_next(parser);
+        goto END;
+    }
+    
+    
+    Logger_dbg("Check boolean literal.");
+    if (token->type == TOKEN_TYPE_BOOLEAN_LITERAL)
+    {
+        Logger_dbg("This is an integer literal token.");
+        BooleanLiteralExpression booleanLiteral = Memory_malloc(sizeof(struct BooleanLiteralExpressionTag));
+        memset(booleanLiteral, 0x00, sizeof(struct BooleanLiteralExpressionTag));
+        booleanLiteral->value = string_toBoolean(token->buffer);
+        
+        expression = expression_new(EXPRESSION_KIND_BOOLEAN_LITERAL);
+        expression->of._booleanLiteral_ = booleanLiteral;
         
         parser_next(parser);
         goto END;
