@@ -117,12 +117,12 @@ evaluator_variable(
     VariableDefinition variable;
     
     
-    Logger_dbg("Function name is '%s'", expression->name->pointer);
+    Logger_dbg("Variable name is '%s'", expression->name->pointer);
     variable = variableDefinition_search(interpreter->variableList, expression->name);
     if (variable == NULL)
     {
-        Logger_dbg("Variable is not found.");
-        perror("Variable is not found.\n");
+        Logger_err("Variable is not found.");
+        runtime_error(interpreter);
         goto END;
     }
     
