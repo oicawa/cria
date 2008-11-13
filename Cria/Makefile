@@ -11,17 +11,12 @@ OBJS =\
     _Tokenizer.o\
     _Parser.o\
     _Statement.o\
-    _StringLiteralExpression.o\
-    _VariableExpression.o\
-    _ParametersExpression.o\
-    _FunctionCallExpression.o\
     _Expression.o\
     _Executor.o\
     _Evaluator.o\
     _IO.o\
     _VariableDefinition.o\
     _FunctionDefinition.o\
-    _ClassDefinition.o\
     _CriaId.o\
     _CriaObject.o\
     _CriaString.o\
@@ -54,18 +49,12 @@ _Interpreter.o: _Interpreter.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logge
 _Tokenizer.o: _Tokenizer.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Parser.o: _Parser.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Statement.o: _Statement.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
-_ExpressionStatement.o: _ExpressionStatement.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
-_StringLiteralExpression.o: _StringLiteralExpression.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
-_VariableExpression.o: _VariableExpression.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
-_ParametersExpression.o: _ParametersExpression.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
-_FunctionCallExpression.o: _FunctionCallExpression.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Expression.o: _Expression.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Executor.o: _Executor.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Evaluator.o: _Evaluator.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _IO.o: _IO.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _VariableDefinition.o: _VariableDefinition.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _FunctionDefinition.o: _FunctionDefinition.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
-_ClassDefinition.o: _ClassDefinition.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaId.o: _CriaId.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaObject.o: _CriaObject.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaString.o: _CriaString.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
