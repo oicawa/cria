@@ -131,9 +131,10 @@ tokenizer_new(
     FILE *file = fopen(filePath, "r");
     if (file == NULL)
     {
-        Logger_err("File open error. (%s)", filePath);
+        Logger_err("File open error. (%s)", filePath);  //★終了させたい
         goto END;
     }
+    
     tokenizer = Memory_malloc(sizeof(struct TokenizerTag));
     memset(tokenizer, 0x00, sizeof(struct TokenizerTag));
     tokenizer->file = file;
@@ -210,7 +211,7 @@ tokenizer_dispose(
 
 
 void
-add(
+tokenizer_addToken(
     List    list,
     Token   token
 )
@@ -222,7 +223,7 @@ add(
 
 //Fileの現在の文字を返す
 Boolean
-read(
+tokenizer_readChar(
     Tokenizer   tokenizer
 )
 {
@@ -251,7 +252,7 @@ read(
 
 
 Boolean
-parseNumber(
+tokenizer_parseNumber(
     Tokenizer   tokenizer
 )
 {
@@ -269,7 +270,7 @@ parseNumber(
     
     //次の文字を読み出す。
     Logger_dbg("Loop start.");
-    while (read(tokenizer) == TRUE)
+    while (tokenizer_readChar(tokenizer) == TRUE)
     {
         //数字以外の文字を読み込んだ場合は読み込み中止。
         if (isdigit(tokenizer->next) == 0)
@@ -287,7 +288,7 @@ parseNumber(
     String tmp = stringBuffer_toString(tokenizer->buffer);
     Logger_dbg("Add token. (%s)", tmp->pointer);
     token = token_new(TOKEN_TYPE_INTEGER_LITERAL, row, column, tmp);
-    add(tokenizer->tokens, token);
+    tokenizer_addToken(tokenizer->tokens, token);
     
     
     //使用したバッファを開放
@@ -301,7 +302,7 @@ parseNumber(
 
 
 Boolean
-parseReserved(
+tokenizer_parseReserved(
     Tokenizer   tokenizer
 )
 {
@@ -453,7 +454,7 @@ parseReserved(
     
 ADD_TOKEN:
     //トークンの登録
-    add(tokenizer->tokens, token);
+    tokenizer_addToken(tokenizer->tokens, token);
     result = TRUE;
     
 END:
@@ -465,7 +466,7 @@ END:
 
 
 Boolean
-parseVariableOrFunction(
+tokenizer_parseVariableOrFunction(
     Tokenizer   tokenizer
 )
 {
@@ -509,7 +510,7 @@ parseVariableOrFunction(
 
     //トークンを生成して登録
     token = token_new(TOKEN_TYPE_IDENTIFIER, row, column, tmp);
-    add(tokenizer->tokens, token);
+    tokenizer_addToken(tokenizer->tokens, token);
     result = TRUE;
     
 END:
@@ -521,7 +522,7 @@ END:
 
 
 Boolean
-parseClassLiteralOrConstant(
+tokenizer_parseClassLiteralOrConstant(
     Tokenizer   tokenizer
 )
 {
@@ -604,7 +605,7 @@ parseClassLiteralOrConstant(
     //ここまできた場合は前半でチェックした識別子（クラスリテラル、または定数リテラル）という認識でOK。
     //トークンを生成して登録
     token = token_new(type, row, column, tmp);
-    add(tokenizer->tokens, token);
+    tokenizer_addToken(tokenizer->tokens, token);
     result = TRUE;
     
 END:
@@ -616,7 +617,7 @@ END:
 
 
 Boolean
-parseIdentifier(
+tokenizer_parseIdentifier(
     Tokenizer   tokenizer
 )
 {
@@ -632,7 +633,7 @@ parseIdentifier(
     
     //次の文字を読み出す。
     Logger_dbg("read next charactor");
-    while (read(tokenizer) == TRUE)
+    while (tokenizer_readChar(tokenizer) == TRUE)
     {
         //アルファベット、または数字だった場合は追記して継続
         Logger_dbg("Is alphabet or number?");
@@ -650,17 +651,17 @@ parseIdentifier(
     
     
     //ここで、「予約語」「変数名または関数名」「定数名」「クラス名」の判別を行う。
-    if (parseReserved(tokenizer) == TRUE)
+    if (tokenizer_parseReserved(tokenizer) == TRUE)
     {
         Logger_dbg("created reserved word.");
         result = TRUE;
     }
-    else if (parseVariableOrFunction(tokenizer) == TRUE)
+    else if (tokenizer_parseVariableOrFunction(tokenizer) == TRUE)
     {
         Logger_dbg("created variable or function identifier.");
         result = TRUE;
     }
-    else if (parseClassLiteralOrConstant(tokenizer) == TRUE)
+    else if (tokenizer_parseClassLiteralOrConstant(tokenizer) == TRUE)
     {
         Logger_dbg("created class literal or constant literal.");
         result = TRUE;
@@ -684,7 +685,7 @@ parseIdentifier(
 
 
 Boolean
-skipSpaceAndNewLine(
+tokenizer_skipSpaceAndNewLine(
     Tokenizer   tokenizer
 )
 {
@@ -692,7 +693,7 @@ skipSpaceAndNewLine(
     
     while (TRUE)
     {
-        if (read(tokenizer) == FALSE)
+        if (tokenizer_readChar(tokenizer) == FALSE)
         {
             Logger_dbg("No next charactor.");
             result = FALSE;
@@ -711,7 +712,7 @@ skipSpaceAndNewLine(
 
 
 Boolean
-parseSpace(
+tokenizer_parseSpace(
     Tokenizer   tokenizer
 )
 {
@@ -734,7 +735,7 @@ parseSpace(
     //--------------------------------------------------
     //２文字目
     //--------------------------------------------------
-    if (read(tokenizer) == FALSE)
+    if (tokenizer_readChar(tokenizer) == FALSE)
     {
         Logger_dbg("No 2nd charactor.");
         goto NO_TOKEN;
@@ -746,7 +747,7 @@ parseSpace(
     {
         Logger_dbg("skip connection literal.");
         //改行、空白意外が出現するまで読み飛ばし
-        result = skipSpaceAndNewLine(tokenizer);
+        result = tokenizer_skipSpaceAndNewLine(tokenizer);
         goto NO_TOKEN;
     }
     
@@ -755,7 +756,7 @@ parseSpace(
     //３文字目
     //--------------------------------------------------
     Logger_dbg("read 3rd charactor");
-    if (read(tokenizer) == FALSE)
+    if (tokenizer_readChar(tokenizer) == FALSE)
     {
         Logger_dbg("No 3rd charactor.");
         goto NO_TOKEN;
@@ -824,7 +825,7 @@ parseSpace(
     //４文字目
     //--------------------------------------------------
     Logger_dbg("read 4th charactor");
-    if (read(tokenizer) == FALSE)
+    if (tokenizer_readChar(tokenizer) == FALSE)
     {
         Logger_dbg("No 4th charactor.");
         goto NO_TOKEN;
@@ -901,7 +902,7 @@ parseSpace(
 END:
     //一時読み込み文字をリセット
     tokenizer->next = '\0';
-    add(tokenizer->tokens, token);
+    tokenizer_addToken(tokenizer->tokens, token);
     result = TRUE;
     
     
@@ -920,7 +921,7 @@ NO_TOKEN:
 
 
 Boolean
-parseStringLiteral(
+tokenizer_parseStringLiteral(
     Tokenizer   tokenizer
 )
 {
@@ -935,7 +936,7 @@ parseStringLiteral(
     
     //読み込みループ
     Logger_dbg("tokenizer->next = '%c'",  tokenizer->next);
-    while (read(tokenizer) == TRUE)
+    while (tokenizer_readChar(tokenizer) == TRUE)
     {
         //まずは読んだ文字列を追記
         stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
@@ -945,7 +946,7 @@ parseStringLiteral(
         //もう一文字読み込み、チェックせずにバッファに登録
         if (tokenizer->next == '\\')
         {
-            if (read(tokenizer) == FALSE)
+            if (tokenizer_readChar(tokenizer) == FALSE)
             {
                 Logger_dbg("No string literal");
                 goto NO_TOKEN;
@@ -968,7 +969,7 @@ parseStringLiteral(
     
     
 END:
-    add(tokenizer->tokens, token);
+    tokenizer_addToken(tokenizer->tokens, token);
     result = TRUE;
     
     
@@ -982,7 +983,7 @@ NO_TOKEN:
 
 
 Boolean
-parseIndentDedent(
+tokenizer_parseIndentDedent(
     Tokenizer   tokenizer
 )
 {
@@ -1000,7 +1001,7 @@ parseIndentDedent(
     //読み込みループ
     Logger_dbg("[Before read] tokenizer->next = '%c'", tokenizer->next);
     Logger_dbg("Loop start.");
-    while (read(tokenizer) == TRUE)
+    while (tokenizer_readChar(tokenizer) == TRUE)
     {
         Logger_dbg("tokenizer->next = '%c'", tokenizer->next);
         
@@ -1054,7 +1055,7 @@ parseIndentDedent(
             Logger_dbg("create TOKEN_TYPE_DEDENT");
             tokenizer->indentLevel -= 1;
             token = token_new(TOKEN_TYPE_DEDENT, row, column, string_new("<<DEDENT>>"));
-            add(tokenizer->tokens, token);
+            tokenizer_addToken(tokenizer->tokens, token);
         }
         result = TRUE; 
     }
@@ -1063,7 +1064,7 @@ parseIndentDedent(
         Logger_dbg("create TOKEN_TYPE_INDENT");
         tokenizer->indentLevel += 1;
         token = token_new(TOKEN_TYPE_INDENT, row, column, string_new("<<INDENT>>"));
-        add(tokenizer->tokens, token);
+        tokenizer_addToken(tokenizer->tokens, token);
         result = TRUE; 
     }
     else if (which == 0)
@@ -1091,7 +1092,7 @@ END:
 
 
 Boolean
-parseOther(
+tokenizer_parseOther(
     Tokenizer   tokenizer
 )
 {
@@ -1188,14 +1189,14 @@ parseOther(
     else if (strcmp(buffer, TOKEN_LITERAL_UNDER) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_UNDER'");
-        result = skipSpaceAndNewLine(tokenizer);
+        result = tokenizer_skipSpaceAndNewLine(tokenizer);
         goto END;
     }
     else if (tokenizer->next == ',')
     {
         Logger_trc("Try comma literal.");
         //コンマの場合はその次の文字もチェック
-        if (read(tokenizer) == FALSE)
+        if (tokenizer_readChar(tokenizer) == FALSE)
         {
             result = FALSE;
             goto END;
@@ -1221,7 +1222,7 @@ parseOther(
     {
         //文字列リテラルの解析
         Logger_trc("Try string literal.");
-        result = parseStringLiteral(tokenizer);
+        result = tokenizer_parseStringLiteral(tokenizer);
         goto END;
     }
     else if (tokenizer->next == '\n')
@@ -1231,13 +1232,13 @@ parseOther(
         string_dispose(tmp);
         tmp = string_new("<<NEW_LINE>>");
         token = token_new(TOKEN_TYPE_NEW_LINE, row, column, tmp);
-        add(tokenizer->tokens, token);
+        tokenizer_addToken(tokenizer->tokens, token);
         stringBuffer_dispose(tokenizer->buffer);
         tokenizer->buffer = NULL;
         
         //インデント・ディデントの解析
         Logger_trc("Try indent/dedent literal.");
-        result = parseIndentDedent(tokenizer);
+        result = tokenizer_parseIndentDedent(tokenizer);
         goto END;
     }
     
@@ -1250,7 +1251,7 @@ parseOther(
 ADD_TOKEN:
     //リセット
     tokenizer->next = '\0';
-    add(tokenizer->tokens, token);
+    tokenizer_addToken(tokenizer->tokens, token);
     result = TRUE;
     
     
@@ -1267,7 +1268,7 @@ END:
 
 
 Boolean
-isEndOfFile(
+tokenizer_isEndOfFile(
     Tokenizer   tokenizer
 )
 {
@@ -1284,7 +1285,7 @@ isEndOfFile(
 
 
 void
-logAllTokens(
+tokenizer_logAllTokens(
     Tokenizer   tokenizer
 )
 {
@@ -1302,32 +1303,29 @@ logAllTokens(
 
 
 
-Boolean
-tokenizer_parse(
-    Tokenizer   tokenizer
+List
+tokenizer_createTokens(
+    char*   filePath
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    Boolean result = FALSE;
+    Tokenizer tokenizer = tokenizer_new(filePath);
     
     
     while (TRUE)
     {
-        if (isEndOfFile(tokenizer) == TRUE)
+        if (tokenizer_isEndOfFile(tokenizer) == TRUE)
         {
             Logger_dbg("Reached at the end of file.");
-            result = TRUE;
             break;
         }
         
         
-        //未読み込み状態ならば一文字読み込み。読み込めなかった場合はNULLを返却
         if (tokenizer->next == '\0')
         {
-            if (read(tokenizer) == FALSE)
+            if (tokenizer_readChar(tokenizer) == FALSE)
             {
                 Logger_dbg("Reached at the end of file.");
-                result = TRUE;
                 goto END;
             }
         }
@@ -1336,22 +1334,22 @@ tokenizer_parse(
         if (isdigit(tokenizer->next) != 0)
         {
             //数字で始まるトークンの解析
-            result = parseNumber(tokenizer);
+            result = tokenizer_parseNumber(tokenizer);
         }
         else if (isalpha(tokenizer->next) != 0)
         {
             //アルファベットで始まるトークンの解析
-            result = parseIdentifier(tokenizer);
+            result = tokenizer_parseIdentifier(tokenizer);
         }
         else if (tokenizer->next == ' ')
         {
             //スペースで始まるトークンの解析
-            result = parseSpace(tokenizer);
+            result = tokenizer_parseSpace(tokenizer);
         }
         else
         {
             //上記以外の記号で始まるトークンの解析
-            result = parseOther(tokenizer);
+            result = tokenizer_parseOther(tokenizer);
         }
         
         
@@ -1364,11 +1362,10 @@ tokenizer_parse(
     
 END:
     //トークンを全て出力
-    logAllTokens(tokenizer);
+    tokenizer_logAllTokens(tokenizer);
     
-    Logger_trc("result = %d", result);
     Logger_trc("[  END  ]%s", __func__);
-    return result;
+    return tokenizer->tokens;
 }
 
 

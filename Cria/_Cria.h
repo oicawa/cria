@@ -609,23 +609,9 @@ token_log(
 //==================================================
 //Tokenizer
 //==================================================
-Tokenizer
-tokenizer_new(
+List
+tokenizer_createTokens(
     char*   filePath
-);
-
-
-
-void
-tokenizer_dispose(
-    Tokenizer   tokenizer
-);
-
-
-
-Boolean
-tokenizer_parse(
-    Tokenizer   tokenizer
 );
 
 
@@ -1124,6 +1110,16 @@ reference_getLast(
         } \
     } while(0) \
 
+
+
+
+#define tokenizer_error(token) \
+    do { \
+        Logger_err("Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", (token)->buffer->pointer, (token)->row, (token)->column, __FILE__, __LINE__); \
+        fprintf(stderr, "Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", (token)->buffer->pointer, (token)->row, (token)->column, __FILE__, __LINE__); \
+        Memory_dispose(); \
+        exit(1); \
+    } while(0) \
 
 
 

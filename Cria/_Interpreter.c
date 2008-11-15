@@ -107,25 +107,27 @@ Interpreter_compile(
     Logger_trc("[ START ]%s", __func__);
     //初期化
     Boolean     result = FALSE;
-    Tokenizer   tokenizer = NULL;
+    List    tokens = NULL;
     Parser      parser = NULL;
     
-    tokenizer = tokenizer_new(filePath);
-    if (tokenizer == NULL)
-    {
-        Logger_err("Create Tokenizer error.");
-        goto END;
-    }
+//    tokenizer = tokenizer_new(filePath);
+//    if (tokenizer == NULL)
+//    {
+//        Logger_err("Create Tokenizer error.");
+//        goto END;
+//    }
+//    
+//    //字句解析
+//    if (tokenizer_do(tokenizer) == FALSE)
+//    {
+//        Logger_err("token parse error.");
+//        goto END;
+//    }
     
-    //字句解析
-    if (tokenizer_parse(tokenizer) == FALSE)
-    {
-        Logger_err("token parse error.");
-        goto END;
-    }
+    tokens = tokenizer_createTokens(filePath);
     
     //構文解析
-    parser = parser_new(tokenizer->tokens);
+    parser = parser_new(tokens);
     if (parser_parse(parser, interpreter) == FALSE)
     {
         Logger_err("syntax parse error.");
@@ -139,8 +141,6 @@ END:
     //開放
     parser_dispose(parser);
     parser = NULL;
-    tokenizer_dispose(tokenizer);
-    tokenizer = NULL;
     
     Logger_trc("[  END  ]%s", __func__);
     return result;
