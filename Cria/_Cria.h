@@ -71,10 +71,8 @@ struct TokenizerTag
     int             row;
     int             column;
     char            next;
-    StringBuffer    buffer;
     String          error;
     int             indentLevel;
-    List            tokens;
 };
 
 
@@ -1113,10 +1111,10 @@ reference_getLast(
 
 
 
-#define tokenizer_error(token) \
+#define tokenizer_error(message) \
     do { \
-        Logger_err("Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", (token)->buffer->pointer, (token)->row, (token)->column, __FILE__, __LINE__); \
-        fprintf(stderr, "Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", (token)->buffer->pointer, (token)->row, (token)->column, __FILE__, __LINE__); \
+        Logger_err("Syntax error near '%s'. [%s, %d]\n", message, __FILE__, __LINE__); \
+        fprintf(stderr, "Syntax error near '%s'. [%s, %d]\n", message, __FILE__, __LINE__); \
         Memory_dispose(); \
         exit(1); \
     } while(0) \

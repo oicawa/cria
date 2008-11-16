@@ -51,10 +51,7 @@
 
 #define TOKEN_LITERAL_IF                    "if "
 #define TOKEN_LITERAL_FOR                   "for "
-#define TOKEN_LITERAL_VAR                   "var "
-#define TOKEN_LITERAL_DEF                   "def "
 #define TOKEN_LITERAL_ELIF                  "elif "
-#define TOKEN_LITERAL_CLASS                 "class "
 #define TOKEN_LITERAL_THROW                 "throw "
 #define TOKEN_LITERAL_WHILE                 "while "
 #define TOKEN_LITERAL_RETURN_VALUE          "return "
@@ -69,6 +66,7 @@
 #define TOKEN_LITERAL_FINALLY               "finally"
 #define TOKEN_LITERAL_CONTINUE              "continue"
 
+typedef struct  fpos_t	TokenizerPosition;
 
 Token
 token_new(
@@ -83,7 +81,7 @@ token_new(
     token->type = type;
     token->row = row;
     token->column = column;
-    token->buffer = buffer;
+    token->buffer = string_clone(buffer);
     Logger_trc("[  END  ]%s", __func__);
     return token;
 }
@@ -141,10 +139,10 @@ tokenizer_new(
     tokenizer->row = 1;
     tokenizer->column = 0;
     tokenizer->next = '\0';
-    tokenizer->buffer = NULL;
     tokenizer->error = NULL;
     tokenizer->indentLevel = 0;
-    tokenizer->tokens = list_new();
+    
+    tokenizer_readChar(tokenizer);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -153,7 +151,6 @@ END:
 
 
 
-//Interpreterを破棄
 void
 tokenizer_dispose(
     Tokenizer   tokenizer
@@ -211,17 +208,31 @@ tokenizer_dispose(
 
 
 void
-tokenizer_addToken(
-    List    list,
-    Token   token
+tokenizer_getPosition(
+    Tokenizer			tokenizer,
+    TokenizerPosition *position
 )
 {
-    list_add(list, token);
+    int result = fgetpos(tokenizer->file, position);
+    if (result != 0)
+    	tokenizer_error("Tokenizer file position get error.");
 }
 
 
 
-//Fileの現在の文字を返す
+void
+tokenizer_setPosition(
+    Tokenizer			tokenizer,
+    TokenizerPosition *position
+)
+{
+    int result = fsetpos(tokenizer->file, position);
+    if (result != 0)
+    	tokenizer_error("Tokenizer file position set error.");
+}
+
+
+
 Boolean
 tokenizer_readChar(
     Tokenizer   tokenizer
@@ -251,137 +262,130 @@ tokenizer_readChar(
 
 
 
-Boolean
+Token
 tokenizer_parseNumber(
     Tokenizer   tokenizer
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    //初期化
     Token token = NULL;
-    tokenizer->buffer = stringBuffer_new();
+    TokenizerPosition position;
+    StringBuffer buffer = NULL;
     int row = tokenizer->row;
     int column = tokenizer->column;
     
+    tokenizer_getPosition(tokenizer, &position);
+
+	if (isdigit(tokenizer->next) == 0)
+		goto END;
+	
+    buffer = stringBuffer_new();
+    stringBuffer_appendChar(buffer, tokenizer->next);
     
-    //まずは内部バッファに登録
-    stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
     
-    
-    //次の文字を読み出す。
-    Logger_dbg("Loop start.");
     while (tokenizer_readChar(tokenizer) == TRUE)
     {
-        //数字以外の文字を読み込んだ場合は読み込み中止。
         if (isdigit(tokenizer->next) == 0)
         {
             Logger_dbg("Not number. (%c)", tokenizer->next);
             break;
         }
-        //数字ならばバッファに追記。
-        stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
+        stringBuffer_appendChar(buffer, tokenizer->next);
     }
-    Logger_dbg("Loop end.");
     
-    
-    //トークン登録
-    String tmp = stringBuffer_toString(tokenizer->buffer);
+    String tmp = stringBuffer_toString(buffer);
     Logger_dbg("Add token. (%s)", tmp->pointer);
     token = token_new(TOKEN_TYPE_INTEGER_LITERAL, row, column, tmp);
-    tokenizer_addToken(tokenizer->tokens, token);
     
+    stringBuffer_dispose(buffer);
+    string_dispose(tmp);
     
-    //使用したバッファを開放
-    stringBuffer_dispose(tokenizer->buffer);
-    tokenizer->buffer = NULL;
-    
+END:
     Logger_trc("[  END  ]%s", __func__);
-    return TRUE;
+    return token;
 }
 
 
 
-Boolean
+Token
 tokenizer_parseReserved(
-    Tokenizer   tokenizer
+    Tokenizer   tokenizer,
+    StringBuffer buffer
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    //初期化
-    Boolean result = FALSE;
     String  tmp = NULL;
-    char*   buffer = NULL;
+    char*   value = NULL;
     Token   token = NULL;
     int    row = tokenizer->row;
     int    column = tokenizer->column;
     
-    
-    //※！！通常の識別子の可能性があるので、一文字先読みをバッファに入れてはダメ！！
-    //　まずは手元の文字列から確認すること！！
-    
-    //現在のバッファ内の文字列を取得し、予約語に合致した場合はそれでトークンを生成
-    tmp = stringBuffer_toString(tokenizer->buffer);
-    buffer = tmp->pointer;
-    if (strcmp(buffer, TOKEN_LITERAL_NULL) == 0)
+    tmp = stringBuffer_toString(buffer);
+    value = tmp->pointer;
+    if (strcmp(value, TOKEN_LITERAL_NULL) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_NULL");
         token = token_new(TOKEN_TYPE_NULL, row, column, tmp);
-        goto ADD_TOKEN;
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_BREAK) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_BREAK) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_BREAK");
         token = token_new(TOKEN_TYPE_BREAK, row, column, tmp);
-        goto ADD_TOKEN;
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_CATCH) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_CATCH) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_CATCH");
         token = token_new(TOKEN_TYPE_CATCH, row, column, tmp);
-        goto ADD_TOKEN;
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_ELSE) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_ELSE) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_ELSE");
         token = token_new(TOKEN_TYPE_ELSE, row, column, NULL);
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_TRUE) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_TRUE) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_BOOLEAN_LITERAL");
         token = token_new(TOKEN_TYPE_BOOLEAN_LITERAL, row, column, tmp);
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_FALSE) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_FALSE) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_BOOLEAN_LITERAL");
         token = token_new(TOKEN_TYPE_BOOLEAN_LITERAL, row, column, tmp);
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_RETURN) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_RETURN) == 0)
     {
-        //retrunについては、値を返すケースである、RETURN_VALUEがありうるので、
-        //次の文字が' 'でなかった場合のみ、トークンを生成する。
-        //' 'だった場合は後述のRETURN_VALUEで引っ掛ける。
-        if (tokenizer->next != ' ')
-        {
-            Logger_dbg("create TOKEN_TYPE_RETURN");
-            token = token_new(TOKEN_TYPE_RETURN, row, column, tmp);
-            goto ADD_TOKEN;
-        }
+		Logger_dbg("create TOKEN_TYPE_RETURN");
+		token = token_new(TOKEN_TYPE_RETURN, row, column, tmp);
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_FINALLY) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_FINALLY) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_FINALLY");
         token = token_new(TOKEN_TYPE_FINALLY, row, column, tmp);
-        goto ADD_TOKEN;
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_CONTINUE) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_CONTINUE) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_CONTINUE");
         token = token_new(TOKEN_TYPE_CONTINUE, row, column, tmp);
-        goto ADD_TOKEN;
+        goto END;
     }
     
     
-    //次の１文字が半角スペースでなかった場合は予約語ではない。
     if (tokenizer->next != ' ')
     {
         Logger_dbg("It is not reserved word.");
@@ -389,77 +393,51 @@ tokenizer_parseReserved(
     }
     
     
-    //次の１文字が半角スペースであった場合は予約語の可能性があるのでチェック。
-    if (strncmp(buffer, TOKEN_LITERAL_IF, strlen(TOKEN_LITERAL_IF) - 1) == 0)
+    if (strncmp(value, TOKEN_LITERAL_IF, strlen(TOKEN_LITERAL_IF) - 1) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_IF");
         token = token_new(TOKEN_TYPE_IF, row, column, tmp);
+        goto READ;
     }
-    else if (strncmp(buffer, TOKEN_LITERAL_FOR, strlen(TOKEN_LITERAL_FOR) - 1) == 0)
+    
+    if (strncmp(value, TOKEN_LITERAL_FOR, strlen(TOKEN_LITERAL_FOR) - 1) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_FOR");
         token = token_new(TOKEN_TYPE_FOR, row, column, tmp);
+        goto READ;
     }
-    else if (strncmp(buffer, TOKEN_LITERAL_ELIF, strlen(TOKEN_LITERAL_ELIF) - 1) == 0)
+    
+    if (strncmp(value, TOKEN_LITERAL_ELIF, strlen(TOKEN_LITERAL_ELIF) - 1) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_ELIF");
         token = token_new(TOKEN_TYPE_ELIF, row, column, tmp);
+        goto READ;
     }
-    else if (strncmp(buffer, TOKEN_LITERAL_WHILE, strlen(TOKEN_LITERAL_WHILE) - 1) == 0)
+    
+    if (strncmp(value, TOKEN_LITERAL_WHILE, strlen(TOKEN_LITERAL_WHILE) - 1) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_WHILE");
         token = token_new(TOKEN_TYPE_WHILE, row, column, tmp);
+        goto READ;
     }
-    else if (strncmp(buffer, TOKEN_LITERAL_THROW, strlen(TOKEN_LITERAL_THROW) - 1) == 0)
+    
+    if (strncmp(value, TOKEN_LITERAL_THROW, strlen(TOKEN_LITERAL_THROW) - 1) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_THROW");
         token = token_new(TOKEN_TYPE_THROW, row, column, tmp);
-    }
-    else if (strncmp(buffer, TOKEN_LITERAL_RETURN_VALUE, strlen(TOKEN_LITERAL_RETURN_VALUE) - 1) == 0)
-    {
-        Logger_dbg("create TOKEN_TYPE_RETURN_VALUE");
-        token = token_new(TOKEN_TYPE_RETURN_VALUE, row, column, tmp);
-    }
-    else if (strncmp(buffer, TOKEN_LITERAL_CLASS, strlen(TOKEN_LITERAL_CLASS) - 1) == 0)
-    {
-        Logger_dbg("create TOKEN_TYPE_CLASS_DEFINITION");
-        token = token_new(TOKEN_TYPE_CLASS_DEFINITION, row, column, tmp);
-    }
-    else if (strncmp(buffer, TOKEN_LITERAL_VAR, strlen(TOKEN_LITERAL_VAR) - 1) == 0)
-    {
-        Logger_dbg("create TOKEN_TYPE_VARIABLE_DEFINITION");
-        token = token_new(TOKEN_TYPE_VARIABLE_DEFINITION, row, column, tmp);
-    }
-    else if (strncmp(buffer, TOKEN_LITERAL_DEF, strlen(TOKEN_LITERAL_DEF) - 1) == 0)
-    {
-        Logger_dbg("create TOKEN_TYPE_FUNCTION_DEFINITION");
-        token = token_new(TOKEN_TYPE_FUNCTION_DEFINITION, row, column, tmp);
-    }
-    else
-    {
-        //予約語でなかった場合はスペース追加前の文字列を識別子トークンを生成
-        Logger_dbg("Not reserved word with space. (%s)", tmp->pointer);
-        goto END;
+        goto READ;
     }
     
-    //予約語だった場合は、今読んだ文字をクリアしてからトークン追加処理へ
-    if (token != NULL)
-    {
-        tokenizer->next = '\0';
-        goto ADD_TOKEN;
-    }
-    
-    goto ADD_TOKEN;
-    
-    
-ADD_TOKEN:
-    //トークンの登録
-    tokenizer_addToken(tokenizer->tokens, token);
-    result = TRUE;
+	Logger_dbg("Not reserved word with space. (%s)", tmp->pointer);
+	goto END;
+	
+READ:
+	tokenizer_readChar(tokenizer);
     
 END:
+	string_dispose(tmp);
     Logger_trc("[  END  ]%s", __func__);
-    return result;
+    return token;
     
 }
 
@@ -616,70 +594,55 @@ END:
 
 
 
-Boolean
+Token
 tokenizer_parseIdentifier(
     Tokenizer   tokenizer
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    //初期化
-    Boolean result = FALSE;
-    tokenizer->buffer = stringBuffer_new();
+    Token token = NULL;
+    StringBuffer buffer = NULL;
     
+	if (isalpha(tokenizer->next) == 0)
+		goto END;
+
+    buffer = stringBuffer_new();
+    stringBuffer_appendChar(buffer, tokenizer->next);
     
-    //まずは内部バッファに登録
-    stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
-    
-    
-    //次の文字を読み出す。
     Logger_dbg("read next charactor");
     while (tokenizer_readChar(tokenizer) == TRUE)
     {
-        //アルファベット、または数字だった場合は追記して継続
         Logger_dbg("Is alphabet or number?");
         if ((isalnum(tokenizer->next) != 0)
             || tokenizer->next == '_')
         {
-            //アルファベット、または数字ならばバッファに追記して継続
-            stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
+            stringBuffer_appendChar(buffer, tokenizer->next);
             continue;
         }
-        //アルファベット、数字、アンダーバー以外だった場合は識別子以外のゾーンに入ったということなのでブレーク。
         Logger_dbg("next is not alphabet, number, or underbar. '%c'", tokenizer->next);
         break;
     }
     
+    token = tokenizer_parseReserved(tokenizer, buffer);
+    if (token != NULL)
+    	goto DISPOZE_BUFFER;
     
-    //ここで、「予約語」「変数名または関数名」「定数名」「クラス名」の判別を行う。
-    if (tokenizer_parseReserved(tokenizer) == TRUE)
-    {
-        Logger_dbg("created reserved word.");
-        result = TRUE;
-    }
-    else if (tokenizer_parseVariableOrFunction(tokenizer) == TRUE)
-    {
-        Logger_dbg("created variable or function identifier.");
-        result = TRUE;
-    }
-    else if (tokenizer_parseClassLiteralOrConstant(tokenizer) == TRUE)
-    {
-        Logger_dbg("created class literal or constant literal.");
-        result = TRUE;
-    }
-    else
-    {
-        //エラー
-        Logger_err("this is not any identifier or reserved word.");
-        result = FALSE;
-    }
+    token = tokenizer_parseVariableOrFunction(tokenizer, buffer);
+    if (token != NULL)
+    	goto DISPOZE_BUFFER;
     
-    //使用したバッファを開放
-    stringBuffer_dispose(tokenizer->buffer);
-    tokenizer->buffer = NULL;
+    token = tokenizer_parseClassLiteralOrConstant(tokenizer, buffer);
+    if (token != NULL)
+    	goto DISPOZE_BUFFER;
+
+	tokenizer_error("this is not any identifier or reserved word.");
+	
+DISPOZE_BUFFER:
+    stringBuffer_dispose(buffer);
     
-    //返却
+END:
     Logger_trc("[  END  ]%s", __func__);
-    return result;
+    return token;
 }
 
 
@@ -711,15 +674,18 @@ tokenizer_skipSpaceAndNewLine(
 
 
 
-Boolean
+Token
 tokenizer_parseSpace(
     Tokenizer   tokenizer
 )
 {
     Logger_trc("[ START ]%s", __func__);
+    Token token = NULL;
+	if (tokenizer->next != ' ')
+		goto END;
+	
     //初期化
     Boolean result = FALSE;
-    Token token = NULL;
     tokenizer->buffer = stringBuffer_new();
     String tmp = NULL;
     char* buffer = NULL;
@@ -914,8 +880,10 @@ NO_TOKEN:
     
     //返却
     Logger_dbg("result = %d", result);
+    
+END:
     Logger_trc("[  END  ]%s", __func__);
-    return result;
+    return token;
 }
 
 
@@ -1273,29 +1241,25 @@ tokenizer_isEndOfFile(
 )
 {
     if (feof(tokenizer->file) == 0)
-    {
         return FALSE;
-    }
-    else
-    {
-        return TRUE;
-    }
+    
+	return TRUE;
 }
 
 
 
 void
 tokenizer_logAllTokens(
-    Tokenizer   tokenizer
+    List	tokens
 )
 {
     long index = 0;
-    long count = tokenizer->tokens->count;
+    long count = tokens->count;
     
     
     while (index < count)
     {
-        Token token = (Token)list_get(tokenizer->tokens, index);
+        Token token = (Token)list_get(tokens, index);
         token_log(token);
         index += 1;
     }
@@ -1310,6 +1274,7 @@ tokenizer_createTokens(
 {
     Logger_trc("[ START ]%s", __func__);
     Tokenizer tokenizer = tokenizer_new(filePath);
+    List tokens = list_new();
     
     
     while (TRUE)
@@ -1320,52 +1285,37 @@ tokenizer_createTokens(
             break;
         }
         
+		token = tokenizer_parseNumber(tokenizer);
+        if (token != NULL)
+        	goto ADD_TOKEN;
         
-        if (tokenizer->next == '\0')
-        {
-            if (tokenizer_readChar(tokenizer) == FALSE)
-            {
-                Logger_dbg("Reached at the end of file.");
-                goto END;
-            }
-        }
+        token = tokenizer_parseIdentifier(tokenizer);
+        if (token != NULL)
+        	goto ADD_TOKEN;
         
-        //読み込んだ文字で適切なパーサーをコール
-        if (isdigit(tokenizer->next) != 0)
-        {
-            //数字で始まるトークンの解析
-            result = tokenizer_parseNumber(tokenizer);
-        }
-        else if (isalpha(tokenizer->next) != 0)
-        {
-            //アルファベットで始まるトークンの解析
-            result = tokenizer_parseIdentifier(tokenizer);
-        }
-        else if (tokenizer->next == ' ')
-        {
-            //スペースで始まるトークンの解析
-            result = tokenizer_parseSpace(tokenizer);
-        }
-        else
-        {
-            //上記以外の記号で始まるトークンの解析
-            result = tokenizer_parseOther(tokenizer);
-        }
+		token = tokenizer_parseSpace(tokenizer);
+        if (token != NULL)
+        	goto ADD_TOKEN;
         
+        token = tokenizer_parseOther(tokenizer);
+        if (token != NULL)
+        	goto ADD_TOKEN;
+
+		tokenizer_error(tokenizer);
+        break;
         
-        if (result == FALSE)
-        {
-            goto END;
-        }
+ADD_TOKEN:
+		list_add(tokens, token);
+		continue;        
     }
     
     
 END:
     //トークンを全て出力
-    tokenizer_logAllTokens(tokenizer);
+    tokenizer_logAllTokens(tokens);
     
     Logger_trc("[  END  ]%s", __func__);
-    return tokenizer->tokens;
+    return tokens;
 }
 
 
