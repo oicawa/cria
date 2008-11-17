@@ -24,10 +24,10 @@ OBJS =\
     _CriaBoolean.o\
     _Reference.o\
 
-$(TARGET):$(OBJS)
+all:$(OBJS)
 	cd ../Logger; make;
 	cd ../Memory; make;
-	$(CC) -o $@ $(OBJS)
+	$(CC) -o $(TARGET) $(OBJS)
 
 .c.o:
 	$(CC) $(CFLAGS) -I.. $*.c
