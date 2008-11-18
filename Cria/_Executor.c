@@ -59,19 +59,23 @@ executor_executeIfStatement(
     
     if (statement == NULL)
     {
+        Logger_dbg("statement is NULL.");
         goto END;
     }
     
     
     if (statement->condition == NULL)
     {
+        Logger_dbg("statement->condition is NULL. Create 'true'");
         id = (CriaId)CriaBoolean_new(NULL, TRUE, TRUE);
     }
     else
     {
+        Logger_dbg("statement->condition exists.");
         id = evaluator_expression(interpreter, statement->condition);
         if (id->type != CRIA_DATA_TYPE_BOOLEAN)
         {
+            Logger_dbg("statement->condition was not CRIA_DATA_TYPE_BOOLEAN.");
             runtime_error(interpreter);
             goto END;
         }
@@ -81,19 +85,20 @@ executor_executeIfStatement(
     CriaBoolean boolean = (CriaBoolean)id;
     if (boolean->value == TRUE)
     {
+        Logger_dbg("statement->condition was 'true'.");
         result = executor_executeStatementList(interpreter, statement->statements);
         goto END;
     }
     
-    
-    if (statement->_if_ != NULL)
+    Logger_dbg("statement->condition was 'false'.");
+    if (statement->_if_ == NULL)
     {
-        result = executor_executeIfStatement(interpreter, statement->_if_);
+        Logger_dbg("Exit IfStatement.");
         goto END;
     }
     
-    
-    runtime_error(interpreter);
+    Logger_dbg("Execute next IfStatement.");
+    result = executor_executeIfStatement(interpreter, statement->_if_);
     
     
 END:
@@ -113,8 +118,11 @@ executor_executeStatement(
     StatementResult result;
 
     result.type = STATEMENT_RESULT_NORMAL;
+    Logger_dbg("result.type = %d", result.type);
     
+    Logger_dbg("statement pointer = [%p]", statement);
     interpreter->lineNumber = statement->line;
+    Logger_dbg("statement->line = %d", statement->line);
 
     switch (statement->kind)
     {
@@ -152,8 +160,8 @@ executor_executeStatement(
     case STATEMENT_TYPE_COUNT_PLUS_1:   //FALLTHRU
     //*/
     default:
-        perror("Not supported statement.");
-        exit(1);
+        Logger_err("Not supported statement.");
+        runtime_error(interpreter);
     }
 
     Logger_trc("[  END  ]%s", __func__);
@@ -171,12 +179,12 @@ executor_executeStatementList(
     Logger_trc("[ START ]%s", __func__);
     StatementResult result;
     
-    int count = interpreter->statementList->count;
+    int count = statements->count;
     int index = 0;
     
     for (index = 0; index < count; index++)
     {
-        Statement statement = (Statement)(list_get(interpreter->statementList, index));
+        Statement statement = (Statement)(list_get(statements, index));
         result = executor_executeStatement(interpreter, statement);
     }
     Logger_trc("[  END  ]%s", __func__);
