@@ -30,67 +30,6 @@ functionDefinition_new(
 
 
 
-Boolean
-functionDefinition_isMatch(
-    Parser parser
-)
-{
-    Boolean result = FALSE;
-    Item mark = NULL;
-    Token token = NULL;
-    
-    //NULLチェック
-    if (parser == NULL)
-    {
-        goto END;
-    }
-    
-    //現在のトークンを復帰位置としてバックアップ
-    mark = parser->current;
-    
-    //先頭のトークンが識別子でなければFALSE。
-    token = parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_IDENTIFIER)
-    {
-        goto END;
-    }
-    
-    //次のトークンへ。
-    if (parser_next(parser) == FALSE)
-    {
-        goto END;
-    }
-    token = parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_PARENTHESIS_LEFT)
-    {
-        goto END;
-    }
-    
-    //改行トークンが検知されるまでに、コロントークンを検知したらOK。
-    while (parser_next(parser) == TRUE)
-    {
-        //改行トークン？
-        token = parser_getCurrent(parser);
-        if (token->type == TOKEN_TYPE_NEW_LINE)
-        {
-            goto END;
-        }
-        if (token->type == TOKEN_TYPE_COLON)
-        {
-            result = TRUE;
-            break;
-        }
-    }
-    
-END:
-    parser_returnToMark(parser, mark);
-    return result;
-}
-
-
-
-//本当はHashを使いたいが、とにかく動くものを先に作りたいので、
-//線形検索を行う。遅いけど。
 FunctionDefinition
 functionDefinition_search(
     List    functions,

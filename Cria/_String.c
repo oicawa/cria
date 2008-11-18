@@ -138,9 +138,13 @@ string_toBoolean(
     Boolean boolean = -1;
     
     if (strcmp(source->pointer, "true") == 0)
+    {
         boolean = TRUE;
+    }
     else if (strcmp(source->pointer, "false") == 0)
-        boolean = TRUE;
+    {
+        boolean = FALSE;
+    }
     
     return boolean;
 }

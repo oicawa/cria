@@ -194,38 +194,6 @@ parser_setPosition(
 
 
 void
-parser_returnToMark(
-    Parser  parser,
-    Item    mark
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    if (parser == NULL)
-        return;
-    
-    parser->current = mark;
-    
-    if (mark == NULL)
-        parser->next = parser->tokens->item;
-    else
-        parser->next = mark->next;
-    
-    Logger_trc("[  END  ]%s", __func__);
-}
-
-
-
-void
-setNewTurningPoint(
-    Parser  parser
-)
-{
-    parser->mark = parser->current;
-}
-
-
-
-void
 addStatement(
     Interpreter interpreter,
     Statement   statement
@@ -247,7 +215,6 @@ parser_parse(
 {
     Logger_trc("[ START ]%s", __func__);
     Boolean result = FALSE;
-    Item mark = NULL;
     Statement statement = NULL;
     Token errorToken = NULL;
     
@@ -255,12 +222,8 @@ parser_parse(
     //次のトークンがある間はループ
     Logger_dbg("Loop start.");
     parser_next(parser);
-    while (1)
+    while (TRUE)
     {
-        setNewTurningPoint(parser);
-        mark = parser->mark;
-        
-        
         //ステートメント        
         Logger_dbg("Check statement.");
         statement = statement_parse(parser);
@@ -295,44 +258,5 @@ END:
     Logger_trc("[  END  ]%s", __func__);
     return result;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
