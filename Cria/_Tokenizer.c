@@ -898,21 +898,27 @@ tokenizer_parseIndentDedent(
         
         if (tokenizer->next == '\n')
         {
+        	String tmp1 = stringBuffer_toString(buffer);
+		    Logger_dbg("Buffer clear. ('%s')", tmp1->pointer);
+		    string_dispose(tmp1);
             stringBuffer_dispose(buffer);
             buffer = stringBuffer_new();
             continue;
         }
         
+	    Logger_dbg("Illegal charactor = '%c'", tokenizer->next);
         break;
     }
     
     
     tmp = stringBuffer_toString(buffer);
+    Logger_dbg("Next charactor = '%c'", tokenizer->next);
+    Logger_dbg("buffer = '%s'", tmp->pointer);
     long length = string_length(tmp);
     if (length % 4 != 0)
     {
         Logger_err("Indent is not 4 times spaces. (modulo = %d)", length % 4);
-        tokenizer_error("<<Indent/DEDENT>>", tokenizer->row, tokenizer->column);
+        tokenizer_error("<<Indent/Dedent>>", tokenizer->row, tokenizer->column);
         goto END;
     }
     

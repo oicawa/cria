@@ -536,6 +536,107 @@ END:
 
 
 Statement
+statement_parseWhile(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Statement statement = NULL;
+    WhileStatement whileStatement = NULL;
+    Expression condition = NULL;
+    List statements = list_new();
+    Item position = parser_getPosition(parser);
+    Token token = NULL;
+    
+    token = parser_getCurrent(parser);
+    token_log(token);
+    if (token->type != TOKEN_TYPE_WHILE)
+    {
+        Logger_dbg("token type is not 'WHILE'.");
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    parser_next(parser);
+    
+    
+    condition = expression_parse(parser);
+    if (condition == NULL)
+    {
+        Logger_dbg("condition expression is NULL.");
+        parser_setPosition(parser, position);
+        parser_error(token);
+        goto END;
+    }
+    
+    
+    token = parser_getCurrent(parser);
+    token_log(token);
+    if (token->type != TOKEN_TYPE_NEW_LINE)
+    {
+        Logger_err("token type is not 'NEW LINE'.");
+        parser_setPosition(parser, position);
+        parser_error(token);
+        goto END;
+    }
+    parser_next(parser);
+    
+    
+    token = parser_getCurrent(parser);
+    token_log(token);
+    if (token->type != TOKEN_TYPE_INDENT)
+    {
+        Logger_err("token type is not 'INDENT'.");
+        parser_setPosition(parser, position);
+        parser_error(token);
+        goto END;
+    }
+    parser_next(parser);
+    
+    
+    while(1)
+    {
+        token = parser_getCurrent(parser);
+        token_log(token);
+        if (token->type == TOKEN_TYPE_DEDENT)
+        {
+            Logger_dbg("token type is 'DEDENT'.");
+            break;
+        }
+        
+        statement = statement_parse(parser);
+        if (statement == NULL)
+        {
+            Logger_err("statement parse error.");
+            parser_setPosition(parser, position);
+            parser_error(token);
+            goto END;
+        }
+        
+        Logger_dbg("Add statement.");
+        list_add(statements, statement);
+    }
+    parser_next(parser);
+    
+    
+    //生成
+    Logger_dbg("Create 'IfStatement'");
+    whileStatement = Memory_malloc(sizeof(struct WhileStatementTag));
+    memset(whileStatement, 0x00, sizeof(struct WhileStatementTag));
+    whileStatement->condition = condition;
+    whileStatement->statements = statements;
+    
+    statement = statement_new(STATEMENT_KIND_WHILE);
+    statement->of._while_ = whileStatement;
+    statement->line = token->row;
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return statement;
+}
+
+
+
+Statement
 statement_parse(
     Parser  parser
 )
@@ -567,6 +668,14 @@ statement_parse(
     }
     
     
+    statement = statement_parseWhile(parser);
+    if (statement != NULL)
+    {
+        Logger_dbg("Created WhileStatement.");
+        goto END;
+    }
+    
+    
     /*
     //ReturnStatement?
     ReturnStatement returnStatement = returnStatement_parse(buffer, offset);
@@ -574,16 +683,6 @@ statement_parse(
     {
         statement = Statement_new(STATEMENT_KIND_RETURN);
         statement->of._return_ = returnStatement;
-        return statement;
-    }
-    //*/
-    /*
-    //WhileStatement
-    WhileStatement whileStatement = whileStatement_parse(interpreter, buffer, offset);
-    if (whileStatement != NULL)
-    {
-        statement = Statement_new(STATEMENT_KIND_WHILE);
-        statement->of._while_ = whileStatement;
         return statement;
     }
     //*/

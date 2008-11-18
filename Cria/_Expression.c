@@ -532,6 +532,10 @@ expression_parseCompare(
     {
         kind = OPERATION_KIND_EQUAL;
     }
+    else if (token->type == TOKEN_TYPE_NOT_EQUAL)
+    {
+        kind = OPERATION_KIND_NOT_EQUAL;
+    }
     else if (token->type == TOKEN_TYPE_LESS_EQUAL)
     {
         kind = OPERATION_KIND_LESS_EQUAL;
@@ -569,7 +573,7 @@ END:
 
 
 Expression
-expression_parseNotEqual(
+expression_parseNot(
     Parser  parser
 )
 {
@@ -629,7 +633,8 @@ expression_parseAndOr(
     Token token = NULL;
     OperationKind kind;
     
-    left = expression_parseNotEqual(parser);
+    //left = expression_parseNotEqual(parser);
+    left = expression_parseCompare(parser);
     
     token = parser_getCurrent(parser);
     if (token->type == TOKEN_TYPE_OR)

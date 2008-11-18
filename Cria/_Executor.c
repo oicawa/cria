@@ -109,6 +109,63 @@ END:
 
 
 StatementResult
+executor_executeWhileStatement(
+	Interpreter interpreter,
+    WhileStatement statement
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    StatementResult result;
+    CriaId id = NULL;
+    result.type = STATEMENT_RESULT_NORMAL;
+    
+    
+    if ((statement == NULL) 
+    	|| (statement->condition == NULL)
+    	|| (statement->statements == NULL))
+    {
+        Logger_dbg("statement is NULL.");
+        goto END;
+    }
+    
+    while (TRUE)
+    {
+		id = evaluator_expression(interpreter, statement->condition);
+		if (id->type != CRIA_DATA_TYPE_BOOLEAN)
+		{
+			Logger_dbg("statement->condition was not CRIA_DATA_TYPE_BOOLEAN.");
+			runtime_error(interpreter);
+			goto END;
+		}
+		
+		
+		CriaBoolean boolean = (CriaBoolean)id;
+		if (boolean->value == FALSE)
+			break;
+		
+		Logger_dbg("statement->condition was 'true'.");
+		result = executor_executeStatementList(interpreter, statement->statements);
+		if (result.type == STATEMENT_RESULT_BREAK)
+		{
+			result.type = STATEMENT_RESULT_NORMAL;
+			break;
+		}
+		
+		if (result.type == STATEMENT_RESULT_CONTINUE)
+			continue;
+		
+		if (result.type == STATEMENT_RESULT_RETURN)
+			break;
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return result;
+}
+
+
+
+StatementResult
 executor_executeStatement(
     Interpreter interpreter,
     Statement   statement
@@ -135,10 +192,10 @@ executor_executeStatement(
     case STATEMENT_KIND_IF:
         result = executor_executeIfStatement(interpreter, statement->of._if_);
         break;
-    /*
     case STATEMENT_KIND_WHILE:
         result = executor_executeWhileStatement(interpreter, statement->of._while_);
         break;
+    /*
     case STATEMENT_KIND_FOR:
         result = executor_executeForStatement(interpreter, statement->of._for_);
         break;

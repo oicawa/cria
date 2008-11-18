@@ -6,6 +6,12 @@ answer = read()
 
 if answer == "yes"
     write("Nice to meet you, Mr.%s\n\n", name)
+    write("Is your wife beautiful? >> ")
+    isBeautiful = read()
+    while isBeautiful != "yes"
+        write("Really? I ask you same question again.\nIs your wife beautiful? >> ")
+        isBeautiful = read()
+    write("Oh, you are lucky beggar!!\n")
 elif answer == "no"
     write("Did you married? >> ")
     answer = read()
