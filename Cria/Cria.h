@@ -193,6 +193,7 @@ typedef enum
     TOKEN_TYPE_NULL,
     TOKEN_TYPE_MONADIC_MINUS,
     TOKEN_TYPE_NEW_LINE,
+    TOKEN_TYPE_DUMMY,
 } TokenType;
 
 

@@ -25,6 +25,7 @@ variableDefinition_search(
     Logger_trc("[ START ]%s", __func__);
     VariableDefinition definition = NULL;
     VariableDefinition tmp = NULL;
+    int index = 0;
     Item item = NULL;
     
     Logger_dbg("variables pointer = %p", variables);
@@ -43,34 +44,14 @@ variableDefinition_search(
     Logger_dbg("Pre Loop start.");
     item = variables->item;
     Logger_dbg("Loop start.");
-    while (1)
+    for (index = 0; index < variables->count; index++)
     {
-        if (item == NULL)
-        {
-            Logger_dbg("item is null.");
-            break;
-        }
-        
-        tmp = (VariableDefinition)(item->object);
-        if (tmp == NULL)
-        {
-            Logger_dbg("object is null.");
-            item = item->next;
+        tmp = (VariableDefinition)list_get(variables, index);
+        if (strcmp(tmp->name->pointer, name->pointer) != 0)
             continue;
-        }
         
-        if (tmp->name == NULL)
-        {
-            Logger_dbg("object->name or name is null.");
-            item = item->next;
-            continue;
-        }
-        
-        if (strcmp(tmp->name->pointer, name->pointer) == 0)
-        {
-            definition = tmp;
-            break;
-        }
+        definition = tmp;
+        break;
     }
     Logger_dbg("Loop end.");
     

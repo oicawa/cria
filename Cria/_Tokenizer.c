@@ -78,10 +78,15 @@ token_new(
 {
     Logger_trc("[ START ]%s", __func__);
     Token token = Memory_malloc(sizeof(struct TokenTag));
+    memset(token, 0x00, sizeof(struct TokenTag));
     token->type = type;
     token->row = row;
     token->column = column;
-    token->buffer = string_clone(buffer);
+    if (buffer != NULL)
+    {
+        token->buffer = string_clone(buffer);
+        Logger_trc(buffer->pointer);
+    }
     Logger_trc("[  END  ]%s", __func__);
     return token;
 }
@@ -219,45 +224,21 @@ tokenizer_dispose(
 
 
 
-void
-tokenizer_getPosition(
-    Tokenizer	tokenizer,
-    fpos_t 	*position
-)
-{
-    fgetpos(tokenizer->file, position);
-}
-
-
-
-void
-tokenizer_setPosition(
-    Tokenizer	tokenizer,
-    fpos_t 	*position
-)
-{
-    fsetpos(tokenizer->file, position);
-}
-
-
-
 Token
 tokenizer_parseNumber(
     Tokenizer   tokenizer
 )
 {
-    Logger_trc("[ START ]%s", __func__);
+    Logger_trc("[ START ]%s('%c')", __func__, tokenizer->next);
     Token token = NULL;
-    fpos_t position;
     StringBuffer buffer = NULL;
     int row = tokenizer->row;
     int column = tokenizer->column;
     
-    tokenizer_getPosition(tokenizer, &position);
-
-	if (isdigit(tokenizer->next) == 0)
-		goto END;
-	
+    if (isdigit(tokenizer->next) == 0)
+        goto END;
+    
+    
     buffer = stringBuffer_new();
     stringBuffer_appendChar(buffer, tokenizer->next);
     
@@ -272,9 +253,11 @@ tokenizer_parseNumber(
         stringBuffer_appendChar(buffer, tokenizer->next);
     }
     
+    
     String tmp = stringBuffer_toString(buffer);
     Logger_dbg("Add token. (%s)", tmp->pointer);
     token = token_new(TOKEN_TYPE_INTEGER_LITERAL, row, column, tmp);
+    
     
     stringBuffer_dispose(buffer);
     string_dispose(tmp);
@@ -292,7 +275,7 @@ tokenizer_parseReserved(
     StringBuffer buffer
 )
 {
-    Logger_trc("[ START ]%s", __func__);
+    Logger_trc("[ START ]%s('%c')", __func__, tokenizer->next);
     String  tmp = NULL;
     char*   value = NULL;
     Token   token = NULL;
@@ -428,7 +411,7 @@ tokenizer_parseVariableOrFunction(
     StringBuffer	buffer
 )
 {
-    Logger_trc("[ START ]%s", __func__);
+    Logger_trc("[ START ]%s('%c')", __func__, tokenizer->next);
     Token   token = NULL;
     String  tmp = stringBuffer_toString(buffer);
     char*   identifier = tmp->pointer;
@@ -468,7 +451,7 @@ tokenizer_parseClassLiteralOrConstant(
     StringBuffer	buffer
 )
 {
-    Logger_trc("[ START ]%s", __func__);
+    Logger_trc("[ START ]%s('%c')", __func__, tokenizer->next);
     Token   token = NULL;
     String  tmp = stringBuffer_toString(buffer);
     char*   value = tmp->pointer;
@@ -541,15 +524,13 @@ tokenizer_parseIdentifier(
     Tokenizer   tokenizer
 )
 {
-    Logger_trc("[ START ]%s", __func__);
+    Logger_trc("[ START ]%s('%c')", __func__, tokenizer->next);
     Token token = NULL;
-    StringBuffer buffer = NULL;
-    
-	if (isalpha(tokenizer->next) == 0)
-		goto END;
-
-    buffer = stringBuffer_new();
+    StringBuffer buffer = stringBuffer_new();
     stringBuffer_appendChar(buffer, tokenizer->next);
+    
+    if (isalpha(tokenizer->next) == 0)
+        goto END;
     
     Logger_dbg("read next charactor");
     while (tokenizer_readChar(tokenizer) == TRUE)
@@ -567,53 +548,56 @@ tokenizer_parseIdentifier(
     
     token = tokenizer_parseReserved(tokenizer, buffer);
     if (token != NULL)
-    	goto DISPOZE_BUFFER;
+    	goto END;
     
     token = tokenizer_parseVariableOrFunction(tokenizer, buffer);
     if (token != NULL)
-    	goto DISPOZE_BUFFER;
+    	goto END;
     
     token = tokenizer_parseClassLiteralOrConstant(tokenizer, buffer);
     if (token != NULL)
-    	goto DISPOZE_BUFFER;
+    	goto END;
 
 	String tmp = stringBuffer_toString(buffer);
 	tokenizer_error(tmp->pointer, tokenizer->row, tokenizer->column);
 	string_dispose(tmp);
 	
-DISPOZE_BUFFER:
-    stringBuffer_dispose(buffer);
-    
 END:
+    stringBuffer_dispose(buffer);
     Logger_trc("[  END  ]%s", __func__);
     return token;
 }
 
 
 
-Boolean
-tokenizer_skipSpaceAndNewLine(
+Token
+tokenizer_parseDummy(
     Tokenizer   tokenizer
 )
 {
-    Boolean result = FALSE;
+    Logger_trc("[ START ]%s('%c')", __func__, tokenizer->next);
+    Token token = NULL;
+    Boolean hasNewLine = FALSE;
     
-    while (TRUE)
+    while (tokenizer_readChar(tokenizer) == TRUE)
     {
-        if (tokenizer_readChar(tokenizer) == FALSE)
+        if (tokenizer->next == '\n')
         {
-            Logger_dbg("No next charactor.");
-            result = FALSE;
-            break;
+            hasNewLine = TRUE;
+            continue;
         }
-        if (tokenizer->next != '\n' && tokenizer->next != ' ')
-        {
-            Logger_dbg("Analysis next token.");
-            result = TRUE;
+        
+        if (tokenizer->next != ' ')
             break;
-        }
     }
-    return result;
+    
+    if (hasNewLine == TRUE)
+        token = token_new(TOKEN_TYPE_DUMMY, 0, 0, NULL);
+    else
+        tokenizer_error(" _...", tokenizer->row, tokenizer->column);
+    
+    Logger_trc("[  END  ]%s", __func__);
+    return token;
 }
 
 
@@ -623,22 +607,18 @@ tokenizer_parseSpace(
     Tokenizer   tokenizer
 )
 {
-    Logger_trc("[ START ]%s", __func__);
+    Logger_trc("[ START ]%s('%c')", __func__, tokenizer->next);
     Token token = NULL;
-	if (tokenizer->next != ' ')
-		goto END;
-	
-    //初期化
-    Boolean result = FALSE;
     StringBuffer buffer = stringBuffer_new();
-    String tmp = NULL;
+    stringBuffer_appendChar(buffer, tokenizer->next);
+    String tmp = stringBuffer_toString(buffer);
     char* value = NULL;
     int row = tokenizer->row;
     int column = tokenizer->column;
     
     
-    stringBuffer_appendChar(buffer, tokenizer->next);
-    
+    if (tokenizer->next != ' ')
+        goto END;
     
     //--------------------------------------------------
     //2nd charactor.
@@ -646,87 +626,91 @@ tokenizer_parseSpace(
     if (tokenizer_readChar(tokenizer) == FALSE)
     {
         Logger_dbg("No 2nd charactor.");
-        goto NO_TOKEN;
+        goto END;
     }
     Logger_dbg("2nd charactor = '%c'", tokenizer->next);
     stringBuffer_appendChar(buffer, tokenizer->next);
-    tmp = stringBuffer_toString(buffer);
     if (tokenizer->next == '_')
     {
-        Logger_dbg("skip connection literal.");
-        //改行、空白意外が出現するまで読み飛ばし
-        result = tokenizer_skipSpaceAndNewLine(tokenizer);
-        goto NO_TOKEN;
+        token = tokenizer_parseDummy(tokenizer);
+        goto END;
     }
+    string_dispose(tmp);
+    tmp = stringBuffer_toString(buffer);
+    value = tmp->pointer;
     
     
     //--------------------------------------------------
-    //３文字目
+    //3rd charactor.
     //--------------------------------------------------
     Logger_dbg("read 3rd charactor");
     if (tokenizer_readChar(tokenizer) == FALSE)
     {
         Logger_dbg("No 3rd charactor.");
-        goto NO_TOKEN;
+        tokenizer_error(value, row, column);
+        goto END;
     }
     Logger_dbg("3rd charactor = '%c'", tokenizer->next);
     stringBuffer_appendChar(buffer, tokenizer->next);
+    string_dispose(tmp);
     tmp = stringBuffer_toString(buffer);
     value = tmp->pointer;
+    
     if (strcmp(value, TOKEN_LITERAL_SUBSTITUTE) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_SUBSTITUTE");
         token = token_new(TOKEN_TYPE_SUBSTITUTE, row, column, tmp);
         goto END;
     }
-    else if (strcmp(value, TOKEN_LITERAL_PLUS) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_PLUS) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_PLUS");
         token = token_new(TOKEN_TYPE_PLUS, row, column, tmp);
         goto END;
     }
-    else if (strcmp(value, TOKEN_LITERAL_MINUS) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_MINUS) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_MINUS");
         token = token_new(TOKEN_TYPE_MINUS, row, column, tmp);
         goto END;
     }
-    else if (strcmp(value, TOKEN_LITERAL_MULTIPLY) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_MULTIPLY) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_MULTIPLY");
         token = token_new(TOKEN_TYPE_MULTIPLY, row, column, tmp);
         goto END;
     }
-    else if (strcmp(value, TOKEN_LITERAL_DEVIDE) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_DEVIDE) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_DEVIDE");
         token = token_new(TOKEN_TYPE_DEVIDE, row, column, tmp);
         goto END;
     }
-    else if (strcmp(value, TOKEN_LITERAL_MODULO) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_MODULO) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_MODULO");
         token = token_new(TOKEN_TYPE_MODULO, row, column, tmp);
         goto END;
     }
-    else if (strcmp(value, TOKEN_LITERAL_LESS_THAN) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_LESS_THAN) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_LESS_THAN");
         token = token_new(TOKEN_TYPE_LESS_THAN, row, column, tmp);
         goto END;
     }
-    else if (strcmp(value, TOKEN_LITERAL_GREATER_THAN) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_GREATER_THAN) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_GREATER_THAN");
         token = token_new(TOKEN_TYPE_GREATER_THAN, row, column, tmp);
         goto END;
     }
-    
-    
-    //使用した一時領域を開放
-    string_dispose(tmp);
-    tmp = NULL;
-    value = NULL;
     
     
     //--------------------------------------------------
@@ -736,223 +720,204 @@ tokenizer_parseSpace(
     if (tokenizer_readChar(tokenizer) == FALSE)
     {
         Logger_dbg("No 4th charactor.");
-        goto NO_TOKEN;
+        tokenizer_error(value, row, column);
+        goto END;
     }
     stringBuffer_appendChar(buffer, tokenizer->next);
+    string_dispose(tmp);
     tmp = stringBuffer_toString(buffer);
     value = tmp->pointer;
+    
     if (strcmp(value, TOKEN_LITERAL_EQUAL) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_EQUAL");
         token = token_new(TOKEN_TYPE_EQUAL, row, column, tmp);
         goto END;
     }
-    else if (strcmp(value, TOKEN_LITERAL_INCREMENT) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_INCREMENT) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_INCREMENT");
         token = token_new(TOKEN_TYPE_INCREMENT, row, column, tmp);
         goto END;
     }
-    else if (strcmp(value, TOKEN_LITERAL_DECREMENT) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_DECREMENT) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_DECREMENT");
         token = token_new(TOKEN_TYPE_DECREMENT, row, column, tmp);
         goto END;
     }
-    else if (strcmp(value, TOKEN_LITERAL_LESS_EQUAL) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_LESS_EQUAL) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_LESS_EQUAL");
         token = token_new(TOKEN_TYPE_LESS_EQUAL, row, column, tmp);
         goto END;
     }
-    else if (strcmp(value, TOKEN_LITERAL_NOT_EQUAL) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_NOT_EQUAL) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_NOT_EQUAL");
         token = token_new(TOKEN_TYPE_NOT_EQUAL, row, column, tmp);
         goto END;
     }
-    else if (strcmp(value, TOKEN_LITERAL_OR) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_OR) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_OR");
         token = token_new(TOKEN_TYPE_OR, row, column, tmp);
         goto END;
     }
-    else if (strcmp(value, TOKEN_LITERAL_AND) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_AND) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_AND");
         token = token_new(TOKEN_TYPE_AND, row, column, tmp);
         goto END;
     }
-    else if (strcmp(value, TOKEN_LITERAL_GREATER_EQUAL) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_GREATER_EQUAL) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_GREATER_EQUAL");
         token = token_new(TOKEN_TYPE_GREATER_EQUAL, row, column, tmp);
         goto END;
     }
-    else if (strcmp(value, TOKEN_LITERAL_EXTENDS) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_EXTENDS) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_EXTENDS");
         token = token_new(TOKEN_TYPE_EXTENDS, row, column, tmp);
         goto END;
     }
-    else if (strcmp(value, TOKEN_LITERAL_IN) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_IN) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_IN");
         token = token_new(TOKEN_TYPE_IN, row, column, tmp);
         goto END;
     }
-    else
-    {
-        Logger_dbg("No token. (%s)", buffer);
-        goto NO_TOKEN;
-    }
     
-    //一時読み込み文字をリセット
-    tokenizer->next = '\0';
-    result = TRUE;
-    
-    
-NO_TOKEN:
-    
-    //使用したバッファを開放
-    stringBuffer_dispose(buffer);
-    
-    //返却
-    Logger_dbg("result = %d", result);
+    tokenizer_error(value, row, column);
     
 END:
+    if (token != NULL)
+        tokenizer_readChar(tokenizer);
+    string_dispose(tmp);
+    stringBuffer_dispose(buffer);
     Logger_trc("[  END  ]%s", __func__);
     return token;
 }
 
 
 
-Boolean
+Token
 tokenizer_parseStringLiteral(
     Tokenizer   tokenizer
 )
 {
-    Logger_trc("[ START ]%s", __func__);
-    //初期化
-    Boolean result = FALSE;
+    Logger_trc("[ START ]%s('%c')", __func__, tokenizer->next);
     Token token = NULL;
+    StringBuffer buffer = stringBuffer_new();
     String tmp = NULL;
+    Boolean isEnd = FALSE;
     int row = tokenizer->row;
     int column = tokenizer->column;
     
     
-    //読み込みループ
-    Logger_dbg("tokenizer->next = '%c'",  tokenizer->next);
+    if (tokenizer->next != '"')
+        goto END;
+    
+    
+    stringBuffer_appendChar(buffer, tokenizer->next);
     while (tokenizer_readChar(tokenizer) == TRUE)
     {
-        //まずは読んだ文字列を追記
-        stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
+        stringBuffer_appendChar(buffer, tokenizer->next);
         
         
-        //「\」（エスケープシーケンス）だった場合は、
-        //もう一文字読み込み、チェックせずにバッファに登録
         if (tokenizer->next == '\\')
         {
             if (tokenizer_readChar(tokenizer) == FALSE)
             {
                 Logger_dbg("No string literal");
-                goto NO_TOKEN;
+                break;
             }
-            stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
+            stringBuffer_appendChar(buffer, tokenizer->next);
             continue;
         }
         
         
-        //終端の「"」だった場合はトークンを生成してループを抜ける。
         if (tokenizer->next == '"')
         {
-            tmp = stringBuffer_toString(tokenizer->buffer);
-            Logger_dbg("string literal = [%s]", tmp->pointer);
-            token = token_new(TOKEN_TYPE_STRING_LITERAL, row, column, tmp);
-            tokenizer->next = '\0';
-            goto END;
+            isEnd = TRUE;
+            break;
         }
     }
     
     
+    tmp = stringBuffer_toString(buffer);
+    
+    if (isEnd == FALSE)
+    {
+        tokenizer_error(tmp->pointer, row, column);
+        goto END;
+    }
+    
+    token = token_new(TOKEN_TYPE_STRING_LITERAL, row, column, tmp);
+    
 END:
-    tokenizer_addToken(tokenizer->tokens, token);
-    result = TRUE;
-    
-    
-NO_TOKEN:
-    
-    //返却
+    string_dispose(tmp);
+    stringBuffer_dispose(buffer);
     Logger_trc("[  END  ]%s", __func__);
-    return result;
+    return token;
 }
 
 
 
-Boolean
+void
 tokenizer_parseIndentDedent(
-    Tokenizer   tokenizer
+    Tokenizer   tokenizer,
+    List        tokens
 )
 {
-    Logger_trc("[ START ]%s", __func__);
-    //初期化
-    Boolean result = FALSE;
+    Logger_trc("[ START ]%s('%c')", __func__, tokenizer->next);
     Token token = NULL;
     String tmp = NULL;
     int row = tokenizer->row;
     int column = tokenizer->column;
+    StringBuffer buffer = stringBuffer_new();
     
-    tokenizer->buffer = stringBuffer_new();
     
-    
-    //読み込みループ
-    Logger_dbg("[Before read] tokenizer->next = '%c'", tokenizer->next);
-    Logger_dbg("Loop start.");
     while (tokenizer_readChar(tokenizer) == TRUE)
     {
-        Logger_dbg("tokenizer->next = '%c'", tokenizer->next);
-        
-        //' 'だった場合は追記して継続
         if (tokenizer->next == ' ')
         {
-            Logger_dbg("Add space charactor.");
-            stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
+            stringBuffer_appendChar(buffer, tokenizer->next);
             continue;
         }
         
-        //'\n'だった場合はバッファをクリアして次の行のチェックを開始。
-        Logger_dbg("Check new line charactor.");
         if (tokenizer->next == '\n')
         {
-            Logger_dbg("New line charactor is found.");
-            stringBuffer_dispose(tokenizer->buffer);
-            tokenizer->buffer = stringBuffer_new();
+            stringBuffer_dispose(buffer);
+            buffer = stringBuffer_new();
             continue;
         }
         
-        //上記いずれでも無かった場合はループを抜け、インデント・ディデントトークンを生成する。
-        Logger_dbg("Not space.");
-        result = TRUE;
         break;
     }
-    Logger_dbg("Loop end.");
     
     
-    //文字列抽出インデント数のチェック
-    tmp = stringBuffer_toString(tokenizer->buffer);
+    tmp = stringBuffer_toString(buffer);
     long length = string_length(tmp);
-    Logger_dbg("Space length = %d", length);
     if (length % 4 != 0)
     {
-        Logger_dbg("Indent is not 4 times spaces. (modulo = %d)", length % 4);
+        Logger_err("Indent is not 4 times spaces. (modulo = %d)", length % 4);
+        tokenizer_error("<<Indent/DEDENT>>", tokenizer->row, tokenizer->column);
         goto END;
     }
     
     
-    //インデントレベルのチェック
-    Logger_dbg("Indent level = %d.", length / 4);
     int which = (length / 4) - tokenizer->indentLevel;
-    Logger_dbg("which = %d.", which);
     int i = 0;
     if (which < 0)
     {
@@ -962,214 +927,224 @@ tokenizer_parseIndentDedent(
             Logger_dbg("create TOKEN_TYPE_DEDENT");
             tokenizer->indentLevel -= 1;
             token = token_new(TOKEN_TYPE_DEDENT, row, column, string_new("<<DEDENT>>"));
-            tokenizer_addToken(tokenizer->tokens, token);
+            list_add(tokens, token);
         }
-        result = TRUE; 
     }
     else if (which == 1)
     {
         Logger_dbg("create TOKEN_TYPE_INDENT");
         tokenizer->indentLevel += 1;
         token = token_new(TOKEN_TYPE_INDENT, row, column, string_new("<<INDENT>>"));
-        tokenizer_addToken(tokenizer->tokens, token);
-        result = TRUE; 
+        list_add(tokens, token);
     }
     else if (which == 0)
     {
         //インデントなし。
         Logger_dbg("Indent level is same above line.");
-        result = TRUE; 
     }
     else
     {
         //一度に複数のインデントは発生してはいけない。
-        Logger_dbg("Multi indent is not permited.");
-        result = FALSE; 
+        Logger_err("Multi indent is not permited.");
+        tokenizer_error("<<Indent/DEDENT>>", tokenizer->row, tokenizer->column);
     }
+END:
+    string_dispose(tmp);
+    stringBuffer_dispose(buffer);
+    Logger_trc("[  END  ]%s", __func__);
+}
+
+
+
+Boolean
+tokenizer_parseNewLineIndentDedent(
+    Tokenizer   tokenizer,
+    List        tokens
+)
+{
+    Logger_trc("[ START ]%s('%c')", __func__, tokenizer->next);
+    Boolean result = FALSE;
+    int row = tokenizer->row;
+    int column = tokenizer->column;
+    
+    
+    if (tokenizer->next != '\n')
+        goto END;
+    
+    
+    Logger_trc("Create 'TOKEN_TYPE_NEW_LINE'");
+    String tmp = string_new("<<NEW_LINE>>");
+    Token token = token_new(TOKEN_TYPE_NEW_LINE, row, column, tmp);
+    string_dispose(tmp);
+    
+    
+    list_add(tokens, token);
+    result = TRUE;
+    
+    
+    Logger_trc("Try indent/dedent literal.");
+    tokenizer_parseIndentDedent(tokenizer, tokens);
     
     
 END:
-    
-    //返却
-    Logger_dbg("result = %d", result);
     Logger_trc("[  END  ]%s", __func__);
     return result;
 }
 
 
 
-Boolean
+Token
 tokenizer_parseOther(
     Tokenizer   tokenizer
 )
 {
-    Logger_trc("[ START ]%s", __func__);
-    //初期化
-    Boolean result = TRUE;
+    Logger_trc("[ START ]%s('%c')", __func__, tokenizer->next);
     Token token = NULL;
-    tokenizer->buffer = stringBuffer_new();
+    StringBuffer buffer = stringBuffer_new();
     String tmp = NULL;
-    char* buffer = NULL;
+    char* value = NULL;
     int row = tokenizer->row;
     int column = tokenizer->column;
     
     
-    //--------------------------------------------------
-    //１文字目
-    //--------------------------------------------------
     Logger_trc("Check first charactor.(%c)", tokenizer->next);
-    stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
-    tmp = stringBuffer_toString(tokenizer->buffer);
-    buffer = tmp->pointer;
-    if (strcmp(buffer, TOKEN_LITERAL_PARENTHESIS_LEFT) == 0)
+    stringBuffer_appendChar(buffer, tokenizer->next);
+    tmp = stringBuffer_toString(buffer);
+    value = tmp->pointer;
+    if (strcmp(value, TOKEN_LITERAL_PARENTHESIS_LEFT) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_PARENTHESIS_LEFT'");
         token = token_new(TOKEN_TYPE_PARENTHESIS_LEFT, row, column, tmp);
-        goto ADD_TOKEN;
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_PARENTHESIS_RIGHT) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_PARENTHESIS_RIGHT) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_PARENTHESIS_RIGHT'");
         token = token_new(TOKEN_TYPE_PARENTHESIS_RIGHT, row, column, tmp);
-        goto ADD_TOKEN;
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_BRACKET_LEFT) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_BRACKET_LEFT) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_BRACKET_LEFT'");
         token = token_new(TOKEN_TYPE_BRACKET_LEFT, row, column, tmp);
-        goto ADD_TOKEN;
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_BRACKET_RIGHT) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_BRACKET_RIGHT) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_BRACKET_RIGHT'");
         token = token_new(TOKEN_TYPE_BRACKET_RIGHT, row, column, tmp);
-        goto ADD_TOKEN;
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_BRACE_LEFT) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_BRACE_LEFT) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_BRACE_LEFT'");
         token = token_new(TOKEN_TYPE_BRACE_LEFT, row, column, tmp);
-        goto ADD_TOKEN;
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_BRACE_RIGHT) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_BRACE_RIGHT) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_BRACE_RIGHT'");
         token = token_new(TOKEN_TYPE_BRACE_RIGHT, row, column, tmp);
-        goto ADD_TOKEN;
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_GENERICS_LEFT) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_GENERICS_LEFT) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_GENERICS_LEFT'");
         token = token_new(TOKEN_TYPE_GENERICS_LEFT, row, column, tmp);
-        goto ADD_TOKEN;
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_GENERICS_RIGHT) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_GENERICS_RIGHT) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_GENERICS_RIGHT'");
         token = token_new(TOKEN_TYPE_GENERICS_RIGHT, row, column, tmp);
-        goto ADD_TOKEN;
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_COLON) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_COLON) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_COLON'");
         token = token_new(TOKEN_TYPE_COLON, row, column, tmp);
-        goto ADD_TOKEN;
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_MEMBER) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_MEMBER) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_MEMBER'");
         token = token_new(TOKEN_TYPE_MEMBER, row, column, tmp);
-        goto ADD_TOKEN;
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_PERIOD) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_PERIOD) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_PERIOD'");
         token = token_new(TOKEN_TYPE_PERIOD, row, column, tmp);
-        goto ADD_TOKEN;
+        goto END;
     }
-    else if (strcmp(buffer, TOKEN_LITERAL_MONADIC_MINUS) == 0)
+    
+    if (strcmp(value, TOKEN_LITERAL_MONADIC_MINUS) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_MONADIC_MINUS'");
         token = token_new(TOKEN_TYPE_MONADIC_MINUS, row, column, tmp);
-        goto ADD_TOKEN;
-    }
-    else if (strcmp(buffer, TOKEN_LITERAL_UNDER) == 0)
-    {
-        Logger_trc("Create 'TOKEN_TYPE_UNDER'");
-        result = tokenizer_skipSpaceAndNewLine(tokenizer);
         goto END;
     }
-    else if (tokenizer->next == ',')
+    
+    if (strcmp(value, TOKEN_LITERAL_UNDER) == 0)
     {
-        Logger_trc("Try comma literal.");
-        //コンマの場合はその次の文字もチェック
-        if (tokenizer_readChar(tokenizer) == FALSE)
-        {
-            result = FALSE;
-            goto END;
-        }
-        
-        if (tokenizer->next != ' ')
-        {
-            //リセット
-            result = FALSE;
-            tokenizer->next = '\0';
-            goto END;
-        }
-
-        string_dispose(tmp);
-        tmp = NULL;
-        stringBuffer_appendChar(tokenizer->buffer, tokenizer->next);
-        tmp = stringBuffer_toString(tokenizer->buffer);
-        Logger_trc("Create 'TOKEN_TYPE_COMMA'");
-        token = token_new(TOKEN_TYPE_COMMA, row, column, tmp);
-        goto ADD_TOKEN;
+        Logger_trc("Create 'TOKEN_TYPE_UNDER'");
+        token = tokenizer_parseDummy(tokenizer);
+        goto END;
     }
-    else if (tokenizer->next == '"')
+    
+    if (tokenizer->next == '"')
     {
         //文字列リテラルの解析
         Logger_trc("Try string literal.");
-        result = tokenizer_parseStringLiteral(tokenizer);
+        token = tokenizer_parseStringLiteral(tokenizer);
         goto END;
     }
-    else if (tokenizer->next == '\n')
+    
+    if (tokenizer->next == ',')
     {
-        //改行トークンを生成
-        Logger_trc("Create 'TOKEN_TYPE_NEW_LINE'");
-        string_dispose(tmp);
-        tmp = string_new("<<NEW_LINE>>");
-        token = token_new(TOKEN_TYPE_NEW_LINE, row, column, tmp);
-        tokenizer_addToken(tokenizer->tokens, token);
-        stringBuffer_dispose(tokenizer->buffer);
-        tokenizer->buffer = NULL;
+        Logger_trc("Try comma literal.");
+        if (tokenizer_readChar(tokenizer) == FALSE)
+        {
+            tokenizer_error(value, row, column);
+            goto END;
+        }
         
-        //インデント・ディデントの解析
-        Logger_trc("Try indent/dedent literal.");
-        result = tokenizer_parseIndentDedent(tokenizer);
+        string_dispose(tmp);
+        stringBuffer_appendChar(buffer, tokenizer->next);
+        tmp = stringBuffer_toString(buffer);
+        value = tmp->pointer;
+        
+        if (tokenizer->next != ' ')
+        {
+            tokenizer_error(value, row, column);
+            goto END;
+        }
+        
+        Logger_trc("Create 'TOKEN_TYPE_COMMA'");
+        token = token_new(TOKEN_TYPE_COMMA, row, column, tmp);
         goto END;
     }
     
     
-    //何れにも合致しなかった場合はエラー
-    result = FALSE;
-    goto END;
-    
-    
-ADD_TOKEN:
-    //リセット
-    tokenizer->next = '\0';
-    tokenizer_addToken(tokenizer->tokens, token);
-    result = TRUE;
+    tokenizer_error(value, row, column);
     
     
 END:
-    //使用したバッファを開放
-    stringBuffer_dispose(tokenizer->buffer);
-    tokenizer->buffer = NULL;
-    
-    //返却
+    tokenizer_readChar(tokenizer);
+    stringBuffer_dispose(buffer);
+    string_dispose(tmp);
     Logger_trc("[  END  ]%s", __func__);
-    return result;
+    return token;
 }
 
 
@@ -1219,32 +1194,32 @@ tokenizer_createTokens(
     
     while (tokenizer_isEndOfFile(tokenizer) == FALSE)
     {
-		token = tokenizer_parseNumber(tokenizer);
+        token = tokenizer_parseNumber(tokenizer);
         if (token != NULL)
-        	goto ADD_TOKEN;
+            goto ADD_TOKEN;
         
         token = tokenizer_parseIdentifier(tokenizer);
         if (token != NULL)
-        	goto ADD_TOKEN;
+            goto ADD_TOKEN;
         
-        if (tokenizer_isConnection(tokenizer) == TRUE)
-        	continue;
-        
-		token = tokenizer_parseSpace(tokenizer);
+        token = tokenizer_parseSpace(tokenizer);
         if (token != NULL)
-        	goto ADD_TOKEN;
+            goto ADD_TOKEN;
+        
+        if (tokenizer_parseNewLineIndentDedent(tokenizer, tokens) == TRUE)
+            continue;
         
         token = tokenizer_parseOther(tokenizer);
         if (token != NULL)
-        	goto ADD_TOKEN;
-
-		Logger_err("Not supported token.");
-		tokenizer_error("???", tokenizer->row, tokenizer->column);
+            goto ADD_TOKEN;
+        
+        Logger_err("Not supported token.");
+        tokenizer_error("???", tokenizer->row, tokenizer->column);
         break;
         
 ADD_TOKEN:
-		list_add(tokens, token);
-		continue;        
+        list_add(tokens, token);
+        continue;        
     }
     
     
