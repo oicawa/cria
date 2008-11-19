@@ -166,6 +166,53 @@ END:
 
 
 StatementResult
+executor_executeGotoStatement(
+	Interpreter interpreter,
+    GotoStatement statement
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    StatementResult result;
+    result.type = STATEMENT_RESULT_NORMAL;
+    
+    
+    if (statement == NULL)
+    {
+        Logger_dbg("statement is NULL.");
+        runtime_error(interpreter);
+        goto END;
+    }
+    
+    switch (statement->type)
+    {
+	case GOTO_TYPE_BREAK:
+		result.type = STATEMENT_RESULT_BREAK;
+		break;
+	case GOTO_TYPE_CONTINUE:
+		result.type = STATEMENT_RESULT_CONTINUE;
+		break;
+	case GOTO_TYPE_LABEL:
+		result.type = STATEMENT_RESULT_LABEL;
+    	result.returns.label = statement->of.label;
+		break;
+	case GOTO_TYPE_RETURN:
+		result.type = STATEMENT_RESULT_RETURN;
+		if (statement->of.expression != NULL)
+    		result.returns.id = evaluator_expression(interpreter, statement->of.expression);
+		break;
+	default:
+		runtime_error(interpreter);
+		break;
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return result;
+}
+
+
+
+StatementResult
 executor_executeStatement(
     Interpreter interpreter,
     Statement   statement
@@ -194,6 +241,9 @@ executor_executeStatement(
         break;
     case STATEMENT_KIND_WHILE:
         result = executor_executeWhileStatement(interpreter, statement->of._while_);
+        break;
+    case STATEMENT_KIND_GOTO:
+        result = executor_executeGotoStatement(interpreter, statement->of._goto_);
         break;
     /*
     case STATEMENT_KIND_FOR:
@@ -243,6 +293,8 @@ executor_executeStatementList(
     {
         Statement statement = (Statement)(list_get(statements, index));
         result = executor_executeStatement(interpreter, statement);
+        if (result.type != STATEMENT_RESULT_NORMAL)
+        	break;
     }
     Logger_trc("[  END  ]%s", __func__);
     return result;

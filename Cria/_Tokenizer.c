@@ -55,6 +55,7 @@
 #define TOKEN_LITERAL_THROW                 "throw "
 #define TOKEN_LITERAL_WHILE                 "while "
 #define TOKEN_LITERAL_RETURN_VALUE          "return "
+#define TOKEN_LITERAL_GOTO                  "goto "
 
 #define TOKEN_LITERAL_NULL                  "null"
 #define TOKEN_LITERAL_ELSE                  "else"
@@ -328,6 +329,12 @@ tokenizer_parseReserved(
     
     if (strcmp(value, TOKEN_LITERAL_RETURN) == 0)
     {
+		if (tokenizer->next == ' ')
+		{
+			Logger_dbg("create TOKEN_TYPE_RETURN_VALUE");
+			token = token_new(TOKEN_TYPE_RETURN_VALUE, row, column, tmp);
+			goto READ;
+		}
 		Logger_dbg("create TOKEN_TYPE_RETURN");
 		token = token_new(TOKEN_TYPE_RETURN, row, column, tmp);
         goto END;
@@ -380,6 +387,13 @@ tokenizer_parseReserved(
     {
         Logger_dbg("create TOKEN_TYPE_WHILE");
         token = token_new(TOKEN_TYPE_WHILE, row, column, tmp);
+        goto READ;
+    }
+    
+    if (strncmp(value, TOKEN_LITERAL_GOTO, strlen(TOKEN_LITERAL_GOTO) - 1) == 0)
+    {
+        Logger_dbg("create TOKEN_TYPE_GOTO");
+        token = token_new(TOKEN_TYPE_GOTO, row, column, tmp);
         goto READ;
     }
     

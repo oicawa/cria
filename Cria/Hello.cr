@@ -22,6 +22,16 @@ elif answer == "no"
     
     if answer == "yes"
         write("Nice to meet you, Mrs,%s\n\n", name)
+        
+        isFirst = true
+        while true
+            write("Is your husband gentle? >> ")
+            answer = read()
+            if answer == "yes"
+                write("Oh, you are lucky beggar, Mrs.%s!!\n", name)
+                break
+            write("Sorry, I can't hear you.\n")
+            
     elif answer == "no"
         write("Nice to meet you, Miss,%s\n\n", name)
     else

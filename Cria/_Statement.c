@@ -35,14 +35,11 @@ statement_dispose(
     
     switch (statement->kind)
     {
-    case STATEMENT_KIND_RETURN:
-        //returnStatement_dispose(statement->of._return_);
+    case STATEMENT_KIND_SUBSTITUTE:
+        //ifStatement_dispose(statement->of._if_);
         break;
-    case STATEMENT_KIND_CATCH:
-        //finallyStatement_dispose(statement->of._catch_);
-        break;
-    case STATEMENT_KIND_FINALLY:
-        //finallyStatement_dispose(statement->of._finally_);
+    case STATEMENT_KIND_FUNCTION_CALL:
+        //ifStatement_dispose(statement->of._if_);
         break;
     case STATEMENT_KIND_IF:
         //ifStatement_dispose(statement->of._if_);
@@ -52,6 +49,15 @@ statement_dispose(
         break;
     case STATEMENT_KIND_FOR:
         //forStatement_dispose(statement->of._for_);
+        break;
+    case STATEMENT_KIND_GOTO:
+        //returnStatement_dispose(statement->of._return_);
+        break;
+    case STATEMENT_KIND_CATCH:
+        //finallyStatement_dispose(statement->of._catch_);
+        break;
+    case STATEMENT_KIND_FINALLY:
+        //finallyStatement_dispose(statement->of._finally_);
         break;
     default:
         Logger_err("Illegal statement type. (%d)", statement->kind);
@@ -647,6 +653,7 @@ statement_parseGoto(
     Item position = parser_getPosition(parser);
     GotoType type = GOTO_TYPE_LABEL;
     String label = NULL;
+    Expression expression = NULL;
     Token token = NULL;
     
     token = parser_getCurrent(parser);
@@ -654,35 +661,52 @@ statement_parseGoto(
     {
     case TOKEN_TYPE_BREAK:
     	type = GOTO_TYPE_BREAK;
+	    parser_next(parser);
         break;
     case TOKEN_TYPE_CONTINUE:
     	type = GOTO_TYPE_CONTINUE;
+	    parser_next(parser);
         break;
     case TOKEN_TYPE_GOTO:
     	type = GOTO_TYPE_LABEL;
+	    parser_next(parser);
+	    token = parser_getCurrent(parser);
+	    label = token->buffer;
+        break;
+    case TOKEN_TYPE_RETURN:
+    	type = GOTO_TYPE_RETURN;
+	    parser_next(parser);
+        break;
+    case TOKEN_TYPE_RETURN_VALUE:
+    	type = GOTO_TYPE_RETURN;
+	    parser_next(parser);
+	    expression = expression_parse(parser);
         break;
     default:
     	parser_setPosition(parser, position);
     	goto END;
     }
     
-    if (type == TOKEN_TYPE_GOTO)
+    token = parser_getCurrent(parser);
+    if (token->type != TOKEN_TYPE_NEW_LINE)
     {
-	    parser_next(parser);
-	    token = parser_getCurrent(parser);
-	    label = token->buffer;
+    	parser_setPosition(parser, position);
+    	parser_error(token);
+    	goto END;
     }
-    
+	parser_next(parser);
     
     //生成
     Logger_dbg("Create 'GotoStatement'");
     gotoStatement = Memory_malloc(sizeof(struct GotoStatementTag));
     memset(gotoStatement, 0x00, sizeof(struct GotoStatementTag));
     gotoStatement->type = type;
-    gotoStatement->label = string_clone(label);
+    if (label != NULL)
+    	gotoStatement->of.label = string_clone(label);
+    gotoStatement->of.expression = expression;
     
     statement = statement_new(STATEMENT_KIND_WHILE);
-    statement->of._while_ = whileStatement;
+    statement->of._goto_ = gotoStatement;
     statement->line = token->row;
     
 END:
@@ -732,7 +756,7 @@ statement_parse(
     }
     
     
-    statement = statement_parseBreak(parser);
+    statement = statement_parseGoto(parser);
     if (statement != NULL)
     {
         Logger_dbg("Created BreakStatement.");

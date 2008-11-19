@@ -97,23 +97,15 @@ struct StatementTag
     StatementKind   kind;
     int             line;
     union {
-        ReturnStatement         _return_;
-        CatchStatement          _catch_;
-        FinallyStatement        _finally_;
-        IfStatement             _if_;
-        WhileStatement          _while_;
-        BreakStatement          _break_;
-        ForStatement            _for_;
         FunctionCallStatement   _functionCall_;
         SubstituteStatement     _substitute_;
+        IfStatement             _if_;
+        WhileStatement          _while_;
+        ForStatement            _for_;
+        GotoStatement           _goto_;
+        CatchStatement          _catch_;
+        FinallyStatement        _finally_;
     } of;
-};
-
-
-
-struct ReturnStatementTag
-{
-    Expression  expression;
 };
 
 
@@ -123,6 +115,7 @@ typedef enum
 	GOTO_TYPE_CONTINUE,
 	GOTO_TYPE_BREAK,
 	GOTO_TYPE_LABEL,
+	GOTO_TYPE_RETURN,
 } GotoType;
 
 
@@ -130,7 +123,11 @@ typedef enum
 struct GotoStatementTag
 {
 	GotoType type;
-    String  label;
+	union
+	{
+	    String  label;
+	    Expression expression;
+	} of;
 };
 
 
@@ -379,6 +376,7 @@ typedef enum {
     STATEMENT_RESULT_RETURN,
     STATEMENT_RESULT_BREAK,
     STATEMENT_RESULT_CONTINUE,
+    STATEMENT_RESULT_LABEL,
 } StatementResultType;
 
 
@@ -386,7 +384,8 @@ typedef enum {
 typedef struct {
     StatementResultType type;
     union {
-        CriaObject  object;
+        String label;
+        CriaId id;
     } returns;
 } StatementResult;
 
