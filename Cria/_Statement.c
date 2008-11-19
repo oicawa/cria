@@ -619,11 +619,67 @@ statement_parseWhile(
     
     
     //生成
-    Logger_dbg("Create 'IfStatement'");
+    Logger_dbg("Create 'WhileStatement'");
     whileStatement = Memory_malloc(sizeof(struct WhileStatementTag));
     memset(whileStatement, 0x00, sizeof(struct WhileStatementTag));
     whileStatement->condition = condition;
     whileStatement->statements = statements;
+    
+    statement = statement_new(STATEMENT_KIND_WHILE);
+    statement->of._while_ = whileStatement;
+    statement->line = token->row;
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return statement;
+}
+
+
+
+Statement
+statement_parseGoto(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Statement statement = NULL;
+    GotoStatement gotoStatement = NULL;
+    Item position = parser_getPosition(parser);
+    GotoType type = GOTO_TYPE_LABEL;
+    String label = NULL;
+    Token token = NULL;
+    
+    token = parser_getCurrent(parser);
+    switch (token->type)
+    {
+    case TOKEN_TYPE_BREAK:
+    	type = GOTO_TYPE_BREAK;
+        break;
+    case TOKEN_TYPE_CONTINUE:
+    	type = GOTO_TYPE_CONTINUE;
+        break;
+    case TOKEN_TYPE_GOTO:
+    	type = GOTO_TYPE_LABEL;
+        break;
+    default:
+    	parser_setPosition(parser, position);
+    	goto END;
+    }
+    
+    if (type == TOKEN_TYPE_GOTO)
+    {
+	    parser_next(parser);
+	    token = parser_getCurrent(parser);
+	    label = token->buffer;
+    }
+    
+    
+    //生成
+    Logger_dbg("Create 'GotoStatement'");
+    gotoStatement = Memory_malloc(sizeof(struct GotoStatementTag));
+    memset(gotoStatement, 0x00, sizeof(struct GotoStatementTag));
+    gotoStatement->type = type;
+    gotoStatement->label = string_clone(label);
     
     statement = statement_new(STATEMENT_KIND_WHILE);
     statement->of._while_ = whileStatement;
@@ -676,16 +732,12 @@ statement_parse(
     }
     
     
-    /*
-    //ReturnStatement?
-    ReturnStatement returnStatement = returnStatement_parse(buffer, offset);
-    if (returnStatement != NULL)
+    statement = statement_parseBreak(parser);
+    if (statement != NULL)
     {
-        statement = Statement_new(STATEMENT_KIND_RETURN);
-        statement->of._return_ = returnStatement;
-        return statement;
+        Logger_dbg("Created BreakStatement.");
+        goto END;
     }
-    //*/
     
     
     Logger_dbg("No Statement.");

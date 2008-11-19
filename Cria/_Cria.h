@@ -102,6 +102,7 @@ struct StatementTag
         FinallyStatement        _finally_;
         IfStatement             _if_;
         WhileStatement          _while_;
+        BreakStatement          _break_;
         ForStatement            _for_;
         FunctionCallStatement   _functionCall_;
         SubstituteStatement     _substitute_;
@@ -113,6 +114,23 @@ struct StatementTag
 struct ReturnStatementTag
 {
     Expression  expression;
+};
+
+
+
+typedef enum
+{
+	GOTO_TYPE_CONTINUE,
+	GOTO_TYPE_BREAK,
+	GOTO_TYPE_LABEL,
+} GotoType;
+
+
+
+struct GotoStatementTag
+{
+	GotoType type;
+    String  label;
 };
 
 

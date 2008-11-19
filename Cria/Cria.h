@@ -44,6 +44,7 @@ typedef struct  CatchStatementTag               *CatchStatement;
 typedef struct  FinallyStatementTag             *FinallyStatement;
 typedef struct  IfStatementTag                  *IfStatement;
 typedef struct  WhileStatementTag               *WhileStatement;
+typedef struct  GotoStatementTag               *GotoStatement;
 typedef struct  ForStatementTag                 *ForStatement;
 typedef struct  FunctionCallStatementTag        *FunctionCallStatement;
 typedef struct  SubstituteStatementTag          *SubstituteStatement;
