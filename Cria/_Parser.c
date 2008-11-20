@@ -216,6 +216,7 @@ parser_parse(
     Logger_trc("[ START ]%s", __func__);
     Boolean result = FALSE;
     Statement statement = NULL;
+    FunctionDefinition functionDefinition = NULL;
     Token errorToken = NULL;
     
     
@@ -234,10 +235,14 @@ parser_parse(
             Logger_dbg("Set new turning point.");
             continue;
         }
-        else
+        
+        functionDefinition = functionDefinition_parse(parser);
+        if (functionDefinition != NULL)
         {
-            //最後のトークンまで来た。
-            break;
+            Logger_dbg("Add created FunctionDefinition and parse next.");
+            addStatement(interpreter, statement);
+            Logger_dbg("Set new turning point.");
+            continue;
         }
         
         

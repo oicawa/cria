@@ -57,4 +57,45 @@ functionDefinition_search(
 
 
 
-
+FunctionDefinition
+functionDefinition_parse(
+    Parser parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    FunctionDefinition functionDefinition = NULL;
+    Item position = parser_getPosition(parser);
+    Token token = NULL;
+    
+    token = parser_getCurrent(parser);
+    if (token->type != TOKEN_TYPE_IDENTIFIER)
+    {
+    	goto END;
+    }
+    
+    token = parser_getCurrent(parser);
+    if (token->type != TOKEN_TYPE_NEW_LINE)
+    {
+    	parser_setPosition(parser, position);
+    	parser_error(token);
+    	goto END;
+    }
+	parser_next(parser);
+    
+    //生成
+    Logger_dbg("Create 'GotoStatement'");
+    gotoStatement = Memory_malloc(sizeof(struct GotoStatementTag));
+    memset(gotoStatement, 0x00, sizeof(struct GotoStatementTag));
+    gotoStatement->type = type;
+    if (label != NULL)
+    	gotoStatement->of.label = string_clone(label);
+    gotoStatement->of.expression = expression;
+    
+    statement = statement_new(STATEMENT_KIND_GOTO);
+    statement->of._goto_ = gotoStatement;
+    statement->line = token->row;
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return statement;
+}

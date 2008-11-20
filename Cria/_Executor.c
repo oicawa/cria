@@ -87,6 +87,7 @@ executor_executeIfStatement(
     {
         Logger_dbg("statement->condition was 'true'.");
         result = executor_executeStatementList(interpreter, statement->statements);
+        Logger_dbg("result.type = %d", result.type);
         goto END;
     }
     
@@ -206,7 +207,7 @@ executor_executeGotoStatement(
     }
     
 END:
-    Logger_trc("[  END  ]%s", __func__);
+    Logger_trc("[  END  ]%s(result.type=%d)", __func__, result.type);
     return result;
 }
 

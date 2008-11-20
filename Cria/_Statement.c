@@ -705,7 +705,7 @@ statement_parseGoto(
     	gotoStatement->of.label = string_clone(label);
     gotoStatement->of.expression = expression;
     
-    statement = statement_new(STATEMENT_KIND_WHILE);
+    statement = statement_new(STATEMENT_KIND_GOTO);
     statement->of._goto_ = gotoStatement;
     statement->line = token->row;
     
@@ -771,47 +771,5 @@ END:
     Logger_trc("[  END  ]%s", __func__);
     return statement;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
