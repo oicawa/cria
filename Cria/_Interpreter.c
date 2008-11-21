@@ -27,7 +27,7 @@ Interpreter_addFunction(
 {
     Logger_trc("[ START ]%s", __func__);
     FunctionDefinition definition = NULL;
-    definition = functionDefinition_new(functionName, TRUE, ACCESS_LEVEL_PUBLIC, NULL, NULL, functionPoint);
+    definition = functionDefinition_new(functionName, TRUE, NULL, NULL, functionPoint);
     list_add(interpreter->functionList, definition);
     Logger_trc("[  END  ]%s", __func__);
 }

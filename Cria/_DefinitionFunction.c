@@ -4,7 +4,6 @@ FunctionDefinition
 functionDefinition_new(
     char*               name,
     Boolean             isNative,
-    AccessLevel         access,
     List                parameterList,
     List                statementList,
     CriaNativeFunction* nativeFunctionPoint
@@ -14,7 +13,6 @@ functionDefinition_new(
     memset(definition, 0x00, sizeof(struct FunctionDefinitionTag));
     definition->name = name;
     definition->isNative = isNative;
-    definition->access = access;
     if (isNative == TRUE)
     {
         definition->of.native.function = nativeFunctionPoint;
@@ -57,6 +55,21 @@ functionDefinition_search(
 
 
 
+List
+functionDefinition_parseParameters(
+	Parser parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+	List parameters = NULL;
+	
+	
+    Logger_trc("[  END  ]%s", __func__);
+	return parameters;
+}
+
+
+
 FunctionDefinition
 functionDefinition_parse(
     Parser parser
@@ -65,37 +78,98 @@ functionDefinition_parse(
     Logger_trc("[ START ]%s", __func__);
     FunctionDefinition functionDefinition = NULL;
     Item position = parser_getPosition(parser);
+    String name = NULL;
+    List parameters = NULL;
+    List statements = NULL;
+    Statement statement = NULL;
     Token token = NULL;
     
     token = parser_getCurrent(parser);
     if (token->type != TOKEN_TYPE_IDENTIFIER)
     {
+    	parser_setPosition(parser, position);
+    	goto END;
+    }
+    name = token->buffer;
+
+	parser_next(parser);    
+    token = parser_getCurrent(parser);
+    if (token->type != TOKEN_TYPE_PARENTHESIS_LEFT)
+    {
+    	parser_setPosition(parser, position);
     	goto END;
     }
     
-    token = parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_NEW_LINE)
-    {
-    	parser_setPosition(parser, position);
-    	parser_error(token);
-    	goto END;
-    }
 	parser_next(parser);
+	parameters = functionDefinition_parseParameters(parser);
+	if (parameters == NULL)
+	{
+    	parser_setPosition(parser, position);
+    	goto END;
+	}
+	
+	token = parser_getCurrent(parser);
+	if (token->type != TOKEN_TYPE_PARENTHESIS_RIGHT)
+	{
+    	parser_setPosition(parser, position);
+    	goto END;
+	}
+	
+	parser_next(parser);
+	token = parser_getCurrent(parser);
+	if (token->type != TOKEN_TYPE_COLON)
+	{
+    	parser_setPosition(parser, position);
+    	goto END;
+	}
+    
+	parser_next(parser);
+	token = parser_getCurrent(parser);
+	if (token->type != TOKEN_TYPE_NEW_LINE)
+	{
+    	parser_setPosition(parser, position);
+    	goto END;
+	}
+    
+	parser_next(parser);
+	token = parser_getCurrent(parser);
+	if (token->type != TOKEN_TYPE_INDENT)
+	{
+    	parser_setPosition(parser, position);
+    	goto END;
+	}
+	
+	parser_next(parser);
+	statements = list_new();
+    while(1)
+    {
+        token = parser_getCurrent(parser);
+        token_log(token);
+        if (token->type == TOKEN_TYPE_DEDENT)
+        {
+            Logger_dbg("token type is not 'DEDENT'.");
+            break;
+        }
+        
+        statement = statement_parse(parser);
+        if (statement == NULL)
+        {
+            Logger_err("statement parse error.");
+            parser_setPosition(parser, position);
+            list_dispose(statements);
+            parser_error(token);
+            goto END;
+        }
+        
+        Logger_dbg("Add statement.");
+        list_add(statements, statement);
+    }
     
     //生成
     Logger_dbg("Create 'GotoStatement'");
-    gotoStatement = Memory_malloc(sizeof(struct GotoStatementTag));
-    memset(gotoStatement, 0x00, sizeof(struct GotoStatementTag));
-    gotoStatement->type = type;
-    if (label != NULL)
-    	gotoStatement->of.label = string_clone(label);
-    gotoStatement->of.expression = expression;
-    
-    statement = statement_new(STATEMENT_KIND_GOTO);
-    statement->of._goto_ = gotoStatement;
-    statement->line = token->row;
+    functionDefinition = functionDefinition_new(name->pointer, TRUE, parameters, statements, NULL);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
-    return statement;
+    return functionDefinition;
 }

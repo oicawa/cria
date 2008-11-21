@@ -232,7 +232,6 @@ parser_parse(
         {
             Logger_dbg("Add created statement and parse next.");
             addStatement(interpreter, statement);
-            Logger_dbg("Set new turning point.");
             continue;
         }
         
@@ -240,8 +239,7 @@ parser_parse(
         if (functionDefinition != NULL)
         {
             Logger_dbg("Add created FunctionDefinition and parse next.");
-            addStatement(interpreter, statement);
-            Logger_dbg("Set new turning point.");
+            list_add(interpreter->functionList, functionDefinition);
             continue;
         }
         

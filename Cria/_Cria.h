@@ -947,7 +947,6 @@ FunctionDefinition
 functionDefinition_new(
     char*               name,
     Boolean             isNative,
-    AccessLevel         access,
     List                parameterList,
     List                statementList,
     CriaNativeFunction* nativeFunctionPoint
@@ -966,6 +965,13 @@ FunctionDefinition
 functionDefinition_search(
     List    functions,
     char*   name
+);
+
+
+
+FunctionDefinition
+functionDefinition_parse(
+    Parser parser
 );
 
 
