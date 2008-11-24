@@ -206,6 +206,34 @@ addStatement(
 }
 
 
+Boolean
+parser_eat(
+	Parser parser,
+	TokenType type,
+	Boolean isNessesally
+)
+{
+	Boolean result = FALSE;
+	Token token = parser_getCurrent(parser);
+	if (token == NULL)
+		goto UNMATCH;
+	
+	if (token->type != type)
+		goto UNMATCH;
+	
+	result = TRUE;
+	parser_next(parser);
+	goto END;
+
+UNMATCH:
+	if (isNessesally == TRUE)
+		parser_error(token);
+	
+END:
+	return result;
+}
+
+
 
 Boolean
 parser_parse(

@@ -707,6 +707,15 @@ parser_error(
 
 
 
+Boolean
+parser_eat(
+	Parser parser,
+	TokenType type,
+	Boolean isNessesally
+);
+
+
+
 //==================================================
 //Statement
 //==================================================

@@ -61,8 +61,24 @@ functionDefinition_parseParameters(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-	List parameters = NULL;
+	List parameters = list_new();
+	Token token = NULL;
 	
+	while (TRUE)
+	{
+		token = parser_getCurrent(parser);
+		if (token->type != TOKEN_TYPE_IDENTIFIER)
+			break;
+		
+		list_add(parameters, string_clone(token->buffer));
+		
+		parser_next(parser);
+		token = parser_getCurrent(parser);
+		if (token->type != TOKEN_TYPE_COMMA)
+			break;
+		
+		parser_next(parser);
+	}
 	
     Logger_trc("[  END  ]%s", __func__);
 	return parameters;
@@ -77,7 +93,7 @@ functionDefinition_parse(
 {
     Logger_trc("[ START ]%s", __func__);
     FunctionDefinition functionDefinition = NULL;
-    Item position = parser_getPosition(parser);
+    Item restore = parser_getPosition(parser);
     String name = NULL;
     List parameters = NULL;
     List statements = NULL;
@@ -86,65 +102,33 @@ functionDefinition_parse(
     
     token = parser_getCurrent(parser);
     if (token->type != TOKEN_TYPE_IDENTIFIER)
-    {
-    	parser_setPosition(parser, position);
     	goto END;
-    }
-    name = token->buffer;
-
-	parser_next(parser);    
-    token = parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_PARENTHESIS_LEFT)
-    {
-    	parser_setPosition(parser, position);
-    	goto END;
-    }
     
-	parser_next(parser);
+    name = token->buffer;
+	
+    if (parser_eat(parser, TOKEN_TYPE_PARENTHESIS_LEFT, FALSE) == FALSE)
+    	goto END;
+    
 	parameters = functionDefinition_parseParameters(parser);
 	if (parameters == NULL)
-	{
-    	parser_setPosition(parser, position);
     	goto END;
-	}
 	
-	token = parser_getCurrent(parser);
-	if (token->type != TOKEN_TYPE_PARENTHESIS_RIGHT)
-	{
-    	parser_setPosition(parser, position);
+	if (parser_eat(parser, TOKEN_TYPE_PARENTHESIS_RIGHT, FALSE) == FALSE)
     	goto END;
-	}
 	
-	parser_next(parser);
-	token = parser_getCurrent(parser);
-	if (token->type != TOKEN_TYPE_COLON)
-	{
-    	parser_setPosition(parser, position);
+	if (parser_eat(parser, TOKEN_TYPE_COLON, FALSE) == FALSE)
     	goto END;
-	}
     
-	parser_next(parser);
-	token = parser_getCurrent(parser);
-	if (token->type != TOKEN_TYPE_NEW_LINE)
-	{
-    	parser_setPosition(parser, position);
+	if (parser_eat(parser, TOKEN_TYPE_NEW_LINE, TRUE) == FALSE)
     	goto END;
-	}
     
-	parser_next(parser);
-	token = parser_getCurrent(parser);
-	if (token->type != TOKEN_TYPE_INDENT)
-	{
-    	parser_setPosition(parser, position);
+	if (parser_eat(parser, TOKEN_TYPE_INDENT, TRUE) == FALSE)
     	goto END;
-	}
 	
-	parser_next(parser);
 	statements = list_new();
     while(1)
     {
         token = parser_getCurrent(parser);
-        token_log(token);
         if (token->type == TOKEN_TYPE_DEDENT)
         {
             Logger_dbg("token type is not 'DEDENT'.");
@@ -155,7 +139,6 @@ functionDefinition_parse(
         if (statement == NULL)
         {
             Logger_err("statement parse error.");
-            parser_setPosition(parser, position);
             list_dispose(statements);
             parser_error(token);
             goto END;
@@ -170,6 +153,9 @@ functionDefinition_parse(
     functionDefinition = functionDefinition_new(name->pointer, TRUE, parameters, statements, NULL);
     
 END:
+	if (functionDefinition == NULL)
+		parser_setPosition(parser, restore);
+	
     Logger_trc("[  END  ]%s", __func__);
     return functionDefinition;
 }
