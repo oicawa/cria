@@ -263,13 +263,14 @@ parser_parse(
             continue;
         }
         
-        functionDefinition = functionDefinition_parse(parser);
-        if (functionDefinition != NULL)
-        {
-            Logger_dbg("Add created FunctionDefinition and parse next.");
-            list_add(interpreter->functionList, functionDefinition);
-            continue;
-        }
+        //functionDefinition = functionDefinition_parse(parser);
+        //if (functionDefinition != NULL)
+        //{
+            //Logger_dbg("Add created FunctionDefinition and parse next.");
+            //list_add(interpreter->functionList, functionDefinition);
+            //continue;
+        //}
+        
         
         
         //何れにも当てはまらない場合はエラー扱い

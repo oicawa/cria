@@ -288,11 +288,17 @@ expression_parseReferenceExpression(
     
     expression = expression_parseVariable(parser);
     if (expression != NULL)
+    {
+    	Logger_dbg("Created VariableExpression.");
         goto END;
+    }
     
     expression = expression_parseFunctionCall(parser);
     if (expression != NULL)
+    {
+    	Logger_dbg("Created FunctionCallExpression.");
         goto END;
+    }
     
     //いずれでもなかった場合はパーサー位置を戻す。
     parser_setPosition(parser, position);
