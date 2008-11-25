@@ -985,6 +985,16 @@ functionDefinition_parse(
 
 
 
+CriaId
+functionDefinition_evaluate(
+	Interpreter interpreter,
+	List parameterList,
+	FunctionDefinition function,
+	List parameters
+);
+
+
+
 //==================================================
 //VariableDefinition
 //==================================================
@@ -1038,6 +1048,7 @@ io_read(
 StatementResult
 executor_executeStatementList(
     Interpreter interpreter,
+    List parameters,
     List        statements
 );
 
@@ -1046,6 +1057,7 @@ executor_executeStatementList(
 StatementResult
 executor_executeStatement(
     Interpreter interpreter,
+    List parameters,
     Statement   statement
 );
 
@@ -1054,6 +1066,7 @@ executor_executeStatement(
 void
 executor_executeFunctionCallStatement(
     Interpreter             interpreter,
+    List parameters,
     FunctionCallStatement   statement
 );
 
@@ -1062,6 +1075,7 @@ executor_executeFunctionCallStatement(
 void
 executor_executeSubstituteStatement(
     Interpreter         interpreter,
+    List parameters,
     SubstituteStatement statement
 );
 
@@ -1073,6 +1087,7 @@ executor_executeSubstituteStatement(
 CriaId
 evaluator_expression(
     Interpreter             interpreter,
+    List parameters,
     Expression              expression
 );
 
@@ -1081,6 +1096,7 @@ evaluator_expression(
 VariableDefinition
 evaluator_reference(
     Interpreter interpreter,
+    List parameters,
     Reference   reference
 );
 
@@ -1089,6 +1105,7 @@ evaluator_reference(
 CriaId
 evaluator_referenceExpression(
     Interpreter         interpreter,
+    List parameters,
     ReferenceExpression expression
 );
 
@@ -1097,6 +1114,7 @@ evaluator_referenceExpression(
 CriaId
 evaluator_functionCall(
     Interpreter             interpreter,
+    List parameters,
     FunctionCallExpression  expression
 );
 

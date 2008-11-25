@@ -7,6 +7,7 @@
 void
 executor_executeSubstituteStatement(
     Interpreter         interpreter,
+	List parameters,
     SubstituteStatement statement
 )
 {
@@ -16,11 +17,11 @@ executor_executeSubstituteStatement(
     CriaId id = NULL;
     
     //‰E•Ó‚ÌŽÀs
-    id = evaluator_expression(interpreter, statement->expression);
+    id = evaluator_expression(interpreter, parameters, statement->expression);
     
     
     //¶•Ó‚ÉŠY“–‚·‚é•Ï”‚ÌŒŸõ
-    definition = evaluator_reference(interpreter, reference);
+    definition = evaluator_reference(interpreter, parameters, reference);
     
     
     //‘ã“üˆ—
@@ -35,11 +36,12 @@ executor_executeSubstituteStatement(
 void
 executor_executeFunctionCallStatement(
     Interpreter             interpreter,
+	List parameters,
     FunctionCallStatement   statement
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    evaluator_referenceExpression(interpreter, statement->expression);
+    evaluator_referenceExpression(interpreter, parameters, statement->expression);
     Logger_trc("[  END  ]%s", __func__);
 }
 
@@ -48,6 +50,7 @@ executor_executeFunctionCallStatement(
 StatementResult
 executor_executeIfStatement(
     Interpreter interpreter,
+	List parameters,
     IfStatement statement
 )
 {
@@ -72,7 +75,7 @@ executor_executeIfStatement(
     else
     {
         Logger_dbg("statement->condition exists.");
-        id = evaluator_expression(interpreter, statement->condition);
+        id = evaluator_expression(interpreter, parameters, statement->condition);
         if (id->type != CRIA_DATA_TYPE_BOOLEAN)
         {
             Logger_dbg("statement->condition was not CRIA_DATA_TYPE_BOOLEAN.");
@@ -86,7 +89,7 @@ executor_executeIfStatement(
     if (boolean->value == TRUE)
     {
         Logger_dbg("statement->condition was 'true'.");
-        result = executor_executeStatementList(interpreter, statement->statements);
+        result = executor_executeStatementList(interpreter, parameters, statement->statements);
         Logger_dbg("result.type = %d", result.type);
         goto END;
     }
@@ -99,7 +102,7 @@ executor_executeIfStatement(
     }
     
     Logger_dbg("Execute next IfStatement.");
-    result = executor_executeIfStatement(interpreter, statement->_if_);
+    result = executor_executeIfStatement(interpreter, parameters, statement->_if_);
     
     
 END:
@@ -112,6 +115,7 @@ END:
 StatementResult
 executor_executeWhileStatement(
 	Interpreter interpreter,
+	List parameters,
     WhileStatement statement
 )
 {
@@ -131,7 +135,7 @@ executor_executeWhileStatement(
     
     while (TRUE)
     {
-		id = evaluator_expression(interpreter, statement->condition);
+		id = evaluator_expression(interpreter, parameters, statement->condition);
 		if (id->type != CRIA_DATA_TYPE_BOOLEAN)
 		{
 			Logger_dbg("statement->condition was not CRIA_DATA_TYPE_BOOLEAN.");
@@ -145,7 +149,7 @@ executor_executeWhileStatement(
 			break;
 		
 		Logger_dbg("statement->condition was 'true'.");
-		result = executor_executeStatementList(interpreter, statement->statements);
+		result = executor_executeStatementList(interpreter, parameters, statement->statements);
 		if (result.type == STATEMENT_RESULT_BREAK)
 		{
 			result.type = STATEMENT_RESULT_NORMAL;
@@ -169,6 +173,7 @@ END:
 StatementResult
 executor_executeGotoStatement(
 	Interpreter interpreter,
+	List parameters,
     GotoStatement statement
 )
 {
@@ -199,7 +204,7 @@ executor_executeGotoStatement(
 	case GOTO_TYPE_RETURN:
 		result.type = STATEMENT_RESULT_RETURN;
 		if (statement->of.expression != NULL)
-    		result.returns.id = evaluator_expression(interpreter, statement->of.expression);
+    		result.returns.id = evaluator_expression(interpreter, parameters, statement->of.expression);
 		break;
 	default:
 		runtime_error(interpreter);
@@ -216,6 +221,7 @@ END:
 StatementResult
 executor_executeStatement(
     Interpreter interpreter,
+    List         parameters,
     Statement   statement
 )
 {
@@ -232,19 +238,19 @@ executor_executeStatement(
     switch (statement->kind)
     {
     case STATEMENT_KIND_SUBSTITUTE:
-        executor_executeSubstituteStatement(interpreter, statement->of._substitute_);
+        executor_executeSubstituteStatement(interpreter, parameters, statement->of._substitute_);
         break;
     case STATEMENT_KIND_FUNCTION_CALL:
-        executor_executeFunctionCallStatement(interpreter, statement->of._functionCall_);
+        executor_executeFunctionCallStatement(interpreter, parameters, statement->of._functionCall_);
         break;
     case STATEMENT_KIND_IF:
-        result = executor_executeIfStatement(interpreter, statement->of._if_);
+        result = executor_executeIfStatement(interpreter, parameters, statement->of._if_);
         break;
     case STATEMENT_KIND_WHILE:
-        result = executor_executeWhileStatement(interpreter, statement->of._while_);
+        result = executor_executeWhileStatement(interpreter, parameters, statement->of._while_);
         break;
     case STATEMENT_KIND_GOTO:
-        result = executor_executeGotoStatement(interpreter, statement->of._goto_);
+        result = executor_executeGotoStatement(interpreter, parameters, statement->of._goto_);
         break;
     /*
     case STATEMENT_KIND_FOR:
@@ -281,6 +287,7 @@ executor_executeStatement(
 StatementResult
 executor_executeStatementList(
     Interpreter interpreter,
+    List		parameters,
     List        statements
 )
 {
@@ -293,7 +300,7 @@ executor_executeStatementList(
     for (index = 0; index < count; index++)
     {
         Statement statement = (Statement)(list_get(statements, index));
-        result = executor_executeStatement(interpreter, statement);
+        result = executor_executeStatement(interpreter, parameters, statement);
         if (result.type != STATEMENT_RESULT_NORMAL)
         	break;
     }

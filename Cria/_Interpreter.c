@@ -156,7 +156,7 @@ Interpreter_run(
 {
     Logger_trc("[ START ]%s", __func__);
     
-    executor_executeStatementList(interpreter, interpreter->statementList);
+    executor_executeStatementList(interpreter, NULL, interpreter->statementList);
     
     Logger_trc("[  END  ]%s", __func__);
 }

@@ -70,7 +70,8 @@ functionDefinition_parseParameters(
 		if (token->type != TOKEN_TYPE_IDENTIFIER)
 			break;
 		
-		list_add(parameters, string_clone(token->buffer));
+		VariableDefinition variable = variableDefinition_new(token->buffer);
+		list_add(parameters, variable);
 		
 		parser_next(parser);
 		token = parser_getCurrent(parser);
@@ -160,4 +161,39 @@ END:
 	
     Logger_trc("[  END  ]%s", __func__);
     return functionDefinition;
+}
+
+
+
+CriaId
+functionDefinition_evaluate(
+	Interpreter interpreter,
+	List parameterList,
+	FunctionDefinition function,
+	List parameters
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    int i = 0;
+    CriaId value = NULL;
+    VariableDefinition definition = NULL;
+    
+    //パラメータ数のチェック
+    if (function->of.cria.parameterList->count != parameters->count)
+    	runtime_error(interpreter);
+    
+    //パラメータをセット
+    for (i = 0; i < parameters->count; i++)
+    {
+    	value = (CriaId)list_get(parameters, i);
+    	definition = (VariableDefinition)list_get(function->of.cria.parameterList, i);
+    	definition->object = value;
+    }
+    
+    //実行
+	executor_executeStatementList(interpreter, parameterList, function->of.cria.statementList);
+    
+    
+    Logger_trc("[  END  ]%s", __func__);
+    return value;
 }
