@@ -148,7 +148,9 @@ functionDefinition_parse(
         list_add(statements, statement);
     }
     
-    //生成
+	if (parser_eat(parser, TOKEN_TYPE_DEDENT, TRUE) == FALSE)
+    	goto END;
+	
     Logger_dbg("Create 'GotoStatement'");
     functionDefinition = functionDefinition_new(name->pointer, TRUE, parameters, statements, NULL);
     
