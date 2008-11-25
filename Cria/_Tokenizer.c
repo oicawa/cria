@@ -1242,6 +1242,11 @@ ADD_TOKEN:
         continue;        
     }
     
+    String tmp = string_new("<<NEW_LINE>>");
+    token = token_new(TOKEN_TYPE_NEW_LINE, -1, -1, tmp);
+    string_dispose(tmp);
+    
+    list_add(tokens, token);
     
     tokenizer_logAllTokens(tokens);
     

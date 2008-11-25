@@ -236,6 +236,41 @@ END:
 
 
 Boolean
+parser_isEnd(
+    Parser parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Token token = NULL;
+    Boolean result = FALSE;
+    
+    while (TRUE)
+    {
+        token = parser_getCurrent(parser);
+        token_log(token);
+        if (token == NULL)
+        {
+            result = TRUE;
+            goto END;
+        }
+        
+        if (token->type != TOKEN_TYPE_NEW_LINE)
+            goto END;
+        
+        if (parser_next(parser) == FALSE)
+        {
+            result = TRUE;
+            break;
+        }
+    }
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return result;
+}
+
+
+
+Boolean
 parser_parse(
     Parser      parser,
     Interpreter interpreter
@@ -271,7 +306,8 @@ parser_parse(
             //continue;
         //}
         
-        
+        if (parser_isEnd(parser) == TRUE)
+            break;
         
         //何れにも当てはまらない場合はエラー扱い
         errorToken = parser_getCurrent(parser);
