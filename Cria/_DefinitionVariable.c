@@ -40,13 +40,19 @@ variableDefinition_search(
         Logger_dbg("'name' is NULL.");
         goto END;
     }
+    Logger_dbg("'name' is [%s].", name->pointer);
     
     Logger_dbg("Pre Loop start.");
     item = variables->item;
     Logger_dbg("Loop start.");
     for (index = 0; index < variables->count; index++)
     {
+        Logger_dbg("Condition OK.");
         tmp = (VariableDefinition)list_get(variables, index);
+        Logger_dbg("tmp = %p", tmp);
+        Logger_dbg("tmp->name = %p", tmp->name);
+        Logger_dbg("tmp->name->pointer = %p", tmp->name->pointer);
+        Logger_dbg("tmp->name->pointer = \"%s\"", tmp->name->pointer);
         if (strcmp(tmp->name->pointer, name->pointer) != 0)
             continue;
         

@@ -53,7 +53,7 @@ evaluator_stringLiteral(
     CriaString string = NULL;
     //long length = string_length(expression->value);
     char* buffer = expression->value->pointer;
-    char* start = &buffer[1];   //æ“ª‚Ì'"'‚Í“Ç‚Ý”ò‚Î‚·
+    char* start = &buffer[1];   //å…ˆé ­ã®'"'ã¯èª­ã¿é£›ã°ã™
     char* next = NULL;
     StringBuffer stringBuffer = stringBuffer_new();
     
@@ -71,7 +71,7 @@ evaluator_stringLiteral(
             break;
         }
         
-        //ƒqƒbƒg‚µ‚½ê‡‚Í‚»‚±‚Ü‚Å‚Ì•¶Žš—ñ‚ð¶¬‚µ‚Ä˜AŒ‹
+        //ãƒ’ãƒƒãƒˆã—ãŸå ´åˆã¯ãã“ã¾ã§ã®æ–‡å­—åˆ—ã‚’ç”Ÿæˆã—ã¦é€£çµ
         long length = next - start;
         char* tmp = Memory_malloc(length + 1);
         memset(tmp, 0x00, length + 1);
@@ -95,7 +95,7 @@ evaluator_stringLiteral(
     }
     
     
-    //ÅŒã‚Ì'"'‚ðÁ‹Ž
+    //æœ€å¾Œã®'"'ã‚’æ¶ˆåŽ»
     String value = stringBuffer_toString(stringBuffer);
     stringBuffer_dispose(stringBuffer);
     value->pointer[strlen(value->pointer) - 1] = '\0';
@@ -122,19 +122,32 @@ evaluator_variable(
     
     
     Logger_dbg("Variable name is '%s'", expression->name->pointer);
-    variable = variableDefinition_search(interpreter->variableList, expression->name);
-    if (variable == NULL)
+    
+    
+    if (parameterList != NULL)
     {
-        Logger_err("Variable is not found.");
-        runtime_error(interpreter);
+        variable = variableDefinition_search(parameterList, expression->name);
+        if (variable != NULL)
+        {
+            id = variable->object;
+            goto END;
+        }
+    }
+    
+    
+    variable = variableDefinition_search(interpreter->variableList, expression->name);
+    if (variable != NULL)
+    {
+        id = variable->object;
         goto END;
     }
     
-    id = variable->object;
+    Logger_err("Variable is not found.");
+    runtime_error(interpreter);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
-    return id;
+    return variable->object;
 }
 
 
@@ -166,13 +179,13 @@ evaluator_operation(
     Logger_dbg("Data type = %d. (INTEGER is %d)", left->type, CRIA_DATA_TYPE_INTEGER);
     Logger_dbg("Checked data type.");
     
-    //Ž®‚Ì¶•Ó‰E•Ó‚ÌŒ^ƒ`ƒFƒbƒN
+    //å¼ã®å·¦è¾ºå³è¾ºã®åž‹ãƒã‚§ãƒƒã‚¯
     if (left->type != right->type)
     {
         runtime_error(interpreter);
     }
     
-    //‰‰ŽZ‰Â”\E•s‰Â”\‚Ìƒ`ƒFƒbƒN
+    //æ¼”ç®—å¯èƒ½ãƒ»ä¸å¯èƒ½ã®ãƒã‚§ãƒƒã‚¯
     if (left->type == CRIA_DATA_TYPE_FUNCTION
         || left->type == CRIA_DATA_TYPE_CRIA_OBJECT
         || left->type == CRIA_DATA_TYPE_CRIA_FUNCTION)
@@ -309,14 +322,14 @@ evaluator_functionCall(
     if (function == NULL)
     {
         Logger_dbg("Function is not found.");
-        perror("Function is not found.\n");
+        runtime_error(interpreter);
         goto END;
     }
+    Logger_dbg("Function matched. (%s)", function->name);
     
     
-    //ˆø”‚ÌŽ®‚ðŽÀs
+    //å¼•æ•°ã®å¼ã‚’å®Ÿè¡Œ
     List parameters = evaluator_parameters(interpreter, parameterList, expression->parameters);
-    
     Logger_dbg("execute parameters count is '%d'", parameters->count);
     
     
@@ -324,12 +337,13 @@ evaluator_functionCall(
     {
         Logger_dbg("Call native function.(%s)", expression->name->pointer);
         id = (*(function->of.native.function))(interpreter, parameters);
+        goto END;
     }
-    else
-    {
-        Logger_dbg("Call cria function.(%s)", expression->name->pointer);
-        id = functionDefinition_evaluate(interpreter, parameterList, function, parameters);
-    }
+    
+    
+    Logger_dbg("Call cria function.(%s)", expression->name->pointer);
+    //StatementResult result = executor_executeStatementList(interpreter, parameters, function->of.cria.statementList);
+    id = functionDefinition_evaluate(interpreter, function->of.cria.parameterList, function, parameters);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -349,14 +363,32 @@ evaluator_referenceVariable(
     VariableDefinition definition = NULL;
     
     
+    if (parameters != NULL)
+    {
+        definition = variableDefinition_search(parameters, variable->name);
+        if (definition != NULL)
+        {
+            goto END;
+        }
+    }
+    
     
     definition = variableDefinition_search(interpreter->variableList, variable->name);
-    if (definition == NULL)
+    if (definition != NULL)
     {
-        //‘¶Ý‚µ‚È‚©‚Á‚½ê‡‚Í“o˜^
-        definition = variableDefinition_new(variable->name);
-        list_add(interpreter->variableList, definition);
+        goto END;
     }
+    
+    //å­˜åœ¨ã—ãªã‹ã£ãŸå ´åˆã¯ç™»éŒ²
+    if (parameters != NULL)
+    {
+        definition = variableDefinition_new(variable->name);
+        list_add(parameters, definition);
+        goto END;
+    }
+    
+    definition = variableDefinition_new(variable->name);
+    list_add(interpreter->variableList, definition);
     
 END:
     Logger_trc("[  END  ]%s", __func__);

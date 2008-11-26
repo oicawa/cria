@@ -110,7 +110,7 @@ io_read(
     if (args->count != 0)
     {
         Logger_err("Runtime error. (Argument count is not 0.)");
-        perror("Runtime error. (Argument count is not 0.)");
+        runtime_error(interpreter);
         goto END;
     }
     

@@ -1,4 +1,10 @@
-write("Welcome to cria world.\n" + "What's your name? >> ")
+sayWelcome():
+    write("Welcome to cria world.\n" + "What's your name? >> ")
+    
+sayNiceToMeetYou(yourName):
+    write("Well, Nice to meet you, %s\n", yourName)
+
+sayWelcome()
 name = read()
 
 write("Are you male? >> ")
@@ -41,7 +47,6 @@ elif answer == "no"
         write("... OK, Nice to meet you, Miss,%s\n\n", name)
 
 else
-    write("I can not understand about '%s'.\n\nWell, Nice to meet you, %s\n\n", answer, name)
-
+    sayNiceToMeetYou(name)
 
 write("Good bye.\n")

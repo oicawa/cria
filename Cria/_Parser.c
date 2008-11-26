@@ -288,6 +288,14 @@ parser_parse(
     parser_next(parser);
     while (TRUE)
     {
+        functionDefinition = functionDefinition_parse(parser);
+        if (functionDefinition != NULL)
+        {
+            Logger_dbg("Add created FunctionDefinition and parse next.");
+            list_add(interpreter->functionList, functionDefinition);
+            continue;
+        }
+        
         //ステートメント        
         Logger_dbg("Check statement.");
         statement = statement_parse(parser);
@@ -295,14 +303,6 @@ parser_parse(
         {
             Logger_dbg("Add created statement and parse next.");
             addStatement(interpreter, statement);
-            continue;
-        }
-        
-        functionDefinition = functionDefinition_parse(parser);
-        if (functionDefinition != NULL)
-        {
-            Logger_dbg("Add created FunctionDefinition and parse next.");
-            list_add(interpreter->functionList, functionDefinition);
             continue;
         }
         
