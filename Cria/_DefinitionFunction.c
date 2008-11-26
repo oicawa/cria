@@ -211,6 +211,7 @@ functionDefinition_evaluate(
     Logger_trc("[ START ]%s", __func__);
     int i = 0;
     CriaId value = NULL;
+    StatementResult result;
     VariableDefinition definition = NULL;
     
     Logger_dbg("function is %p", function);
@@ -247,9 +248,9 @@ functionDefinition_evaluate(
     }
     
     //実行
-	executor_executeStatementList(interpreter, parameterList, function->of.cria.statementList);
+	result = executor_executeStatementList(interpreter, parameterList, function->of.cria.statementList);
     
     
     Logger_trc("[  END  ]%s", __func__);
-    return value;
+    return result.returns.id;
 }

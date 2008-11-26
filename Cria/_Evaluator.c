@@ -257,10 +257,15 @@ evaluator_parameters(
             list_add(list, id);
             Logger_dbg("Add 'Cria Id'");
             break;
+        case EXPRESSION_KIND_BOOLEAN_LITERAL:
+            Logger_dbg("Do 'Boolean literal expression'");
+            id = evaluator_booleanLiteral(interpreter, parameterList, expression->of._booleanLiteral_);
+            Logger_dbg("Done 'Boolean literal expression'");
+            list_add(list, id);
+            Logger_dbg("Add 'Cria Id'");
+            break;
         /*
         case EXPRESSION_KIND_REAL_LITERAL:
-            break;
-        case EXPRESSION_KIND_BOOLEAN_LITERAL:
             break;
         case EXPRESSION_KIND_NULL_LITERAL:
             break;
@@ -329,6 +334,8 @@ evaluator_functionCall(
     
     
     //引数の式を実行
+    Logger_dbg("expression->name->pointer = %s", expression->name->pointer);
+    Logger_dbg("expression->parameters->list->count = %d", expression->parameters->list->count);
     List parameters = evaluator_parameters(interpreter, parameterList, expression->parameters);
     Logger_dbg("execute parameters count is '%d'", parameters->count);
     

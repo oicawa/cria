@@ -32,7 +32,10 @@ main(
     //Logger_set(LOG_LEVEL_DEBUG, "parseFunctionCallExpression, parseParametersExpression, expression_parseReferenceExpression");
     //Logger_set(LOG_LEVEL_DEBUG, "evaluator_expression, evaluator_operation, evaluator_parameters, evaluator_functionCall, evaluator_referenceExpression, evaluator_stringLiteral, evaluator_integerLiteral");
     //Logger_set(LOG_LEVEL_DEBUG, "evaluator_operation, parseNumber, evaluator_parameters, parseFactor, io_write");
-    Logger_set(LOG_LEVEL_DEBUG, "functionDefinition_parse, functionDefinition_parseParameters, evaluator_functionCall, functionDefinition_evaluate");
+    //Logger_set(LOG_LEVEL_DEBUG, "functionDefinition_parse, functionDefinition_parseParameters, evaluator_functionCall, functionDefinition_evaluate");
+    //Logger_set(LOG_LEVEL_DEBUG, "io_write, evaluator_referenceVariable, functionDefinition_parse, functionDefinition_parseParameters, evaluator_functionCall, functionDefinition_evaluate");
+    Logger_set(LOG_LEVEL_DEBUG, "executor_executeGotoStatement, executor_executeStatement, executor_executeStatementList, io_write, evaluator_referenceVariable, functionDefinition_parse, functionDefinition_parseParameters, evaluator_functionCall, functionDefinition_evaluate");
+    
     //Logger_set(LOG_LEVEL_TRACE, NULL);
     
     

@@ -72,6 +72,7 @@ io_write(
             //型チェック
             if (id->type != CRIA_DATA_TYPE_STRING)
             {
+            	Logger_err("id->type = %d", id->type);
                 runtime_error(interpreter);
             }
             

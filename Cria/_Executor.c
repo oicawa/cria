@@ -16,15 +16,12 @@ executor_executeSubstituteStatement(
     Reference reference = statement->reference;
     CriaId id = NULL;
     
-    //‰E•Ó‚ÌŽÀs
     id = evaluator_expression(interpreter, parameters, statement->expression);
     
     
-    //¶•Ó‚ÉŠY“–‚·‚é•Ï”‚ÌŒŸõ
     definition = evaluator_reference(interpreter, parameters, reference);
     
     
-    //‘ã“üˆ—
     definition->object = id;
     
     
@@ -204,7 +201,10 @@ executor_executeGotoStatement(
 	case GOTO_TYPE_RETURN:
 		result.type = STATEMENT_RESULT_RETURN;
 		if (statement->of.expression != NULL)
+		{
     		result.returns.id = evaluator_expression(interpreter, parameters, statement->of.expression);
+    		Logger_dbg("result.returns.id->type = %d", result.returns.id->type);
+		}
 		break;
 	default:
 		runtime_error(interpreter);
@@ -251,6 +251,7 @@ executor_executeStatement(
         break;
     case STATEMENT_KIND_GOTO:
         result = executor_executeGotoStatement(interpreter, parameters, statement->of._goto_);
+  		Logger_dbg("result.returns.id->type = %d", result.returns.id->type);
         break;
     /*
     case STATEMENT_KIND_FOR:
@@ -304,6 +305,14 @@ executor_executeStatementList(
         if (result.type != STATEMENT_RESULT_NORMAL)
         	break;
     }
+    
+	Logger_dbg("result.type = %d", result.type);
+    if (result.type == STATEMENT_RESULT_RETURN)
+    {
+		Logger_dbg("result.returns.id->type = %d", result.returns.id->type);
+    }
+    
+    
     Logger_trc("[  END  ]%s", __func__);
     return result;
 }
