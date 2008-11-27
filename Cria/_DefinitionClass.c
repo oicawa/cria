@@ -6,11 +6,12 @@
 
 ClassDefinition
 classDefinition_new(
+	Interpreter interpreter,
     char*               name,
     Boolean             isNative,
     List                fieldList,
     List                methodList,
-    CriaNativeFunction* nativeFunctionPoint
+    CriaNativeClassLoaderFunction* classLoader
 )
 {
     ClassDefinition definition = NULL;
@@ -18,7 +19,7 @@ classDefinition_new(
     if (isNative == TRUE)
     {
         Logger_dbg("Load Native Class");
-        definition = (*nativeFunctionPoint)(interpreter, name);
+        definition = (*classLoader)(interpreter, name);
         goto END;
     }
     

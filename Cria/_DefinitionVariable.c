@@ -10,6 +10,7 @@ variableDefinition_new(
     VariableDefinition definition = Memory_malloc(sizeof(struct VariableDefinitionTag));
     memset(definition, 0x00, sizeof(struct VariableDefinitionTag));
     definition->name = string_clone(name);
+    definition->isStatic = TRUE;
 
     return definition;
 }

@@ -166,6 +166,7 @@ struct WhileStatementTag
 struct VariableDefinitionTag
 {
     String      name;
+    Boolean     isStatic;
     CriaId      object;
 };
 
@@ -176,7 +177,7 @@ struct FunctionDefinitionTag
 {
     char*                       name;
     Boolean                     isNative;
-    AccessLevel                 access;
+    Boolean                    isStatic;
     union
     {
         struct
@@ -197,7 +198,7 @@ struct FunctionDefinitionTag
 
 struct ClassDefinitionTag
 {
-    char*       name;
+    String      name;
     Boolean     isNative;
     AccessLevel access;
     List        baseList;
@@ -1025,11 +1026,12 @@ variableDefinition_search(
 //==================================================
 ClassDefinition
 classDefinition_new(
+	Interpreter interpreter,
     char*               name,
     Boolean             isNative,
     List                fieldList,
     List                methodList,
-    CriaNativeFunction* nativeFunctionPoint
+    CriaNativeClassLoaderFunction* classLoader
 );
 
 

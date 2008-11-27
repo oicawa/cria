@@ -79,6 +79,7 @@ typedef enum
     CRIA_DATA_TYPE_BOOLEAN,
     CRIA_DATA_TYPE_INTEGER,
     CRIA_DATA_TYPE_STRING,
+	CRIA_DATA_TYPE_FILE,
     CRIA_DATA_TYPE_LIST,
     CRIA_DATA_TYPE_FUNCTION,
     CRIA_DATA_TYPE_CRIA_OBJECT,
@@ -126,7 +127,8 @@ typedef struct CriaIntegerTag
 typedef struct CriaFileTag
 {
     struct CriaIdTag    id;
-    FILE*               file;
+    String path;
+    FILE* pointer;
 } *CriaFile;
 
 
@@ -140,6 +142,7 @@ typedef struct CriaObjectTag
 
 
 typedef CriaId CriaNativeFunction(Interpreter interpreter, List args);
+typedef ClassDefinition CriaNativeClassLoaderFunction(Interpreter interpreter, char* name);
 
 
 
@@ -402,6 +405,14 @@ CriaId
 CriaBoolean_toString(
     Interpreter     interpreter,
     CriaBoolean     boolean
+);
+
+
+
+ClassDefinition
+CriaFile_loadClass(
+    Interpreter interpreter,
+    char* name
 );
 
 

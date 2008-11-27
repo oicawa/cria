@@ -38,12 +38,12 @@ void
 Interpreter_addClass(
     Interpreter         interpreter,
     char*               className,
-    CriaNativeFunction* functionPoint
+    CriaNativeClassLoaderFunction* classLoader
 )
 {
     Logger_trc("[ START ]%s", __func__);
     ClassDefinition definition = NULL;
-    definition = classDefinition_new(className, TRUE, NULL, NULL, functionPoint);
+    definition = classDefinition_new(interpreter, className, TRUE, NULL, NULL, classLoader);
     list_add(interpreter->classList, definition);
     Logger_trc("[  END  ]%s", __func__);
 }

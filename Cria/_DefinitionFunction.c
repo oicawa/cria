@@ -13,6 +13,7 @@ functionDefinition_new(
     memset(definition, 0x00, sizeof(struct FunctionDefinitionTag));
     definition->name = name;
     definition->isNative = isNative;
+    definition->isStatic = TRUE;
     if (isNative == TRUE)
     {
         Logger_dbg("Native Function");
