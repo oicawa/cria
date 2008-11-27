@@ -123,6 +123,14 @@ typedef struct CriaIntegerTag
 
 
 
+typedef struct CriaFileTag
+{
+    struct CriaIdTag    id;
+    FILE*               file;
+} *CriaFile;
+
+
+
 typedef struct CriaObjectTag
 {
     struct CriaIdTag    id;
@@ -137,9 +145,6 @@ typedef CriaId CriaNativeFunction(Interpreter interpreter, List args);
 
 typedef enum
 {
-    TOKEN_TYPE_CLASS_DEFINITION,
-    TOKEN_TYPE_VARIABLE_DEFINITION,
-    TOKEN_TYPE_FUNCTION_DEFINITION,
     TOKEN_TYPE_IDENTIFIER,
     TOKEN_TYPE_CONSTANT,
     TOKEN_TYPE_CLASS_LITERAL,

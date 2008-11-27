@@ -35,6 +35,22 @@ Interpreter_addFunction(
 
 
 void
+Interpreter_addClass(
+    Interpreter         interpreter,
+    char*               className,
+    CriaNativeFunction* functionPoint
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    ClassDefinition definition = NULL;
+    definition = classDefinition_new(className, TRUE, NULL, NULL, functionPoint);
+    list_add(interpreter->classList, definition);
+    Logger_trc("[  END  ]%s", __func__);
+}
+
+
+
+void
 interpreter_loadCore(
     Interpreter interpreter
 )
@@ -42,6 +58,7 @@ interpreter_loadCore(
     Logger_trc("[ START ]%s", __func__);
     Interpreter_addFunction(interpreter, "write", io_write);
     Interpreter_addFunction(interpreter, "read", io_read);
+    Interpreter_addClass(interpreter, "File", CriaFile_loadClass);
     Logger_trc("[  END  ]%s", __func__);
 }
 
@@ -59,7 +76,7 @@ Interpreter_new(
     Logger_dbg("interpreter->statementList is [%p]", interpreter->statementList);
     interpreter->variableList = list_new();
     interpreter->functionList = list_new();
-    //interpreter->classList = List_new();
+    interpreter->classList = list_new();
     interpreter->buffer = NULL;
     interpreter->lineNumber = 0;
     interpreter->column = 0;

@@ -153,7 +153,7 @@ expression_parseVariable(
     String name = NULL;
     
     Token token = parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_IDENTIFIER)   //TOKEN_TYPE_FUNCTION_DEFINITION
+    if (token->type != TOKEN_TYPE_IDENTIFIER)
     {
         Logger_dbg("Not VariableExpression.");
         parser_setPosition(parser, position);
@@ -210,7 +210,7 @@ expression_parseFunctionCall(
     ParametersExpression parameters = NULL;
     
     Token token = parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_IDENTIFIER)   //TOKEN_TYPE_FUNCTION_DEFINITION
+    if (token->type != TOKEN_TYPE_IDENTIFIER)
     {
         parser_setPosition(parser, position);
         goto END;
@@ -278,6 +278,85 @@ END:
 
 
 ReferenceExpression
+expression_parseGenerate(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Item position = parser_getPosition(parser);
+    ReferenceExpression expression = NULL;
+    String name = NULL;
+    ParametersExpression parameters = NULL;
+    
+    Token token = parser_getCurrent(parser);
+    if (token->type != TOKEN_TYPE_CLASS_LITERAL)
+    {
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    //クラス名を保持
+    name = token->buffer;
+    
+    //次のトークンへ
+    parser_next(parser);
+    token = parser_getCurrent(parser);
+    
+    if (token->type != TOKEN_TYPE_PARENTHESIS_LEFT)
+    {
+        Logger_dbg("Second token is not left parenthesis.");
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    //引数をパース
+    parser_next(parser);
+    parameters = expression_parseParametersExpression(parser);
+    if (parameters == NULL)
+    {
+        Logger_dbg("The tokens that before right parenthesis are not parameters.");
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    //現在のトークンを取得
+    token = parser_getCurrent(parser);
+    
+    //右括弧でなければFALSE返却
+    if (token->type != TOKEN_TYPE_PARENTHESIS_RIGHT)
+    {
+        Logger_dbg("Last token is not right parenthesis.");
+        goto END;
+    }
+    
+    
+    //生成
+    GenerateExpression generate = Memory_malloc(sizeof(struct GenerateExpressionTag));
+    memset(generate, 0x00, sizeof(struct GenerateExpressionTag));
+    generate->name = string_clone(name);
+    generate->parameters = parameters;
+    
+    expression = Memory_malloc(sizeof(struct ReferenceExpressionTag));
+    memset(expression, 0x00, sizeof(struct ReferenceExpressionTag));
+    expression->type = REFERENCE_EXPRESSION_TYPE_GENERATE;
+    expression->of.generate = generate;
+    
+    
+    //次のトークンへ移動しておく。
+    parser_next(parser);
+    if (token->type == TOKEN_TYPE_PERIOD)
+    {
+        expression->next = expression_parseReferenceExpression(parser);
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
+}
+
+
+
+ReferenceExpression
 expression_parseReferenceExpression(
     Parser  parser
 )
@@ -297,6 +376,13 @@ expression_parseReferenceExpression(
     if (expression != NULL)
     {
     	Logger_dbg("Created FunctionCallExpression.");
+        goto END;
+    }
+    
+    expression = expression_parseGenerate(parser);
+    if (expression != NULL)
+    {
+    	Logger_dbg("Created GenerateExpression.");
         goto END;
     }
     

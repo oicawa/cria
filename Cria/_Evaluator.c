@@ -349,8 +349,47 @@ evaluator_functionCall(
     
     
     Logger_dbg("Call cria function.(%s)", expression->name->pointer);
-    //StatementResult result = executor_executeStatementList(interpreter, parameters, function->of.cria.statementList);
-    id = functionDefinition_evaluate(interpreter, function->of.cria.parameterList, function, parameters);
+    id = functionDefinition_evaluate(interpreter, id, function->of.cria.parameterList, function, parameters);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
+CriaId
+evaluator_generate(
+    Interpreter             interpreter,
+    List parameterList,
+    GenerateExpression  expression
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    ClassDefinition  klass;
+    
+    
+    Logger_dbg("Class name is '%s'", expression->name->pointer);
+    klass = classDefinition_search(interpreter->classList, expression->name->pointer);
+    if (klass == NULL)
+    {
+        Logger_dbg("Class is not found.");
+        runtime_error(interpreter);
+        goto END;
+    }
+    Logger_dbg("Class matched. (%s)", klass->name);
+    
+    
+    //引数の式を実行
+    Logger_dbg("expression->name->pointer = %s", expression->name->pointer);
+    Logger_dbg("expression->parameters->list->count = %d", expression->parameters->list->count);
+    List parameters = evaluator_parameters(interpreter, parameterList, expression->parameters);
+    Logger_dbg("execute parameters count is '%d'", parameters->count);
+    
+    
+    Logger_dbg("Call cria constractor.(%s)", expression->name->pointer);
+    id = classDefinition_evaluate(interpreter, NULL, parameterList, "new", klass, parameters);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -495,6 +534,11 @@ evaluator_expression(
         id = evaluator_integerLiteral(interpreter, parameters, expression->of._integerLiteral_);
         Logger_dbg("Done 'Integer literal expression'");
         break;
+    case EXPRESSION_KIND_GENERATE:
+        Logger_dbg("Do 'Integer literal expression'");
+        id = evaluator_generate(interpreter, parameters, expression->of._generate_);
+        Logger_dbg("Done 'Integer literal expression'");
+        break;
     /*
     case EXPRESSION_KIND_REAL_LITERAL:
         break;
@@ -504,8 +548,6 @@ evaluator_expression(
         break;
     /*
     case EXPRESSION_KIND_NULL_LITERAL:
-        break;
-    case EXPRESSION_KIND_GENERATE:
         break;
     //*/
     case EXPRESSION_KIND_FUNCTION_CALL:

@@ -41,7 +41,7 @@ struct InterpreterTag
     List    statementList;
     List    variableList;       //VariableDefinition
     List    functionList;       //FunctionDefinition
-    //List    classList;        //ClassDefinition
+    List    classList;        //ClassDefinition
     //File    file;
     String  buffer;
     int     lineNumber;
@@ -197,10 +197,12 @@ struct FunctionDefinitionTag
 
 struct ClassDefinitionTag
 {
-    char*   name;
-    List    baseList;
-    List    fieldList;
-    List    methodList;
+    char*       name;
+    Boolean     isNative;
+    AccessLevel access;
+    List        baseList;
+    List        fieldList;
+    List        methodList;
 };
 
 
@@ -215,7 +217,7 @@ struct ExpressionTag
         BooleanLiteralExpression    _booleanLiteral_;
         //NullLiteralExpression       _nullLiteral_;
         OperationExpression         _operation_;
-        //GenerateExpression          _generate_;
+        GenerateExpression          _generate_;
         FunctionCallExpression      _functionCall_;
         VariableExpression          _variable_;
         ReferenceExpression         _reference_;
@@ -323,6 +325,7 @@ struct ReferenceExpressionTag
     union {
         VariableExpression      variable;
         FunctionCallExpression  function;
+        GenerateExpression      generate;
     } of;
     ReferenceExpression         next;
 };
@@ -991,6 +994,7 @@ functionDefinition_parse(
 CriaId
 functionDefinition_evaluate(
 	Interpreter interpreter,
+    CriaId id,
 	List parameterList,
 	FunctionDefinition function,
 	List parameters
@@ -1012,6 +1016,41 @@ VariableDefinition
 variableDefinition_search(
     List    variableList,
     String  name
+);
+
+
+
+//==================================================
+//ClassDefinition
+//==================================================
+ClassDefinition
+classDefinition_new(
+    char*               name,
+    Boolean             isNative,
+    List                fieldList,
+    List                methodList,
+    CriaNativeFunction* nativeFunctionPoint
+);
+
+
+
+CriaId
+classDefinition_evaluate(
+    Interpreter interpreter,
+    CriaId  id,
+    List parameterList,
+    char*   name,
+    ClassDefinition klass,
+    List parameters
+);
+
+
+
+
+ClassDefinition
+classDefinition_search(
+    List classList,
+    char* name
 );
 
 

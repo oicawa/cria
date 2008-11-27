@@ -17,6 +17,7 @@ OBJS =\
     _IO.o\
     _DefinitionVariable.o\
     _DefinitionFunction.o\
+    _DefinitionClass.o\
     _CriaId.o\
     _CriaObject.o\
     _CriaString.o\
@@ -49,6 +50,7 @@ _Evaluator.o: _Evaluator.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _IO.o: _IO.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _DefinitionVariable.o: _DefinitionVariable.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _DefinitionFunction.o: _DefinitionFunction.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+_DefinitionClass.o: _DefinitionClass.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaId.o: _CriaId.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaObject.o: _CriaObject.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaString.o: _CriaString.c _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
