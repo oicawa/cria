@@ -6,11 +6,13 @@ sayNiceToMeetYou(yourName):
 
 createName(yourName, isMale, hasMarried):
     if isMale == true
-        return "Mr." + yourName
+        longName = "Mr." + yourName
     elif hasMarried == true
-        return "Mrs." + yourName
+        longName = "Mrs." + yourName
     else
         return "Miss," + yourName
+    
+    return longName
 
 sayWelcome()
 name = read()
@@ -58,3 +60,7 @@ else
     sayNiceToMeetYou(name)
 
 write("Good bye.\n")
+write("\n\n")
+write("true is '%s'\n", true)
+write("\n\n")
+write("false is '%s'\n", false)

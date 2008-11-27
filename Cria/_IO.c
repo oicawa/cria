@@ -21,13 +21,12 @@ io_write(
     long        index = 0;
     int count = args->count;
     
-    //引数が０だった場合は実行時エラー
+    
     if (count == 0)
     {
         runtime_error(interpreter);
     }
     
-    //第一引数がStringでなかった場合はエラー    
     id = (CriaId)list_get(args, 0);
     
     
@@ -36,8 +35,19 @@ io_write(
         Logger_dbg("Integer");
         int value = ((CriaInteger)id)->value;
         printf("%d", value);
+        goto END;
     }
-    else if (id->type == CRIA_DATA_TYPE_STRING)
+    
+    if (id->type == CRIA_DATA_TYPE_BOOLEAN)
+    {
+        Logger_dbg("Boolean");
+        CriaString string = (CriaString)CriaBoolean_toString(interpreter, (CriaBoolean)id);
+        printf("%s", string->value->pointer);
+        CriaString_dispose(string);
+        goto END;
+    }
+    
+    if (id->type == CRIA_DATA_TYPE_STRING)
     {
         Logger_dbg("String");
         //第一引数の文字列型データを抽出
@@ -70,15 +80,29 @@ io_write(
             }
             
             //型チェック
-            if (id->type != CRIA_DATA_TYPE_STRING)
+            if (id->type == CRIA_DATA_TYPE_STRING)
             {
-            	Logger_err("id->type = %d", id->type);
-                runtime_error(interpreter);
+                Logger_dbg("[print]%s", ((CriaString)id)->value->pointer);
+                printf("%s", ((CriaString)id)->value->pointer);
+                continue;
             }
             
-            //出力
-            Logger_dbg("[print]%s", ((CriaString)id)->value->pointer);
-            printf("%s", ((CriaString)id)->value->pointer);
+            if (id->type == CRIA_DATA_TYPE_INTEGER)
+            {
+                printf("%d", ((CriaInteger)id)->value);
+                continue;
+            }
+            
+            if (id->type == CRIA_DATA_TYPE_BOOLEAN)
+            {
+                CriaString string = (CriaString)CriaBoolean_toString(interpreter, (CriaBoolean)id);
+                printf("%s", string->value->pointer);
+                CriaString_dispose(string);
+                continue;
+            }
+            
+        	Logger_err("id->type = %d", id->type);
+            runtime_error(interpreter);
         }
         Logger_dbg("[print]%s", start);
         printf(start);
@@ -88,7 +112,7 @@ io_write(
         runtime_error(interpreter);
     }
     
-    
+END:
     fflush(stdout);
     Logger_trc("[  END  ]%s", __func__);
     return returnId;

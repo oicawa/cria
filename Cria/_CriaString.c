@@ -24,6 +24,22 @@ CriaString_new(
 
 
 
+void
+CriaString_dispose(
+    CriaString criaString
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    
+    string_dispose(criaString->id.name);
+    string_dispose(criaString->value);
+    
+    Memory_free(criaString);
+    
+    Logger_trc("[  END  ]%s", __func__);
+}
+
+
 
 CriaId
 CriaString_operate(

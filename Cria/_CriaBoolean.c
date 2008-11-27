@@ -59,7 +59,27 @@ CriaBoolean_operate(
 
 
 
-
+CriaId
+CriaBoolean_toString(
+    Interpreter     interpreter,
+    CriaBoolean     boolean
+)
+{
+    String value = NULL;
+    CriaString string = NULL;
+    
+    if (boolean->value == TRUE)
+        value = string_new("true");
+    else if (boolean->value == FALSE)
+        value = string_new("false");
+    else
+        runtime_error(interpreter);
+    
+    string = CriaString_new(NULL, FALSE, value);
+    string_dispose(value);
+    
+    return (CriaId)string;
+}
 
 
 

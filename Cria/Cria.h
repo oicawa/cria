@@ -348,6 +348,13 @@ CriaString_operate(
 
 
 
+void
+CriaString_dispose(
+    CriaString criaString
+);
+
+
+
 CriaInteger
 CriaInteger_new(
     String          name,
@@ -382,6 +389,14 @@ CriaBoolean_operate(
     OperationKind   kind,
     CriaBoolean     left,
     CriaBoolean     right
+);
+
+
+
+CriaId
+CriaBoolean_toString(
+    Interpreter     interpreter,
+    CriaBoolean     boolean
 );
 
 
