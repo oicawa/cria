@@ -34,8 +34,9 @@ main(
     //Logger_set(LOG_LEVEL_DEBUG, "evaluator_operation, parseNumber, evaluator_parameters, parseFactor, io_write");
     //Logger_set(LOG_LEVEL_DEBUG, "functionDefinition_parse, functionDefinition_parseParameters, evaluator_functionCall, functionDefinition_evaluate");
     //Logger_set(LOG_LEVEL_DEBUG, "io_write, evaluator_referenceVariable, functionDefinition_parse, functionDefinition_parseParameters, evaluator_functionCall, functionDefinition_evaluate");
-    Logger_set(LOG_LEVEL_DEBUG, "evaluator_functionCall");
+    //Logger_set(LOG_LEVEL_DEBUG, "functionDefinition_evaluate, CriaFile_loadClass, classDefinition_evaluate, evaluator_variable, evaluator_functionCall, evaluator_expression, evaluator_referenceExpression, evaluator_generate");
     
+    Logger_set(LOG_LEVEL_INFORMATION, NULL);
     //Logger_set(LOG_LEVEL_TRACE, NULL);
     
     

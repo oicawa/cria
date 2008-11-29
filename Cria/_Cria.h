@@ -1073,6 +1073,7 @@ classDefinition_isMatch(
 CriaId
 io_write(
     Interpreter interpreter,
+    CriaId object,
     List        args
 );
 
@@ -1081,6 +1082,7 @@ io_write(
 CriaId
 io_read(
     Interpreter interpreter,
+    CriaId object,
     List        args
 );
 
@@ -1092,6 +1094,7 @@ io_read(
 StatementResult
 executor_executeStatementList(
     Interpreter interpreter,
+    CriaId object,
     List parameters,
     List        statements
 );
@@ -1101,6 +1104,7 @@ executor_executeStatementList(
 StatementResult
 executor_executeStatement(
     Interpreter interpreter,
+    CriaId object, 
     List parameters,
     Statement   statement
 );
@@ -1110,6 +1114,7 @@ executor_executeStatement(
 void
 executor_executeFunctionCallStatement(
     Interpreter             interpreter,
+    CriaId object,
     List parameters,
     FunctionCallStatement   statement
 );
@@ -1119,6 +1124,7 @@ executor_executeFunctionCallStatement(
 void
 executor_executeSubstituteStatement(
     Interpreter         interpreter,
+    CriaId object,
     List parameters,
     SubstituteStatement statement
 );
@@ -1131,6 +1137,7 @@ executor_executeSubstituteStatement(
 CriaId
 evaluator_expression(
     Interpreter             interpreter,
+    CriaId object,
     List parameters,
     Expression              expression
 );
@@ -1140,6 +1147,7 @@ evaluator_expression(
 VariableDefinition
 evaluator_reference(
     Interpreter interpreter,
+    CriaId object,
     List parameters,
     Reference   reference
 );
@@ -1149,6 +1157,7 @@ evaluator_reference(
 CriaId
 evaluator_referenceExpression(
     Interpreter         interpreter,
+    CriaId object,
     List parameters,
     ReferenceExpression expression
 );
@@ -1157,7 +1166,8 @@ evaluator_referenceExpression(
 
 CriaId
 evaluator_functionCall(
-    Interpreter             interpreter,
+    Interpreter interpreter,
+    CriaId object,
     List parameters,
     FunctionCallExpression  expression
 );
@@ -1207,8 +1217,8 @@ reference_getLast(
 
 #define tokenizer_error(buffer, row, column) \
     do { \
-        Logger_err("Token error near '%s'. (line:%d, column:%d) [%s, %d]\n", buffer, row, column, __FILE__, __LINE__); \
         fprintf(stderr, "Syntax error near '%s'. [%s, %d]\n", buffer, __FILE__, __LINE__); \
+        Logger_err("Token error near '%s'. (line:%d, column:%d) [%s, %d]\n", buffer, row, column, __FILE__, __LINE__); \
         Memory_dispose(); \
         exit(1); \
     } while(0) \

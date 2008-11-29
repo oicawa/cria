@@ -160,10 +160,8 @@ expression_parseVariable(
         goto END;
     }
     
-    //変数名を保持
     name = token->buffer;
     
-    //次のトークンへ
     parser_next(parser);
     token = parser_getCurrent(parser);
     if (token->type == TOKEN_TYPE_PARENTHESIS_LEFT)
@@ -173,7 +171,6 @@ expression_parseVariable(
         goto END;
     }
     
-    //生成
     Logger_dbg("VariableExpression name = %s", name->pointer);
     VariableExpression variable = NULL;
     variable = Memory_malloc(sizeof(struct VariableExpressionTag));
@@ -185,9 +182,11 @@ expression_parseVariable(
     expression->type = REFERENCE_EXPRESSION_TYPE_VARIABLE;
     expression->of.variable = variable;
 
-    //ピリオドだった場合は次のReferenceExpressionをパース
+	token_log(token);
     if (token->type == TOKEN_TYPE_PERIOD)
     {
+    	Logger_dbg("Next ReferenceExprssion parse.");
+    	parser_next(parser);
         expression->next = expression_parseReferenceExpression(parser);
     }
     
@@ -291,19 +290,23 @@ expression_parseGenerate(
     Token token = parser_getCurrent(parser);
     if (token->type != TOKEN_TYPE_CLASS_LITERAL)
     {
+    	token_log(token);
+    	Logger_dbg("Not class literal.");
         parser_setPosition(parser, position);
         goto END;
     }
     
     //クラス名を保持
     name = token->buffer;
+    Logger_dbg("Class name is '%s'", name->pointer);
+    
     
     //次のトークンへ
     parser_next(parser);
     token = parser_getCurrent(parser);
-    
     if (token->type != TOKEN_TYPE_PARENTHESIS_LEFT)
     {
+    	token_log(token);
         Logger_dbg("Second token is not left parenthesis.");
         parser_setPosition(parser, position);
         goto END;
@@ -325,6 +328,7 @@ expression_parseGenerate(
     //右括弧でなければFALSE返却
     if (token->type != TOKEN_TYPE_PARENTHESIS_RIGHT)
     {
+    	token_log(token);
         Logger_dbg("Last token is not right parenthesis.");
         goto END;
     }
@@ -335,6 +339,7 @@ expression_parseGenerate(
     memset(generate, 0x00, sizeof(struct GenerateExpressionTag));
     generate->name = string_clone(name);
     generate->parameters = parameters;
+    Logger_dbg("Created GenerateExpression");
     
     expression = Memory_malloc(sizeof(struct ReferenceExpressionTag));
     memset(expression, 0x00, sizeof(struct ReferenceExpressionTag));
@@ -362,20 +367,19 @@ expression_parseReferenceExpression(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    Item position = parser_getPosition(parser);
     ReferenceExpression expression = NULL;
-    
-    expression = expression_parseVariable(parser);
-    if (expression != NULL)
-    {
-    	Logger_dbg("Created VariableExpression.");
-        goto END;
-    }
     
     expression = expression_parseFunctionCall(parser);
     if (expression != NULL)
     {
     	Logger_dbg("Created FunctionCallExpression.");
+        goto END;
+    }
+    
+    expression = expression_parseVariable(parser);
+    if (expression != NULL)
+    {
+    	Logger_dbg("Created VariableExpression.");
         goto END;
     }
     
@@ -385,9 +389,6 @@ expression_parseReferenceExpression(
     	Logger_dbg("Created GenerateExpression.");
         goto END;
     }
-    
-    //いずれでもなかった場合はパーサー位置を戻す。
-    parser_setPosition(parser, position);
     
 END:
     Logger_trc("[  END  ]%s", __func__);

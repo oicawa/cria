@@ -7,6 +7,7 @@
 CriaId
 io_write(
     Interpreter interpreter,
+    CriaId object,
     List        args
 )
 {
@@ -123,6 +124,7 @@ END:
 CriaId
 io_read(
     Interpreter interpreter,
+    CriaId object,
     List        args
 )
 {
@@ -157,7 +159,7 @@ io_read(
         memset(buffer, 0x00, sizeof(buffer));
     }
     
-    returnString = CriaString_new(NULL, TRUE, stringBuffer_toString(stringBuffer));
+    returnString = CriaString_new(TRUE, stringBuffer_toString(stringBuffer));
     
 END:
     stringBuffer_dispose(stringBuffer);

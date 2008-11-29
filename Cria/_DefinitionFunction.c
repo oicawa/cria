@@ -204,7 +204,7 @@ END:
 CriaId
 functionDefinition_evaluate(
 	Interpreter interpreter,
-    CriaId id,
+    CriaId object,
 	List parameterList,
 	FunctionDefinition function,
 	List parameters
@@ -212,9 +212,16 @@ functionDefinition_evaluate(
 {
     Logger_trc("[ START ]%s", __func__);
     int i = 0;
-    CriaId value = NULL;
+    CriaId id = NULL;
     StatementResult result;
     VariableDefinition definition = NULL;
+    
+    if (function->isNative == TRUE)
+    {
+        Logger_dbg("Call native function.(%s)", function->name);
+        id = (*(function->of.native.function))(interpreter, object, parameters);
+        goto END;
+    }
     
     Logger_dbg("function is %p", function);
     Logger_dbg("function->name is '%s'", function->name);
@@ -222,19 +229,19 @@ functionDefinition_evaluate(
     Logger_dbg("function->of.cria.parameterList->count is %d", function->of.cria.parameterList->count);
     Logger_dbg("parameters->count is %d", parameters->count);
     
-    List list = function->of.cria.parameterList;
-    Item item = list->item;
-    Logger_dbg("item is %p", item);
-    while (item != NULL)
-    {
-        Logger_dbg("item->object is %p", item->object);
-        VariableDefinition def = (VariableDefinition)(item->object);
-        Logger_dbg("Cast to VariableDefinition(item->object)");
-        Logger_dbg("def->name is %p", def->name);
-        Logger_dbg("def->name->pointer is %p", def->name->pointer);
-        item = item->next;
-    }
-    Logger_dbg("Loop end.");
+    //List list = function->of.cria.parameterList;
+    //Item item = list->item;
+    //Logger_dbg("item is %p", item);
+    //while (item != NULL)
+    //{
+        //Logger_dbg("item->object is %p", item->object);
+        //VariableDefinition def = (VariableDefinition)(item->object);
+        //Logger_dbg("Cast to VariableDefinition(item->object)");
+        //Logger_dbg("def->name is %p", def->name);
+        //Logger_dbg("def->name->pointer is %p", def->name->pointer);
+        //item = item->next;
+    //}
+    //Logger_dbg("Loop end.");
     
     
     //パラメータ数のチェック
@@ -244,15 +251,16 @@ functionDefinition_evaluate(
     //パラメータをセット
     for (i = 0; i < parameters->count; i++)
     {
-    	value = (CriaId)list_get(parameters, i);
+    	id = (CriaId)list_get(parameters, i);
     	definition = (VariableDefinition)list_get(function->of.cria.parameterList, i);
-    	definition->object = value;
+    	definition->object = id;
     }
     
     //実行
-	result = executor_executeStatementList(interpreter, parameterList, function->of.cria.statementList);
+	result = executor_executeStatementList(interpreter, object, parameterList, function->of.cria.statementList);
+    id = result.returns.id;
     
-    
+END:
     Logger_trc("[  END  ]%s", __func__);
-    return result.returns.id;
+    return id;
 }

@@ -29,7 +29,7 @@ classDefinition_new(
     definition->fieldList = fieldList;
     definition->methodList = methodList;
     
-    definition->name = name;
+    definition->name = string_new(name);
     
 END:
     return definition;
@@ -51,7 +51,7 @@ classDefinition_search(
     for (index = 0; index < count; index++)
     {
         tmp = (ClassDefinition)(list_get(classList, index));
-        if (strcmp(tmp->name, name) == 0)
+        if (strcmp(tmp->name->pointer, name) == 0)
         {
             definition = tmp;
             break;
@@ -78,11 +78,17 @@ classDefinition_evaluate(
     CriaId value = NULL;
     FunctionDefinition function = NULL;
     
+    Logger_dbg("Method name is '%s'", name);
+    Logger_dbg("klass is '%p'", klass);
+    Logger_dbg("klass->methodList is '%p'", klass->methodList);
     function = functionDefinition_search(klass->methodList, name);
     if (function == NULL)
+    {
+    	Logger_err("Method is not found. (%s)/%d", name, klass->methodList->count);
         runtime_error(interpreter);
+    }
     
-    
+    Logger_dbg("parameters->count = %d", parameters->count);
     value = functionDefinition_evaluate(interpreter, id, parameterList, function, parameters);
     
     

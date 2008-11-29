@@ -181,6 +181,7 @@ statement_parseFunctionCall(
     if (token->type != TOKEN_TYPE_NEW_LINE)
     {
         Logger_dbg("Not new line token.");
+        token_log(token);
         parser_setPosition(parser, position);
         parser_error(token);
         goto END;

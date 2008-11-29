@@ -4,7 +4,6 @@
 
 CriaBoolean
 CriaBoolean_new(
-    String  name,
     Boolean isLiteral,
     Boolean value
 )
@@ -13,7 +12,7 @@ CriaBoolean_new(
     CriaBoolean boolean = Memory_malloc(sizeof(struct CriaBooleanTag));
     memset(boolean, 0x00, sizeof(struct CriaBooleanTag));
     
-    boolean->id.name = string_clone(name);
+    boolean->id.name = string_new("Boolean");
     boolean->id.type = CRIA_DATA_TYPE_BOOLEAN;
     boolean->isLiteral = isLiteral;
     boolean->value = value;
@@ -42,12 +41,12 @@ CriaBoolean_operate(
     case OPERATION_KIND_EQUAL:
         if (leftValue == rightValue)
             result = TRUE;
-        id = (CriaId)CriaBoolean_new(NULL, FALSE, result);
+        id = (CriaId)CriaBoolean_new(FALSE, result);
         break;
     case OPERATION_KIND_NOT_EQUAL:
         if (leftValue != rightValue)
             result = TRUE;
-        id = (CriaId)CriaBoolean_new(NULL, FALSE, result);
+        id = (CriaId)CriaBoolean_new(FALSE, result);
         break;
     default:
         runtime_error(interpreter);
@@ -75,7 +74,7 @@ CriaBoolean_toString(
     else
         runtime_error(interpreter);
     
-    string = CriaString_new(NULL, FALSE, value);
+    string = CriaString_new(FALSE, value);
     string_dispose(value);
     
     return (CriaId)string;

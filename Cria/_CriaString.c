@@ -4,7 +4,6 @@
 
 CriaString
 CriaString_new(
-    String          name,
     Boolean         isLiteral,
     String          value
 )
@@ -13,7 +12,7 @@ CriaString_new(
     CriaString criaString = Memory_malloc(sizeof(struct CriaStringTag));
     memset(criaString, 0x00, sizeof(struct CriaStringTag));
     
-    criaString->id.name = string_clone(name);
+    criaString->id.name = string_new("String");
     criaString->id.type = CRIA_DATA_TYPE_STRING;
     criaString->isLiteral = isLiteral;
     criaString->value = string_clone(value);
@@ -61,18 +60,18 @@ CriaString_operate(
         buffer = stringBuffer_new();
         stringBuffer_append(buffer, leftValue->pointer);
         stringBuffer_append(buffer, rightValue->pointer);
-        id = (CriaId)CriaString_new(NULL, FALSE, stringBuffer_toString(buffer));
+        id = (CriaId)CriaString_new(FALSE, stringBuffer_toString(buffer));
         stringBuffer_dispose(buffer);
         break;
     case OPERATION_KIND_EQUAL:
         if (strcmp(leftValue->pointer, rightValue->pointer) == 0)
             result = TRUE;
-        id = (CriaId)CriaBoolean_new(NULL, FALSE, result);
+        id = (CriaId)CriaBoolean_new(FALSE, result);
         break;
     case OPERATION_KIND_NOT_EQUAL:
         if (strcmp(leftValue->pointer, rightValue->pointer) != 0)
             result = TRUE;
-        id = (CriaId)CriaBoolean_new(NULL, FALSE, result);
+        id = (CriaId)CriaBoolean_new(FALSE, result);
         break;
     default:
         runtime_error(interpreter);

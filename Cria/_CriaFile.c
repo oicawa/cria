@@ -5,11 +5,11 @@
 CriaId
 CriaFile_new(
 	Interpreter interpreter,
+	CriaId object,
     List        args
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaId object = NULL;
     CriaString path = NULL;
     
     if (args->count != 1)
@@ -30,7 +30,7 @@ CriaFile_new(
     
     CriaFile file = Memory_malloc(sizeof(struct CriaFileTag));
     memset(file, 0x00, sizeof(struct CriaFileTag));
-    file->id.name = NULL;
+    file->id.name = string_new("File");
     file->id.type = CRIA_DATA_TYPE_FILE;
     file->path = string_clone(path->value);
     file->pointer = NULL;
@@ -45,22 +45,20 @@ END:
 CriaId
 CriaFile_open(
 	Interpreter interpreter,
+	CriaId object,
     List        args
 )	
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId id = CriaId_new(NULL, CRIA_DATA_TYPE_VOID);
-    CriaId object = NULL;
-    CriaString path = NULL;
     CriaFile file = NULL;
     
-    if (args->count != 1)
+    if (args->count != 0)
     {
     	runtime_error(interpreter);
     	goto END;
     }
     
-    object = (CriaId)(list_get(args, 0));
     if (object->type != CRIA_DATA_TYPE_FILE)
     {
     	runtime_error(interpreter);
@@ -69,12 +67,13 @@ CriaFile_open(
     
     file = (CriaFile)object;
     
-    file->pointer = fopen(path->value->pointer, "r");
+    file->pointer = fopen(file->path->pointer, "r");
     if (file->pointer == NULL)
     {
     	runtime_error(interpreter);
     	goto END;
     }
+    Logger_inf("File opened. (%s)", file->path->pointer);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -86,21 +85,20 @@ END:
 CriaId
 CriaFile_close(
 	Interpreter interpreter,
+	CriaId object,
     List        args
 )	
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId id = CriaId_new(NULL, CRIA_DATA_TYPE_VOID);
-    CriaId object = NULL;
     CriaFile file = NULL;
     
-    if (args->count != 1)
+    if (args->count != 0)
     {
     	runtime_error(interpreter);
     	goto END;
     }
     
-    object = (CriaId)(list_get(args, 0));
     if (object->type != CRIA_DATA_TYPE_FILE)
     {
     	runtime_error(interpreter);
@@ -110,6 +108,7 @@ CriaFile_close(
     file = (CriaFile)object;
     
     fclose(file->pointer);
+    Logger_inf("File closed. (%s)", file->path->pointer);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -121,15 +120,91 @@ END:
 CriaId
 CriaFile_read(
 	Interpreter interpreter,
+	CriaId object,
     List        args
 )	
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaId id = CriaId_new(NULL, CRIA_DATA_TYPE_VOID);
+    char buffer[1024];
+    StringBuffer stringBuffer = NULL;
+    int length = 0;
+    CriaFile file = NULL;
     
+    if (args->count != 0)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
     
+    if (object->type != CRIA_DATA_TYPE_FILE)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+    
+    file = (CriaFile)object;
+    stringBuffer = stringBuffer_new();
+    
+    while (feof(file->pointer) == 0)
+    {
+		memset(buffer, 0x00, 1024);
+		fgets(buffer, 1024 - 1, file->pointer);
+		length = strlen(buffer);
+		if (length == 0)
+			break;
+		
+		stringBuffer_append(stringBuffer, buffer);
+		
+		if (buffer[length - 1] == '\n')
+			break;
+    }
+    
+    String line = stringBuffer_toString(stringBuffer);
+    stringBuffer_dispose(stringBuffer);
+    
+    CriaString string = CriaString_new(TRUE, line);
+    
+END:
     Logger_trc("[  END  ]%s", __func__);
-    return id;
+    return (CriaId)string;
+}
+
+
+
+CriaId
+CriaFile_isEnd(
+	Interpreter interpreter,
+	CriaId object,
+    List        args
+)	
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaBoolean result = CriaBoolean_new(TRUE, FALSE);
+    CriaFile file = NULL;
+    
+    if (args->count != 0)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+    
+    if (object->type != CRIA_DATA_TYPE_FILE)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+    
+    file = (CriaFile)object;
+    
+    if (feof(file->pointer) != 0)
+    {
+    	result->value = TRUE;
+    }
+    Logger_inf("File EOF. (%s)", file->path->pointer);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return (CriaId)result;
 }
 
 
@@ -174,19 +249,24 @@ CriaFile_loadClass(
     
     function = functionDefinition_new("new", TRUE, NULL, NULL, CriaFile_new);
     function->isStatic = TRUE;
-    list_add(klass->fieldList, function);
+    list_add(klass->methodList, function);
     
     function = functionDefinition_new("open", TRUE, NULL, NULL, CriaFile_open);
     function->isStatic = FALSE;
-    list_add(klass->fieldList, function);
+    list_add(klass->methodList, function);
     
     function = functionDefinition_new("close", TRUE, NULL, NULL, CriaFile_close);
     function->isStatic = FALSE;
-    list_add(klass->fieldList, function);
+    list_add(klass->methodList, function);
     
     function = functionDefinition_new("read", TRUE, NULL, NULL, CriaFile_read);
     function->isStatic = FALSE;
-    list_add(klass->fieldList, function);
+    list_add(klass->methodList, function);
+    
+    
+    function = functionDefinition_new("isEnd", TRUE, NULL, NULL, CriaFile_isEnd);
+    function->isStatic = FALSE;
+    list_add(klass->methodList, function);
     
     
     Logger_trc("[  END  ]%s", __func__);

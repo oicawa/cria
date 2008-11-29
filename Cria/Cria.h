@@ -141,7 +141,7 @@ typedef struct CriaObjectTag
 
 
 
-typedef CriaId CriaNativeFunction(Interpreter interpreter, List args);
+typedef CriaId CriaNativeFunction(Interpreter interpreter, CriaId object, List args);
 typedef ClassDefinition CriaNativeClassLoaderFunction(Interpreter interpreter, char* name);
 
 
@@ -339,7 +339,6 @@ CriaObject_dispose(
 
 CriaString
 CriaString_new(
-    String          name,
     Boolean         isLiteral,
     String          value
 );
@@ -365,7 +364,6 @@ CriaString_dispose(
 
 CriaInteger
 CriaInteger_new(
-    String          name,
     Boolean         isLiteral,
     int             value
 );
@@ -384,7 +382,6 @@ CriaInteger_operate(
 
 CriaBoolean
 CriaBoolean_new(
-    String          name,
     Boolean         isLiteral,
     Boolean         value
 );
