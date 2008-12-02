@@ -1,6 +1,6 @@
 #include "_Cria.h"
 
-FunctionDefinition
+DefinitionFunction
 functionDefinition_new(
     char*               name,
     Boolean             isNative,
@@ -9,8 +9,8 @@ functionDefinition_new(
     CriaNativeFunction* loader
 )
 {
-    FunctionDefinition definition = Memory_malloc(sizeof(struct FunctionDefinitionTag));
-    memset(definition, 0x00, sizeof(struct FunctionDefinitionTag));
+    DefinitionFunction definition = Memory_malloc(sizeof(struct DefinitionFunctionTag));
+    memset(definition, 0x00, sizeof(struct DefinitionFunctionTag));
     definition->name = name;
     definition->isNative = isNative;
     definition->isStatic = TRUE;
@@ -31,7 +31,7 @@ functionDefinition_new(
 
 
 
-FunctionDefinition
+DefinitionFunction
 functionDefinition_search(
     List    functions,
     char*   name
@@ -39,12 +39,12 @@ functionDefinition_search(
 {
     int count = functions->count;
     int index = 0;
-    FunctionDefinition definition = NULL;
-    FunctionDefinition tmp = NULL;
+    DefinitionFunction definition = NULL;
+    DefinitionFunction tmp = NULL;
     
     for (index = 0; index < count; index++)
     {
-        tmp = (FunctionDefinition)(list_get(functions, index));
+        tmp = (DefinitionFunction)(list_get(functions, index));
         if (strcmp(tmp->name, name) == 0)
         {
             definition = tmp;
@@ -63,7 +63,7 @@ functionDefinition_evaluate(
 	Interpreter interpreter,
     CriaId object,
 	List parameterList,
-	FunctionDefinition function,
+	DefinitionFunction function,
 	List parameters
 )
 {
@@ -71,7 +71,7 @@ functionDefinition_evaluate(
     int i = 0;
     CriaId id = NULL;
     StatementResult result;
-    VariableDefinition definition = NULL;
+    DefinitionVariable definition = NULL;
     
     if (function->isNative == TRUE)
     {
@@ -109,7 +109,7 @@ functionDefinition_evaluate(
     for (i = 0; i < parameters->count; i++)
     {
     	id = (CriaId)list_get(parameters, i);
-    	definition = (VariableDefinition)list_get(function->of.cria.parameterList, i);
+    	definition = (DefinitionVariable)list_get(function->of.cria.parameterList, i);
     	definition->object = id;
     }
     

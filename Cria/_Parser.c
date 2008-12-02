@@ -8,7 +8,7 @@ parser_statement(Parser parser);
 Expression
 parser_expression(Parser parser);
 
-ReferenceExpression
+ExpressionReference
 parser_expression_reference(Parser parser);
 
 Reference
@@ -246,7 +246,7 @@ parser_definition_function_parameters(
 			break;
 	    }
 	    
-		VariableDefinition variable = variableDefinition_new(token->buffer);
+		DefinitionVariable variable = variableDefinition_new(token->buffer);
 		list_add(parameters, variable);
 	    Logger_dbg("Add parameter.(%s)", variable->name->pointer);
 		
@@ -268,13 +268,13 @@ parser_definition_function_parameters(
 
 
 
-FunctionDefinition
+DefinitionFunction
 parser_definition_function(
     Parser parser
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    FunctionDefinition functionDefinition = NULL;
+    DefinitionFunction functionDefinition = NULL;
     Item restore = parser_getPosition(parser);
     String name = NULL;
     List parameters = NULL;
@@ -371,13 +371,13 @@ END:
 
 
 
-ParametersExpression
+ExpressionParameters
 parser_expression_parameters(
     Parser  parser
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    ParametersExpression parameters = NULL;
+    ExpressionParameters parameters = NULL;
     Expression expression = NULL;
     Item position = parser_getPosition(parser);
     Token token = NULL;
@@ -435,8 +435,8 @@ parser_expression_parameters(
     Logger_dbg("list count = %d", list->count);
     
     
-    parameters = Memory_malloc(sizeof(struct ParametersExpressionTag));
-    memset(parameters, 0x00, sizeof(struct ParametersExpressionTag));
+    parameters = Memory_malloc(sizeof(struct ExpressionParametersTag));
+    memset(parameters, 0x00, sizeof(struct ExpressionParametersTag));
     parameters->list = list;
     
 END:
@@ -521,7 +521,7 @@ parser_reference_functionCall(
     Item position = parser_getPosition(parser);
     Reference reference = NULL;
     ReferenceFunctionCall functionCall = NULL;
-    ParametersExpression parameters = NULL;
+    ExpressionParameters parameters = NULL;
     String name = NULL;
     
     
@@ -631,14 +631,14 @@ END:
 
 
 
-ReferenceExpression
+ExpressionReference
 parser_expression_variable(
     Parser  parser
 )
 {
     Logger_trc("[ START ]%s", __func__);
     Item position = parser_getPosition(parser);
-    ReferenceExpression expression = NULL;
+    ExpressionReference expression = NULL;
     String name = NULL;
     
     Token token = parser_getCurrent(parser);
@@ -661,13 +661,13 @@ parser_expression_variable(
     }
     
     Logger_dbg("VariableExpression name = %s", name->pointer);
-    VariableExpression variable = NULL;
-    variable = Memory_malloc(sizeof(struct VariableExpressionTag));
-    memset(variable, 0x00, sizeof(struct VariableExpressionTag));
+    ExpressionVariable variable = NULL;
+    variable = Memory_malloc(sizeof(struct ExpressionVariableTag));
+    memset(variable, 0x00, sizeof(struct ExpressionVariableTag));
     variable->name = string_clone(name);
     
-    expression = Memory_malloc(sizeof(struct ReferenceExpressionTag));
-    memset(expression, 0x00, sizeof(struct ReferenceExpressionTag));
+    expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
+    memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
     expression->type = REFERENCE_EXPRESSION_TYPE_VARIABLE;
     expression->of.variable = variable;
 
@@ -686,16 +686,16 @@ END:
 
 
 
-ReferenceExpression
+ExpressionReference
 parser_expression_functionCall(
     Parser  parser
 )
 {
     Logger_trc("[ START ]%s", __func__);
     Item position = parser_getPosition(parser);
-    ReferenceExpression expression = NULL;
+    ExpressionReference expression = NULL;
     String name = NULL;
-    ParametersExpression parameters = NULL;
+    ExpressionParameters parameters = NULL;
     
     Token token = parser_getCurrent(parser);
     if (token->type != TOKEN_TYPE_IDENTIFIER)
@@ -739,13 +739,13 @@ parser_expression_functionCall(
     }
     
     
-    FunctionCallExpression function = Memory_malloc(sizeof(struct FunctionCallExpressionTag));
-    memset(function, 0x00, sizeof(struct FunctionCallExpressionTag));
+    ExpressionFunctionCall function = Memory_malloc(sizeof(struct ExpressionFunctionCallTag));
+    memset(function, 0x00, sizeof(struct ExpressionFunctionCallTag));
     function->name = string_clone(name);
     function->parameters = parameters;
     
-    expression = Memory_malloc(sizeof(struct ReferenceExpressionTag));
-    memset(expression, 0x00, sizeof(struct ReferenceExpressionTag));
+    expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
+    memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
     expression->type = REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL;
     expression->of.function = function;
     
@@ -763,16 +763,16 @@ END:
 
 
 
-ReferenceExpression
+ExpressionReference
 parser_expression_generate(
     Parser  parser
 )
 {
     Logger_trc("[ START ]%s", __func__);
     Item position = parser_getPosition(parser);
-    ReferenceExpression expression = NULL;
+    ExpressionReference expression = NULL;
     String name = NULL;
-    ParametersExpression parameters = NULL;
+    ExpressionParameters parameters = NULL;
     
     Token token = parser_getCurrent(parser);
     if (token->type != TOKEN_TYPE_CLASS_LITERAL)
@@ -820,14 +820,14 @@ parser_expression_generate(
     }
     
     
-    GenerateExpression generate = Memory_malloc(sizeof(struct GenerateExpressionTag));
-    memset(generate, 0x00, sizeof(struct GenerateExpressionTag));
+    ExpressionGenerate generate = Memory_malloc(sizeof(struct ExpressionGenerateTag));
+    memset(generate, 0x00, sizeof(struct ExpressionGenerateTag));
     generate->name = string_clone(name);
     generate->parameters = parameters;
     Logger_dbg("Created GenerateExpression");
     
-    expression = Memory_malloc(sizeof(struct ReferenceExpressionTag));
-    memset(expression, 0x00, sizeof(struct ReferenceExpressionTag));
+    expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
+    memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
     expression->type = REFERENCE_EXPRESSION_TYPE_GENERATE;
     expression->of.generate = generate;
     
@@ -845,13 +845,13 @@ END:
 
 
 
-ReferenceExpression
+ExpressionReference
 parser_expression_reference(
     Parser  parser
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    ReferenceExpression expression = NULL;
+    ExpressionReference expression = NULL;
     
     expression = parser_expression_functionCall(parser);
     if (expression != NULL)
@@ -896,8 +896,8 @@ parser_expression_factor(
     if (token->type == TOKEN_TYPE_INTEGER_LITERAL)
     {
         Logger_dbg("This is an integer literal token.");
-        IntegerLiteralExpression integerLiteral = Memory_malloc(sizeof(struct IntegerLiteralExpressionTag));
-        memset(integerLiteral, 0x00, sizeof(struct IntegerLiteralExpressionTag));
+        ExpressionIntegerLiteral integerLiteral = Memory_malloc(sizeof(struct ExpressionIntegerLiteralTag));
+        memset(integerLiteral, 0x00, sizeof(struct ExpressionIntegerLiteralTag));
         integerLiteral->value = string_toInteger(token->buffer);
         
         expression = expression_new(EXPRESSION_KIND_INTEGER_LITERAL);
@@ -912,8 +912,8 @@ parser_expression_factor(
     if (token->type == TOKEN_TYPE_BOOLEAN_LITERAL)
     {
         Logger_dbg("This is an integer literal token.");
-        BooleanLiteralExpression booleanLiteral = Memory_malloc(sizeof(struct BooleanLiteralExpressionTag));
-        memset(booleanLiteral, 0x00, sizeof(struct BooleanLiteralExpressionTag));
+        ExpressionBooleanLiteral booleanLiteral = Memory_malloc(sizeof(struct ExpressionBooleanLiteralTag));
+        memset(booleanLiteral, 0x00, sizeof(struct ExpressionBooleanLiteralTag));
         booleanLiteral->value = string_toBoolean(token->buffer);
         
         expression = expression_new(EXPRESSION_KIND_BOOLEAN_LITERAL);
@@ -928,8 +928,8 @@ parser_expression_factor(
     if (token->type == TOKEN_TYPE_STRING_LITERAL)
     {
         Logger_dbg("This is a string literal token.");
-        StringLiteralExpression stringLiteral = Memory_malloc(sizeof(struct StringLiteralExpressionTag));
-        memset(stringLiteral, 0x00, sizeof(struct StringLiteralExpressionTag));
+        ExpressionStringLiteral stringLiteral = Memory_malloc(sizeof(struct ExpressionStringLiteralTag));
+        memset(stringLiteral, 0x00, sizeof(struct ExpressionStringLiteralTag));
         stringLiteral->value = string_clone(token->buffer);
         
         expression = expression_new(EXPRESSION_KIND_STRING_LITERAL);
@@ -962,7 +962,7 @@ parser_expression_factor(
         token->type == TOKEN_TYPE_CLASS_LITERAL ||
         token->type == TOKEN_TYPE_CONSTANT)
     {
-        ReferenceExpression reference = parser_expression_reference(parser);
+        ExpressionReference reference = parser_expression_reference(parser);
         if (reference == NULL)
         {
             Logger_err("Not reference expression.");
@@ -990,7 +990,7 @@ expression_parser_multiply_divide(
     Expression expression = NULL;
     Expression left = NULL;
     Expression right = NULL;
-    OperationExpression operation = NULL;
+    ExpressionOperation operation = NULL;
     Token token = NULL;
     OperationKind kind;
     
@@ -1019,8 +1019,8 @@ expression_parser_multiply_divide(
     
     
     Logger_dbg("Create MultiplyDivide Expression.");
-    operation = Memory_malloc(sizeof(struct OperationExpressionTag));
-    memset(operation, 0x00, sizeof(struct OperationExpressionTag));
+    operation = Memory_malloc(sizeof(struct ExpressionOperationTag));
+    memset(operation, 0x00, sizeof(struct ExpressionOperationTag));
     operation->kind = kind;
     operation->left = left;
     operation->right = right;
@@ -1044,7 +1044,7 @@ parser_expression_plus_minus(
     Expression expression = NULL;
     Expression left = NULL;
     Expression right = NULL;
-    OperationExpression operation = NULL;
+    ExpressionOperation operation = NULL;
     Token token = NULL;
     OperationKind kind;
     
@@ -1073,8 +1073,8 @@ parser_expression_plus_minus(
     
     
     Logger_dbg("Create PlusMinus Expression.");
-    operation = Memory_malloc(sizeof(struct OperationExpressionTag));
-    memset(operation, 0x00, sizeof(struct OperationExpressionTag));
+    operation = Memory_malloc(sizeof(struct ExpressionOperationTag));
+    memset(operation, 0x00, sizeof(struct ExpressionOperationTag));
     operation->kind = kind;
     operation->left = left;
     operation->right = right;
@@ -1098,7 +1098,7 @@ parser_expression_compare(
     Expression expression = NULL;
     Expression left = NULL;
     Expression right = NULL;
-    OperationExpression operation = NULL;
+    ExpressionOperation operation = NULL;
     Token token = NULL;
     OperationKind kind;
     
@@ -1133,8 +1133,8 @@ parser_expression_compare(
     
     
     Logger_dbg("Create Compare Expression.");
-    operation = Memory_malloc(sizeof(struct OperationExpressionTag));
-    memset(operation, 0x00, sizeof(struct OperationExpressionTag));
+    operation = Memory_malloc(sizeof(struct ExpressionOperationTag));
+    memset(operation, 0x00, sizeof(struct ExpressionOperationTag));
     operation->kind = kind;
     operation->left = left;
     operation->right = right;
@@ -1158,7 +1158,7 @@ parser_expression_not(
     Expression expression = NULL;
     Expression left = NULL;
     Expression right = NULL;
-    OperationExpression operation = NULL;
+    ExpressionOperation operation = NULL;
     Token token = NULL;
     OperationKind kind;
     
@@ -1179,8 +1179,8 @@ parser_expression_not(
     right = parser_expression(parser);
     
     Logger_dbg("Create NotEqual Expression.");
-    operation = Memory_malloc(sizeof(struct OperationExpressionTag));
-    memset(operation, 0x00, sizeof(struct OperationExpressionTag));
+    operation = Memory_malloc(sizeof(struct ExpressionOperationTag));
+    memset(operation, 0x00, sizeof(struct ExpressionOperationTag));
     operation->kind = kind;
     operation->left = left;
     operation->right = right;
@@ -1204,7 +1204,7 @@ parser_expression_and_or(
     Expression expression = NULL;
     Expression left = NULL;
     Expression right = NULL;
-    OperationExpression operation = NULL;
+    ExpressionOperation operation = NULL;
     Token token = NULL;
     OperationKind kind;
     
@@ -1232,8 +1232,8 @@ parser_expression_and_or(
     
     
     Logger_dbg("Create AndOr Expression.");
-    operation = Memory_malloc(sizeof(struct OperationExpressionTag));
-    memset(operation, 0x00, sizeof(struct OperationExpressionTag));
+    operation = Memory_malloc(sizeof(struct ExpressionOperationTag));
+    memset(operation, 0x00, sizeof(struct ExpressionOperationTag));
     operation->kind = kind;
     operation->left = left;
     operation->right = right;
@@ -1347,7 +1347,7 @@ parser_statement_functionCall(
     Logger_trc("[ START ]%s", __func__);
     Statement statement = NULL;
     StatementFunctionCall  function = NULL;
-    ReferenceExpression expression = NULL;
+    ExpressionReference expression = NULL;
     Item position = parser_getPosition(parser);
     Token token = NULL;
     
@@ -1963,7 +1963,7 @@ parser_create_syntax_tree(
     Parser parser = parser_new(tokens);
     Boolean result = FALSE;
     Statement statement = NULL;
-    FunctionDefinition functionDefinition = NULL;
+    DefinitionFunction functionDefinition = NULL;
     Token errorToken = NULL;
     
     Logger_dbg("Loop start.");

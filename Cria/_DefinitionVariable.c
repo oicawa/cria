@@ -2,13 +2,13 @@
 
 
 
-VariableDefinition
+DefinitionVariable
 variableDefinition_new(
     String      name
 )
 {
-    VariableDefinition definition = Memory_malloc(sizeof(struct VariableDefinitionTag));
-    memset(definition, 0x00, sizeof(struct VariableDefinitionTag));
+    DefinitionVariable definition = Memory_malloc(sizeof(struct DefinitionVariableTag));
+    memset(definition, 0x00, sizeof(struct DefinitionVariableTag));
     definition->name = string_clone(name);
     definition->isStatic = TRUE;
 
@@ -17,15 +17,15 @@ variableDefinition_new(
 
 
 
-VariableDefinition
+DefinitionVariable
 variableDefinition_search(
     List    variables,
     String  name
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    VariableDefinition definition = NULL;
-    VariableDefinition tmp = NULL;
+    DefinitionVariable definition = NULL;
+    DefinitionVariable tmp = NULL;
     int index = 0;
     Item item = NULL;
     
@@ -49,7 +49,7 @@ variableDefinition_search(
     for (index = 0; index < variables->count; index++)
     {
         Logger_dbg("Condition OK.");
-        tmp = (VariableDefinition)list_get(variables, index);
+        tmp = (DefinitionVariable)list_get(variables, index);
         Logger_dbg("tmp = %p", tmp);
         Logger_dbg("tmp->name = %p", tmp->name);
         Logger_dbg("tmp->name->pointer = %p", tmp->name->pointer);

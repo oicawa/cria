@@ -8,7 +8,7 @@ Interpreter_addFunction(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    FunctionDefinition definition = NULL;
+    DefinitionFunction definition = NULL;
     definition = functionDefinition_new(functionName, TRUE, NULL, NULL, functionPoint);
     list_add(interpreter->functions, definition);
     Logger_trc("[  END  ]%s", __func__);
@@ -24,7 +24,7 @@ Interpreter_addClass(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    ClassDefinition definition = NULL;
+    DefinitionClass definition = NULL;
     definition = classDefinition_new(interpreter, className, TRUE, NULL, NULL, classLoader);
     list_add(interpreter->classes, definition);
     Logger_trc("[  END  ]%s", __func__);

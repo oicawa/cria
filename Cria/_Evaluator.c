@@ -9,7 +9,7 @@ evaluator_integerLiteral(
     Interpreter             interpreter,
     CriaId object,
     List parameters,
-    IntegerLiteralExpression expression
+    ExpressionIntegerLiteral expression
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -29,7 +29,7 @@ evaluator_booleanLiteral(
     Interpreter             interpreter,
     CriaId object,
     List parameters,
-    BooleanLiteralExpression expression
+    ExpressionBooleanLiteral expression
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -49,7 +49,7 @@ evaluator_stringLiteral(
     Interpreter             interpreter,
     CriaId object,
     List parameters,
-    StringLiteralExpression expression
+    ExpressionStringLiteral expression
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -117,12 +117,12 @@ evaluator_variable(
     Interpreter         interpreter,
     CriaId object,
     List parameterList,
-    VariableExpression  expression
+    ExpressionVariable  expression
 )
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
-    VariableDefinition variable;
+    DefinitionVariable variable;
     
     
     Logger_dbg("Variable name is '%s'", expression->name->pointer);
@@ -162,7 +162,7 @@ evaluator_operation(
     Interpreter         interpreter,
     CriaId object,
     List parameters,
-    OperationExpression expression
+    ExpressionOperation expression
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -234,7 +234,7 @@ evaluator_parameters(
     Interpreter             interpreter,
     CriaId object,
     List parameterList,
-    ParametersExpression    parametersExpression
+    ExpressionParameters    parametersExpression
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -322,13 +322,13 @@ evaluator_functionCall(
     Interpreter interpreter,
     CriaId object,
     List parameterList,
-    FunctionCallExpression expression
+    ExpressionFunctionCall expression
 )
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
-    FunctionDefinition  function = NULL;
-    ClassDefinition klass = NULL;
+    DefinitionFunction  function = NULL;
+    DefinitionClass klass = NULL;
     
     
     if (object != NULL)
@@ -394,12 +394,12 @@ evaluator_generate(
     Interpreter             interpreter,
     CriaId object,
     List parameterList,
-    GenerateExpression  expression
+    ExpressionGenerate  expression
 )
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
-    ClassDefinition  klass;
+    DefinitionClass  klass;
     
     
     Logger_dbg("Class name is '%s'", expression->name->pointer);
@@ -430,7 +430,7 @@ END:
 
 
 
-VariableDefinition
+DefinitionVariable
 evaluator_referenceVariable(
     Interpreter         interpreter,
     CriaId object,
@@ -439,7 +439,7 @@ evaluator_referenceVariable(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    VariableDefinition definition = NULL;
+    DefinitionVariable definition = NULL;
     
     
     if (parameters != NULL)
@@ -476,7 +476,7 @@ END:
 
 
 
-VariableDefinition
+DefinitionVariable
 evaluator_reference(
     Interpreter interpreter,
     CriaId object,
@@ -485,7 +485,7 @@ evaluator_reference(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    VariableDefinition definition = NULL;
+    DefinitionVariable definition = NULL;
     
     switch (reference->type)
     {
@@ -515,7 +515,7 @@ evaluator_referenceExpression(
     Interpreter         interpreter,
     CriaId variable,
     List parameters,
-    ReferenceExpression expression
+    ExpressionReference expression
 )
 {
     Logger_trc("[ START ]%s", __func__);

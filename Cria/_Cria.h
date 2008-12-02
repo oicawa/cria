@@ -143,12 +143,12 @@ struct StatementSubstituteTag
 
 struct StatementFunctionCallTag
 {
-    ReferenceExpression  expression;
+    ExpressionReference  expression;
 };
 
 
 
-struct VariableDefinitionTag
+struct DefinitionVariableTag
 {
     String      name;
     Boolean     isStatic;
@@ -157,7 +157,7 @@ struct VariableDefinitionTag
 
 
 
-struct FunctionDefinitionTag
+struct DefinitionFunctionTag
 {
     char*                       name;
     Boolean                     isNative;
@@ -179,7 +179,7 @@ struct FunctionDefinitionTag
 
 
 
-struct ClassDefinitionTag
+struct DefinitionClassTag
 {
     String      name;
     Boolean     isNative;
@@ -195,22 +195,20 @@ struct ExpressionTag
 {
     ExpressionKind  kind;
     union {
-        StringLiteralExpression     _stringLiteral_;
-        IntegerLiteralExpression    _integerLiteral_;
-        //RealLiteralExpression       _realLiteral_;
-        BooleanLiteralExpression    _booleanLiteral_;
-        //NullLiteralExpression       _nullLiteral_;
-        OperationExpression         _operation_;
-        GenerateExpression          _generate_;
-        FunctionCallExpression      _functionCall_;
-        VariableExpression          _variable_;
-        ReferenceExpression         _reference_;
+        ExpressionFunctionCall      _functionCall_;
+        ExpressionStringLiteral     _stringLiteral_;
+        ExpressionIntegerLiteral    _integerLiteral_;
+        ExpressionBooleanLiteral    _booleanLiteral_;
+        ExpressionOperation         _operation_;
+        ExpressionGenerate          _generate_;
+        ExpressionVariable          _variable_;
+        ExpressionReference         _reference_;
     } of;
 };
 
 
 
-struct OperationExpressionTag
+struct ExpressionOperationTag
 {
     OperationKind   kind;
     Expression      left;
@@ -219,51 +217,51 @@ struct OperationExpressionTag
 
 
 
-struct FunctionCallExpressionTag
+struct ExpressionFunctionCallTag
 {
     String                  name;
-    ParametersExpression    parameters;
+    ExpressionParameters    parameters;
 };
 
 
 
-struct GenerateExpressionTag
+struct ExpressionGenerateTag
 {
     String                  name;
-    ParametersExpression    parameters;
+    ExpressionParameters    parameters;
 };
 
 
 
-struct ParametersExpressionTag
+struct ExpressionParametersTag
 {
     List    list;
 };
 
 
 
-struct StringLiteralExpressionTag
+struct ExpressionStringLiteralTag
 {
     String  value;
 };
 
 
 
-struct IntegerLiteralExpressionTag
+struct ExpressionIntegerLiteralTag
 {
     int     value;
 };
 
 
 
-struct BooleanLiteralExpressionTag
+struct ExpressionBooleanLiteralTag
 {
     Boolean value;
 };
 
 
 
-struct VariableExpressionTag
+struct ExpressionVariableTag
 {
     String  name;
 };
@@ -277,19 +275,19 @@ typedef enum
     REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL,
     REFERENCE_EXPRESSION_TYPE_CLASS,
     REFERENCE_EXPRESSION_TYPE_GENERATE,
-} ReferenceExpressionType;
+} ExpressionReferenceType;
 
 
 
-struct ReferenceExpressionTag
+struct ExpressionReferenceTag
 {
-    ReferenceExpressionType     type;
+    ExpressionReferenceType     type;
     union {
-        VariableExpression      variable;
-        FunctionCallExpression  function;
-        GenerateExpression      generate;
+        ExpressionVariable      variable;
+        ExpressionFunctionCall  function;
+        ExpressionGenerate      generate;
     } of;
-    ReferenceExpression         next;
+    ExpressionReference         next;
 };
 
 
@@ -304,7 +302,7 @@ struct ReferenceVariableTag
 struct ReferenceFunctionCallTag
 {
     String                  name;
-    ParametersExpression    parameters;
+    ExpressionParameters    parameters;
 };
 
 
@@ -580,7 +578,7 @@ reference_new(
 //==================================================
 //OperationExpression
 //==================================================
-OperationExpression
+ExpressionOperation
 operationExpression_new(
     OperationKind   kind,
     Expression      left,
@@ -591,7 +589,7 @@ operationExpression_new(
 
 void
 operationExpression_dispose(
-    OperationExpression     expression
+    ExpressionOperation expression
 );
 
 
@@ -601,12 +599,12 @@ operationExpression_dispose(
 //==================================================
 void
 stringLiteralExpression_dispose(
-    StringLiteralExpression expression
+    ExpressionStringLiteral expression
 );
 
 
 
-StringLiteralExpression
+ExpressionStringLiteral
 stringLiteralExpression_parse(
     Parser  parser
 );
@@ -618,12 +616,12 @@ stringLiteralExpression_parse(
 //==================================================
 void
 functionCallExpression_dispose(
-    FunctionCallExpression  expression
+    ExpressionFunctionCall  expression
 );
 
 
 
-FunctionCallExpression
+ExpressionFunctionCall
 functionCallExpression_parse(
     Parser  parser
 );
@@ -633,7 +631,7 @@ functionCallExpression_parse(
 //==================================================
 //ParametersExpression
 //==================================================
-ParametersExpression
+ExpressionParameters
 parametersExpression_parse(
     Parser  parser
 );
@@ -642,7 +640,7 @@ parametersExpression_parse(
 
 void
 parametersExpression_dispose(
-    ParametersExpression    expression
+    ExpressionParameters    expression
 );
 
 
@@ -650,7 +648,7 @@ parametersExpression_dispose(
 //==================================================
 //VariableExpression
 //==================================================
-VariableExpression
+ExpressionVariable
 variableExpression_new(
     String                  name
 );
@@ -659,12 +657,12 @@ variableExpression_new(
 
 void
 variableExpression_dispose(
-    VariableExpression   expression
+    ExpressionVariable   expression
 );
 
 
 
-VariableExpression
+ExpressionVariable
 variableExpression_parse(
     Parser  parser
 );
@@ -674,7 +672,7 @@ variableExpression_parse(
 //==================================================
 //FunctionDefinition
 //==================================================
-FunctionDefinition
+DefinitionFunction
 functionDefinition_new(
     char*               name,
     Boolean             isNative,
@@ -692,7 +690,7 @@ functionDefinition_isMatch(
 
 
 
-FunctionDefinition
+DefinitionFunction
 functionDefinition_search(
     List    functions,
     char*   name
@@ -700,7 +698,7 @@ functionDefinition_search(
 
 
 
-FunctionDefinition
+DefinitionFunction
 functionDefinition_parse(
     Parser parser
 );
@@ -712,7 +710,7 @@ functionDefinition_evaluate(
 	Interpreter interpreter,
     CriaId id,
 	List parameterList,
-	FunctionDefinition function,
+	DefinitionFunction function,
 	List parameters
 );
 
@@ -721,14 +719,14 @@ functionDefinition_evaluate(
 //==================================================
 //VariableDefinition
 //==================================================
-VariableDefinition
+DefinitionVariable
 variableDefinition_new(
     String  name
 );
 
 
 
-VariableDefinition
+DefinitionVariable
 variableDefinition_search(
     List    variableList,
     String  name
@@ -736,10 +734,7 @@ variableDefinition_search(
 
 
 
-//==================================================
-//ClassDefinition
-//==================================================
-ClassDefinition
+DefinitionClass
 classDefinition_new(
 	Interpreter interpreter,
     char*               name,
@@ -757,14 +752,14 @@ classDefinition_evaluate(
     CriaId  id,
     List parameterList,
     char*   name,
-    ClassDefinition klass,
+    DefinitionClass klass,
     List parameters
 );
 
 
 
 
-ClassDefinition
+DefinitionClass
 classDefinition_search(
     List classList,
     char* name
@@ -859,7 +854,7 @@ evaluator_expression(
 
 
 
-VariableDefinition
+DefinitionVariable
 evaluator_reference(
     Interpreter interpreter,
     CriaId object,
@@ -874,7 +869,7 @@ evaluator_referenceExpression(
     Interpreter         interpreter,
     CriaId object,
     List parameters,
-    ReferenceExpression expression
+    ExpressionReference expression
 );
 
 
@@ -884,15 +879,12 @@ evaluator_functionCall(
     Interpreter interpreter,
     CriaId object,
     List parameters,
-    FunctionCallExpression  expression
+    ExpressionFunctionCall  expression
 );
 
 
 
-//==================================================
-//VariableDefinition
-//==================================================
-VariableDefinition
+DefinitionVariable
 variableDefinition_search(
     List    variableList,
     String  name

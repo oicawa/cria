@@ -223,7 +223,7 @@ CriaFile_dispose(
 
 
 
-ClassDefinition
+DefinitionClass
 CriaFile_loadClass(
     Interpreter interpreter,
     char* className
@@ -231,12 +231,12 @@ CriaFile_loadClass(
 {
     Logger_trc("[ START ]%s", __func__);
     String variableName = NULL;
-    VariableDefinition variable = NULL;
-    FunctionDefinition function = NULL;
-    ClassDefinition klass = NULL;
+    DefinitionVariable variable = NULL;
+    DefinitionFunction function = NULL;
+    DefinitionClass klass = NULL;
     
-    klass = Memory_malloc(sizeof(struct ClassDefinitionTag));
-    memset(klass, 0x00, sizeof(struct ClassDefinitionTag));
+    klass = Memory_malloc(sizeof(struct DefinitionClassTag));
+    memset(klass, 0x00, sizeof(struct DefinitionClassTag));
     klass->fieldList = list_new();
     klass->methodList = list_new();
     klass->name = string_new(className);

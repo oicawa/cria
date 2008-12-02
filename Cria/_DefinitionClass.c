@@ -4,7 +4,7 @@
 #include "_Cria.h"
 
 
-ClassDefinition
+DefinitionClass
 classDefinition_new(
 	Interpreter interpreter,
     char*               name,
@@ -14,7 +14,7 @@ classDefinition_new(
     CriaNativeClassLoader* loader
 )
 {
-    ClassDefinition definition = NULL;
+    DefinitionClass definition = NULL;
     
     if (isNative == TRUE)
     {
@@ -24,8 +24,8 @@ classDefinition_new(
     }
     
     Logger_dbg("Cria Function (ParameterCount=%d, StatementCount=%d)", fieldList->count, methodList->count);
-    definition = Memory_malloc(sizeof(struct ClassDefinitionTag));
-    memset(definition, 0x00, sizeof(struct ClassDefinitionTag));
+    definition = Memory_malloc(sizeof(struct DefinitionClassTag));
+    memset(definition, 0x00, sizeof(struct DefinitionClassTag));
     definition->fieldList = fieldList;
     definition->methodList = methodList;
     
@@ -37,7 +37,7 @@ END:
 
 
 
-ClassDefinition
+DefinitionClass
 classDefinition_search(
     List classList,
     char* name
@@ -45,12 +45,12 @@ classDefinition_search(
 {
     int count = classList->count;
     int index = 0;
-    ClassDefinition definition = NULL;
-    ClassDefinition tmp = NULL;
+    DefinitionClass definition = NULL;
+    DefinitionClass tmp = NULL;
     
     for (index = 0; index < count; index++)
     {
-        tmp = (ClassDefinition)(list_get(classList, index));
+        tmp = (DefinitionClass)(list_get(classList, index));
         if (strcmp(tmp->name->pointer, name) == 0)
         {
             definition = tmp;
@@ -70,13 +70,13 @@ classDefinition_evaluate(
     CriaId  id,
     List parameterList,
     char*   name,
-    ClassDefinition klass,
+    DefinitionClass klass,
     List parameters
 )
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId value = NULL;
-    FunctionDefinition function = NULL;
+    DefinitionFunction function = NULL;
     
     Logger_dbg("Method name is '%s'", name);
     Logger_dbg("klass is '%p'", klass);

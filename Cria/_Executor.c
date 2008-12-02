@@ -13,7 +13,7 @@ executor_executeSubstituteStatement(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    VariableDefinition definition = NULL;
+    DefinitionVariable definition = NULL;
     Reference reference = statement->reference;
     CriaId id = NULL;
     
