@@ -105,12 +105,10 @@ Interpreter_compile(
     Logger_trc("[ START ]%s", __func__);
     Boolean result = FALSE;
     List tokens = NULL;
-    Parser parser = NULL;
     
     tokens = tokenizer_create_tokens(filePath);
     
-    parser = parser_new(tokens);
-    if (parser_parse(parser, interpreter) == FALSE)
+    if (parser_create_syntax_tree(tokens, interpreter) == FALSE)
     {
         Logger_err("syntax parse error.");
         goto END;
@@ -119,22 +117,6 @@ Interpreter_compile(
     result = TRUE;
     
 END:
-	//tokenizer_dispose(tokenizer);
-	//int i = 0;
-	//for (i = 0; i < tokens->count; i++)
-	//{
-		//Token token = (Token)list_get(tokens, i);
-		//Logger_dbg("token is [%p]", token);
-		//token_log(token);
-		//token_dispose(token);
-	//}
-	//list_dispose(tokens);
-	
-    //Memory_dumpBlocks(stdout);
-    
-    parser_dispose(parser);
-    parser = NULL;
-    
     Logger_trc("[  END  ]%s", __func__);
     return result;
 }

@@ -9,7 +9,7 @@ executor_executeSubstituteStatement(
     Interpreter         interpreter,
     CriaId object,
 	List parameters,
-    SubstituteStatement statement
+    StatementSubstitute statement
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -33,10 +33,10 @@ executor_executeSubstituteStatement(
 
 void
 executor_executeFunctionCallStatement(
-    Interpreter             interpreter,
+    Interpreter interpreter,
     CriaId object,
 	List parameters,
-    FunctionCallStatement   statement
+    StatementFunctionCall statement
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -51,7 +51,7 @@ executor_executeIfStatement(
     Interpreter interpreter,
     CriaId object,
 	List parameters,
-    IfStatement statement
+    StatementIf statement
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -117,7 +117,7 @@ executor_executeWhileStatement(
 	Interpreter interpreter,
 	CriaId object,
 	List parameters,
-    WhileStatement statement
+    StatementWhile statement
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -176,7 +176,7 @@ executor_executeGotoStatement(
 	Interpreter interpreter,
 	CriaId object,
 	List parameters,
-    GotoStatement statement
+    StatementGoto statement
 )
 {
     Logger_trc("[ START ]%s", __func__);

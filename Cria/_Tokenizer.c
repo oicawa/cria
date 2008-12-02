@@ -927,7 +927,7 @@ tokenizer_indent_or_dedent(
     tmp = stringBuffer_toString(buffer);
     Logger_dbg("Next charactor = '%c'", tokenizer->next);
     Logger_dbg("buffer = '%s'", tmp->pointer);
-    long length = string_length(tmp);
+    long length = strlen(tmp->pointer);
     if (length % 4 != 0)
     {
         Logger_err("Indent is not 4 times spaces. (modulo = %d)", length % 4);

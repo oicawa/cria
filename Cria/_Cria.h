@@ -11,7 +11,6 @@
 
 
 #include "Cria.h"
-//#include "../Core/Core.h"
 
 
 
@@ -49,9 +48,6 @@ struct InterpreterTag
 
 
 
-//==================================================
-//Tokenizer
-//==================================================
 struct TokenTag
 {
     TokenType   type;
@@ -68,15 +64,11 @@ struct TokenizerTag
     int             row;
     int             column;
     char            next;
-    //String          error;
     int             indentLevel;
 };
 
 
 
-//==================================================
-//Parser
-//==================================================
 struct ParserTag
 {
     List    tokens;
@@ -87,21 +79,16 @@ struct ParserTag
 
 
 
-
-//Statement構造体
 struct StatementTag
 {
     StatementKind   kind;
     int             line;
     union {
-        FunctionCallStatement   _functionCall_;
-        SubstituteStatement     _substitute_;
-        IfStatement             _if_;
-        WhileStatement          _while_;
-        ForStatement            _for_;
-        GotoStatement           _goto_;
-        CatchStatement          _catch_;
-        FinallyStatement        _finally_;
+        StatementFunctionCall   _functionCall_;
+        StatementSubstitute     _substitute_;
+        StatementIf             _if_;
+        StatementWhile          _while_;
+        StatementGoto           _goto_;
     } of;
 };
 
@@ -117,7 +104,7 @@ typedef enum
 
 
 
-struct GotoStatementTag
+struct StatementGotoTag
 {
 	GotoType type;
 	union
@@ -129,33 +116,34 @@ struct GotoStatementTag
 
 
 
-struct CatchStatementTag
-{
-    List    statements;
-};
-
-
-
-struct FinallyStatementTag
-{
-    List    statements;
-};
-
-
-
-struct IfStatementTag
+struct StatementIfTag
 {
     Expression  condition;
     List        statements;
-    IfStatement _if_;
+    StatementIf _if_;
 };
 
 
 
-struct WhileStatementTag
+struct StatementWhileTag
 {
     Expression  condition;
     List        statements;
+};
+
+
+
+struct StatementSubstituteTag
+{
+    Reference   reference;
+    Expression  expression;
+};
+
+
+
+struct StatementFunctionCallTag
+{
+    ReferenceExpression  expression;
 };
 
 
@@ -169,7 +157,6 @@ struct VariableDefinitionTag
 
 
 
-//*
 struct FunctionDefinitionTag
 {
     char*                       name;
@@ -189,7 +176,6 @@ struct FunctionDefinitionTag
     } of;
     CriaObject                  returnValue;
 };
-//*/
 
 
 
@@ -233,21 +219,6 @@ struct OperationExpressionTag
 
 
 
-struct SubstituteStatementTag
-{
-    Reference   reference;
-    Expression  expression;
-};
-
-
-
-struct FunctionCallStatementTag
-{
-    ReferenceExpression  expression;
-};
-
-
-
 struct FunctionCallExpressionTag
 {
     String                  name;
@@ -266,7 +237,7 @@ struct GenerateExpressionTag
 
 struct ParametersExpressionTag
 {
-    List    list;   //Expression
+    List    list;
 };
 
 
@@ -293,13 +264,6 @@ struct BooleanLiteralExpressionTag
 
 
 struct VariableExpressionTag
-{
-    String  name;
-};
-
-
-
-struct ClassExpressionTag
 {
     String  name;
 };
@@ -416,13 +380,6 @@ string_dispose(
 
 
 
-long
-string_length(
-    String  string
-);
-
-
-
 String
 string_cloneFunction(
     String  source,
@@ -431,19 +388,6 @@ string_cloneFunction(
 );
 #define string_clone(source)\
     (string_cloneFunction(source, __FILE__, __LINE__))
-
-
-
-String
-string_subStringFunction(
-    String  source,
-    long    start,
-    long    length,
-    char    *fileName,
-    int     line
-);
-#define string_subString(source, start, length)\
-    (string_subStringFunction(source, start, length, __FILE__, __LINE__))
 
 
 
@@ -500,7 +444,6 @@ list_dispose(
 
 
 
-//オブジェクトを追加
 void
 list_addFunction(
     List    list,
@@ -513,20 +456,6 @@ list_addFunction(
 
 
 
-//オブジェクトを追加
-int
-list_countFunction(
-    List    list,
-    char    *fileName,
-    int     line
-);
-#define list_count(list)\
-    (list_countFunction(list, __FILE__, __LINE__))
-
-
-
-
-//Listの内容を文字列で返却
 void*
 list_get(
     List    list,
@@ -546,10 +475,6 @@ list_toStringFunction(
 
 
 
-//==============================
-//StringBuffer
-//==============================
-//StringBufferを生成
 StringBuffer
 stringBuffer_newFunction(
     char    *fileName,
@@ -560,7 +485,6 @@ stringBuffer_newFunction(
 
 
 
-//StringBufferの破棄
 void
 stringBuffer_dispose(
     StringBuffer    stringBuffer
@@ -580,7 +504,6 @@ stringBuffer_appendCharFunction(
 
 
 
-//文字列を追記
 void
 stringBuffer_appendFunction(
     StringBuffer    stringBuffer,
@@ -593,7 +516,6 @@ stringBuffer_appendFunction(
 
 
 
-//StringBufferが保持している文字列群を一つの文字列として返却
 String
 stringBuffer_toStringFunction(
     StringBuffer    stringBuffer,
@@ -605,40 +527,6 @@ stringBuffer_toStringFunction(
 
 
 
-//==================================================
-//Interpreter
-//==================================================
-char*
-interpreter_readLine(
-    Interpreter interpreter
-);
-
-
-
-//==================================================
-//Token
-//==================================================
-void
-token_log(
-    Token token
-);
-
-
-void
-token_dispose(
-    Token token
-);
-
-//==================================================
-//Tokenizer
-//==================================================
-void
-tokenizer_dispose(
-	Tokenizer tokenizer
-);
-
-
-
 List
 tokenizer_create_tokens(
     char*   filePath
@@ -646,226 +534,45 @@ tokenizer_create_tokens(
 
 
 
-//==================================================
-//Parser
-//==================================================
-Parser
-parser_new(
-    List    list
-);
-
-
-
-void
-parser_dispose(
-    Parser  parser
-);
-
-
-
 Boolean
-parser_parse(
-    Parser      parser,
+parser_create_syntax_tree(
+    List tokens,
     Interpreter interpreter
 );
 
 
 
-Token
-parser_getCurrent(
-    Parser  parser
-);
-
-
-
-Boolean
-parser_next(
-    Parser  parser
-);
-
-
-
-Token
-parser_getNext(
-    Parser  parser
-);
-
-
-
-void
-parser_returnToMark(
-    Parser  parser,
-    Item    mark
-);
-
-
-
-Item
-parser_getPosition(
-    Parser  parser
-);
-
-
-
-void
-parser_setPosition(
-    Parser  parser,
-    Item    position
-);
-
-
-
-void
-parser_error(
-    Token token
-);
-
-
-
-Boolean
-parser_eat(
-	Parser parser,
-	TokenType type,
-	Boolean isNessesally
-);
-
-
-
-//==================================================
-//Statement
-//==================================================
 Statement
-statement_parse(
-    Parser  parser
-);
-
-
-
-Boolean
-commentStatement_parse(
-    char*       buffer,
-    int         offset
-);
-
-
-
-
-//==================================================
-//ReturnStatement
-//==================================================
-ReturnStatement
-returnStatement_parse(
-    char*       buffer,
-    int         offset
+statement_new(
+    StatementKind   kind
 );
 
 
 
 void
-returnStatement_dispose(
-    ReturnStatement statement
-);
-
-
-
-//==================================================
-//WhileStatement
-//==================================================
-WhileStatement
-whileStatement_parse(
-    Interpreter interpreter,
-    char*       buffer,
-    int         offset
-);
-
-
-
-void
-whileStatement_dispose(
-    WhileStatement  statement
-);
-
-
-
-//==================================================
-//FunctionCallStatement
-//==================================================
-void
-functionCallStatement_dispose(
-    FunctionCallStatement  statement
-);
-
-
-
-FunctionCallStatement
-functionCallStatement_parse(
-    Parser  parser
-);
-
-
-
-//==================================================
-//FunctionCallStatement
-//==================================================
-SubstituteStatement
-substituteStatement_parse(
-    Parser parser
-);
-
-
-
-Boolean
-substituteStatement_isMatch(
-    Parser  parser
-);
-
-
-
-//==================================================
-//Expression
-//==================================================
-void
-expression_dispose(
-    Expression expression
+statement_dispose(
+    Statement   statement
 );
 
 
 
 Expression
-expression_parse(
-    Parser  parser
-);
-
-
-
-ReferenceExpression
-expression_parseReferenceExpression(
-    Parser  parser
-);
-
-
-
-ParametersExpression
-expression_parseParametersExpression(
-    Parser  parser
-);
-
-
-
-//==================================================
-//ObjectExpression
-//==================================================
-ObjectExpression
-objectExpression_parse(
-    char*       buffer,
-    int         offset
+expression_new(
+    ExpressionKind  kind
 );
 
 
 
 void
-objectExpression_dispose(
-    ObjectExpression  expression
+expression_dispose(
+    Expression  expression
+);
+
+
+
+Reference
+reference_new(
+    ReferenceType   type
 );
 
 
@@ -1121,10 +828,10 @@ executor_executeStatement(
 
 void
 executor_executeFunctionCallStatement(
-    Interpreter             interpreter,
+    Interpreter interpreter,
     CriaId object,
     List parameters,
-    FunctionCallStatement   statement
+    StatementFunctionCall statement
 );
 
 
@@ -1134,7 +841,7 @@ executor_executeSubstituteStatement(
     Interpreter         interpreter,
     CriaId object,
     List parameters,
-    SubstituteStatement statement
+    StatementSubstitute statement
 );
 
 
@@ -1189,20 +896,6 @@ VariableDefinition
 variableDefinition_search(
     List    variableList,
     String  name
-);
-
-
-
-Reference
-reference_parse(
-    Parser  parser
-);
-
-
-
-Reference
-reference_getLast(
-    Reference reference
 );
 
 
