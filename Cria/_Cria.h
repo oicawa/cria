@@ -38,16 +38,13 @@ struct ListTag {
 
 struct InterpreterTag
 {
-    List    statementList;
-    List    variableList;       //VariableDefinition
-    List    functionList;       //FunctionDefinition
-    List    classList;        //ClassDefinition
-    //File    file;
-    String  buffer;
-    int     lineNumber;
+    List    statements;
+    List    variables;
+    List    functions;
+    List    classes;
+    int     row;
     int     column;
     int     indentLevel;
-    int     error;
 };
 
 
@@ -71,7 +68,7 @@ struct TokenizerTag
     int             row;
     int             column;
     char            next;
-    String          error;
+    //String          error;
     int             indentLevel;
 };
 
@@ -627,12 +624,23 @@ token_log(
 );
 
 
+void
+token_dispose(
+    Token token
+);
 
 //==================================================
 //Tokenizer
 //==================================================
+void
+tokenizer_dispose(
+	Tokenizer tokenizer
+);
+
+
+
 List
-tokenizer_createTokens(
+tokenizer_create_tokens(
     char*   filePath
 );
 
@@ -1031,7 +1039,7 @@ classDefinition_new(
     Boolean             isNative,
     List                fieldList,
     List                methodList,
-    CriaNativeClassLoaderFunction* classLoader
+    CriaNativeClassLoader* classLoader
 );
 
 
@@ -1202,6 +1210,7 @@ reference_getLast(
 #define token_log(token) \
     do \
     { \
+    	Logger_dbg("token is [%p]", token); \
         char* buffer = NULL; \
         if (token == NULL) \
             Logger_dbg("Token type=NULL."); \
@@ -1237,8 +1246,8 @@ reference_getLast(
 
 #define runtime_error(interpreter) \
     do { \
-        Logger_err("Runtime error. (line:%d) [%s, %d]\n", (interpreter)->lineNumber, __FILE__, __LINE__); \
-        fprintf(stderr, "Runtime error. (line:%d) [%s, %d]\n", (interpreter)->lineNumber, __FILE__, __LINE__); \
+        Logger_err("Runtime error. (line:%d) [%s, %d]\n", (interpreter)->row, __FILE__, __LINE__); \
+        fprintf(stderr, "Runtime error. (line:%d) [%s, %d]\n", (interpreter)->row, __FILE__, __LINE__); \
         Memory_dispose(); \
         exit(1); \
     } while(0) \

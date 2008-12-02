@@ -71,10 +71,10 @@
 
 Token
 token_new(
-    TokenType   type,
-    int         row,
-    int         column,
-    String      buffer
+    TokenType type,
+    int row,
+    int column,
+    char* buffer
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -85,8 +85,8 @@ token_new(
     token->column = column;
     if (buffer != NULL)
     {
-        token->buffer = string_clone(buffer);
-        Logger_trc(buffer->pointer);
+        token->buffer = string_new(buffer);
+        Logger_trc(buffer);
     }
     Logger_trc("[  END  ]%s", __func__);
     return token;
@@ -96,10 +96,11 @@ token_new(
 
 void
 token_dispose(
-    Token   token
+    Token token
 )
 {
     Logger_trc("[ START ]%s", __func__);
+    token_log(token);
     if (token == NULL)
     {
         Logger_dbg("'token' is NULL");
@@ -125,7 +126,7 @@ END:
 
 
 Boolean
-tokenizer_readChar(
+tokenizer_read(
     Tokenizer   tokenizer
 )
 {
@@ -164,7 +165,8 @@ tokenizer_new(
     FILE *file = fopen(filePath, "r");
     if (file == NULL)
     {
-        Logger_err("File open error. (%s)", filePath);  //★終了させたい
+        Logger_err("File open error. (%s)", filePath);
+        tokenizer_error("File open error.", 0, 0);
         goto END;
     }
     
@@ -174,10 +176,9 @@ tokenizer_new(
     tokenizer->row = 1;
     tokenizer->column = 0;
     tokenizer->next = '\0';
-    tokenizer->error = NULL;
     tokenizer->indentLevel = 0;
     
-    tokenizer_readChar(tokenizer);
+    tokenizer_read(tokenizer);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -207,15 +208,6 @@ tokenizer_dispose(
         tokenizer->file = NULL;
     }
     
-    Logger_dbg("Check 'tokenizer->error'");
-    if (tokenizer->error != NULL)
-    {
-        Logger_dbg("Free 'tokenizer->error'");
-        string_dispose(tokenizer->error);
-        tokenizer->error = NULL;
-    }
-    
-    
     Logger_dbg("Free 'tokenizer'");
     Memory_free(tokenizer);
     tokenizer = NULL;
@@ -226,8 +218,8 @@ tokenizer_dispose(
 
 
 Token
-tokenizer_parseNumber(
-    Tokenizer   tokenizer
+tokenizer_number(
+    Tokenizer tokenizer
 )
 {
     Logger_trc("[ START ]%s('%c')", __func__, tokenizer->next);
@@ -244,7 +236,7 @@ tokenizer_parseNumber(
     stringBuffer_appendChar(buffer, tokenizer->next);
     
     
-    while (tokenizer_readChar(tokenizer) == TRUE)
+    while (tokenizer_read(tokenizer) == TRUE)
     {
         if (isdigit(tokenizer->next) == 0)
         {
@@ -257,7 +249,7 @@ tokenizer_parseNumber(
     
     String tmp = stringBuffer_toString(buffer);
     Logger_dbg("Add token. (%s)", tmp->pointer);
-    token = token_new(TOKEN_TYPE_INTEGER_LITERAL, row, column, tmp);
+    token = token_new(TOKEN_TYPE_INTEGER_LITERAL, row, column, tmp->pointer);
     
     
     stringBuffer_dispose(buffer);
@@ -271,7 +263,7 @@ END:
 
 
 Token
-tokenizer_parseReserved(
+tokenizer_reserved(
     Tokenizer   tokenizer,
     StringBuffer buffer
 )
@@ -288,21 +280,21 @@ tokenizer_parseReserved(
     if (strcmp(value, TOKEN_LITERAL_NULL) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_NULL");
-        token = token_new(TOKEN_TYPE_NULL, row, column, tmp);
+        token = token_new(TOKEN_TYPE_NULL, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_BREAK) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_BREAK");
-        token = token_new(TOKEN_TYPE_BREAK, row, column, tmp);
+        token = token_new(TOKEN_TYPE_BREAK, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_CATCH) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_CATCH");
-        token = token_new(TOKEN_TYPE_CATCH, row, column, tmp);
+        token = token_new(TOKEN_TYPE_CATCH, row, column, value);
         goto END;
     }
     
@@ -316,14 +308,14 @@ tokenizer_parseReserved(
     if (strcmp(value, TOKEN_LITERAL_TRUE) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_BOOLEAN_LITERAL");
-        token = token_new(TOKEN_TYPE_BOOLEAN_LITERAL, row, column, tmp);
+        token = token_new(TOKEN_TYPE_BOOLEAN_LITERAL, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_FALSE) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_BOOLEAN_LITERAL");
-        token = token_new(TOKEN_TYPE_BOOLEAN_LITERAL, row, column, tmp);
+        token = token_new(TOKEN_TYPE_BOOLEAN_LITERAL, row, column, value);
         goto END;
     }
     
@@ -332,25 +324,25 @@ tokenizer_parseReserved(
 		if (tokenizer->next == ' ')
 		{
 			Logger_dbg("create TOKEN_TYPE_RETURN_VALUE");
-			token = token_new(TOKEN_TYPE_RETURN_VALUE, row, column, tmp);
+			token = token_new(TOKEN_TYPE_RETURN_VALUE, row, column, value);
 			goto READ;
 		}
 		Logger_dbg("create TOKEN_TYPE_RETURN");
-		token = token_new(TOKEN_TYPE_RETURN, row, column, tmp);
+		token = token_new(TOKEN_TYPE_RETURN, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_FINALLY) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_FINALLY");
-        token = token_new(TOKEN_TYPE_FINALLY, row, column, tmp);
+        token = token_new(TOKEN_TYPE_FINALLY, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_CONTINUE) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_CONTINUE");
-        token = token_new(TOKEN_TYPE_CONTINUE, row, column, tmp);
+        token = token_new(TOKEN_TYPE_CONTINUE, row, column, value);
         goto END;
     }
     
@@ -365,50 +357,50 @@ tokenizer_parseReserved(
     if (strncmp(value, TOKEN_LITERAL_IF, strlen(TOKEN_LITERAL_IF) - 1) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_IF");
-        token = token_new(TOKEN_TYPE_IF, row, column, tmp);
+        token = token_new(TOKEN_TYPE_IF, row, column, value);
         goto READ;
     }
     
     if (strncmp(value, TOKEN_LITERAL_FOR, strlen(TOKEN_LITERAL_FOR) - 1) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_FOR");
-        token = token_new(TOKEN_TYPE_FOR, row, column, tmp);
+        token = token_new(TOKEN_TYPE_FOR, row, column, value);
         goto READ;
     }
     
     if (strncmp(value, TOKEN_LITERAL_ELIF, strlen(TOKEN_LITERAL_ELIF) - 1) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_ELIF");
-        token = token_new(TOKEN_TYPE_ELIF, row, column, tmp);
+        token = token_new(TOKEN_TYPE_ELIF, row, column, value);
         goto READ;
     }
     
     if (strncmp(value, TOKEN_LITERAL_WHILE, strlen(TOKEN_LITERAL_WHILE) - 1) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_WHILE");
-        token = token_new(TOKEN_TYPE_WHILE, row, column, tmp);
+        token = token_new(TOKEN_TYPE_WHILE, row, column, value);
         goto READ;
     }
     
     if (strncmp(value, TOKEN_LITERAL_GOTO, strlen(TOKEN_LITERAL_GOTO) - 1) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_GOTO");
-        token = token_new(TOKEN_TYPE_GOTO, row, column, tmp);
+        token = token_new(TOKEN_TYPE_GOTO, row, column, value);
         goto READ;
     }
     
     if (strncmp(value, TOKEN_LITERAL_THROW, strlen(TOKEN_LITERAL_THROW) - 1) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_THROW");
-        token = token_new(TOKEN_TYPE_THROW, row, column, tmp);
+        token = token_new(TOKEN_TYPE_THROW, row, column, value);
         goto READ;
     }
     
-	Logger_dbg("Not reserved word with space. (%s)", tmp->pointer);
+	Logger_dbg("Not reserved word with space. (%s)", value);
 	goto END;
 	
 READ:
-	tokenizer_readChar(tokenizer);
+	tokenizer_read(tokenizer);
     
 END:
 	string_dispose(tmp);
@@ -420,7 +412,7 @@ END:
 
 
 Token
-tokenizer_parseVariableOrFunction(
+tokenizer_identifier(
     Tokenizer   	tokenizer,
     StringBuffer	buffer
 )
@@ -441,15 +433,22 @@ tokenizer_parseVariableOrFunction(
     identifier += 1;
     while (*identifier != '\0')
     {
-        if (isalnum(*identifier) == 0)
-        {
-            Logger_dbg("Not alphabet or number.");
-            goto END;
-        }
+        if (islower(*identifier) != 0)
+            goto NEXT;
+        
+        if (isdigit(*identifier) != 0)
+            goto NEXT;
+        
+        if (*identifier == '_')
+            goto NEXT;
+        
+		Logger_dbg("Not lower alphabet or number or '_'.");
+		goto END;
+NEXT:
         identifier += 1;
     }
 
-    token = token_new(TOKEN_TYPE_IDENTIFIER, tokenizer->row, tokenizer->column, tmp);
+    token = token_new(TOKEN_TYPE_IDENTIFIER, tokenizer->row, tokenizer->column, tmp->pointer);
     
 END:
     string_dispose(tmp);
@@ -460,7 +459,7 @@ END:
 
 
 Token
-tokenizer_parseClassLiteralOrConstant(
+tokenizer_class_or_constant(
     Tokenizer   	tokenizer,
     StringBuffer	buffer
 )
@@ -523,7 +522,7 @@ tokenizer_parseClassLiteralOrConstant(
 		goto END;
     }
 
-    token = token_new(type, tokenizer->row, tokenizer->column, tmp);
+    token = token_new(type, tokenizer->row, tokenizer->column, tmp->pointer);
     
 END:
     string_dispose(tmp);
@@ -534,7 +533,7 @@ END:
 
 
 Token
-tokenizer_parseIdentifier(
+tokenizer_word(
     Tokenizer   tokenizer
 )
 {
@@ -547,7 +546,7 @@ tokenizer_parseIdentifier(
         goto END;
     
     Logger_dbg("read next charactor");
-    while (tokenizer_readChar(tokenizer) == TRUE)
+    while (tokenizer_read(tokenizer) == TRUE)
     {
         Logger_dbg("Is alphabet or number?");
         if ((isalnum(tokenizer->next) != 0)
@@ -560,15 +559,15 @@ tokenizer_parseIdentifier(
         break;
     }
     
-    token = tokenizer_parseReserved(tokenizer, buffer);
+    token = tokenizer_reserved(tokenizer, buffer);
     if (token != NULL)
     	goto END;
     
-    token = tokenizer_parseVariableOrFunction(tokenizer, buffer);
+    token = tokenizer_identifier(tokenizer, buffer);
     if (token != NULL)
     	goto END;
     
-    token = tokenizer_parseClassLiteralOrConstant(tokenizer, buffer);
+    token = tokenizer_class_or_constant(tokenizer, buffer);
     if (token != NULL)
     	goto END;
 
@@ -585,7 +584,7 @@ END:
 
 
 Token
-tokenizer_parseDummy(
+tokenizer_dummy(
     Tokenizer   tokenizer
 )
 {
@@ -593,7 +592,7 @@ tokenizer_parseDummy(
     Token token = NULL;
     Boolean hasNewLine = FALSE;
     
-    while (tokenizer_readChar(tokenizer) == TRUE)
+    while (tokenizer_read(tokenizer) == TRUE)
     {
         if (tokenizer->next == '\n')
         {
@@ -617,7 +616,7 @@ tokenizer_parseDummy(
 
 
 Token
-tokenizer_parseSpace(
+tokenizer_space(
     Tokenizer   tokenizer
 )
 {
@@ -637,7 +636,7 @@ tokenizer_parseSpace(
     //--------------------------------------------------
     //2nd charactor.
     //--------------------------------------------------
-    if (tokenizer_readChar(tokenizer) == FALSE)
+    if (tokenizer_read(tokenizer) == FALSE)
     {
         Logger_dbg("No 2nd charactor.");
         goto END;
@@ -646,7 +645,7 @@ tokenizer_parseSpace(
     stringBuffer_appendChar(buffer, tokenizer->next);
     if (tokenizer->next == '_')
     {
-        token = tokenizer_parseDummy(tokenizer);
+        token = tokenizer_dummy(tokenizer);
         goto END;
     }
     string_dispose(tmp);
@@ -658,7 +657,7 @@ tokenizer_parseSpace(
     //3rd charactor.
     //--------------------------------------------------
     Logger_dbg("read 3rd charactor");
-    if (tokenizer_readChar(tokenizer) == FALSE)
+    if (tokenizer_read(tokenizer) == FALSE)
     {
         Logger_dbg("No 3rd charactor.");
         tokenizer_error(value, row, column);
@@ -673,56 +672,56 @@ tokenizer_parseSpace(
     if (strcmp(value, TOKEN_LITERAL_SUBSTITUTE) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_SUBSTITUTE");
-        token = token_new(TOKEN_TYPE_SUBSTITUTE, row, column, tmp);
+        token = token_new(TOKEN_TYPE_SUBSTITUTE, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_PLUS) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_PLUS");
-        token = token_new(TOKEN_TYPE_PLUS, row, column, tmp);
+        token = token_new(TOKEN_TYPE_PLUS, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_MINUS) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_MINUS");
-        token = token_new(TOKEN_TYPE_MINUS, row, column, tmp);
+        token = token_new(TOKEN_TYPE_MINUS, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_MULTIPLY) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_MULTIPLY");
-        token = token_new(TOKEN_TYPE_MULTIPLY, row, column, tmp);
+        token = token_new(TOKEN_TYPE_MULTIPLY, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_DEVIDE) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_DEVIDE");
-        token = token_new(TOKEN_TYPE_DEVIDE, row, column, tmp);
+        token = token_new(TOKEN_TYPE_DEVIDE, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_MODULO) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_MODULO");
-        token = token_new(TOKEN_TYPE_MODULO, row, column, tmp);
+        token = token_new(TOKEN_TYPE_MODULO, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_LESS_THAN) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_LESS_THAN");
-        token = token_new(TOKEN_TYPE_LESS_THAN, row, column, tmp);
+        token = token_new(TOKEN_TYPE_LESS_THAN, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_GREATER_THAN) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_GREATER_THAN");
-        token = token_new(TOKEN_TYPE_GREATER_THAN, row, column, tmp);
+        token = token_new(TOKEN_TYPE_GREATER_THAN, row, column, value);
         goto END;
     }
     
@@ -731,7 +730,7 @@ tokenizer_parseSpace(
     //４文字目
     //--------------------------------------------------
     Logger_dbg("read 4th charactor");
-    if (tokenizer_readChar(tokenizer) == FALSE)
+    if (tokenizer_read(tokenizer) == FALSE)
     {
         Logger_dbg("No 4th charactor.");
         tokenizer_error(value, row, column);
@@ -745,70 +744,70 @@ tokenizer_parseSpace(
     if (strcmp(value, TOKEN_LITERAL_EQUAL) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_EQUAL");
-        token = token_new(TOKEN_TYPE_EQUAL, row, column, tmp);
+        token = token_new(TOKEN_TYPE_EQUAL, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_INCREMENT) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_INCREMENT");
-        token = token_new(TOKEN_TYPE_INCREMENT, row, column, tmp);
+        token = token_new(TOKEN_TYPE_INCREMENT, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_DECREMENT) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_DECREMENT");
-        token = token_new(TOKEN_TYPE_DECREMENT, row, column, tmp);
+        token = token_new(TOKEN_TYPE_DECREMENT, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_LESS_EQUAL) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_LESS_EQUAL");
-        token = token_new(TOKEN_TYPE_LESS_EQUAL, row, column, tmp);
+        token = token_new(TOKEN_TYPE_LESS_EQUAL, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_NOT_EQUAL) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_NOT_EQUAL");
-        token = token_new(TOKEN_TYPE_NOT_EQUAL, row, column, tmp);
+        token = token_new(TOKEN_TYPE_NOT_EQUAL, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_OR) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_OR");
-        token = token_new(TOKEN_TYPE_OR, row, column, tmp);
+        token = token_new(TOKEN_TYPE_OR, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_AND) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_AND");
-        token = token_new(TOKEN_TYPE_AND, row, column, tmp);
+        token = token_new(TOKEN_TYPE_AND, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_GREATER_EQUAL) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_GREATER_EQUAL");
-        token = token_new(TOKEN_TYPE_GREATER_EQUAL, row, column, tmp);
+        token = token_new(TOKEN_TYPE_GREATER_EQUAL, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_EXTENDS) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_EXTENDS");
-        token = token_new(TOKEN_TYPE_EXTENDS, row, column, tmp);
+        token = token_new(TOKEN_TYPE_EXTENDS, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_IN) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_IN");
-        token = token_new(TOKEN_TYPE_IN, row, column, tmp);
+        token = token_new(TOKEN_TYPE_IN, row, column, value);
         goto END;
     }
     
@@ -816,7 +815,7 @@ tokenizer_parseSpace(
     
 END:
     if (token != NULL)
-        tokenizer_readChar(tokenizer);
+        tokenizer_read(tokenizer);
     string_dispose(tmp);
     stringBuffer_dispose(buffer);
     Logger_trc("[  END  ]%s", __func__);
@@ -826,7 +825,7 @@ END:
 
 
 Token
-tokenizer_parseStringLiteral(
+tokenizer_string(
     Tokenizer   tokenizer
 )
 {
@@ -844,14 +843,14 @@ tokenizer_parseStringLiteral(
     
     
     stringBuffer_appendChar(buffer, tokenizer->next);
-    while (tokenizer_readChar(tokenizer) == TRUE)
+    while (tokenizer_read(tokenizer) == TRUE)
     {
         stringBuffer_appendChar(buffer, tokenizer->next);
         
         
         if (tokenizer->next == '\\')
         {
-            if (tokenizer_readChar(tokenizer) == FALSE)
+            if (tokenizer_read(tokenizer) == FALSE)
             {
                 Logger_dbg("No string literal");
                 break;
@@ -877,7 +876,7 @@ tokenizer_parseStringLiteral(
         goto END;
     }
     
-    token = token_new(TOKEN_TYPE_STRING_LITERAL, row, column, tmp);
+    token = token_new(TOKEN_TYPE_STRING_LITERAL, row, column, tmp->pointer);
     
 END:
     string_dispose(tmp);
@@ -889,7 +888,7 @@ END:
 
 
 void
-tokenizer_parseIndentDedent(
+tokenizer_indent_or_dedent(
     Tokenizer   tokenizer,
     List        tokens
 )
@@ -902,7 +901,7 @@ tokenizer_parseIndentDedent(
     StringBuffer buffer = stringBuffer_new();
     
     
-    while (tokenizer_readChar(tokenizer) == TRUE)
+    while (tokenizer_read(tokenizer) == TRUE)
     {
         if (tokenizer->next == ' ')
         {
@@ -946,7 +945,7 @@ tokenizer_parseIndentDedent(
         {
             Logger_dbg("create TOKEN_TYPE_DEDENT");
             tokenizer->indentLevel -= 1;
-            token = token_new(TOKEN_TYPE_DEDENT, row, column, string_new("<<DEDENT>>"));
+            token = token_new(TOKEN_TYPE_DEDENT, row, column, "<<DEDENT>>");
             list_add(tokens, token);
         }
     }
@@ -954,7 +953,7 @@ tokenizer_parseIndentDedent(
     {
         Logger_dbg("create TOKEN_TYPE_INDENT");
         tokenizer->indentLevel += 1;
-        token = token_new(TOKEN_TYPE_INDENT, row, column, string_new("<<INDENT>>"));
+        token = token_new(TOKEN_TYPE_INDENT, row, column, "<<INDENT>>");
         list_add(tokens, token);
     }
     else if (which == 0)
@@ -977,9 +976,9 @@ END:
 
 
 Boolean
-tokenizer_parseNewLineIndentDedent(
-    Tokenizer   tokenizer,
-    List        tokens
+tokenizer_newline_indent_dedent(
+    Tokenizer tokenizer,
+    List tokens
 )
 {
     Logger_trc("[ START ]%s('%c')", __func__, tokenizer->next);
@@ -994,7 +993,7 @@ tokenizer_parseNewLineIndentDedent(
     
     Logger_trc("Create 'TOKEN_TYPE_NEW_LINE'");
     String tmp = string_new("<<NEW_LINE>>");
-    Token token = token_new(TOKEN_TYPE_NEW_LINE, row, column, tmp);
+    Token token = token_new(TOKEN_TYPE_NEW_LINE, row, column, tmp->pointer);
     string_dispose(tmp);
     
     
@@ -1003,7 +1002,7 @@ tokenizer_parseNewLineIndentDedent(
     
     
     Logger_trc("Try indent/dedent literal.");
-    tokenizer_parseIndentDedent(tokenizer, tokens);
+    tokenizer_indent_or_dedent(tokenizer, tokens);
     
     
 END:
@@ -1014,7 +1013,7 @@ END:
 
 
 Token
-tokenizer_parseOther(
+tokenizer_other(
     Tokenizer   tokenizer
 )
 {
@@ -1034,91 +1033,91 @@ tokenizer_parseOther(
     if (strcmp(value, TOKEN_LITERAL_PARENTHESIS_LEFT) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_PARENTHESIS_LEFT'");
-        token = token_new(TOKEN_TYPE_PARENTHESIS_LEFT, row, column, tmp);
+        token = token_new(TOKEN_TYPE_PARENTHESIS_LEFT, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_PARENTHESIS_RIGHT) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_PARENTHESIS_RIGHT'");
-        token = token_new(TOKEN_TYPE_PARENTHESIS_RIGHT, row, column, tmp);
+        token = token_new(TOKEN_TYPE_PARENTHESIS_RIGHT, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_BRACKET_LEFT) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_BRACKET_LEFT'");
-        token = token_new(TOKEN_TYPE_BRACKET_LEFT, row, column, tmp);
+        token = token_new(TOKEN_TYPE_BRACKET_LEFT, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_BRACKET_RIGHT) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_BRACKET_RIGHT'");
-        token = token_new(TOKEN_TYPE_BRACKET_RIGHT, row, column, tmp);
+        token = token_new(TOKEN_TYPE_BRACKET_RIGHT, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_BRACE_LEFT) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_BRACE_LEFT'");
-        token = token_new(TOKEN_TYPE_BRACE_LEFT, row, column, tmp);
+        token = token_new(TOKEN_TYPE_BRACE_LEFT, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_BRACE_RIGHT) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_BRACE_RIGHT'");
-        token = token_new(TOKEN_TYPE_BRACE_RIGHT, row, column, tmp);
+        token = token_new(TOKEN_TYPE_BRACE_RIGHT, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_GENERICS_LEFT) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_GENERICS_LEFT'");
-        token = token_new(TOKEN_TYPE_GENERICS_LEFT, row, column, tmp);
+        token = token_new(TOKEN_TYPE_GENERICS_LEFT, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_GENERICS_RIGHT) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_GENERICS_RIGHT'");
-        token = token_new(TOKEN_TYPE_GENERICS_RIGHT, row, column, tmp);
+        token = token_new(TOKEN_TYPE_GENERICS_RIGHT, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_COLON) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_COLON'");
-        token = token_new(TOKEN_TYPE_COLON, row, column, tmp);
+        token = token_new(TOKEN_TYPE_COLON, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_MEMBER) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_MEMBER'");
-        token = token_new(TOKEN_TYPE_MEMBER, row, column, tmp);
+        token = token_new(TOKEN_TYPE_MEMBER, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_PERIOD) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_PERIOD'");
-        token = token_new(TOKEN_TYPE_PERIOD, row, column, tmp);
+        token = token_new(TOKEN_TYPE_PERIOD, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_MONADIC_MINUS) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_MONADIC_MINUS'");
-        token = token_new(TOKEN_TYPE_MONADIC_MINUS, row, column, tmp);
+        token = token_new(TOKEN_TYPE_MONADIC_MINUS, row, column, value);
         goto END;
     }
     
     if (strcmp(value, TOKEN_LITERAL_UNDER) == 0)
     {
         Logger_trc("Create 'TOKEN_TYPE_UNDER'");
-        token = tokenizer_parseDummy(tokenizer);
+        token = tokenizer_dummy(tokenizer);
         goto END;
     }
     
@@ -1126,14 +1125,14 @@ tokenizer_parseOther(
     {
         //文字列リテラルの解析
         Logger_trc("Try string literal.");
-        token = tokenizer_parseStringLiteral(tokenizer);
+        token = tokenizer_string(tokenizer);
         goto END;
     }
     
     if (tokenizer->next == ',')
     {
         Logger_trc("Try comma literal.");
-        if (tokenizer_readChar(tokenizer) == FALSE)
+        if (tokenizer_read(tokenizer) == FALSE)
         {
             tokenizer_error(value, row, column);
             goto END;
@@ -1151,7 +1150,7 @@ tokenizer_parseOther(
         }
         
         Logger_trc("Create 'TOKEN_TYPE_COMMA'");
-        token = token_new(TOKEN_TYPE_COMMA, row, column, tmp);
+        token = token_new(TOKEN_TYPE_COMMA, row, column, value);
         goto END;
     }
     
@@ -1160,7 +1159,7 @@ tokenizer_parseOther(
     
     
 END:
-    tokenizer_readChar(tokenizer);
+    tokenizer_read(tokenizer);
     stringBuffer_dispose(buffer);
     string_dispose(tmp);
     Logger_trc("[  END  ]%s", __func__);
@@ -1170,7 +1169,7 @@ END:
 
 
 Boolean
-tokenizer_isEndOfFile(
+tokenizer_is_eof(
     Tokenizer   tokenizer
 )
 {
@@ -1183,7 +1182,7 @@ tokenizer_isEndOfFile(
 
 
 void
-tokenizer_logAllTokens(
+tokenizer_log_all_tokens(
     List	tokens
 )
 {
@@ -1202,7 +1201,7 @@ tokenizer_logAllTokens(
 
 
 List
-tokenizer_createTokens(
+tokenizer_create_tokens(
     char*   filePath
 )
 {
@@ -1212,24 +1211,24 @@ tokenizer_createTokens(
     List tokens = list_new();
     
     
-    while (tokenizer_isEndOfFile(tokenizer) == FALSE)
+    while (tokenizer_is_eof(tokenizer) == FALSE)
     {
-        token = tokenizer_parseNumber(tokenizer);
+        token = tokenizer_number(tokenizer);
         if (token != NULL)
             goto ADD_TOKEN;
         
-        token = tokenizer_parseIdentifier(tokenizer);
+        token = tokenizer_word(tokenizer);
         if (token != NULL)
             goto ADD_TOKEN;
         
-        token = tokenizer_parseSpace(tokenizer);
+        token = tokenizer_space(tokenizer);
         if (token != NULL)
             goto ADD_TOKEN;
         
-        if (tokenizer_parseNewLineIndentDedent(tokenizer, tokens) == TRUE)
+        if (tokenizer_newline_indent_dedent(tokenizer, tokens) == TRUE)
             continue;
         
-        token = tokenizer_parseOther(tokenizer);
+        token = tokenizer_other(tokenizer);
         if (token != NULL)
             goto ADD_TOKEN;
         
@@ -1242,13 +1241,13 @@ ADD_TOKEN:
         continue;        
     }
     
-    String tmp = string_new("<<NEW_LINE>>");
-    token = token_new(TOKEN_TYPE_NEW_LINE, -1, -1, tmp);
-    string_dispose(tmp);
+    token = token_new(TOKEN_TYPE_NEW_LINE, -1, -1, "<<NEW_LINE>>");
     
     list_add(tokens, token);
     
-    tokenizer_logAllTokens(tokens);
+    tokenizer_log_all_tokens(tokens);
+    
+    tokenizer_dispose(tokenizer);
     
     Logger_trc("[  END  ]%s", __func__);
     return tokens;

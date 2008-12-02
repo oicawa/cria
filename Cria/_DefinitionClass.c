@@ -11,7 +11,7 @@ classDefinition_new(
     Boolean             isNative,
     List                fieldList,
     List                methodList,
-    CriaNativeClassLoaderFunction* classLoader
+    CriaNativeClassLoader* loader
 )
 {
     ClassDefinition definition = NULL;
@@ -19,7 +19,7 @@ classDefinition_new(
     if (isNative == TRUE)
     {
         Logger_dbg("Load Native Class");
-        definition = (*classLoader)(interpreter, name);
+        definition = (*loader)(interpreter, name);
         goto END;
     }
     

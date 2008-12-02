@@ -201,7 +201,7 @@ addStatement(
 {
     Logger_trc("[ START ]%s", __func__);
     Logger_trc("statement is [%p]", statement);
-    list_add(interpreter->statementList, statement);
+    list_add(interpreter->statements, statement);
     Logger_trc("[  END  ]%s", __func__);
 }
 
@@ -292,7 +292,7 @@ parser_parse(
         if (functionDefinition != NULL)
         {
             Logger_dbg("Add created FunctionDefinition and parse next.");
-            list_add(interpreter->functionList, functionDefinition);
+            list_add(interpreter->functions, functionDefinition);
             continue;
         }
         

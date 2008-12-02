@@ -264,7 +264,7 @@ CriaFile_loadClass(
     list_add(klass->methodList, function);
     
     
-    function = functionDefinition_new("isEnd", TRUE, NULL, NULL, CriaFile_isEnd);
+    function = functionDefinition_new("is_end", TRUE, NULL, NULL, CriaFile_isEnd);
     function->isStatic = FALSE;
     list_add(klass->methodList, function);
     

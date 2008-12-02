@@ -1,20 +1,20 @@
-sayWelcome():
+say_welcome():
     write("Welcome to cria world.\n" + "What's your name? >> ")
     
-sayNiceToMeetYou(yourName):
-    write("Well, Nice to meet you, %s\n", yourName)
+say_nice_to_meet_you(your_name):
+    write("Well, Nice to meet you, %s\n", your_name)
 
-createName(yourName, isMale, hasMarried):
-    if isMale == true
-        longName = "Mr." + yourName
-    elif hasMarried == true
-        longName = "Mrs." + yourName
+create_name(your_name, is_male, has_married):
+    if is_male == true
+        long_name = "Mr." + your_name
+    elif has_married == true
+        long_name = "Mrs." + your_name
     else
-        return "Miss," + yourName
+        return "Miss," + your_name
     
-    return longName
+    return long_name
 
-sayWelcome()
+say_welcome()
 name = read()
 
 write("Are you male? >> ")
@@ -22,13 +22,13 @@ answer = read()
 
 if answer == "yes"
 
-    write("Nice to meet you, %s\n\n", createName(name, true, true))
+    write("Nice to meet you, %s\n\n", create_name(name, true, true))
     write("Is your wife beautiful? >> ")
-    isBeautiful = read()
+    is_beautiful = read()
     
-    while isBeautiful != "yes"
+    while is_beautiful != "yes"
         write("Sorry, I can't hear you.\nIs your wife beautiful? >> ")
-        isBeautiful = read()
+        is_beautiful = read()
     
     write("Oh, you are lucky beggar!!\n")
 
@@ -37,9 +37,9 @@ elif answer == "no"
     answer = read()
     
     if answer == "yes"
-        write("Nice to meet you, %s\n\n", createName(name, false, true))
+        write("Nice to meet you, %s\n\n", create_name(name, false, true))
         
-        isFirst = true
+        is_first = true
         while true
             write("Is your husband gentle? >> ")
             answer = read()
@@ -52,12 +52,12 @@ elif answer == "no"
             write("\n<<continue test>>\n")
             
     elif answer == "no"
-        write("Nice to meet you, %s\n\n", createName(name, false, false))
+        write("Nice to meet you, %s\n\n", create_name(name, false, false))
     else
         write("... OK, Nice to meet you, Miss,%s\n\n", name)
 
 else
-    sayNiceToMeetYou(name)
+    say_nice_to_meet_you(name)
 
 write("Good bye.\n")
 write("\n\n")

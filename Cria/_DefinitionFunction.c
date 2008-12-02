@@ -6,7 +6,7 @@ functionDefinition_new(
     Boolean             isNative,
     List                parameterList,
     List                statementList,
-    CriaNativeFunction* nativeFunctionPoint
+    CriaNativeFunction* loader
 )
 {
     FunctionDefinition definition = Memory_malloc(sizeof(struct FunctionDefinitionTag));
@@ -17,7 +17,7 @@ functionDefinition_new(
     if (isNative == TRUE)
     {
         Logger_dbg("Native Function");
-        definition->of.native.function = nativeFunctionPoint;
+        definition->of.native.function = loader;
     }
     else
     {

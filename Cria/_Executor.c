@@ -238,7 +238,7 @@ executor_executeStatement(
     Logger_dbg("result.type = %d", result.type);
     
     Logger_dbg("statement pointer = [%p]", statement);
-    interpreter->lineNumber = statement->line;
+    interpreter->row = statement->line;
     Logger_dbg("statement->line = %d", statement->line);
 
     switch (statement->kind)
@@ -257,7 +257,6 @@ executor_executeStatement(
         break;
     case STATEMENT_KIND_GOTO:
         result = executor_executeGotoStatement(interpreter, object, parameters, statement->of._goto_);
-  		Logger_dbg("result.returns.id->type = %d", result.returns.id->type);
         break;
     /*
     case STATEMENT_KIND_FOR:

@@ -1,34 +1,16 @@
 #include "_Cria.h"
 
-//==================================================
-//Interpreter
-//==================================================
-/*
-void
-Interpreter_loadFunction(
-    Interpreter             interpreter,
-    char*                   moduleName,
-    char*                   functionName
-)
-{
-    FunctionDefinition  funcDef = NULL;
-    funcDef = functionDefinition_new(moduleName, functionName, TRUE);
-    list_add(interpreter->functionList, funcDef);
-}
-*/
-
-
 void
 Interpreter_addFunction(
-    Interpreter         interpreter,
-    char*               functionName,
+    Interpreter interpreter,
+    char* functionName,
     CriaNativeFunction* functionPoint
 )
 {
     Logger_trc("[ START ]%s", __func__);
     FunctionDefinition definition = NULL;
     definition = functionDefinition_new(functionName, TRUE, NULL, NULL, functionPoint);
-    list_add(interpreter->functionList, definition);
+    list_add(interpreter->functions, definition);
     Logger_trc("[  END  ]%s", __func__);
 }
 
@@ -36,15 +18,15 @@ Interpreter_addFunction(
 
 void
 Interpreter_addClass(
-    Interpreter         interpreter,
-    char*               className,
-    CriaNativeClassLoaderFunction* classLoader
+    Interpreter interpreter,
+    char* className,
+    CriaNativeClassLoader* classLoader
 )
 {
     Logger_trc("[ START ]%s", __func__);
     ClassDefinition definition = NULL;
     definition = classDefinition_new(interpreter, className, TRUE, NULL, NULL, classLoader);
-    list_add(interpreter->classList, definition);
+    list_add(interpreter->classes, definition);
     Logger_trc("[  END  ]%s", __func__);
 }
 
@@ -72,13 +54,12 @@ Interpreter_new(
     Interpreter interpreter = NULL;
     
     interpreter = Memory_malloc(sizeof(struct InterpreterTag));
-    interpreter->statementList = list_new();
-    Logger_dbg("interpreter->statementList is [%p]", interpreter->statementList);
-    interpreter->variableList = list_new();
-    interpreter->functionList = list_new();
-    interpreter->classList = list_new();
-    interpreter->buffer = NULL;
-    interpreter->lineNumber = 0;
+    interpreter->statements = list_new();
+    Logger_dbg("interpreter->statementList is [%p]", interpreter->statements);
+    interpreter->variables = list_new();
+    interpreter->functions = list_new();
+    interpreter->classes = list_new();
+    interpreter->row = 0;
     interpreter->column = 0;
     interpreter->indentLevel = 0;
     
@@ -100,11 +81,11 @@ Interpreter_dispose(
         goto END;
     }
     
-    Logger_dbg("interpreter->statementList is [%p]", interpreter->statementList);
-    if (interpreter->statementList != NULL)
+    Logger_dbg("interpreter->statements is [%p]", interpreter->statements);
+    if (interpreter->statements != NULL)
     {
-        list_dispose(interpreter->statementList);
-        interpreter->statementList = NULL;
+        list_dispose(interpreter->statements);
+        interpreter->statements = NULL;
     }
     
     interpreter = NULL;
@@ -118,32 +99,16 @@ END:
 Boolean
 Interpreter_compile(
     Interpreter interpreter,
-    char*       filePath
+    char* filePath
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    //初期化
-    Boolean     result = FALSE;
-    List    tokens = NULL;
-    Parser      parser = NULL;
+    Boolean result = FALSE;
+    List tokens = NULL;
+    Parser parser = NULL;
     
-//    tokenizer = tokenizer_new(filePath);
-//    if (tokenizer == NULL)
-//    {
-//        Logger_err("Create Tokenizer error.");
-//        goto END;
-//    }
-//    
-//    //字句解析
-//    if (tokenizer_do(tokenizer) == FALSE)
-//    {
-//        Logger_err("token parse error.");
-//        goto END;
-//    }
+    tokens = tokenizer_create_tokens(filePath);
     
-    tokens = tokenizer_createTokens(filePath);
-    
-    //構文解析
     parser = parser_new(tokens);
     if (parser_parse(parser, interpreter) == FALSE)
     {
@@ -151,11 +116,22 @@ Interpreter_compile(
         goto END;
     }
     
-    //処理成功
     result = TRUE;
     
 END:
-    //開放
+	//tokenizer_dispose(tokenizer);
+	//int i = 0;
+	//for (i = 0; i < tokens->count; i++)
+	//{
+		//Token token = (Token)list_get(tokens, i);
+		//Logger_dbg("token is [%p]", token);
+		//token_log(token);
+		//token_dispose(token);
+	//}
+	//list_dispose(tokens);
+	
+    //Memory_dumpBlocks(stdout);
+    
     parser_dispose(parser);
     parser = NULL;
     
@@ -173,7 +149,7 @@ Interpreter_run(
 {
     Logger_trc("[ START ]%s", __func__);
     
-    executor_executeStatementList(interpreter, NULL, NULL, interpreter->statementList);
+    executor_executeStatementList(interpreter, NULL, NULL, interpreter->statements);
     
     Logger_trc("[  END  ]%s", __func__);
 }

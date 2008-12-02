@@ -139,7 +139,7 @@ evaluator_variable(
     }
     
     
-    variable = variableDefinition_search(interpreter->variableList, expression->name);
+    variable = variableDefinition_search(interpreter->variables, expression->name);
     if (variable != NULL)
     {
         id = variable->object;
@@ -335,7 +335,7 @@ evaluator_functionCall(
     {
 		Logger_dbg("Method name is '%s'", expression->name->pointer);
 		
-		klass = classDefinition_search(interpreter->classList, object->name->pointer);
+		klass = classDefinition_search(interpreter->classes, object->name->pointer);
 		if (klass == NULL)
 		{
 			runtime_error(interpreter);
@@ -352,7 +352,7 @@ evaluator_functionCall(
     else
     {
 		Logger_dbg("Function name is '%s'", expression->name->pointer);
-		function = functionDefinition_search(interpreter->functionList, expression->name->pointer);
+		function = functionDefinition_search(interpreter->functions, expression->name->pointer);
 		if (function == NULL)
 		{
 			Logger_dbg("Function is not found.");
@@ -403,7 +403,7 @@ evaluator_generate(
     
     
     Logger_dbg("Class name is '%s'", expression->name->pointer);
-    klass = classDefinition_search(interpreter->classList, expression->name->pointer);
+    klass = classDefinition_search(interpreter->classes, expression->name->pointer);
     if (klass == NULL)
     {
         Logger_dbg("Class is not found.");
@@ -452,7 +452,7 @@ evaluator_referenceVariable(
     }
     
     
-    definition = variableDefinition_search(interpreter->variableList, variable->name);
+    definition = variableDefinition_search(interpreter->variables, variable->name);
     if (definition != NULL)
     {
         goto END;
@@ -467,7 +467,7 @@ evaluator_referenceVariable(
     }
     
     definition = variableDefinition_new(variable->name);
-    list_add(interpreter->variableList, definition);
+    list_add(interpreter->variables, definition);
     
 END:
     Logger_trc("[  END  ]%s", __func__);

@@ -142,7 +142,7 @@ typedef struct CriaObjectTag
 
 
 typedef CriaId CriaNativeFunction(Interpreter interpreter, CriaId object, List args);
-typedef ClassDefinition CriaNativeClassLoaderFunction(Interpreter interpreter, char* name);
+typedef ClassDefinition CriaNativeClassLoader(Interpreter interpreter, char* name);
 
 
 
