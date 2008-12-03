@@ -1,8 +1,12 @@
-#include "_Cria.h"
+#include <string.h>
+
+#include "../Memory/Memory.h"
+#include "../Logger/Logger.h"
+
+#include "_String.h"
 
 
 
-//Stringを生成
 String
 string_newFunction(
     char    *input,
@@ -25,7 +29,6 @@ string_newFunction(
 
 
 
-//文字列を破棄
 void
 string_dispose(
     String  string
@@ -58,7 +61,6 @@ END:
 
 
 
-//文字列長を取得
 long
 string_length(
     String  string

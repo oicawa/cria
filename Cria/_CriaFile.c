@@ -1,4 +1,4 @@
-#include "_Cria.h"
+#include "_CriaFile.h"
 
 
 
@@ -242,29 +242,29 @@ CriaFile_loadClass(
     klass->name = string_new(className);
     
     variableName = string_new("file");
-    variable = variableDefinition_new(variableName);
+    variable = definition_variable_new(variableName);
     variable->isStatic = FALSE;
     string_dispose(variableName);
     list_add(klass->fieldList, variable);
     
-    function = functionDefinition_new("new", TRUE, NULL, NULL, CriaFile_new);
+    function = definition_function_new("new", TRUE, NULL, NULL, CriaFile_new);
     function->isStatic = TRUE;
     list_add(klass->methodList, function);
     
-    function = functionDefinition_new("open", TRUE, NULL, NULL, CriaFile_open);
+    function = definition_function_new("open", TRUE, NULL, NULL, CriaFile_open);
     function->isStatic = FALSE;
     list_add(klass->methodList, function);
     
-    function = functionDefinition_new("close", TRUE, NULL, NULL, CriaFile_close);
+    function = definition_function_new("close", TRUE, NULL, NULL, CriaFile_close);
     function->isStatic = FALSE;
     list_add(klass->methodList, function);
     
-    function = functionDefinition_new("read", TRUE, NULL, NULL, CriaFile_read);
+    function = definition_function_new("read", TRUE, NULL, NULL, CriaFile_read);
     function->isStatic = FALSE;
     list_add(klass->methodList, function);
     
     
-    function = functionDefinition_new("is_end", TRUE, NULL, NULL, CriaFile_isEnd);
+    function = definition_function_new("is_end", TRUE, NULL, NULL, CriaFile_isEnd);
     function->isStatic = FALSE;
     list_add(klass->methodList, function);
     

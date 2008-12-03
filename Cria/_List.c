@@ -1,8 +1,12 @@
-#include "_Cria.h"
+#include <memory.h>
+
+#include "../Memory/Memory.h"
+#include "../Logger/Logger.h"
+
+#include "_List.h"
 
 
 
-//Itemを生成
 Item
 item_newFunction(
     void    *object,
@@ -77,7 +81,6 @@ END:
 
 
 
-//Listを生成
 List
 list_newFunction(
     char    *fileName,
@@ -94,7 +97,6 @@ list_newFunction(
 
 
 
-//Listの破棄
 void
 list_dispose(
     List    list
@@ -128,7 +130,6 @@ END:
 
 
 
-//オブジェクトを追加
 void
 list_addFunction(
     List    list,

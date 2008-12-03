@@ -4,13 +4,10 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
-
-typedef enum
-{
-    FALSE,
-    TRUE,
-} Boolean;
-
+#include "_Boolean.h"
+#include "_String.h"
+#include "_Interpreter.h"
+//#include "_DefinitionClass.h"
 
 
 typedef enum
@@ -27,13 +24,7 @@ typedef enum
 #define STATEMENT_PARSE_RESULT_ERROR        -1
 
 
-typedef struct  StringTag       *String;
-typedef struct  ItemTag         *Item;
-typedef struct  ListTag         *List;
-typedef struct  ListTag         *StringBuffer;
-
 //インスタンスへのポインタ
-typedef struct  InterpreterTag                  *Interpreter;
 typedef struct  TokenizerTag                    *Tokenizer;
 typedef struct  TokenTag                        *Token;
 typedef struct  ParserTag                       *Parser;
@@ -44,99 +35,22 @@ typedef struct  StatementSubstituteTag          *StatementSubstitute;
 typedef struct  StatementIfTag                  *StatementIf;
 typedef struct  StatementWhileTag               *StatementWhile;
 typedef struct  StatementGotoTag               *StatementGoto;
-typedef struct  VariableDefinitionTag           *VariableDefinition;
-typedef struct  FunctionDefinitionTag           *FunctionDefinition;
-typedef struct  ClassDefinitionTag              *ClassDefinition;
 
 typedef struct  ExpressionTag                   *Expression;
-typedef struct  OperationExpressionTag          *OperationExpression;
-typedef struct  VariableExpressionTag           *VariableExpression;
-typedef struct  ReferenceExpressionTag          *ReferenceExpression;
-typedef struct  FunctionCallExpressionTag       *FunctionCallExpression;
-typedef struct  GenerateExpressionTag           *GenerateExpression;
-typedef struct  StringLiteralExpressionTag      *StringLiteralExpression;
-typedef struct  IntegerLiteralExpressionTag     *IntegerLiteralExpression;
-typedef struct  BooleanLiteralExpressionTag     *BooleanLiteralExpression;
-typedef struct  ParametersExpressionTag         *ParametersExpression;
+typedef struct  ExpressionOperationTag          *ExpressionOperation;
+typedef struct  ExpressionVariableTag           *ExpressionVariable;
+typedef struct  ExpressionReferenceTag          *ExpressionReference;
+typedef struct  ExpressionFunctionCallTag       *ExpressionFunctionCall;
+typedef struct  ExpressionGenerateTag           *ExpressionGenerate;
+typedef struct  ExpressionStringLiteralTag      *ExpressionStringLiteral;
+typedef struct  ExpressionIntegerLiteralTag     *ExpressionIntegerLiteral;
+typedef struct  ExpressionBooleanLiteralTag     *ExpressionBooleanLiteral;
+typedef struct  ExpressionParametersTag         *ExpressionParameters;
 
 typedef struct  ReferenceTag                    *Reference;
 typedef struct  ReferenceVariableTag            *ReferenceVariable;
 typedef struct  ReferenceFunctionCallTag        *ReferenceFunctionCall;
 typedef struct  ReferenceClassTag               *ReferenceClass;
-
-
-
-typedef enum
-{
-    CRIA_DATA_TYPE_NULL,
-    CRIA_DATA_TYPE_VOID,
-    CRIA_DATA_TYPE_BOOLEAN,
-    CRIA_DATA_TYPE_INTEGER,
-    CRIA_DATA_TYPE_STRING,
-	CRIA_DATA_TYPE_FILE,
-    CRIA_DATA_TYPE_LIST,
-    CRIA_DATA_TYPE_FUNCTION,
-    CRIA_DATA_TYPE_CRIA_OBJECT,
-    CRIA_DATA_TYPE_CRIA_FUNCTION,
-} CriaDataType;
-
-
-
-typedef struct CriaIdTag
-{
-    String          name;
-    CriaDataType    type;
-    int             refCount;
-} *CriaId;
-
-
-
-typedef struct CriaBooleanTag
-{
-    struct CriaIdTag    id;
-    Boolean             isLiteral;
-    Boolean             value;
-} *CriaBoolean;
-
-
-
-typedef struct CriaStringTag
-{
-    struct CriaIdTag    id;
-    Boolean             isLiteral;
-    String              value;
-} *CriaString;
-
-
-
-typedef struct CriaIntegerTag
-{
-    struct CriaIdTag    id;
-    Boolean             isLiteral;
-    int                 value;
-} *CriaInteger;
-
-
-
-typedef struct CriaFileTag
-{
-    struct CriaIdTag    id;
-    String path;
-    FILE* pointer;
-} *CriaFile;
-
-
-
-typedef struct CriaObjectTag
-{
-    struct CriaIdTag    id;
-    void*               object;
-} *CriaObject;
-
-
-
-typedef CriaId CriaNativeFunction(Interpreter interpreter, CriaId object, List args);
-typedef ClassDefinition CriaNativeClassLoader(Interpreter interpreter, char* name);
 
 
 
@@ -260,151 +174,6 @@ typedef enum
     OPERATION_KIND_OR,
     OPERATION_KIND_AND,
 } OperationKind;
-
-
-
-//==============================
-//Interpreter
-//==============================
-//Interpreterを生成
-Interpreter
-Interpreter_new(
-    void
-);
-
-
-
-//Interpreterを破棄
-void
-Interpreter_dispose(
-    Interpreter interpreter
-);
-
-
-
-//コンパイル
-Boolean
-Interpreter_compile(
-    Interpreter interpreter,
-    char*       filePath
-);
-
-
-
-//実行
-void
-Interpreter_run(
-    Interpreter interpreter
-);
-
-
-
-FunctionDefinition
-Interpreter_searchFunction(
-    Interpreter interpreter,
-    char*       name
-);
-
-
-
-CriaId
-CriaId_new(
-    String          name,
-    CriaDataType    type
-);
-
-
-
-CriaObject
-CriaObject_new(
-    String          name,
-    CriaDataType    type,
-    void*           object
-);
-
-
-
-void
-CriaObject_dispose(
-    CriaObject  criaObject
-);
-
-
-
-CriaString
-CriaString_new(
-    Boolean         isLiteral,
-    String          value
-);
-
-
-
-CriaId
-CriaString_operate(
-    Interpreter     interpreter,
-    OperationKind   kind,
-    CriaString      left,
-    CriaString      right
-);
-
-
-
-void
-CriaString_dispose(
-    CriaString criaString
-);
-
-
-
-CriaInteger
-CriaInteger_new(
-    Boolean         isLiteral,
-    int             value
-);
-
-
-
-CriaId
-CriaInteger_operate(
-    Interpreter     interpreter,
-    OperationKind   kind,
-    CriaInteger     left,
-    CriaInteger     right
-);
-
-
-
-CriaBoolean
-CriaBoolean_new(
-    Boolean         isLiteral,
-    Boolean         value
-);
-
-
-
-CriaId
-CriaBoolean_operate(
-    Interpreter     interpreter,
-    OperationKind   kind,
-    CriaBoolean     left,
-    CriaBoolean     right
-);
-
-
-
-CriaId
-CriaBoolean_toString(
-    Interpreter     interpreter,
-    CriaBoolean     boolean
-);
-
-
-
-ClassDefinition
-CriaFile_loadClass(
-    Interpreter interpreter,
-    char* name
-);
 
 
 

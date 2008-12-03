@@ -130,7 +130,7 @@ evaluator_variable(
     
     if (parameterList != NULL)
     {
-        variable = variableDefinition_search(parameterList, expression->name);
+        variable = definition_variable_search(parameterList, expression->name);
         if (variable != NULL)
         {
             id = variable->object;
@@ -139,7 +139,7 @@ evaluator_variable(
     }
     
     
-    variable = variableDefinition_search(interpreter->variables, expression->name);
+    variable = definition_variable_search(interpreter->variables, expression->name);
     if (variable != NULL)
     {
         id = variable->object;
@@ -335,12 +335,12 @@ evaluator_functionCall(
     {
 		Logger_dbg("Method name is '%s'", expression->name->pointer);
 		
-		klass = classDefinition_search(interpreter->classes, object->name->pointer);
+		klass = definition_class_search(interpreter->classes, object->name->pointer);
 		if (klass == NULL)
 		{
 			runtime_error(interpreter);
 		}
-		function = functionDefinition_search(klass->methodList, expression->name->pointer);
+		function = definition_function_search(klass->methodList, expression->name->pointer);
 		if (function == NULL)
 		{
 			Logger_dbg("Method is not found.");
@@ -352,7 +352,7 @@ evaluator_functionCall(
     else
     {
 		Logger_dbg("Function name is '%s'", expression->name->pointer);
-		function = functionDefinition_search(interpreter->functions, expression->name->pointer);
+		function = definition_function_search(interpreter->functions, expression->name->pointer);
 		if (function == NULL)
 		{
 			Logger_dbg("Function is not found.");
@@ -380,7 +380,7 @@ evaluator_functionCall(
     
     
     Logger_dbg("Call cria function.(%s)", expression->name->pointer);
-    id = functionDefinition_evaluate(interpreter, object, function->of.cria.parameterList, function, parameters);
+    id = definition_function_evaluate(interpreter, object, function->of.cria.parameterList, function, parameters);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -403,7 +403,7 @@ evaluator_generate(
     
     
     Logger_dbg("Class name is '%s'", expression->name->pointer);
-    klass = classDefinition_search(interpreter->classes, expression->name->pointer);
+    klass = definition_class_search(interpreter->classes, expression->name->pointer);
     if (klass == NULL)
     {
         Logger_dbg("Class is not found.");
@@ -421,7 +421,7 @@ evaluator_generate(
     
     
     Logger_dbg("Call cria constractor.(%s)", expression->name->pointer);
-    id = classDefinition_evaluate(interpreter, NULL, parameterList, "new", klass, parameters);
+    id = definition_class_evaluate(interpreter, NULL, parameterList, "new", klass, parameters);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -444,7 +444,7 @@ evaluator_referenceVariable(
     
     if (parameters != NULL)
     {
-        definition = variableDefinition_search(parameters, variable->name);
+        definition = definition_variable_search(parameters, variable->name);
         if (definition != NULL)
         {
             goto END;
@@ -452,7 +452,7 @@ evaluator_referenceVariable(
     }
     
     
-    definition = variableDefinition_search(interpreter->variables, variable->name);
+    definition = definition_variable_search(interpreter->variables, variable->name);
     if (definition != NULL)
     {
         goto END;
@@ -461,12 +461,12 @@ evaluator_referenceVariable(
     //存在しなかった場合は登録
     if (parameters != NULL)
     {
-        definition = variableDefinition_new(variable->name);
+        definition = definition_variable_new(variable->name);
         list_add(parameters, definition);
         goto END;
     }
     
-    definition = variableDefinition_new(variable->name);
+    definition = definition_variable_new(variable->name);
     list_add(interpreter->variables, definition);
     
 END:

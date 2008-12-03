@@ -1,9 +1,14 @@
-#include "_Cria.h"
+#include <memory.h>
+
+#include "../Memory/Memory.h"
+#include "../Logger/Logger.h"
+
+#include "_DefinitionVariable.h"
 
 
 
 DefinitionVariable
-variableDefinition_new(
+definition_variable_new(
     String      name
 )
 {
@@ -18,7 +23,7 @@ variableDefinition_new(
 
 
 DefinitionVariable
-variableDefinition_search(
+definition_variable_search(
     List    variables,
     String  name
 )

@@ -1,11 +1,15 @@
-#include <stdio.h>
+#include <memory.h>
 
+#include "../Memory/Memory.h"
+#include "../Logger/Logger.h"
 
-#include "_Cria.h"
+#include "_DefinitionFunction.h"
+
+#include "_DefinitionClass.h"
 
 
 DefinitionClass
-classDefinition_new(
+definition_class_new(
 	Interpreter interpreter,
     char*               name,
     Boolean             isNative,
@@ -38,7 +42,7 @@ END:
 
 
 DefinitionClass
-classDefinition_search(
+definition_class_search(
     List classList,
     char* name
 )
@@ -65,7 +69,7 @@ classDefinition_search(
 
 
 CriaId
-classDefinition_evaluate(
+definition_class_evaluate(
     Interpreter interpreter,
     CriaId  id,
     List parameterList,
@@ -81,7 +85,7 @@ classDefinition_evaluate(
     Logger_dbg("Method name is '%s'", name);
     Logger_dbg("klass is '%p'", klass);
     Logger_dbg("klass->methodList is '%p'", klass->methodList);
-    function = functionDefinition_search(klass->methodList, name);
+    function = definition_function_search(klass->methodList, name);
     if (function == NULL)
     {
     	Logger_err("Method is not found. (%s)/%d", name, klass->methodList->count);
@@ -89,7 +93,7 @@ classDefinition_evaluate(
     }
     
     Logger_dbg("parameters->count = %d", parameters->count);
-    value = functionDefinition_evaluate(interpreter, id, parameterList, function, parameters);
+    value = definition_function_evaluate(interpreter, id, parameterList, function, parameters);
     
     
     Logger_trc("[  END  ]%s", __func__);

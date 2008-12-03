@@ -246,7 +246,7 @@ parser_definition_function_parameters(
 			break;
 	    }
 	    
-		DefinitionVariable variable = variableDefinition_new(token->buffer);
+		DefinitionVariable variable = definition_variable_new(token->buffer);
 		list_add(parameters, variable);
 	    Logger_dbg("Add parameter.(%s)", variable->name->pointer);
 		
@@ -359,7 +359,7 @@ parser_definition_function(
     }
 	
     Logger_dbg("Create FunctionDefinition. (name=%s, parameter=%p)", name->pointer, parameters);
-    functionDefinition = functionDefinition_new(name->pointer, FALSE, parameters, statements, NULL);
+    functionDefinition = definition_function_new(name->pointer, FALSE, parameters, statements, NULL);
     
 END:
 	if (functionDefinition == NULL)

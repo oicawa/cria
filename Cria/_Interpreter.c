@@ -1,4 +1,13 @@
-#include "_Cria.h"
+#include "../Memory/Memory.h"
+#include "../Logger/Logger.h"
+
+#include "_DefinitionFunction.h"
+#include "_DefinitionClass.h"
+#include "_IO.h"
+#include "_CriaFile.h"
+#include "_Executor.h"
+
+#include "_Interpreter.h"
 
 void
 Interpreter_addFunction(
@@ -9,7 +18,7 @@ Interpreter_addFunction(
 {
     Logger_trc("[ START ]%s", __func__);
     DefinitionFunction definition = NULL;
-    definition = functionDefinition_new(functionName, TRUE, NULL, NULL, functionPoint);
+    definition = definition_function_new(functionName, TRUE, NULL, NULL, functionPoint);
     list_add(interpreter->functions, definition);
     Logger_trc("[  END  ]%s", __func__);
 }
@@ -25,7 +34,7 @@ Interpreter_addClass(
 {
     Logger_trc("[ START ]%s", __func__);
     DefinitionClass definition = NULL;
-    definition = classDefinition_new(interpreter, className, TRUE, NULL, NULL, classLoader);
+    definition = definition_class_new(interpreter, className, TRUE, NULL, NULL, classLoader);
     list_add(interpreter->classes, definition);
     Logger_trc("[  END  ]%s", __func__);
 }

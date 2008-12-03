@@ -1,12 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdarg.h>
 #include <memory.h>
 
+#include "../Memory/Memory.h"
+#include "../Logger/Logger.h"
 
-
-#include "_Cria.h"
-
+#include "_StringBuffer.h"
 
 
 #define STRING_BUFFER_SIZE  256
@@ -25,7 +22,6 @@ stringBuffer_newFunction(
 
 
 
-//Listの破棄
 void
 stringBuffer_dispose(
     StringBuffer    stringBuffer
@@ -76,7 +72,6 @@ stringBuffer_dispose(
 
 
 
-//文字、文字列を連結
 void
 stringBuffer_appendFunction(
     StringBuffer    stringBuffer,
@@ -92,7 +87,6 @@ stringBuffer_appendFunction(
     long    filler = 0;
     
     
-    //終端Itemに対する操作
     if (list->last == NULL)
     {
         buffer = Memory_mallocAt(fileName, line, STRING_BUFFER_SIZE);
@@ -107,17 +101,14 @@ stringBuffer_appendFunction(
     length = strlen(string);
     filler = STRING_BUFFER_SIZE - strlen(buffer) - 1;
     
-    //あまっている部分に文字列をコピー
     strncat(buffer, string, filler);
     
-    //全てコピー可能だった場合は終了。
     if (length <= filler)
     {
         return;
     }
     
     
-    //不足していた場合は新規領域を確保した後、再帰処理
     Logger_cor("Length is over.");
     buffer = Memory_mallocAt(fileName, line, STRING_BUFFER_SIZE);
     memset(buffer, 0x00, STRING_BUFFER_SIZE);
@@ -125,6 +116,9 @@ stringBuffer_appendFunction(
     stringBuffer_append(stringBuffer, &(string[filler]));
 
 }
+
+
+
 void
 stringBuffer_appendCharFunction(
     StringBuffer    stringBuffer,
@@ -142,7 +136,6 @@ stringBuffer_appendCharFunction(
 
 
 
-//StringBufferが保持している文字列群を一つの文字列として返却
 String
 stringBuffer_toStringFunction(
     StringBuffer    stringBuffer,
@@ -166,7 +159,6 @@ stringBuffer_toStringFunction(
     Logger_cor("Cast to List.");
     List list = (List)stringBuffer;
     
-    //全長を取得
     item = list->item;
     Logger_cor("item set. (%p)", item);
     while(item != NULL)
@@ -177,13 +169,11 @@ stringBuffer_toStringFunction(
     }
     
     
-    //書き込みバッファを確保
     Logger_cor("buffer set.");
     char* buffer = Memory_mallocAt(fileName, line, length + 1);
     memset(buffer, 0x00, length + 1);
     
     
-    //内容を連結。
     Logger_cor("start concat.");
     item = list->item;
     while(item != NULL)
@@ -194,7 +184,6 @@ stringBuffer_toStringFunction(
     Logger_cor("stringBuffer all = [%s]", buffer);
     
     
-    //文字列を生成して返却
     Logger_cor("Create string value.");
     value = string_new(buffer);
     Memory_free(buffer);

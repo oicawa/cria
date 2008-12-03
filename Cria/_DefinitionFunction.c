@@ -1,7 +1,22 @@
-#include "_Cria.h"
+#include <memory.h>
+
+#include "../Memory/Memory.h"
+#include "../Logger/Logger.h"
+
+#include "_Boolean.h"
+#include "_List.h"
+#include "_Interpreter.h"
+#include "_CriaId.h"
+#include "_Statement.h"
+#include "_DefinitionVariable.h"
+#include "_Runtime.h"
+#include "_Executor.h"
+
+#include "_DefinitionFunction.h"
+
 
 DefinitionFunction
-functionDefinition_new(
+definition_function_new(
     char*               name,
     Boolean             isNative,
     List                parameterList,
@@ -32,7 +47,7 @@ functionDefinition_new(
 
 
 DefinitionFunction
-functionDefinition_search(
+definition_function_search(
     List    functions,
     char*   name
 )
@@ -59,7 +74,7 @@ functionDefinition_search(
 
 
 CriaId
-functionDefinition_evaluate(
+definition_function_evaluate(
 	Interpreter interpreter,
     CriaId object,
 	List parameterList,

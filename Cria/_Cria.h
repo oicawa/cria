@@ -11,42 +11,16 @@
 
 
 #include "Cria.h"
-
-
-
-struct StringTag {
-    char*       pointer;
-};
-
-
-
-struct ItemTag {
-    void    *object;
-    Item    next;
-};
-
-
-
-struct ListTag {
-    Item        item;
-    Item*       last;
-    int         count;
-};
-
-
-
-struct InterpreterTag
-{
-    List    statements;
-    List    variables;
-    List    functions;
-    List    classes;
-    int     row;
-    int     column;
-    int     indentLevel;
-};
-
-
+#include "_Boolean.h"
+#include "_String.h"
+#include "_List.h"
+#include "_StringBuffer.h"
+#include "_Interpreter.h"
+#include "_DefinitionVariable.h"
+#include "_DefinitionFunction.h"
+#include "_DefinitionClass.h"
+#include "_CriaFile.h"
+#include "_Statement.h"
 
 struct TokenTag
 {
@@ -144,49 +118,6 @@ struct StatementSubstituteTag
 struct StatementFunctionCallTag
 {
     ExpressionReference  expression;
-};
-
-
-
-struct DefinitionVariableTag
-{
-    String      name;
-    Boolean     isStatic;
-    CriaId      object;
-};
-
-
-
-struct DefinitionFunctionTag
-{
-    char*                       name;
-    Boolean                     isNative;
-    Boolean                    isStatic;
-    union
-    {
-        struct
-        {
-            List                parameterList;
-            List                statementList;
-        } cria;
-        struct
-        {
-            CriaNativeFunction* function;
-        } native;
-    } of;
-    CriaObject                  returnValue;
-};
-
-
-
-struct DefinitionClassTag
-{
-    String      name;
-    Boolean     isNative;
-    AccessLevel access;
-    List        baseList;
-    List        fieldList;
-    List        methodList;
 };
 
 
@@ -337,194 +268,6 @@ struct ReferenceTag
 
 
 
-typedef enum {
-    STATEMENT_RESULT_NORMAL = 1,
-    STATEMENT_RESULT_RETURN,
-    STATEMENT_RESULT_BREAK,
-    STATEMENT_RESULT_CONTINUE,
-    STATEMENT_RESULT_LABEL,
-} StatementResultType;
-
-
-
-typedef struct {
-    StatementResultType type;
-    union {
-        String label;
-        CriaId id;
-    } returns;
-} StatementResult;
-
-
-
-//==============================
-//String
-//==============================
-String
-string_newFunction(
-    char    *input,
-    char    *fileName,
-    int     line
-);
-#define string_new(string)\
-    (string_newFunction(string, __FILE__, __LINE__))
-
-
-
-void
-string_dispose(
-    String  string
-);
-
-
-
-String
-string_cloneFunction(
-    String  source,
-    char    *fileName,
-    int     line
-);
-#define string_clone(source)\
-    (string_cloneFunction(source, __FILE__, __LINE__))
-
-
-
-int
-string_toInteger(
-    String  source
-);
-
-
-
-Boolean
-string_toBoolean(
-    String  source
-);
-
-
-
-//==============================
-//Item
-//==============================
-Item
-item_newFunction(
-    void    *object,
-    char    *fileName,
-    int     line
-);
-
-
-
-void
-item_dispose(
-    Item    item
-);
-
-
-
-//==============================
-//List
-//==============================
-List
-list_newFunction(
-    char    *fileName,
-    int     line
-);
-#define list_new()\
-    (list_newFunction(__FILE__, __LINE__))
-
-
-
-void
-list_dispose(
-    List    list
-);
-
-
-
-void
-list_addFunction(
-    List    list,
-    void    *object,
-    char    *fileName,
-    int     line
-);
-#define list_add(list, object)\
-    (list_addFunction(list, object, __FILE__, __LINE__))
-
-
-
-void*
-list_get(
-    List    list,
-    int     index
-);
-
-
-
-char*
-list_toStringFunction(
-    List    list,
-    char*   fileName,
-    int     line
-);
-#define list_toString(list)\
-    (list_toStringFunction(list, __FILE__, __LINE__))
-
-
-
-StringBuffer
-stringBuffer_newFunction(
-    char    *fileName,
-    int     line
-);
-#define stringBuffer_new()\
-    (stringBuffer_newFunction(__FILE__, __LINE__))
-
-
-
-void
-stringBuffer_dispose(
-    StringBuffer    stringBuffer
-);
-
-
-
-void
-stringBuffer_appendCharFunction(
-    StringBuffer    stringBuffer,
-    char            charactor,
-    char*           fileName,
-    int             line
-);
-#define stringBuffer_appendChar(buffer, charctor)\
-    (stringBuffer_appendCharFunction(buffer, charctor, __FILE__, __LINE__))
-
-
-
-void
-stringBuffer_appendFunction(
-    StringBuffer    stringBuffer,
-    char*           string,
-    char*           fileName,
-    int             line
-);
-#define stringBuffer_append(buffer, string)\
-    (stringBuffer_appendFunction(buffer, string, __FILE__, __LINE__))
-
-
-
-String
-stringBuffer_toStringFunction(
-    StringBuffer    stringBuffer,
-    char*           fileName,
-    int             line
-);
-#define stringBuffer_toString(buffer)\
-    (stringBuffer_toStringFunction(buffer, __FILE__, __LINE__))
-
-
-
 List
 tokenizer_create_tokens(
     char*   filePath
@@ -670,104 +413,6 @@ variableExpression_parse(
 
 
 //==================================================
-//FunctionDefinition
-//==================================================
-DefinitionFunction
-functionDefinition_new(
-    char*               name,
-    Boolean             isNative,
-    List                parameterList,
-    List                statementList,
-    CriaNativeFunction* nativeFunctionPoint
-);
-
-
-
-Boolean
-functionDefinition_isMatch(
-    Parser parser
-);
-
-
-
-DefinitionFunction
-functionDefinition_search(
-    List    functions,
-    char*   name
-);
-
-
-
-DefinitionFunction
-functionDefinition_parse(
-    Parser parser
-);
-
-
-
-CriaId
-functionDefinition_evaluate(
-	Interpreter interpreter,
-    CriaId id,
-	List parameterList,
-	DefinitionFunction function,
-	List parameters
-);
-
-
-
-//==================================================
-//VariableDefinition
-//==================================================
-DefinitionVariable
-variableDefinition_new(
-    String  name
-);
-
-
-
-DefinitionVariable
-variableDefinition_search(
-    List    variableList,
-    String  name
-);
-
-
-
-DefinitionClass
-classDefinition_new(
-	Interpreter interpreter,
-    char*               name,
-    Boolean             isNative,
-    List                fieldList,
-    List                methodList,
-    CriaNativeClassLoader* classLoader
-);
-
-
-
-CriaId
-classDefinition_evaluate(
-    Interpreter interpreter,
-    CriaId  id,
-    List parameterList,
-    char*   name,
-    DefinitionClass klass,
-    List parameters
-);
-
-
-
-
-DefinitionClass
-classDefinition_search(
-    List classList,
-    char* name
-);
-
-
-
-//==================================================
 //ClassDefinition
 //==================================================
 Boolean
@@ -801,16 +446,6 @@ io_read(
 //==================================================
 //Executor
 //==================================================
-StatementResult
-executor_executeStatementList(
-    Interpreter interpreter,
-    CriaId object,
-    List parameters,
-    List        statements
-);
-
-
-
 StatementResult
 executor_executeStatement(
     Interpreter interpreter,
@@ -884,14 +519,6 @@ evaluator_functionCall(
 
 
 
-DefinitionVariable
-variableDefinition_search(
-    List    variableList,
-    String  name
-);
-
-
-
 #define token_log(token) \
     do \
     { \
@@ -923,16 +550,6 @@ variableDefinition_search(
     do { \
         Logger_err("Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", (token)->buffer->pointer, (token)->row, (token)->column, __FILE__, __LINE__); \
         fprintf(stderr, "Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", (token)->buffer->pointer, (token)->row, (token)->column, __FILE__, __LINE__); \
-        Memory_dispose(); \
-        exit(1); \
-    } while(0) \
-
-
-
-#define runtime_error(interpreter) \
-    do { \
-        Logger_err("Runtime error. (line:%d) [%s, %d]\n", (interpreter)->row, __FILE__, __LINE__); \
-        fprintf(stderr, "Runtime error. (line:%d) [%s, %d]\n", (interpreter)->row, __FILE__, __LINE__); \
         Memory_dispose(); \
         exit(1); \
     } while(0) \
