@@ -1,8 +1,8 @@
 #ifndef PUBLIC_CRIA_H_INCLUDED
 #define PUBLIC_CRIA_H_INCLUDED
 
-#include "../Memory/Memory.h"
-#include "../Logger/Logger.h"
+//#include "../Memory/Memory.h"
+//#include "../Logger/Logger.h"
 
 #include "_Boolean.h"
 #include "_String.h"

@@ -2,7 +2,7 @@
 #define PRIVATE_EXPRESSION_H_INCLUDED
 
 
-
+#include "_String.h"
 #include "_Parser.h"
 
 
