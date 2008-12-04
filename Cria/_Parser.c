@@ -1,21 +1,16 @@
-#include "_Cria.h"
+#include <memory.h>
 
+#include "../Memory/Memory.h"
+#include "../Logger/Logger.h"
 
+#include "_Tokenizer.h"
+#include "_DefinitionVariable.h"
+#include "_DefinitionFunction.h"
+#include "_Statement.h"
+#include "_Reference.h"
+#include "_Expression.h"
 
-Statement
-parser_statement(Parser parser);
-
-Expression
-parser_expression(Parser parser);
-
-ExpressionReference
-parser_expression_reference(Parser parser);
-
-Reference
-parser_reference(Parser parser);
-
-
-
+#include "_Parser.h"
 
 
 

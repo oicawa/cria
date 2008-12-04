@@ -1,4 +1,9 @@
-#include "_Cria.h"
+#include <memory.h>
+
+#include "../Memory/Memory.h"
+#include "../Logger/Logger.h"
+
+#include "_Reference.h"
 
 
 

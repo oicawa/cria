@@ -1,6 +1,22 @@
 #include <stdio.h>
+#include <string.h>
 
-#include "_Cria.h"
+#include "../Memory/Memory.h"
+#include "../Logger/Logger.h"
+
+#include "_StringBuffer.h"
+#include "_CriaId.h"
+#include "_CriaInteger.h"
+#include "_CriaBoolean.h"
+#include "_CriaString.h"
+#include "_Interpreter.h"
+#include "_Expression.h"
+#include "_DefinitionVariable.h"
+#include "_DefinitionFunction.h"
+#include "_DefinitionClass.h"
+#include "_Runtime.h"
+
+#include "_Evaluator.h"
 
 
 

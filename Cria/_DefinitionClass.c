@@ -4,6 +4,7 @@
 #include "../Logger/Logger.h"
 
 #include "_DefinitionFunction.h"
+#include "_Runtime.h"
 
 #include "_DefinitionClass.h"
 

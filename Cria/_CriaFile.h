@@ -2,6 +2,9 @@
 #define PRIVATE_CRIAFILE_H_INCLUDED
 
 
+#include "_String.h"
+#include "_Interpreter.h"
+#include "_CriaId.h"
 
 #include "_Cria.h"
 

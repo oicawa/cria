@@ -4,6 +4,8 @@
 
 #include "_Boolean.h"
 #include "_CriaId.h"
+#include "_Interpreter.h"
+#include "_Expression.h"
 
 typedef struct CriaIntegerTag
 {
@@ -13,6 +15,21 @@ typedef struct CriaIntegerTag
 } *CriaInteger;
 
 
+
+CriaInteger
+CriaInteger_new(
+    Boolean isLiteral,
+    int     value
+);
+
+
+CriaId
+CriaInteger_operate(
+    Interpreter     interpreter,
+    OperationKind   kind,
+    CriaInteger     left,
+    CriaInteger     right
+);
 
 
 

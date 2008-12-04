@@ -1,3 +1,11 @@
+#include <memory.h>
+
+#include "../Memory/Memory.h"
+#include "../Logger/Logger.h"
+
+#include "_CriaBoolean.h"
+#include "_Runtime.h"
+
 #include "_CriaInteger.h"
 
 

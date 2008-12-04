@@ -1,3 +1,7 @@
+#include "_CriaString.h"
+#include "_Runtime.h"
+#include "_CriaBoolean.h"
+
 #include "_CriaFile.h"
 
 

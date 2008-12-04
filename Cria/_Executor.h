@@ -20,4 +20,34 @@ executor_executeStatementList(
 
 
 
+StatementResult
+executor_executeStatement(
+    Interpreter interpreter,
+    CriaId object, 
+    List parameters,
+    Statement   statement
+);
+
+
+
+void
+executor_executeFunctionCallStatement(
+    Interpreter interpreter,
+    CriaId object,
+    List parameters,
+    StatementFunctionCall statement
+);
+
+
+
+void
+executor_executeSubstituteStatement(
+    Interpreter         interpreter,
+    CriaId object,
+    List parameters,
+    StatementSubstitute statement
+);
+
+
+
 #endif

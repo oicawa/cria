@@ -6,6 +6,8 @@
 #include "_IO.h"
 #include "_CriaFile.h"
 #include "_Executor.h"
+#include "_Tokenizer.h"
+#include "_Parser.h"
 
 #include "_Interpreter.h"
 

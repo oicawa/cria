@@ -1,6 +1,15 @@
-#include <stdio.h>
+#include <memory.h>
 
-#include "_Cria.h"
+#include "../Memory/Memory.h"
+#include "../Logger/Logger.h"
+
+#include "_DefinitionVariable.h"
+#include "_Expression.h"
+#include "_CriaBoolean.h"
+#include "_Evaluator.h"
+#include "_Runtime.h"
+
+#include "_Executor.h"
 
 
 

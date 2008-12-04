@@ -1,4 +1,10 @@
-#include "_Cria.h"
+#include <memory.h>
+
+#include "_CriaString.h"
+#include "_CriaBoolean.h"
+#include "_Runtime.h"
+
+#include "_StringBuffer.h"
 
 
 

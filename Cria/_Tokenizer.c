@@ -1,4 +1,13 @@
-#include "_Cria.h"
+#include <memory.h>
+#include <ctype.h>
+
+#include "../Memory/Memory.h"
+#include "../Logger/Logger.h"
+
+#include "_List.h"
+#include "_StringBuffer.h"
+
+#include "_Tokenizer.h"
 
 
 #define TOKEN_LITERAL_PARENTHESIS_LEFT      "("
