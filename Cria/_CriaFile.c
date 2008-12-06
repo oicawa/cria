@@ -3,14 +3,14 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
-#include "_CriaString.h"
-#include "_Runtime.h"
-#include "_CriaBoolean.h"
-#include "_StringBuffer.h"
-#include "_DefinitionVariable.h"
-#include "_DefinitionFunction.h"
+#include "CriaString.h"
+#include "Runtime.h"
+#include "CriaBoolean.h"
+#include "StringBuffer.h"
+#include "DefinitionVariable.h"
+#include "DefinitionFunction.h"
 
-#include "_CriaFile.h"
+#include "CriaFile.h"
 
 
 
