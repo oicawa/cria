@@ -2,9 +2,10 @@
 #define PRIVATE_DEFINITIONFUNCTION_H_INCLUDED
 
 
-#include "_Interpreter.h"
-#include "_List.h"
-#include "_CriaId.h"
+#include "Interpreter.h"
+#include "List.h"
+#include "CriaId.h"
+#include "Boolean.h"
 
 
 

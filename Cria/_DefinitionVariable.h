@@ -3,14 +3,14 @@
 
 
 
-#include "_Boolean.h"
-#include "_String.h"
-#include "_List.h"
-#include "_CriaId.h"
+#include "Boolean.h"
+#include "String.h"
+#include "List.h"
+#include "CriaId.h"
+
+#include "DefinitionVariable.h"
 
 
-
-typedef struct  DefinitionVariableTag           *DefinitionVariable;
 struct DefinitionVariableTag
 {
     String      name;
