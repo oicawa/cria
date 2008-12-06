@@ -3,11 +3,7 @@
 
 
 
-typedef enum
-{
-    FALSE,
-    TRUE,
-} Boolean;
+#include "Boolean.h"
 
 
 

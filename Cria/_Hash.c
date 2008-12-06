@@ -1,5 +1,3 @@
-#include "_Cria.h"
-
 typedef HashEntryTag    *Entry;
 typedef HashTypeTag     *HashType;
 typedef HashTag         *Hash;

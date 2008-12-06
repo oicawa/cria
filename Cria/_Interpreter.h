@@ -3,10 +3,8 @@
 
 
 
-#include "_Boolean.h"
-#include "_List.h"
+#include "List.h"
 
-typedef struct InterpreterTag *Interpreter;
 struct InterpreterTag
 {
     List    statements;
@@ -17,35 +15,6 @@ struct InterpreterTag
     int     column;
     int     indentLevel;
 };
-
-
-
-Interpreter
-Interpreter_new(
-    void
-);
-
-
-
-void
-Interpreter_dispose(
-    Interpreter interpreter
-);
-
-
-
-Boolean
-Interpreter_compile(
-    Interpreter interpreter,
-    char*       filePath
-);
-
-
-
-void
-Interpreter_run(
-    Interpreter interpreter
-);
 
 
 

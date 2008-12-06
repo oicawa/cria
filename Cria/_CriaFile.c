@@ -1,9 +1,14 @@
+#include <memory.h>
+
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
 #include "_CriaString.h"
 #include "_Runtime.h"
 #include "_CriaBoolean.h"
+#include "_StringBuffer.h"
+#include "_DefinitionVariable.h"
+#include "_DefinitionFunction.h"
 
 #include "_CriaFile.h"
 

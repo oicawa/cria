@@ -1,9 +1,259 @@
-#include <stdio.h>
+#include <memory.h>
 
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
+#include "Parser.h"
+#include "Tokenizer.h"
+
+
 #include "_Statement.h"
+
+
+Statement
+StatementWhile_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Statement statement = NULL;
+    StatementWhile whileStatement = NULL;
+    Expression condition = NULL;
+    List statements = list_new();
+    Item position = parser_getPosition(parser);
+    Token token = NULL;
+    
+    token = parser_getCurrent(parser);
+    token_log(token);
+    if (token->type != TOKEN_TYPE_WHILE)
+    {
+        Logger_dbg("token type is not 'WHILE'.");
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    parser_next(parser);
+    
+    
+    condition = parser_expression(parser);
+    if (condition == NULL)
+    {
+        Logger_dbg("condition expression is NULL.");
+        parser_setPosition(parser, position);
+        parser_error(token);
+        goto END;
+    }
+    
+    
+    token = parser_getCurrent(parser);
+    token_log(token);
+    if (token->type != TOKEN_TYPE_NEW_LINE)
+    {
+        Logger_err("token type is not 'NEW LINE'.");
+        parser_setPosition(parser, position);
+        parser_error(token);
+        goto END;
+    }
+    parser_next(parser);
+    
+    
+    token = parser_getCurrent(parser);
+    token_log(token);
+    if (token->type != TOKEN_TYPE_INDENT)
+    {
+        Logger_err("token type is not 'INDENT'.");
+        parser_setPosition(parser, position);
+        parser_error(token);
+        goto END;
+    }
+    parser_next(parser);
+    
+    
+    while(1)
+    {
+        token = parser_getCurrent(parser);
+        token_log(token);
+        if (token->type == TOKEN_TYPE_DEDENT)
+        {
+            Logger_dbg("token type is 'DEDENT'.");
+            break;
+        }
+        
+        statement = Statement_parse(parser);
+        if (statement == NULL)
+        {
+            Logger_err("statement parse error.");
+            parser_setPosition(parser, position);
+            parser_error(token);
+            goto END;
+        }
+        
+        Logger_dbg("Add statement.");
+        list_add(statements, statement);
+    }
+    parser_next(parser);
+    
+    
+    Logger_dbg("Create 'WhileStatement'");
+    whileStatement = Memory_malloc(sizeof(struct StatementWhileTag));
+    memset(whileStatement, 0x00, sizeof(struct StatementWhileTag));
+    whileStatement->condition = condition;
+    whileStatement->statements = statements;
+    
+    statement = Statement_new(STATEMENT_KIND_WHILE);
+    statement->of._while_ = whileStatement;
+    statement->line = token->row;
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return statement;
+}
+
+
+
+Statement
+StatementGoto_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Statement statement = NULL;
+    StatementGoto gotoStatement = NULL;
+    Item position = parser_getPosition(parser);
+    GotoType type = GOTO_TYPE_LABEL;
+    String label = NULL;
+    Expression expression = NULL;
+    Token token = NULL;
+    
+    token = parser_getCurrent(parser);
+    switch (token->type)
+    {
+    case TOKEN_TYPE_BREAK:
+    	type = GOTO_TYPE_BREAK;
+	    parser_next(parser);
+        break;
+    case TOKEN_TYPE_CONTINUE:
+    	type = GOTO_TYPE_CONTINUE;
+	    parser_next(parser);
+        break;
+    case TOKEN_TYPE_GOTO:
+    	type = GOTO_TYPE_LABEL;
+	    parser_next(parser);
+	    token = parser_getCurrent(parser);
+	    label = token->buffer;
+        break;
+    case TOKEN_TYPE_RETURN:
+    	type = GOTO_TYPE_RETURN;
+	    parser_next(parser);
+        break;
+    case TOKEN_TYPE_RETURN_VALUE:
+    	type = GOTO_TYPE_RETURN;
+	    parser_next(parser);
+	    expression = parser_expression(parser);
+        break;
+    default:
+    	parser_setPosition(parser, position);
+    	goto END;
+    }
+    
+    token = parser_getCurrent(parser);
+    if (token->type != TOKEN_TYPE_NEW_LINE)
+    {
+    	parser_setPosition(parser, position);
+    	parser_error(token);
+    	goto END;
+    }
+	parser_next(parser);
+    
+    Logger_dbg("Create 'GotoStatement'");
+    gotoStatement = Memory_malloc(sizeof(struct StatementGotoTag));
+    memset(gotoStatement, 0x00, sizeof(struct StatementGotoTag));
+    gotoStatement->type = type;
+    if (label != NULL)
+    	gotoStatement->of.label = string_clone(label);
+    gotoStatement->of.expression = expression;
+    
+    statement = statement_new(STATEMENT_KIND_GOTO);
+    statement->of._goto_ = gotoStatement;
+    statement->line = token->row;
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return statement;
+}
+
+
+
+Statement
+StatementSubstitute_parse(
+    Parser parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Statement statement = NULL;
+    StatementSubstitute substitute = NULL;
+    Item position = parser_getPosition(parser);
+    Token token = NULL;
+    Reference reference = NULL;
+    Expression expression = NULL;
+    
+    
+    Logger_dbg("Check reference expression.");
+    reference = parser_reference(parser);
+    if (reference == NULL)
+    {
+        Logger_dbg("Not reference expression.");
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    
+    token = parser_getCurrent(parser);
+    if (token->type != TOKEN_TYPE_SUBSTITUTE)
+    {
+        Logger_dbg("Not substitution token.");
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    
+    Logger_dbg("Check 'Expression'");
+    parser_next(parser);
+    expression = parser_expression(parser);
+    if (expression == NULL)
+    {
+        Logger_dbg("Not expression.");
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    token = parser_getCurrent(parser);
+    if (token->type != TOKEN_TYPE_NEW_LINE)
+    {
+        Logger_dbg("Not new line token.");
+        parser_setPosition(parser, position);
+        parser_error(token);
+        goto END;
+    }
+    
+    
+    parser_next(parser);
+    
+    
+    Logger_dbg("Create 'SubstituteStatement'");
+    substitute = Memory_malloc(sizeof(struct StatementSubstituteTag));
+    memset(substitute, 0x00, sizeof(struct StatementSubstituteTag));
+    substitute->reference = reference;
+    substitute->expression = expression;
+    
+    statement = Statement_new(STATEMENT_KIND_SUBSTITUTE);
+    statement->of._substitute_ = substitute;
+    statement->line = token->row;
+    
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return statement;
+}
 
 
 
@@ -66,6 +316,64 @@ statement_dispose(
     
 END:
     Logger_trc("[  END  ]%s", __func__);
+}
+
+
+
+Statement
+statement_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Statement statement = NULL;
+    
+    statement = parser_statement_substitute(parser);
+    if (statement != NULL)
+    {
+        Logger_dbg("Created SubstituteStatement.");
+        goto END;
+    }
+    
+    
+    statement = parser_statement_functionCall(parser);
+    if (statement != NULL)
+    {
+        Logger_dbg("Created FunctionCallStatement.");
+        goto END;
+    }
+    
+    
+    statement = parser_statement_if(parser);
+    if (statement != NULL)
+    {
+        Logger_dbg("Created IfStatement.");
+        goto END;
+    }
+    
+    
+    statement = parser_statement_while(parser);
+    if (statement != NULL)
+    {
+        Logger_dbg("Created WhileStatement.");
+        goto END;
+    }
+    
+    
+    statement = StatementGoto_parse(parser);
+    if (statement != NULL)
+    {
+        Logger_dbg("Created BreakStatement.");
+        goto END;
+    }
+    
+    
+    Logger_dbg("No Statement.");
+    
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return statement;
 }
 
 

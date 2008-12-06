@@ -5,8 +5,8 @@
 #include "_String.h"
 #include "_Interpreter.h"
 #include "_CriaId.h"
+#include "_DefinitionClass.h"
 
-#include "_Cria.h"
 
 
 typedef struct CriaFileTag *CriaFile;

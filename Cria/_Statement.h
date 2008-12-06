@@ -4,9 +4,10 @@
 
 #include "_String.h"
 #include "_CriaId.h"
+
 #include "_Expression.h"
 #include "_Reference.h"
-
+#include "Statement.h"
 
 typedef enum
 {
@@ -22,15 +23,6 @@ typedef enum
     STATEMENT_KIND_FUNCTION_DEFINITION,
     STATEMENT_KIND_CLASS_DEFINITION,
 } StatementKind;
-
-
-
-typedef struct  StatementTag                    *Statement;
-typedef struct  StatementFunctionCallTag        *StatementFunctionCall;
-typedef struct  StatementSubstituteTag          *StatementSubstitute;
-typedef struct  StatementIfTag                  *StatementIf;
-typedef struct  StatementWhileTag               *StatementWhile;
-typedef struct  StatementGotoTag               *StatementGoto;
 
 
 
@@ -65,6 +57,21 @@ struct StatementTag
         StatementWhile          _while_;
         StatementGoto           _goto_;
     } of;
+};
+
+
+
+struct StatementFunctionCallTag
+{
+    ExpressionReference  expression;
+};
+
+
+
+struct StatementSubstituteTag
+{
+    Reference   reference;
+    Expression  expression;
 };
 
 
@@ -108,41 +115,24 @@ struct StatementWhileTag
 
 
 
-struct StatementSubstituteTag
-{
-    Reference   reference;
-    Expression  expression;
-};
-
-
-
-struct StatementFunctionCallTag
-{
-    ExpressionReference  expression;
-};
-
-
-
 Statement
-parser_statement(
-	Parser parser
-);
-
-
-
-Statement
-statement_new(
+Statement_new(
     StatementKind   kind
 );
 
 
 
 void
-statement_dispose(
+Statement_dispose(
     Statement   statement
 );
 
 
+
+Statement
+Statement_parse(
+	Parser parser
+);
 
 
 

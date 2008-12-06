@@ -51,7 +51,14 @@ _DefinitionFunction.o: _DefinitionFunction.c _DefinitionFunction.h _Cria.h Cria.
 _DefinitionClass.o: _DefinitionClass.c _DefinitionClass.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Tokenizer.o: _Tokenizer.c _Tokenizer.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Parser.o: _Parser.c _Parser.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+
+_StatementGoto.o: _StatementGoto.c _StatementGoto.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+_StatementIf.o: _StatementIf.c _StatementIf.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+_StatementWhile.o: _StatementWhile.c _StatementWhile.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+_StatementSubstitute.o: _StatementSubstitute.c _StatementSubstitute.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+_StatementFunctionCall.o: _StatementFunctionCall.c _StatementFunctionCall.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Statement.o: _Statement.c _Statement.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+
 _Expression.o: _Expression.c _Expression.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Executor.o: _Executor.c _Executor.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Evaluator.o: _Evaluator.c _Evaluator.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
