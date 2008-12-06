@@ -3,6 +3,7 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
+
 #include "_String.h"
 
 
@@ -14,17 +15,17 @@ string_newFunction(
     int     line
 )
 {
-    String  string;
+    char* string = NULL;
     
     if (input == NULL)
         return NULL;
     
-    string = Memory_mallocAt(fileName, line, sizeof(struct StringTag));
-    memset(string, 0x00, sizeof(struct StringTag));
-    string->pointer = Memory_mallocAt(fileName, line, strlen(input) + 1);
-    memset(string->pointer, 0x00, strlen(input) + 1);
-    strcpy(string->pointer, input);
-    return string;
+    //string = Memory_mallocAt(fileName, line, sizeof(struct StringTag));
+    //memset(string, 0x00, sizeof(struct StringTag));
+    string = Memory_mallocAt(fileName, line, strlen(input) + 1);
+    memset(string, 0x00, strlen(input) + 1);
+    strcpy(string, input);
+    return (String)string;
 }
 
 
@@ -41,19 +42,10 @@ string_dispose(
         goto END;
     }
     
-    Logger_cor("Check string->pointer.");
-    if (string->pointer != NULL)
-    {
-        Logger_cor("Free string->pointer.");
-        Memory_free(string->pointer);
-        Logger_cor("Set NULL to string->pointer.");
-        string->pointer = NULL;
-    }
-    
-    Logger_cor("Free string.");
-    Memory_free(string);
-    Logger_cor("Set NULL to string.");
-    string = NULL;
+	Logger_cor("Free string.");
+	Memory_free(string);
+	Logger_cor("Set NULL to string.");
+	string = NULL;
     
 END:
     Logger_cor("[  END  ]%s", __func__);
@@ -66,7 +58,7 @@ string_length(
     String  string
 )
 {
-    return strlen(string->pointer);
+    return strlen(string);
 }
 
 
@@ -81,10 +73,10 @@ string_cloneFunction(
     if (source == NULL)
         return NULL;
 
-    long size = strlen(source->pointer);
+    long size = strlen(source);
     char* buffer = Memory_mallocAt(fileName, line, size + 1);
     memset(buffer, 0x00, size + 1);
-    strncpy(buffer, source->pointer, size);
+    strncpy(buffer, source, size);
     
     String string = string_newFunction(buffer, fileName, line);
     Memory_free(buffer);
@@ -106,14 +98,14 @@ string_subStringFunction(
     if (source == NULL)
         return NULL;
     
-    long size = strlen(source->pointer);
+    long size = strlen(source);
     
     if (size < start + length)
         return NULL;
     
     char* buffer = Memory_mallocAt(fileName, line, length + 1);
     memset(buffer, 0x00, length + 1);
-    strncpy(buffer, &(source->pointer[start]), length);
+    strncpy(buffer, &(source[start]), length);
     
     String string = string_newFunction(buffer, fileName, line);
     Memory_free(buffer);
@@ -128,7 +120,7 @@ string_toInteger(
     String  source
 )
 {
-    return atoi(source->pointer);
+    return atoi(source);
 }
 
 
@@ -139,11 +131,11 @@ string_toBoolean(
 {
     Boolean boolean = -1;
     
-    if (strcmp(source->pointer, "true") == 0)
+    if (strcmp(source, "true") == 0)
     {
         boolean = TRUE;
     }
-    else if (strcmp(source->pointer, "false") == 0)
+    else if (strcmp(source, "false") == 0)
     {
         boolean = FALSE;
     }
