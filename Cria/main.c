@@ -1,6 +1,9 @@
 #include <stdio.h>
 
-#include "_Cria.h"
+#include "../Logger/Logger.h"
+#include "../Memory/Memory.h"
+
+#include "Interpreter.h"
 
 
 

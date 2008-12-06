@@ -1,7 +1,7 @@
 #ifndef PUBLIC_INTERPRETER_H_INCLUDED
 #define PUBLIC_INTERPRETER_H_INCLUDED
 
-
+#include "Boolean.h"
 
 typedef struct InterpreterTag *Interpreter;
 

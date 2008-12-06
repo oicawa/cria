@@ -7,6 +7,14 @@ typedef struct ItemTag *Item;
 typedef struct ListTag *List;
 
 
+
+void
+item_dispose(
+    Item    item
+);
+
+
+
 List
 list_newFunction(
     char    *fileName,
