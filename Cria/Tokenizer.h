@@ -3,6 +3,7 @@
 
 
 #include "List.h"
+#include "String.h"
 
 
 typedef enum
@@ -79,19 +80,31 @@ tokenizer_create_tokens(
 
 
 
-#define token_log(token) \
-    do \
-    { \
-    	Logger_dbg("token is [%p]", token); \
-        char* buffer = NULL; \
-        if (token == NULL) \
-            Logger_dbg("Token type=NULL."); \
-        else if (token->buffer != NULL) \
-        { \
-            buffer = token->buffer->pointer; \
-            Logger_dbg("Token type=%2d(%3d, %2d) [%s]", token->type, token->row, token->column, buffer); \
-        } \
-    } while(0) \
+void
+token_log(
+	Token token
+);
+
+
+
+TokenType
+token_type(
+	Token token
+);
+
+
+
+int
+token_row(
+	Token token
+);
+
+
+
+String
+token_buffer(
+	Token token
+);
 
 
 

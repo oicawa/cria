@@ -16,8 +16,6 @@ OBJS =\
     _Parser.o\
     _Statement.o\
     _Expression.o\
-    _Executor.o\
-    _Evaluator.o\
     _IO.o\
     _CriaId.o\
     _CriaString.o\
@@ -60,8 +58,6 @@ _StatementFunctionCall.o: _StatementFunctionCall.c _StatementFunctionCall.h _Cri
 _Statement.o: _Statement.c _Statement.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 
 _Expression.o: _Expression.c _Expression.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
-_Executor.o: _Executor.c _Executor.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
-_Evaluator.o: _Evaluator.c _Evaluator.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _IO.o: _IO.c _IO.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Reference.o: _Reference.c _Reference.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 

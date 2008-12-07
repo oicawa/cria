@@ -16,6 +16,20 @@
 
 
 
+void
+parser_errorFunction(
+	Token token,
+	char* file,
+	int line
+)
+{
+	Logger_err("Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", token->buffer, token->row, token->column, file, line);
+	fprintf(stderr, "Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", token->buffer, token->row, token->column, file, line);
+	Memory_dispose();
+	exit(1);
+}
+
+
 Parser
 parser_new(
     List    list
@@ -223,149 +237,6 @@ END:
 
 
 
-List
-parser_definition_function_parameters(
-	Parser parser
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-	List parameters = list_new();
-	Token token = NULL;
-	
-	while (TRUE)
-	{
-		token = parser_getCurrent(parser);
-		if (token->type != TOKEN_TYPE_IDENTIFIER)
-	    {
-	        Logger_dbg("Not identifier");
-			break;
-	    }
-	    
-		DefinitionVariable variable = definition_variable_new(token->buffer);
-		list_add(parameters, variable);
-	    Logger_dbg("Add parameter.(%s)", variable->name->pointer);
-		
-		parser_next(parser);
-		token = parser_getCurrent(parser);
-		if (token->type != TOKEN_TYPE_COMMA)
-	    {
-	        Logger_dbg("Not ', '");
-			break;
-	    }
-	    
-		parser_next(parser);
-	}
-	
-    Logger_dbg("parameters count = %d", parameters->count);
-    Logger_trc("[  END  ]%s", __func__);
-	return parameters;
-}
-
-
-
-DefinitionFunction
-parser_definition_function(
-    Parser parser
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    DefinitionFunction functionDefinition = NULL;
-    Item restore = parser_getPosition(parser);
-    String name = NULL;
-    List parameters = NULL;
-    List statements = NULL;
-    Statement statement = NULL;
-    Token token = NULL;
-    
-    token = parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_IDENTIFIER)
-    {
-        Logger_dbg("Not identifier.");
-    	goto END;
-    }
-    
-    name = token->buffer;
-    parser_next(parser);
-    
-    if (parser_eat(parser, TOKEN_TYPE_PARENTHESIS_LEFT, FALSE) == FALSE)
-    {
-        Logger_dbg("Not '('.");
-    	goto END;
-    }
-    
-	parameters = parser_definition_function_parameters(parser);
-	if (parameters == NULL)
-    {
-        Logger_dbg("Not parameters.");
-    	goto END;
-    }
-	
-	if (parser_eat(parser, TOKEN_TYPE_PARENTHESIS_RIGHT, FALSE) == FALSE)
-    {
-        Logger_dbg("Not ')'.");
-    	goto END;
-    }
-	
-	if (parser_eat(parser, TOKEN_TYPE_COLON, FALSE) == FALSE)
-    {
-        Logger_dbg("Not ':'.");
-    	goto END;
-    }
-    
-	if (parser_eat(parser, TOKEN_TYPE_NEW_LINE, TRUE) == FALSE)
-    {
-        Logger_dbg("Not <<NEW LINE>>.");
-    	goto END;
-    }
-    
-	if (parser_eat(parser, TOKEN_TYPE_INDENT, TRUE) == FALSE)
-    {
-        Logger_dbg("Not <<INDENT>>.");
-    	goto END;
-    }
-	
-	statements = list_new();
-    while(1)
-    {
-        token = parser_getCurrent(parser);
-        if (token->type == TOKEN_TYPE_DEDENT)
-        {
-            Logger_dbg("token type is 'DEDENT'.");
-            break;
-        }
-        
-        statement = Statement_parse(parser);
-        if (statement == NULL)
-        {
-            Logger_err("statement parse error.");
-            list_dispose(statements);
-            parser_error(token);
-            goto END;
-        }
-        
-        Logger_dbg("Add statement.");
-        list_add(statements, statement);
-    }
-    
-	if (parser_eat(parser, TOKEN_TYPE_DEDENT, TRUE) == FALSE)
-    {
-        Logger_dbg("Not <<DEDENT>>.");
-    	goto END;
-    }
-	
-    Logger_dbg("Create FunctionDefinition. (name=%s, parameter=%p)", name->pointer, parameters);
-    functionDefinition = definition_function_new(name->pointer, FALSE, parameters, statements, NULL);
-    
-END:
-	if (functionDefinition == NULL)
-		parser_setPosition(parser, restore);
-	
-    Logger_trc("[  END  ]%s", __func__);
-    return functionDefinition;
-}
-
-
-
 ExpressionParameters
 parser_expression_parameters(
     Parser  parser
@@ -462,7 +333,7 @@ parser_reference_variable(
     }
     
     name = token->buffer;
-	Logger_dbg("Variable name is '%s'", name->pointer);
+	Logger_dbg("Variable name is '%s'", name);
     
     parser_next(parser);
     token = parser_getCurrent(parser);
@@ -530,7 +401,7 @@ parser_reference_functionCall(
     }
     
     name = token->buffer;
-    Logger_dbg("function name is '%s'", name->pointer);
+    Logger_dbg("function name is '%s'", name);
     
     parser_next(parser);
     token = parser_getCurrent(parser);
@@ -650,12 +521,12 @@ parser_expression_variable(
     token = parser_getCurrent(parser);
     if (token->type == TOKEN_TYPE_PARENTHESIS_LEFT)
     {
-        Logger_dbg("Maybe FunctionCallExpression name = %s", name->pointer);
+        Logger_dbg("Maybe FunctionCallExpression name = %s", name);
         parser_setPosition(parser, position);
         goto END;
     }
     
-    Logger_dbg("VariableExpression name = %s", name->pointer);
+    Logger_dbg("VariableExpression name = %s", name);
     ExpressionVariable variable = NULL;
     variable = Memory_malloc(sizeof(struct ExpressionVariableTag));
     memset(variable, 0x00, sizeof(struct ExpressionVariableTag));
@@ -780,7 +651,7 @@ parser_expression_generate(
     
     
     name = token->buffer;
-    Logger_dbg("Class name is '%s'", name->pointer);
+    Logger_dbg("Class name is '%s'", name);
     
     
     parser_next(parser);
@@ -1259,389 +1130,6 @@ parser_expression(
 
 
 
-Statement
-parser_statement_functionCall(
-    Parser parser
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    Statement statement = NULL;
-    StatementFunctionCall  function = NULL;
-    ExpressionReference expression = NULL;
-    Item position = parser_getPosition(parser);
-    Token token = NULL;
-    
-    
-    Logger_dbg("Check 'FunctionCallExpression'");
-    expression = parser_expression_reference(parser);
-    if (expression == NULL)
-    {
-        Logger_dbg("Not reference expression.");
-        parser_setPosition(parser, position);
-        goto END;
-    }
-    
-    
-    token = parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_NEW_LINE)
-    {
-        Logger_dbg("Not new line token.");
-        token_log(token);
-        parser_setPosition(parser, position);
-        parser_error(token);
-        goto END;
-    }
-    
-    
-    parser_next(parser);
-    
-    
-    Logger_dbg("Create 'FunctionCallStatement'");
-    function = Memory_malloc(sizeof(struct StatementFunctionCallTag));
-    memset(function, 0x00, sizeof(struct StatementFunctionCallTag));
-    function->expression = expression;
-    
-    statement = Statement_new(STATEMENT_KIND_FUNCTION_CALL);
-    statement->of._functionCall_ = function;
-    statement->line = token->row;
-    
-END:
-    Logger_trc("[  END  ]%s", __func__);
-    return statement;
-}
-
-
-
-StatementIf
-parser_statement_else_block(
-    Parser  parser
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    Statement statement = NULL;
-    StatementIf ifStatement = NULL;
-    List statements = list_new();
-    Item position = parser_getPosition(parser);
-    Token token = NULL;
-    
-    token = parser_getCurrent(parser);
-    token_log(token);
-    if (token->type != TOKEN_TYPE_ELSE)
-    {
-        Logger_err("token type is not 'ELSE'.");
-        parser_setPosition(parser, position);
-        parser_error(token);
-        goto END;
-    }
-    parser_next(parser);
-    
-    
-    token = parser_getCurrent(parser);
-    token_log(token);
-    if (token->type != TOKEN_TYPE_NEW_LINE)
-    {
-        Logger_err("token type is not 'NEW LINE'.");
-        parser_setPosition(parser, position);
-        parser_error(token);
-        goto END;
-    }
-    parser_next(parser);
-    
-    
-    token = parser_getCurrent(parser);
-    token_log(token);
-    if (token->type != TOKEN_TYPE_INDENT)
-    {
-        Logger_err("token type is not 'INDENT'.");
-        parser_setPosition(parser, position);
-        parser_error(token);
-        goto END;
-    }
-    parser_next(parser);
-    
-    
-    while(1)
-    {
-        token = parser_getCurrent(parser);
-        token_log(token);
-        if (token->type == TOKEN_TYPE_DEDENT)
-        {
-            Logger_dbg("token type is not 'DEDENT'.");
-            break;
-        }
-        
-        statement = Statement_parse(parser);
-        if (statement == NULL)
-        {
-            Logger_err("statement parse error.");
-            parser_setPosition(parser, position);
-            parser_error(token);
-            goto END;
-        }
-        
-        Logger_dbg("Add statement.");
-        list_add(statements, statement);
-    }
-    parser_next(parser);
-    
-    
-    Logger_dbg("Create 'IfStatement'");
-    ifStatement = Memory_malloc(sizeof(struct StatementIfTag));
-    memset(ifStatement, 0x00, sizeof(struct StatementIfTag));
-    ifStatement->statements = statements;
-    
-END:
-    Logger_trc("[  END  ]%s", __func__);
-    return ifStatement;
-}
-
-
-
-StatementIf
-parser_statement_elif_block(
-    Parser  parser
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    Statement statement = NULL;
-    StatementIf ifStatement = NULL;
-    Expression condition = NULL;
-    List statements = list_new();
-    Item position = parser_getPosition(parser);
-    Token token = NULL;
-    
-    token = parser_getCurrent(parser);
-    token_log(token);
-    if (token->type != TOKEN_TYPE_ELIF)
-    {
-        Logger_err("token type is not 'ELIF'.");
-        parser_setPosition(parser, position);
-        parser_error(token);
-        goto END;
-    }
-    parser_next(parser);
-    
-    
-    condition = parser_expression(parser);
-    if (condition == NULL)
-    {
-        Logger_err("condition expression is NULL.");
-        parser_setPosition(parser, position);
-        parser_error(token);
-        goto END;
-    }
-    
-    
-    token = parser_getCurrent(parser);
-    token_log(token);
-    if (token->type != TOKEN_TYPE_NEW_LINE)
-    {
-        Logger_err("token type is not 'NEW LINE'.");
-        parser_setPosition(parser, position);
-        parser_error(token);
-        goto END;
-    }
-    parser_next(parser);
-    
-    
-    token = parser_getCurrent(parser);
-    token_log(token);
-    if (token->type != TOKEN_TYPE_INDENT)
-    {
-        Logger_err("token type is not 'INDENT'.");
-        parser_setPosition(parser, position);
-        parser_error(token);
-        goto END;
-    }
-    parser_next(parser);
-    
-    
-    while(1)
-    {
-        token = parser_getCurrent(parser);
-        token_log(token);
-        if (token->type == TOKEN_TYPE_DEDENT)
-        {
-            Logger_dbg("token type is not 'DEDENT'.");
-            break;
-        }
-        
-        statement = Statement_parse(parser);
-        if (statement == NULL)
-        {
-            Logger_err("statement parse error.");
-            parser_setPosition(parser, position);
-            parser_error(token);
-            goto END;
-        }
-        
-        Logger_dbg("Add statement.");
-        list_add(statements, statement);
-    }
-    parser_next(parser);
-    
-    
-    Logger_dbg("Create 'IfStatement'");
-    ifStatement = Memory_malloc(sizeof(struct StatementIfTag));
-    memset(ifStatement, 0x00, sizeof(struct StatementIfTag));
-    ifStatement->condition = condition;
-    ifStatement->statements = statements;
-    
-    
-    token = parser_getCurrent(parser);
-    if (token->type == TOKEN_TYPE_ELSE)
-    {
-        Logger_dbg("token type is 'ELSE'.");
-        ifStatement->_if_ = parser_statement_else_block(parser);
-    }
-    
-END:
-    Logger_trc("[  END  ]%s", __func__);
-    return ifStatement;
-}
-
-
-
-StatementIf
-parser_statement_if_block(
-    Parser  parser
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    Statement statement = NULL;
-    StatementIf ifStatement = NULL;
-    Expression condition = NULL;
-    List statements = list_new();
-    Item position = parser_getPosition(parser);
-    Token token = NULL;
-    
-    token = parser_getCurrent(parser);
-    token_log(token);
-    if (token->type != TOKEN_TYPE_IF)
-    {
-        Logger_dbg("token type is not 'IF'.");
-        parser_setPosition(parser, position);
-        goto END;
-    }
-    parser_next(parser);
-    
-    
-    condition = parser_expression(parser);
-    if (condition == NULL)
-    {
-        Logger_dbg("condition expression is NULL.");
-        parser_setPosition(parser, position);
-        parser_error(token);
-        goto END;
-    }
-    
-    
-    token = parser_getCurrent(parser);
-    token_log(token);
-    if (token->type != TOKEN_TYPE_NEW_LINE)
-    {
-        Logger_err("token type is not 'NEW LINE'.");
-        parser_setPosition(parser, position);
-        parser_error(token);
-        goto END;
-    }
-    parser_next(parser);
-    
-    
-    token = parser_getCurrent(parser);
-    token_log(token);
-    if (token->type != TOKEN_TYPE_INDENT)
-    {
-        Logger_err("token type is not 'INDENT'.");
-        parser_setPosition(parser, position);
-        parser_error(token);
-        goto END;
-    }
-    parser_next(parser);
-    
-    
-    while(1)
-    {
-        token = parser_getCurrent(parser);
-        token_log(token);
-        if (token->type == TOKEN_TYPE_DEDENT)
-        {
-            Logger_dbg("token type is 'DEDENT'.");
-            break;
-        }
-        
-        statement = Statement_parse(parser);
-        if (statement == NULL)
-        {
-            Logger_err("statement parse error.");
-            parser_setPosition(parser, position);
-            parser_error(token);
-            goto END;
-        }
-        
-        Logger_dbg("Add statement.");
-        list_add(statements, statement);
-    }
-    parser_next(parser);
-    
-    
-    Logger_dbg("Create 'IfStatement'");
-    ifStatement = Memory_malloc(sizeof(struct StatementIfTag));
-    memset(ifStatement, 0x00, sizeof(struct StatementIfTag));
-    ifStatement->condition = condition;
-    ifStatement->statements = statements;
-    
-    
-    token = parser_getCurrent(parser);
-    if (token->type == TOKEN_TYPE_ELIF)
-    {
-        Logger_dbg("token type is 'ELIF'.");
-        ifStatement->_if_ = parser_statement_elif_block(parser);
-    }
-    else if (token->type == TOKEN_TYPE_ELSE)
-    {
-        Logger_dbg("token type is 'ELSE'.");
-        ifStatement->_if_ = parser_statement_else_block(parser);
-    }
-    
-END:
-    Logger_trc("[  END  ]%s", __func__);
-    return ifStatement;
-}
-
-
-
-Statement
-parser_statement_if(
-    Parser  parser
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    Statement statement = NULL;
-    StatementIf ifStatement = NULL;
-    Item position = parser_getPosition(parser);
-    Token token = parser_getCurrent(parser);
-    
-    
-    ifStatement = parser_statement_if_block(parser);
-    if (ifStatement == NULL)
-    {
-        parser_setPosition(parser, position);
-        goto END;
-    }
-    
-    
-    statement = Statement_new(STATEMENT_KIND_IF);
-    statement->of._if_ = ifStatement;
-    statement->line = token->row;
-    
-END:
-    Logger_trc("[  END  ]%s", __func__);
-    return statement;
-}
-
-
-
 Boolean
 parser_create_syntax_tree(
     List tokens,
@@ -1659,11 +1147,11 @@ parser_create_syntax_tree(
     parser_next(parser);
     while (TRUE)
     {
-        functionDefinition = parser_definition_function(parser);
+        functionDefinition = definition_function_parse(parser);
         if (functionDefinition != NULL)
         {
             Logger_dbg("Add created FunctionDefinition and parse next.");
-            list_add(interpreter->functions, functionDefinition);
+            list_add(Interpreter_functions(interpreter), functionDefinition);
             continue;
         }
         
@@ -1672,7 +1160,7 @@ parser_create_syntax_tree(
         if (statement != NULL)
         {
             Logger_dbg("Add created statement and parse next.");
-            list_add(interpreter->statements, statement);
+            list_add(Interpreter_statements(interpreter), statement);
             continue;
         }
         

@@ -9,6 +9,16 @@
 typedef struct  ListTag *StringBuffer;
 
 
+StringBuffer
+stringBuffer_newFunction(
+    char    *fileName,
+    int     line
+);
+#define stringBuffer_new()\
+	stringBuffer_newFunction(__FILE__, __LINE__);
+
+
+
 void
 stringBuffer_dispose(
     StringBuffer    stringBuffer

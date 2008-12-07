@@ -3,8 +3,9 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
-#include "_CriaBoolean.h"
-#include "_Runtime.h"
+#include "CriaBoolean.h"
+#include "Runtime.h"
+#include "String.h"
 
 #include "_CriaInteger.h"
 
@@ -20,7 +21,7 @@ CriaInteger_new(
     CriaInteger integer = Memory_malloc(sizeof(struct CriaIntegerTag));
     memset(integer, 0x00, sizeof(struct CriaIntegerTag));
     
-    integer->id.name = string_new("Integer");
+    integer->id.name = String_new("Integer");
     integer->id.type = CRIA_DATA_TYPE_INTEGER;
     integer->isLiteral = isLiteral;
     integer->value = value;

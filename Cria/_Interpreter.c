@@ -1,13 +1,13 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
-#include "_DefinitionFunction.h"
-#include "_DefinitionClass.h"
-#include "_IO.h"
-#include "_CriaFile.h"
-#include "_Executor.h"
-#include "_Tokenizer.h"
-#include "_Parser.h"
+#include "DefinitionFunction.h"
+#include "DefinitionClass.h"
+#include "IO.h"
+#include "CriaFile.h"
+#include "Executor.h"
+#include "Tokenizer.h"
+#include "Parser.h"
 
 #include "_Interpreter.h"
 
@@ -147,5 +147,34 @@ Interpreter_run(
     Logger_trc("[  END  ]%s", __func__);
 }
 
+
+
+int
+Interpreter_row(
+	Interpreter interpreter
+)
+{
+	return interpreter->row;
+}
+
+
+
+List
+Interpreter_functions(
+	Interpreter interpreter
+)
+{
+	return interpreter->functions;
+}
+
+
+
+List
+Interpreter_statements(
+	Interpreter interpreter
+)
+{
+	return interpreter->statements;
+}
 
 

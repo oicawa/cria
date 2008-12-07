@@ -3,8 +3,10 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
-#include "_DefinitionFunction.h"
-#include "_Runtime.h"
+#include "DefinitionFunction.h"
+#include "Runtime.h"
+#include "Interpreter.h"
+#include "List.h"
 
 #include "_DefinitionClass.h"
 
@@ -28,13 +30,13 @@ definition_class_new(
         goto END;
     }
     
-    Logger_dbg("Cria Function (ParameterCount=%d, StatementCount=%d)", fieldList->count, methodList->count);
+    Logger_dbg("Cria Function (ParameterCount=%d, StatementCount=%d)", list_count(fieldList), list_count(methodList));
     definition = Memory_malloc(sizeof(struct DefinitionClassTag));
     memset(definition, 0x00, sizeof(struct DefinitionClassTag));
     definition->fieldList = fieldList;
     definition->methodList = methodList;
     
-    definition->name = string_new(name);
+    definition->name = String_new(name);
     
 END:
     return definition;
@@ -48,7 +50,7 @@ definition_class_search(
     char* name
 )
 {
-    int count = classList->count;
+    int count = list_count(classList);
     int index = 0;
     DefinitionClass definition = NULL;
     DefinitionClass tmp = NULL;
@@ -56,7 +58,7 @@ definition_class_search(
     for (index = 0; index < count; index++)
     {
         tmp = (DefinitionClass)(list_get(classList, index));
-        if (strcmp(tmp->name->pointer, name) == 0)
+        if (strcmp(tmp->name, name) == 0)
         {
             definition = tmp;
             break;
@@ -89,11 +91,11 @@ definition_class_evaluate(
     function = definition_function_search(klass->methodList, name);
     if (function == NULL)
     {
-    	Logger_err("Method is not found. (%s)/%d", name, klass->methodList->count);
+    	Logger_err("Method is not found. (%s)/%d", name, list_count(klass->methodList));
         runtime_error(interpreter);
     }
     
-    Logger_dbg("parameters->count = %d", parameters->count);
+    Logger_dbg("parameters->count = %d", list_count(parameters));
     value = definition_function_evaluate(interpreter, id, parameterList, function, parameters);
     
     
@@ -103,3 +105,10 @@ definition_class_evaluate(
 
 
 
+List
+DefinitionClass_getMethods(
+	DefinitionClass klass
+)
+{
+	return klass->methodList;
+}

@@ -3,8 +3,9 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
-#include "_Runtime.h"
-#include "_CriaString.h"
+#include "Runtime.h"
+#include "CriaString.h"
+#include "String.h"
 
 #include "_CriaBoolean.h"
 
@@ -20,7 +21,8 @@ CriaBoolean_new(
     CriaBoolean boolean = Memory_malloc(sizeof(struct CriaBooleanTag));
     memset(boolean, 0x00, sizeof(struct CriaBooleanTag));
     
-    boolean->id.name = string_new("Boolean");
+    char name[] = "Boolean";
+    boolean->id.name = String_new(name);
     boolean->id.type = CRIA_DATA_TYPE_BOOLEAN;
     boolean->isLiteral = isLiteral;
     boolean->value = value;
@@ -76,9 +78,9 @@ CriaBoolean_toString(
     CriaString string = NULL;
     
     if (boolean->value == TRUE)
-        value = string_new("true");
+        value = String_new("true");
     else if (boolean->value == FALSE)
-        value = string_new("false");
+        value = String_new("false");
     else
         runtime_error(interpreter);
     

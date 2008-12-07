@@ -9,7 +9,7 @@
 
 
 String
-string_newFunction(
+String_newFunction(
     char    *input,
     char    *fileName,
     int     line
@@ -78,7 +78,7 @@ string_cloneFunction(
     memset(buffer, 0x00, size + 1);
     strncpy(buffer, source, size);
     
-    String string = string_newFunction(buffer, fileName, line);
+    String string = String_newFunction(buffer, fileName, line);
     Memory_free(buffer);
     buffer = NULL;
     return string;
@@ -107,7 +107,7 @@ string_subStringFunction(
     memset(buffer, 0x00, length + 1);
     strncpy(buffer, &(source[start]), length);
     
-    String string = string_newFunction(buffer, fileName, line);
+    String string = String_newFunction(buffer, fileName, line);
     Memory_free(buffer);
     buffer = NULL;
     return string;

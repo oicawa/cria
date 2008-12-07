@@ -7,8 +7,10 @@
 #include "Runtime.h"
 #include "CriaBoolean.h"
 #include "StringBuffer.h"
-#include "DefinitionVariable.h"
-#include "DefinitionFunction.h"
+#include "_DefinitionVariable.h"
+#include "_DefinitionFunction.h"
+#include "_DefinitionClass.h"
+#include "List.h"
 
 #include "CriaFile.h"
 
@@ -42,7 +44,7 @@ CriaFile_new(
     
     CriaFile file = Memory_malloc(sizeof(struct CriaFileTag));
     memset(file, 0x00, sizeof(struct CriaFileTag));
-    file->id.name = string_new("File");
+    file->id.name = String_new("File");
     file->id.type = CRIA_DATA_TYPE_FILE;
     file->path = string_clone(path->value);
     file->pointer = NULL;
@@ -79,13 +81,13 @@ CriaFile_open(
     
     file = (CriaFile)object;
     
-    file->pointer = fopen(file->path->pointer, "r");
+    file->pointer = fopen(file->path, "r");
     if (file->pointer == NULL)
     {
     	runtime_error(interpreter);
     	goto END;
     }
-    Logger_inf("File opened. (%s)", file->path->pointer);
+    Logger_inf("File opened. (%s)", file->path);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -120,7 +122,7 @@ CriaFile_close(
     file = (CriaFile)object;
     
     fclose(file->pointer);
-    Logger_inf("File closed. (%s)", file->path->pointer);
+    Logger_inf("File closed. (%s)", file->path);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -212,7 +214,7 @@ CriaFile_isEnd(
     {
     	result->value = TRUE;
     }
-    Logger_inf("File EOF. (%s)", file->path->pointer);
+    Logger_inf("File EOF. (%s)", file->path);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -246,14 +248,14 @@ CriaFile_loadClass(
     DefinitionVariable variable = NULL;
     DefinitionFunction function = NULL;
     DefinitionClass klass = NULL;
-    
+
     klass = Memory_malloc(sizeof(struct DefinitionClassTag));
     memset(klass, 0x00, sizeof(struct DefinitionClassTag));
     klass->fieldList = list_new();
     klass->methodList = list_new();
-    klass->name = string_new(className);
+    klass->name = String_new(className);
     
-    variableName = string_new("file");
+    variableName = String_new("file");
     variable = definition_variable_new(variableName);
     variable->isStatic = FALSE;
     string_dispose(variableName);

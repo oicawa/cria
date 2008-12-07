@@ -4,6 +4,7 @@
 
 #include "String.h"
 #include "Parser.h"
+#include "CriaId.h"
 
 
 typedef enum
@@ -165,6 +166,16 @@ variableExpression_dispose(
 ExpressionVariable
 variableExpression_parse(
     Parser  parser
+);
+
+
+
+CriaId
+Expression_evaluate(
+    Interpreter interpreter,
+    CriaId object,
+	List parameters,
+    Expression  expression
 );
 
 

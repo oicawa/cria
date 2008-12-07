@@ -5,6 +5,8 @@
 
 
 #include "List.h"
+#include "String.h"
+
 #include "_StringBuffer.h"
 
 
@@ -187,7 +189,7 @@ stringBuffer_toStringFunction(
     
     
     Logger_cor("Create string value.");
-    value = string_new(buffer);
+    value = String_new(buffer);
     Memory_free(buffer);
     buffer = NULL;
     

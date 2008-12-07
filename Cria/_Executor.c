@@ -3,40 +3,13 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
-#include "_DefinitionVariable.h"
-#include "_Expression.h"
-#include "_CriaBoolean.h"
-#include "_Evaluator.h"
-#include "_Runtime.h"
+#include "DefinitionVariable.h"
+#include "Expression.h"
+#include "CriaBoolean.h"
+#include "Evaluator.h"
+#include "Runtime.h"
 
 #include "_Executor.h"
-
-
-
-void
-executor_executeSubstituteStatement(
-    Interpreter         interpreter,
-    CriaId object,
-	List parameters,
-    StatementSubstitute statement
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    DefinitionVariable definition = NULL;
-    Reference reference = statement->reference;
-    CriaId id = NULL;
-    
-    id = evaluator_expression(interpreter, object, parameters, statement->expression);
-    
-    
-    definition = evaluator_reference(interpreter, object, parameters, reference);
-    
-    
-    definition->object = id;
-    
-    
-    Logger_trc("[  END  ]%s", __func__);
-}
 
 
 
@@ -49,7 +22,7 @@ executor_executeFunctionCallStatement(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    evaluator_referenceExpression(interpreter, object, parameters, statement->expression);
+    ExpressionReference_evaluate(interpreter, object, parameters, statement->expression);
     Logger_trc("[  END  ]%s", __func__);
 }
 

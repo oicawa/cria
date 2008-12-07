@@ -54,7 +54,7 @@ io_write(
     {
         Logger_dbg("Boolean");
         CriaString string = (CriaString)CriaBoolean_toString(interpreter, (CriaBoolean)id);
-        printf("%s", string->value->pointer);
+        printf("%s", string->value);
         CriaString_dispose(string);
         goto END;
     }
@@ -63,7 +63,7 @@ io_write(
     {
         Logger_dbg("String");
         //第一引数の文字列型データを抽出
-        start = ((CriaString)id)->value->pointer;
+        start = ((CriaString)id)->value;
         while((end = strstr(start, "%s")) != NULL)
         {
             long size = end - start;
@@ -94,8 +94,8 @@ io_write(
             //型チェック
             if (id->type == CRIA_DATA_TYPE_STRING)
             {
-                Logger_dbg("[print]%s", ((CriaString)id)->value->pointer);
-                printf("%s", ((CriaString)id)->value->pointer);
+                Logger_dbg("[print]%s", ((CriaString)id));
+                printf("%s", ((CriaString)id)->value);
                 continue;
             }
             
@@ -108,7 +108,7 @@ io_write(
             if (id->type == CRIA_DATA_TYPE_BOOLEAN)
             {
                 CriaString string = (CriaString)CriaBoolean_toString(interpreter, (CriaBoolean)id);
-                printf("%s", string->value->pointer);
+                printf("%s", string->value);
                 CriaString_dispose(string);
                 continue;
             }

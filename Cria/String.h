@@ -7,12 +7,13 @@
 typedef char* String;
 
 String
-string_newFunction(
+String_newFunction(
     char    *input,
     char    *fileName,
     int     line
 );
-
+#define String_new(input)\
+	String_newFunction(input, __FILE__, __LINE__)
 
 
 void
@@ -35,6 +36,8 @@ string_cloneFunction(
     char    *fileName,
     int     line
 );
+#define string_clone(source)\
+	string_cloneFunction(source, __FILE__, __LINE__)
 
 
 

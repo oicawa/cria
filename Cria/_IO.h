@@ -2,24 +2,8 @@
 #define PRIVATE_IO_H_INCLUDED
 
 
-#include "_CriaId.h"
-#include "_List.h"
-#include "_Interpreter.h"
-
-
-CriaId
-io_write(
-    Interpreter interpreter,
-    CriaId object,
-    List        args
-);
+#include "IO.h"
 
 
 
-CriaId
-io_read(
-    Interpreter interpreter,
-    CriaId object,
-    List        args
-);
 #endif

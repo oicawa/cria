@@ -5,6 +5,7 @@
 
 #include "String.h"
 #include "List.h"
+#include "CriaId.h"
 
 
 
@@ -23,6 +24,28 @@ DefinitionVariable
 definition_variable_search(
     List    variableList,
     String  name
+);
+
+
+
+String
+definition_variable_name(
+	DefinitionVariable variable
+);
+
+
+
+void
+definition_variable_set(
+	DefinitionVariable variable,
+	CriaId id
+);
+
+
+
+CriaId
+DefinitionVariable_getObject(
+	DefinitionVariable variable
 );
 
 

@@ -52,6 +52,13 @@ list_get(
 
 
 
+int
+list_count(
+    List    list
+);
+
+
+
 char*
 list_toStringFunction(
     List    list,

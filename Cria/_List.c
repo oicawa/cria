@@ -190,3 +190,10 @@ list_get(
 
 
 
+int
+list_count(
+	List list
+)
+{
+	return list->count;
+}

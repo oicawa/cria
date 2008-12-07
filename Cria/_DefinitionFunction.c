@@ -3,14 +3,15 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
-#include "_Boolean.h"
-#include "_List.h"
-#include "_Interpreter.h"
-#include "_CriaId.h"
-#include "_Statement.h"
-#include "_DefinitionVariable.h"
-#include "_Runtime.h"
-#include "_Executor.h"
+#include "Boolean.h"
+#include "List.h"
+#include "Interpreter.h"
+#include "CriaId.h"
+#include "Statement.h"
+#include "DefinitionVariable.h"
+#include "Runtime.h"
+#include "Executor.h"
+#include "Parser.h"
 
 #include "_DefinitionFunction.h"
 
@@ -36,12 +37,155 @@ definition_function_new(
     }
     else
     {
-        Logger_dbg("Cria Function (ParameterCount=%d, StatementCount=%d)", parameterList->count, statementList->count);
+        Logger_dbg("Cria Function (ParameterCount=%d, StatementCount=%d)", list_count(parameterList), list_count(statementList));
         definition->of.cria.parameterList = parameterList;
         definition->of.cria.statementList = statementList;
     }
 
     return definition;
+}
+
+
+
+List
+definition_function_parse_parameters(
+	Parser parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+	List parameters = list_new();
+	Token token = NULL;
+	
+	while (TRUE)
+	{
+		token = parser_getCurrent(parser);
+		if (token_type(token) != TOKEN_TYPE_IDENTIFIER)
+	    {
+	        Logger_dbg("Not identifier");
+			break;
+	    }
+	    
+		DefinitionVariable variable = definition_variable_new(token_buffer(token));
+		list_add(parameters, variable);
+	    Logger_dbg("Add parameter.(%s)", definition_variable_name(variable));
+		
+		parser_next(parser);
+		token = parser_getCurrent(parser);
+		if (token_type(token) != TOKEN_TYPE_COMMA)
+	    {
+	        Logger_dbg("Not ', '");
+			break;
+	    }
+	    
+		parser_next(parser);
+	}
+	
+    Logger_dbg("parameters count = %d", list_count(parameters));
+    Logger_trc("[  END  ]%s", __func__);
+	return parameters;
+}
+
+
+
+DefinitionFunction
+definition_function_parse(
+    Parser parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    DefinitionFunction functionDefinition = NULL;
+    Item restore = parser_getPosition(parser);
+    String name = NULL;
+    List parameters = NULL;
+    List statements = NULL;
+    Statement statement = NULL;
+    Token token = NULL;
+    
+    token = parser_getCurrent(parser);
+    if (token_type(token) != TOKEN_TYPE_IDENTIFIER)
+    {
+        Logger_dbg("Not identifier.");
+    	goto END;
+    }
+    
+    name = token_buffer(token);
+    parser_next(parser);
+    
+    if (parser_eat(parser, TOKEN_TYPE_PARENTHESIS_LEFT, FALSE) == FALSE)
+    {
+        Logger_dbg("Not '('.");
+    	goto END;
+    }
+    
+	parameters = definition_function_parse_parameters(parser);
+	if (parameters == NULL)
+    {
+        Logger_dbg("Not parameters.");
+    	goto END;
+    }
+	
+	if (parser_eat(parser, TOKEN_TYPE_PARENTHESIS_RIGHT, FALSE) == FALSE)
+    {
+        Logger_dbg("Not ')'.");
+    	goto END;
+    }
+	
+	if (parser_eat(parser, TOKEN_TYPE_COLON, FALSE) == FALSE)
+    {
+        Logger_dbg("Not ':'.");
+    	goto END;
+    }
+    
+	if (parser_eat(parser, TOKEN_TYPE_NEW_LINE, TRUE) == FALSE)
+    {
+        Logger_dbg("Not <<NEW LINE>>.");
+    	goto END;
+    }
+    
+	if (parser_eat(parser, TOKEN_TYPE_INDENT, TRUE) == FALSE)
+    {
+        Logger_dbg("Not <<INDENT>>.");
+    	goto END;
+    }
+	
+	statements = list_new();
+    while(1)
+    {
+        token = parser_getCurrent(parser);
+        if (token_type(token) == TOKEN_TYPE_DEDENT)
+        {
+            Logger_dbg("token type is 'DEDENT'.");
+            break;
+        }
+        
+        statement = Statement_parse(parser);
+        if (statement == NULL)
+        {
+            Logger_err("statement parse error.");
+            list_dispose(statements);
+            parser_error(token);
+            goto END;
+        }
+        
+        Logger_dbg("Add statement.");
+        list_add(statements, statement);
+    }
+    
+	if (parser_eat(parser, TOKEN_TYPE_DEDENT, TRUE) == FALSE)
+    {
+        Logger_dbg("Not <<DEDENT>>.");
+    	goto END;
+    }
+	
+    Logger_dbg("Create FunctionDefinition. (name=%s, parameter=%p)", name, parameters);
+    functionDefinition = definition_function_new(name, FALSE, parameters, statements, NULL);
+    
+END:
+	if (functionDefinition == NULL)
+		parser_setPosition(parser, restore);
+	
+    Logger_trc("[  END  ]%s", __func__);
+    return functionDefinition;
 }
 
 
@@ -52,7 +196,7 @@ definition_function_search(
     char*   name
 )
 {
-    int count = functions->count;
+    int count = list_count(functions);
     int index = 0;
     DefinitionFunction definition = NULL;
     DefinitionFunction tmp = NULL;
@@ -98,8 +242,8 @@ definition_function_evaluate(
     Logger_dbg("function is %p", function);
     Logger_dbg("function->name is '%s'", function->name);
     Logger_dbg("function->of.cria.parameterList is %p", function->of.cria.parameterList);
-    Logger_dbg("function->of.cria.parameterList->count is %d", function->of.cria.parameterList->count);
-    Logger_dbg("parameters->count is %d", parameters->count);
+    Logger_dbg("function->of.cria.parameterList->count is %d", list_count(function->of.cria.parameterList));
+    Logger_dbg("parameters->count is %d", list_count(parameters));
     
     //List list = function->of.cria.parameterList;
     //Item item = list->item;
@@ -117,15 +261,15 @@ definition_function_evaluate(
     
     
     //パラメータ数のチェック
-    if (function->of.cria.parameterList->count != parameters->count)
+    if (list_count(function->of.cria.parameterList) != list_count(parameters))
     	runtime_error(interpreter);
     
     //パラメータをセット
-    for (i = 0; i < parameters->count; i++)
+    for (i = 0; i < list_count(parameters); i++)
     {
     	id = (CriaId)list_get(parameters, i);
     	definition = (DefinitionVariable)list_get(function->of.cria.parameterList, i);
-    	definition->object = id;
+    	definition_variable_set(definition, id);
     }
     
     //実行
@@ -139,3 +283,10 @@ END:
 
 
 
+List
+DefinitionFunction_getParameterList(
+	DefinitionFunction function
+)
+{
+	return function->of.cria.parameterList;
+}

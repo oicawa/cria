@@ -3,9 +3,10 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
-#include "_CriaString.h"
-#include "_CriaBoolean.h"
-#include "_Runtime.h"
+#include "CriaString.h"
+#include "CriaBoolean.h"
+#include "Runtime.h"
+#include "String.h"
 
 #include "_StringBuffer.h"
 
@@ -21,7 +22,7 @@ CriaString_new(
     CriaString criaString = Memory_malloc(sizeof(struct CriaStringTag));
     memset(criaString, 0x00, sizeof(struct CriaStringTag));
     
-    criaString->id.name = string_new("String");
+    criaString->id.name = String_new("String");
     criaString->id.type = CRIA_DATA_TYPE_STRING;
     criaString->isLiteral = isLiteral;
     criaString->value = string_clone(value);
@@ -67,18 +68,18 @@ CriaString_operate(
     {
     case OPERATION_KIND_PLUS:
         buffer = stringBuffer_new();
-        stringBuffer_append(buffer, leftValue->pointer);
-        stringBuffer_append(buffer, rightValue->pointer);
+        stringBuffer_append(buffer, leftValue);
+        stringBuffer_append(buffer, rightValue);
         id = (CriaId)CriaString_new(FALSE, stringBuffer_toString(buffer));
         stringBuffer_dispose(buffer);
         break;
     case OPERATION_KIND_EQUAL:
-        if (strcmp(leftValue->pointer, rightValue->pointer) == 0)
+        if (strcmp(leftValue, rightValue) == 0)
             result = TRUE;
         id = (CriaId)CriaBoolean_new(FALSE, result);
         break;
     case OPERATION_KIND_NOT_EQUAL:
-        if (strcmp(leftValue->pointer, rightValue->pointer) != 0)
+        if (strcmp(leftValue, rightValue) != 0)
             result = TRUE;
         id = (CriaId)CriaBoolean_new(FALSE, result);
         break;

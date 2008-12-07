@@ -3,6 +3,9 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
+#include "String.h"
+#include "List.h"
+
 #include "_DefinitionVariable.h"
 
 
@@ -32,7 +35,6 @@ definition_variable_search(
     DefinitionVariable definition = NULL;
     DefinitionVariable tmp = NULL;
     int index = 0;
-    Item item = NULL;
     
     Logger_dbg("variables pointer = %p", variables);
     if (variables == NULL)
@@ -46,20 +48,16 @@ definition_variable_search(
         Logger_dbg("'name' is NULL.");
         goto END;
     }
-    Logger_dbg("'name' is [%s].", name->pointer);
+    Logger_dbg("'name' is [%s].", name);
     
-    Logger_dbg("Pre Loop start.");
-    item = variables->item;
     Logger_dbg("Loop start.");
-    for (index = 0; index < variables->count; index++)
+    for (index = 0; index < list_count(variables); index++)
     {
         Logger_dbg("Condition OK.");
         tmp = (DefinitionVariable)list_get(variables, index);
         Logger_dbg("tmp = %p", tmp);
-        Logger_dbg("tmp->name = %p", tmp->name);
-        Logger_dbg("tmp->name->pointer = %p", tmp->name->pointer);
-        Logger_dbg("tmp->name->pointer = \"%s\"", tmp->name->pointer);
-        if (strcmp(tmp->name->pointer, name->pointer) != 0)
+        Logger_dbg("tmp->name = %s", tmp->name);
+        if (strcmp(tmp->name, name) != 0)
             continue;
         
         definition = tmp;
@@ -74,3 +72,31 @@ END:
 
 
 
+String
+definition_variable_name(
+	DefinitionVariable variable
+)
+{
+	return variable->name;
+}
+
+
+
+void
+definition_variable_set(
+	DefinitionVariable variable,
+	CriaId id
+)
+{
+	variable->object = id;
+}
+
+
+
+CriaId
+DefinitionVariable_getObject(
+	DefinitionVariable variable
+)
+{
+	return variable->object;
+}

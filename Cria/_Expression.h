@@ -95,4 +95,54 @@ struct ExpressionReferenceTag
 
 
 
+CriaId
+ExpressionFunctionCall_evaluate(
+    Interpreter interpreter,
+    CriaId object,
+    List parameterList,
+    ExpressionFunctionCall expression
+);
+
+
+
+CriaId
+ExpressionGenerate_evaluate(
+    Interpreter             interpreter,
+    CriaId object,
+    List parameterList,
+    ExpressionGenerate  expression
+);
+
+
+
+CriaId
+ExpressionBooleanLiteral_evaluate(
+    Interpreter             interpreter,
+    CriaId object,
+    List parameters,
+    ExpressionBooleanLiteral expression
+);
+
+
+
+CriaId
+ExpressionIntegerLiteral_evaluate(
+    Interpreter             interpreter,
+    CriaId object,
+    List parameters,
+    ExpressionIntegerLiteral expression
+);
+
+
+
+CriaId
+ExpressionStringLiteral_evaluate(
+    Interpreter             interpreter,
+    CriaId object,
+    List parameters,
+    ExpressionStringLiteral expression
+);
+
+
+
 #endif
