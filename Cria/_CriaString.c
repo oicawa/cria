@@ -67,7 +67,7 @@ CriaString_operate(
     switch (kind)
     {
     case OPERATION_KIND_PLUS:
-        buffer = stringBuffer_new();
+        buffer = StringBuffer_new();
         stringBuffer_append(buffer, leftValue);
         stringBuffer_append(buffer, rightValue);
         id = (CriaId)CriaString_new(FALSE, stringBuffer_toString(buffer));

@@ -8,7 +8,7 @@
 
 
 Item
-item_newFunction(
+Item_newFunction(
     void    *object,
     char    *fileName,
     int     line
@@ -24,35 +24,11 @@ item_newFunction(
 
 
 void
-item_dispose(
+Item_dispose(
     Item    item
 )
 {
     Logger_cor("[ START ]%s", __func__);
-    /*
-    if (item == NULL)
-    {
-        Logger_cor("item is NULL.");
-        goto END;
-    }
-    
-    Logger_cor("Check item->next. (%p)", item->next);
-    if (item->next != NULL)
-    {
-        Logger_cor("Free item->next.");
-        item_dispose(item->next);
-        Logger_cor("Set NULL to item->next.");
-        item->next = NULL;
-    }
-    
-    Logger_cor("Free item.");
-    Memory_free(item);
-    Logger_cor("Set NULL to item.");
-    item = NULL;
-    */
-    
-    
-    
     Item next = NULL;
     
     Logger_cor("Check item. (%p)", item);
@@ -72,7 +48,7 @@ item_dispose(
     item = NULL;
     
     
-    item_dispose(next);
+    Item_dispose(next);
     next = NULL;
     
 END:
@@ -82,7 +58,7 @@ END:
 
 
 List
-list_newFunction(
+List_newFunction(
     char    *fileName,
     int     line
 )
@@ -114,7 +90,7 @@ list_dispose(
     if (list->item != NULL)
     {
         Logger_cor("Free list->item.");
-        item_dispose(list->item);
+        Item_dispose(list->item);
         Logger_cor("Set NULL to list->item.");
         list->item = NULL;
     }
@@ -143,7 +119,7 @@ list_addFunction(
     if (list->item == NULL)
     {
         Logger_cor("list->item is NULL.");
-        list->item = item_newFunction(object, fileName, line);
+        list->item = Item_newFunction(object, fileName, line);
         Logger_cor("list->item is generated.");
         list->last = &(list->item);
         Logger_cor("Set list->last.");
@@ -155,7 +131,7 @@ list_addFunction(
     
     Logger_cor("list->item is not NULL.");
     Item* lastItem = list->last;
-    (*lastItem)->next = item_newFunction(object, fileName, line);
+    (*lastItem)->next = Item_newFunction(object, fileName, line);
     list->last = &((*lastItem)->next);
     list->count++;
     
@@ -191,7 +167,7 @@ list_get(
 
 
 int
-list_count(
+List_count(
 	List list
 )
 {

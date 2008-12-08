@@ -18,6 +18,7 @@ DefinitionFunction
 definition_function_new(
     char*               name,
     Boolean             isNative,
+    Boolean             isStatic,
     List                parameterList,
     List                statementList,
     CriaNativeFunction* nativeFunctionPoint

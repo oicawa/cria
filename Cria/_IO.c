@@ -31,7 +31,7 @@ io_write(
     char*       start = NULL;
     char*       end = NULL;
     long        index = 0;
-    int count = args->count;
+    int count = List_count(args);
     
     
     if (count == 0)
@@ -145,7 +145,7 @@ io_read(
     char buffer[BUFFER_SIZE];
     
     //引数が０でない場合はエラー
-    if (args->count != 0)
+    if (List_count(args) != 0)
     {
         Logger_err("Runtime error. (Argument count is not 0.)");
         runtime_error(interpreter);
@@ -153,7 +153,7 @@ io_read(
     }
     
     
-    stringBuffer = stringBuffer_new();
+    stringBuffer = StringBuffer_new();
     
     //標準入力から文字列を取得
     memset(buffer, 0x00, sizeof(buffer));

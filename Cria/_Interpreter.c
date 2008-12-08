@@ -5,9 +5,9 @@
 #include "DefinitionClass.h"
 #include "IO.h"
 #include "CriaFile.h"
-#include "Executor.h"
 #include "Tokenizer.h"
 #include "Parser.h"
+#include "Statement.h"
 
 #include "_Interpreter.h"
 
@@ -20,7 +20,7 @@ Interpreter_addFunction(
 {
     Logger_trc("[ START ]%s", __func__);
     DefinitionFunction definition = NULL;
-    definition = definition_function_new(functionName, TRUE, NULL, NULL, functionPoint);
+    definition = definition_function_new(functionName, TRUE, TRUE, NULL, NULL, functionPoint);
     list_add(interpreter->functions, definition);
     Logger_trc("[  END  ]%s", __func__);
 }
@@ -65,11 +65,11 @@ Interpreter_new(
     Interpreter interpreter = NULL;
     
     interpreter = Memory_malloc(sizeof(struct InterpreterTag));
-    interpreter->statements = list_new();
+    interpreter->statements = List_new();
     Logger_dbg("interpreter->statementList is [%p]", interpreter->statements);
-    interpreter->variables = list_new();
-    interpreter->functions = list_new();
-    interpreter->classes = list_new();
+    interpreter->variables = List_new();
+    interpreter->functions = List_new();
+    interpreter->classes = List_new();
     interpreter->row = 0;
     interpreter->column = 0;
     interpreter->indentLevel = 0;
@@ -117,7 +117,7 @@ Interpreter_compile(
     Boolean result = FALSE;
     List tokens = NULL;
     
-    tokens = tokenizer_create_tokens(filePath);
+    tokens = Tokenizer_create_tokens(filePath);
     
     if (parser_create_syntax_tree(tokens, interpreter) == FALSE)
     {
@@ -134,7 +134,6 @@ END:
 
 
 
-//実行
 void
 Interpreter_run(
     Interpreter interpreter
@@ -155,6 +154,16 @@ Interpreter_row(
 )
 {
 	return interpreter->row;
+}
+
+
+
+List
+Interpreter_classes(
+	Interpreter interpreter
+)
+{
+	return interpreter->classes;
 }
 
 

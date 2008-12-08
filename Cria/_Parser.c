@@ -127,7 +127,7 @@ parser_next(
     
     
     Item current = parser->next;
-    token_log(((Token)(current->object)));
+    Token_log(((Token)(current->object)));
     parser->current = current;
     parser->next = current->next;
     
@@ -214,7 +214,7 @@ parser_is_end(
     while (TRUE)
     {
         token = parser_getCurrent(parser);
-        token_log(token);
+        Token_log(token);
         if (token == NULL)
         {
             result = TRUE;
@@ -247,11 +247,11 @@ ExpressionParameters_parse(
     Expression expression = NULL;
     Item position = parser_getPosition(parser);
     Token token = NULL;
-    List list = list_new();
+    List list = List_new();
     
     
     token = parser_getCurrent(parser);
-    token_log(token);
+    Token_log(token);
     Logger_dbg("Loop start.");
     while (token->type != TOKEN_TYPE_PARENTHESIS_RIGHT)
     {
@@ -272,7 +272,7 @@ ExpressionParameters_parse(
         
         Logger_dbg("Get current token.");
         token = parser_getCurrent(parser);
-        token_log(token);
+        Token_log(token);
         if (token->type == TOKEN_TYPE_COMMA)
         {
             Logger_dbg("Token is Comma.");
@@ -290,7 +290,7 @@ ExpressionParameters_parse(
         Logger_dbg("Token is not right parenthesis.");
         if (token->type != TOKEN_TYPE_PARENTHESIS_RIGHT)
         {
-            token_log(token);
+            Token_log(token);
             parser_setPosition(parser, position);
             parser_error(token);
             goto END;
@@ -326,7 +326,7 @@ ReferenceVariable_parse(
     Token token = parser_getCurrent(parser);
     if (token->type != TOKEN_TYPE_IDENTIFIER)
     {
-    	token_log(token);
+    	Token_log(token);
     	Logger_dbg("Not identifier.");
         parser_setPosition(parser, position);
         goto END;
@@ -339,7 +339,7 @@ ReferenceVariable_parse(
     token = parser_getCurrent(parser);
     if (token->type != TOKEN_TYPE_PERIOD && token->type != TOKEN_TYPE_SUBSTITUTE)
     {
-    	token_log(token);
+    	Token_log(token);
     	Logger_dbg("Not '.' and ' = '");
         parser_setPosition(parser, position);
         goto END;
@@ -358,7 +358,7 @@ ReferenceVariable_parse(
     
     if (token->type != TOKEN_TYPE_PERIOD)
     {
-    	token_log(token);
+    	Token_log(token);
     	Logger_dbg("Not '.'");
         goto END;
     }
@@ -366,7 +366,7 @@ ReferenceVariable_parse(
     
     parser_next(parser);
     token = parser_getCurrent(parser);
-    token_log(token);
+    Token_log(token);
     reference->next = Reference_parse(parser);
     if (reference->next == NULL)
         parser_error(token);
@@ -394,7 +394,7 @@ ReferenceFunctionCall_parse(
     Token token = parser_getCurrent(parser);
     if (token->type != TOKEN_TYPE_IDENTIFIER)
     {
-    	token_log(token);
+    	Token_log(token);
 	    Logger_dbg("Not identifier.");
         parser_setPosition(parser, position);
         goto END;
@@ -407,7 +407,7 @@ ReferenceFunctionCall_parse(
     token = parser_getCurrent(parser);
     if (token->type != TOKEN_TYPE_PARENTHESIS_LEFT)
     {
-    	token_log(token);
+    	Token_log(token);
 	    Logger_dbg("Not '('.");
         parser_setPosition(parser, position);
         goto END;
@@ -426,7 +426,7 @@ ReferenceFunctionCall_parse(
     token = parser_getCurrent(parser);
     if (token->type != TOKEN_TYPE_PARENTHESIS_RIGHT)
     {
-    	token_log(token);
+    	Token_log(token);
 	    Logger_dbg("Not ')'.");
     	parser_error(token);
         goto END;
@@ -445,7 +445,7 @@ ReferenceFunctionCall_parse(
     token = parser_getCurrent(parser);
     if (token->type != TOKEN_TYPE_PERIOD)
     {
-    	token_log(token);
+    	Token_log(token);
 	    Logger_dbg("Not '.'.");
     	goto END;
     }

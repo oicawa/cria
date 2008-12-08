@@ -2,11 +2,10 @@
 #define PUBLIC_CRIASTRING_H_INCLUDED
 
 
-#include "Cria.h"
-#include "_Boolean.h"
-#include "_CriaId.h"
-#include "_Interpreter.h"
-#include "_Expression.h"
+#include "Boolean.h"
+#include "CriaId.h"
+#include "Interpreter.h"
+#include "Expression.h"
 
 
 

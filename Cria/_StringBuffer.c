@@ -4,7 +4,7 @@
 #include "../Logger/Logger.h"
 
 
-#include "List.h"
+#include "_List.h"
 #include "String.h"
 
 #include "_StringBuffer.h"
@@ -15,12 +15,12 @@
 
 
 StringBuffer
-stringBuffer_newFunction(
+StringBuffer_newFunction(
     char    *fileName,
     int     line
 )
 {
-    List list = list_new();
+    List list = List_new();
     return (StringBuffer)list;
 }
 
@@ -61,7 +61,7 @@ stringBuffer_dispose(
     
     
     Logger_cor("Free list->item.");
-    item_dispose(list->item);
+    Item_dispose(list->item);
     list->item = NULL;
     
     Logger_cor("Free list.");

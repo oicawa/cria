@@ -9,19 +9,19 @@ typedef struct ListTag *List;
 
 
 void
-item_dispose(
+Item_dispose(
     Item    item
 );
 
 
 
 List
-list_newFunction(
+List_newFunction(
     char    *fileName,
     int     line
 );
-#define list_new()\
-    (list_newFunction(__FILE__, __LINE__))
+#define List_new()\
+    (List_newFunction(__FILE__, __LINE__))
 
 
 
@@ -53,7 +53,7 @@ list_get(
 
 
 int
-list_count(
+List_count(
     List    list
 );
 

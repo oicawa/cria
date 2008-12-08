@@ -2,20 +2,20 @@
 #define PUBLIC_STRINGBUFFER_H_INCLUDED
 
 
-#include "_List.h"
-#include "_String.h"
+#include "List.h"
+#include "String.h"
 
 
 typedef struct  ListTag *StringBuffer;
 
 
 StringBuffer
-stringBuffer_newFunction(
+StringBuffer_newFunction(
     char    *fileName,
     int     line
 );
-#define stringBuffer_new()\
-	stringBuffer_newFunction(__FILE__, __LINE__);
+#define StringBuffer_new()\
+	StringBuffer_newFunction(__FILE__, __LINE__);
 
 
 

@@ -73,4 +73,11 @@ Interpreter_variables(
 
 
 
+List
+Interpreter_classes(
+	Interpreter interpreter
+);
+
+
+
 #endif

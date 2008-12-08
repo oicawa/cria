@@ -74,35 +74,35 @@ typedef struct  TokenizerTag *Tokenizer;
 
 
 List
-tokenizer_create_tokens(
+Tokenizer_create_tokens(
     char*   filePath
 );
 
 
 
 void
-token_log(
+Token_log(
 	Token token
 );
 
 
 
 TokenType
-token_type(
+Token_type(
 	Token token
 );
 
 
 
 int
-token_row(
+Token_row(
 	Token token
 );
 
 
 
 String
-token_buffer(
+Token_buffer(
 	Token token
 );
 

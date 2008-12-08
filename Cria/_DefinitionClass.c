@@ -30,7 +30,7 @@ definition_class_new(
         goto END;
     }
     
-    Logger_dbg("Cria Function (ParameterCount=%d, StatementCount=%d)", list_count(fieldList), list_count(methodList));
+    Logger_dbg("Cria Function (ParameterCount=%d, StatementCount=%d)", List_count(fieldList), List_count(methodList));
     definition = Memory_malloc(sizeof(struct DefinitionClassTag));
     memset(definition, 0x00, sizeof(struct DefinitionClassTag));
     definition->fieldList = fieldList;
@@ -50,7 +50,7 @@ definition_class_search(
     char* name
 )
 {
-    int count = list_count(classList);
+    int count = List_count(classList);
     int index = 0;
     DefinitionClass definition = NULL;
     DefinitionClass tmp = NULL;
@@ -91,11 +91,11 @@ definition_class_evaluate(
     function = definition_function_search(klass->methodList, name);
     if (function == NULL)
     {
-    	Logger_err("Method is not found. (%s)/%d", name, list_count(klass->methodList));
+    	Logger_err("Method is not found. (%s)/%d", name, List_count(klass->methodList));
         runtime_error(interpreter);
     }
     
-    Logger_dbg("parameters->count = %d", list_count(parameters));
+    Logger_dbg("parameters->count = %d", List_count(parameters));
     value = definition_function_evaluate(interpreter, id, parameterList, function, parameters);
     
     

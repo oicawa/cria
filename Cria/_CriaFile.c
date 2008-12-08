@@ -7,9 +7,9 @@
 #include "Runtime.h"
 #include "CriaBoolean.h"
 #include "StringBuffer.h"
-#include "_DefinitionVariable.h"
-#include "_DefinitionFunction.h"
-#include "_DefinitionClass.h"
+#include "DefinitionVariable.h"
+#include "DefinitionFunction.h"
+#include "DefinitionClass.h"
 #include "List.h"
 
 #include "CriaFile.h"
@@ -26,7 +26,7 @@ CriaFile_new(
     Logger_trc("[ START ]%s", __func__);
     CriaString path = NULL;
     
-    if (args->count != 1)
+    if (List_count(args) != 1)
     {
     	runtime_error(interpreter);
     	goto END;
@@ -67,7 +67,7 @@ CriaFile_open(
     CriaId id = CriaId_new(NULL, CRIA_DATA_TYPE_VOID);
     CriaFile file = NULL;
     
-    if (args->count != 0)
+    if (List_count(args) != 0)
     {
     	runtime_error(interpreter);
     	goto END;
@@ -107,7 +107,7 @@ CriaFile_close(
     CriaId id = CriaId_new(NULL, CRIA_DATA_TYPE_VOID);
     CriaFile file = NULL;
     
-    if (args->count != 0)
+    if (List_count(args) != 0)
     {
     	runtime_error(interpreter);
     	goto END;
@@ -144,7 +144,7 @@ CriaFile_read(
     int length = 0;
     CriaFile file = NULL;
     
-    if (args->count != 0)
+    if (List_count(args) != 0)
     {
     	runtime_error(interpreter);
     	goto END;
@@ -157,7 +157,7 @@ CriaFile_read(
     }
     
     file = (CriaFile)object;
-    stringBuffer = stringBuffer_new();
+    stringBuffer = StringBuffer_new();
     
     while (feof(file->pointer) == 0)
     {
@@ -196,7 +196,7 @@ CriaFile_isEnd(
     CriaBoolean result = CriaBoolean_new(TRUE, FALSE);
     CriaFile file = NULL;
     
-    if (args->count != 0)
+    if (List_count(args) != 0)
     {
     	runtime_error(interpreter);
     	goto END;
@@ -240,7 +240,7 @@ CriaFile_dispose(
 DefinitionClass
 CriaFile_loadClass(
     Interpreter interpreter,
-    char* className
+    String className
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -249,40 +249,33 @@ CriaFile_loadClass(
     DefinitionFunction function = NULL;
     DefinitionClass klass = NULL;
 
-    klass = Memory_malloc(sizeof(struct DefinitionClassTag));
-    memset(klass, 0x00, sizeof(struct DefinitionClassTag));
-    klass->fieldList = list_new();
-    klass->methodList = list_new();
-    klass->name = String_new(className);
+    List fieldList = List_new();
+    List methodList = List_new();
     
     variableName = String_new("file");
     variable = definition_variable_new(variableName);
-    variable->isStatic = FALSE;
     string_dispose(variableName);
-    list_add(klass->fieldList, variable);
+    list_add(fieldList, variable);
     
-    function = definition_function_new("new", TRUE, NULL, NULL, CriaFile_new);
-    function->isStatic = TRUE;
-    list_add(klass->methodList, function);
+    function = definition_function_new("new", TRUE, FALSE, NULL, NULL, CriaFile_new);
+    list_add(methodList, function);
     
-    function = definition_function_new("open", TRUE, NULL, NULL, CriaFile_open);
-    function->isStatic = FALSE;
-    list_add(klass->methodList, function);
+    function = definition_function_new("open", TRUE, FALSE, NULL, NULL, CriaFile_open);
+    list_add(methodList, function);
     
-    function = definition_function_new("close", TRUE, NULL, NULL, CriaFile_close);
-    function->isStatic = FALSE;
-    list_add(klass->methodList, function);
+    function = definition_function_new("close", TRUE, FALSE, NULL, NULL, CriaFile_close);
+    list_add(methodList, function);
     
-    function = definition_function_new("read", TRUE, NULL, NULL, CriaFile_read);
-    function->isStatic = FALSE;
-    list_add(klass->methodList, function);
+    function = definition_function_new("read", TRUE, FALSE, NULL, NULL, CriaFile_read);
+    list_add(methodList, function);
     
     
-    function = definition_function_new("is_end", TRUE, NULL, NULL, CriaFile_isEnd);
-    function->isStatic = FALSE;
-    list_add(klass->methodList, function);
+    function = definition_function_new("is_end", TRUE, FALSE, NULL, NULL, CriaFile_isEnd);
+    list_add(methodList, function);
     
     
+    klass = definition_class_new(interpreter, className, TRUE, fieldList, methodList, NULL);
+
     Logger_trc("[  END  ]%s", __func__);
     return klass;
 }

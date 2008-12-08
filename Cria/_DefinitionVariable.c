@@ -51,7 +51,7 @@ definition_variable_search(
     Logger_dbg("'name' is [%s].", name);
     
     Logger_dbg("Loop start.");
-    for (index = 0; index < list_count(variables); index++)
+    for (index = 0; index < List_count(variables); index++)
     {
         Logger_dbg("Condition OK.");
         tmp = (DefinitionVariable)list_get(variables, index);

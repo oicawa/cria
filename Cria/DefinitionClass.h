@@ -21,10 +21,10 @@ typedef DefinitionClass CriaNativeClassLoader(Interpreter interpreter, char* nam
 DefinitionClass
 definition_class_new(
 	Interpreter interpreter,
-    char*               name,
-    Boolean             isNative,
-    List                fieldList,
-    List                methodList,
+    String name,
+    Boolean isNative,
+    List fieldList,
+    List methodList,
     CriaNativeClassLoader* classLoader
 );
 
