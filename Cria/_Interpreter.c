@@ -142,7 +142,7 @@ Interpreter_run(
 {
     Logger_trc("[ START ]%s", __func__);
     
-    executor_executeStatementList(interpreter, NULL, NULL, interpreter->statements);
+    Statement_executeList(interpreter, NULL, NULL, interpreter->statements);
     
     Logger_trc("[  END  ]%s", __func__);
 }
@@ -170,6 +170,16 @@ Interpreter_functions(
 
 
 List
+Interpreter_variables(
+	Interpreter interpreter
+)
+{
+	return interpreter->variables;
+}
+
+
+
+List
 Interpreter_statements(
 	Interpreter interpreter
 )
@@ -178,3 +188,12 @@ Interpreter_statements(
 }
 
 
+
+void
+Interpreter_setRow(
+	Interpreter interpreter,
+	int row
+)
+{
+	interpreter->row = row;
+}

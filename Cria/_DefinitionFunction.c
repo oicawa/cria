@@ -273,7 +273,7 @@ definition_function_evaluate(
     }
     
     //実行
-	result = executor_executeStatementList(interpreter, object, parameterList, function->of.cria.statementList);
+	result = Statement_executeList(interpreter, object, parameterList, function->of.cria.statementList);
     id = result.returns.id;
     
 END:

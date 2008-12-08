@@ -8,11 +8,16 @@
 #include "Tokenizer.h"
 #include "DefinitionVariable.h"
 #include "Expression.h"
+#include "Runtime.h"
+#include "CriaBoolean.h"
 
 
 #include "_Statement.h"
 
 
+//==============================
+//Statement
+//==============================
 Statement
 Statement_new(
     StatementKind   kind
@@ -22,6 +27,118 @@ Statement_new(
     memset(statement, 0x00, sizeof(struct StatementTag));
     statement->kind = kind;
     return statement;
+}
+
+
+
+void
+Statement_dispose(
+    Statement   statement
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    if (statement == NULL)
+    {
+        goto END;
+    }
+    
+    switch (statement->kind)
+    {
+    case STATEMENT_KIND_SUBSTITUTE:
+        //ifStatement_dispose(statement->of._if_);
+        break;
+    case STATEMENT_KIND_FUNCTION_CALL:
+        //ifStatement_dispose(statement->of._if_);
+        break;
+    case STATEMENT_KIND_IF:
+        //ifStatement_dispose(statement->of._if_);
+        break;
+    case STATEMENT_KIND_WHILE:
+        //whileStatement_dispose(statement->of._while_);
+        break;
+    case STATEMENT_KIND_FOR:
+        //forStatement_dispose(statement->of._for_);
+        break;
+    case STATEMENT_KIND_GOTO:
+        //returnStatement_dispose(statement->of._return_);
+        break;
+    case STATEMENT_KIND_CATCH:
+        //finallyStatement_dispose(statement->of._catch_);
+        break;
+    case STATEMENT_KIND_FINALLY:
+        //finallyStatement_dispose(statement->of._finally_);
+        break;
+    default:
+        Logger_err("Illegal statement type. (%d)", statement->kind);
+        break;
+    }
+    Memory_free(statement);
+    statement = NULL;
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+}
+
+
+
+//==============================
+//StatementWhile
+//==============================
+StatementResult
+StatementWhile_execute(
+	Interpreter interpreter,
+	CriaId object,
+	List parameters,
+    StatementWhile statement
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    StatementResult result;
+    CriaId id = NULL;
+    result.type = STATEMENT_RESULT_NORMAL;
+    
+    
+    if ((statement == NULL) 
+    	|| (statement->condition == NULL)
+    	|| (statement->statements == NULL))
+    {
+        Logger_dbg("statement is NULL.");
+        goto END;
+    }
+    
+    while (TRUE)
+    {
+		id = Expression_evaluate(interpreter, object, parameters, statement->condition);
+		if (id->type != CRIA_DATA_TYPE_BOOLEAN)
+		{
+			Logger_dbg("statement->condition was not CRIA_DATA_TYPE_BOOLEAN.");
+			runtime_error(interpreter);
+			goto END;
+		}
+		
+		
+		CriaBoolean boolean = (CriaBoolean)id;
+		if (boolean->value == FALSE)
+			break;
+		
+		Logger_dbg("statement->condition was 'true'.");
+		result = Statement_executeList(interpreter, object, parameters, statement->statements);
+		if (result.type == STATEMENT_RESULT_BREAK)
+		{
+			result.type = STATEMENT_RESULT_NORMAL;
+			break;
+		}
+		
+		if (result.type == STATEMENT_RESULT_CONTINUE)
+			continue;
+		
+		if (result.type == STATEMENT_RESULT_RETURN)
+			break;
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return result;
 }
 
 
@@ -50,7 +167,7 @@ StatementWhile_parse(
     parser_next(parser);
     
     
-    condition = parser_expression(parser);
+    condition = Expression_parse(parser);
     if (condition == NULL)
     {
         Logger_dbg("condition expression is NULL.");
@@ -126,6 +243,61 @@ END:
 
 
 
+//==============================
+//StatementGoto
+//==============================
+StatementResult
+StatementGoto_execute(
+	Interpreter interpreter,
+	CriaId object,
+	List parameters,
+    StatementGoto statement
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    StatementResult result;
+    result.type = STATEMENT_RESULT_NORMAL;
+    
+    
+    if (statement == NULL)
+    {
+        Logger_dbg("statement is NULL.");
+        runtime_error(interpreter);
+        goto END;
+    }
+    
+    switch (statement->type)
+    {
+	case GOTO_TYPE_BREAK:
+		result.type = STATEMENT_RESULT_BREAK;
+		break;
+	case GOTO_TYPE_CONTINUE:
+		result.type = STATEMENT_RESULT_CONTINUE;
+		break;
+	case GOTO_TYPE_LABEL:
+		result.type = STATEMENT_RESULT_LABEL;
+    	result.returns.label = statement->of.label;
+		break;
+	case GOTO_TYPE_RETURN:
+		result.type = STATEMENT_RESULT_RETURN;
+		if (statement->of.expression != NULL)
+		{
+    		result.returns.id = Expression_evaluate(interpreter, object, parameters, statement->of.expression);
+    		Logger_dbg("result.returns.id->type = %d", result.returns.id->type);
+		}
+		break;
+	default:
+		runtime_error(interpreter);
+		break;
+    }
+    
+END:
+    Logger_trc("[  END  ]%s(result.type=%d)", __func__, result.type);
+    return result;
+}
+
+
+
 Statement
 StatementGoto_parse(
     Parser  parser
@@ -164,7 +336,7 @@ StatementGoto_parse(
     case TOKEN_TYPE_RETURN_VALUE:
     	type = GOTO_TYPE_RETURN;
 	    parser_next(parser);
-	    expression = parser_expression(parser);
+	    expression = Expression_parse(parser);
         break;
     default:
     	parser_setPosition(parser, position);
@@ -199,6 +371,24 @@ END:
 
 
 
+//==============================
+//StatementFunctionCall
+//==============================
+void
+StatementFunctionCall_execute(
+    Interpreter interpreter,
+    CriaId object,
+	List parameters,
+    StatementFunctionCall statement
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    ExpressionReference_evaluate(interpreter, object, parameters, statement->expression);
+    Logger_trc("[  END  ]%s", __func__);
+}
+
+
+
 Statement
 StatementFunctionCall_parse(
     Parser parser
@@ -213,7 +403,7 @@ StatementFunctionCall_parse(
     
     
     Logger_dbg("Check 'FunctionCallExpression'");
-    expression = parser_expression_reference(parser);
+    expression = ExpressionReference_parse(parser);
     if (expression == NULL)
     {
         Logger_dbg("Not reference expression.");
@@ -248,6 +438,75 @@ StatementFunctionCall_parse(
 END:
     Logger_trc("[  END  ]%s", __func__);
     return statement;
+}
+
+
+
+//==============================
+//StatementIf
+//==============================
+StatementResult
+StatementIf_execute(
+    Interpreter interpreter,
+    CriaId object,
+	List parameters,
+    StatementIf statement
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    StatementResult result;
+    CriaId id = NULL;
+    result.type = STATEMENT_RESULT_NORMAL;
+    
+    
+    if (statement == NULL)
+    {
+        Logger_dbg("statement is NULL.");
+        goto END;
+    }
+    
+    
+    if (statement->condition == NULL)
+    {
+        Logger_dbg("statement->condition is NULL. Create 'true'");
+        id = (CriaId)CriaBoolean_new(TRUE, TRUE);
+    }
+    else
+    {
+        Logger_dbg("statement->condition exists.");
+        id = Expression_evaluate(interpreter, object, parameters, statement->condition);
+        if (id->type != CRIA_DATA_TYPE_BOOLEAN)
+        {
+            Logger_dbg("statement->condition was not CRIA_DATA_TYPE_BOOLEAN.");
+            runtime_error(interpreter);
+            goto END;
+        }
+    }
+    
+    
+    CriaBoolean boolean = (CriaBoolean)id;
+    if (boolean->value == TRUE)
+    {
+        Logger_dbg("statement->condition was 'true'.");
+        result = Statement_executeList(interpreter, object, parameters, statement->statements);
+        Logger_dbg("result.type = %d", result.type);
+        goto END;
+    }
+    
+    Logger_dbg("statement->condition was 'false'.");
+    if (statement->_if_ == NULL)
+    {
+        Logger_dbg("Exit IfStatement.");
+        goto END;
+    }
+    
+    Logger_dbg("Execute next IfStatement.");
+    result = StatementIf_execute(interpreter, object, parameters, statement->_if_);
+    
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return result;
 }
 
 
@@ -362,7 +621,7 @@ StatementIf_parseElifBlock(
     parser_next(parser);
     
     
-    condition = parser_expression(parser);
+    condition = Expression_parse(parser);
     if (condition == NULL)
     {
         Logger_err("condition expression is NULL.");
@@ -466,7 +725,7 @@ StatementIf_parseIfBlock(
     parser_next(parser);
     
     
-    condition = parser_expression(parser);
+    condition = Expression_parse(parser);
     if (condition == NULL)
     {
         Logger_dbg("condition expression is NULL.");
@@ -582,6 +841,36 @@ END:
 
 
 
+//==============================
+//StatementSubstitute
+//==============================
+void
+StatementSubstitute_execute(
+    Interpreter         interpreter,
+    CriaId object,
+	List parameters,
+    StatementSubstitute statement
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    DefinitionVariable definition = NULL;
+    Reference reference = statement->reference;
+    CriaId id = NULL;
+    
+    id = Expression_evaluate(interpreter, object, parameters, statement->expression);
+    
+    
+    definition = Reference_evaluate(interpreter, object, parameters, reference);
+    
+    
+    definition_variable_set(definition, id);
+    
+    
+    Logger_trc("[  END  ]%s", __func__);
+}
+
+
+
 Statement
 StatementSubstitute_parse(
     Parser parser
@@ -597,7 +886,7 @@ StatementSubstitute_parse(
     
     
     Logger_dbg("Check reference expression.");
-    reference = parser_reference(parser);
+    reference = Reference_parse(parser);
     if (reference == NULL)
     {
         Logger_dbg("Not reference expression.");
@@ -617,7 +906,7 @@ StatementSubstitute_parse(
     
     Logger_dbg("Check 'Expression'");
     parser_next(parser);
-    expression = parser_expression(parser);
+    expression = Expression_parse(parser);
     if (expression == NULL)
     {
         Logger_dbg("Not expression.");
@@ -656,79 +945,86 @@ END:
 
 
 
-void
-StatementSubstitute_execute(
-    Interpreter         interpreter,
+//==============================
+//Statement
+//==============================
+StatementResult
+Statement_execute(
+    Interpreter interpreter,
     CriaId object,
-	List parameters,
-    StatementSubstitute statement
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    DefinitionVariable definition = NULL;
-    Reference reference = statement->reference;
-    CriaId id = NULL;
-    
-    id = Expression_evaluate(interpreter, object, parameters, statement->expression);
-    
-    
-    definition = evaluator_reference(interpreter, object, parameters, reference);
-    
-    
-    definition_variable_set(definition, id);
-    
-    
-    Logger_trc("[  END  ]%s", __func__);
-}
-
-
-
-void
-Statement_dispose(
+    List         parameters,
     Statement   statement
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    if (statement == NULL)
-    {
-        goto END;
-    }
+    StatementResult result;
+
+    result.type = STATEMENT_RESULT_NORMAL;
+    Logger_dbg("result.type = %d", result.type);
     
+    Logger_dbg("statement pointer = [%p]", statement);
+    Interpreter_setRow(interpreter, statement->line);
+    Logger_dbg("statement->line = %d", statement->line);
+
     switch (statement->kind)
     {
     case STATEMENT_KIND_SUBSTITUTE:
-        //ifStatement_dispose(statement->of._if_);
+        StatementSubstitute_execute(interpreter, object, parameters, statement->of._substitute_);
         break;
     case STATEMENT_KIND_FUNCTION_CALL:
-        //ifStatement_dispose(statement->of._if_);
+        StatementFunctionCall_execute(interpreter, object, parameters, statement->of._functionCall_);
         break;
     case STATEMENT_KIND_IF:
-        //ifStatement_dispose(statement->of._if_);
+        result = StatementIf_execute(interpreter, object, parameters, statement->of._if_);
         break;
     case STATEMENT_KIND_WHILE:
-        //whileStatement_dispose(statement->of._while_);
-        break;
-    case STATEMENT_KIND_FOR:
-        //forStatement_dispose(statement->of._for_);
+        result = StatementWhile_execute(interpreter, object, parameters, statement->of._while_);
         break;
     case STATEMENT_KIND_GOTO:
-        //returnStatement_dispose(statement->of._return_);
-        break;
-    case STATEMENT_KIND_CATCH:
-        //finallyStatement_dispose(statement->of._catch_);
-        break;
-    case STATEMENT_KIND_FINALLY:
-        //finallyStatement_dispose(statement->of._finally_);
+        result = StatementGoto_execute(interpreter, object, parameters, statement->of._goto_);
         break;
     default:
-        Logger_err("Illegal statement type. (%d)", statement->kind);
-        break;
+        Logger_err("Not supported statement.");
+        runtime_error(interpreter);
     }
-    Memory_free(statement);
-    statement = NULL;
-    
-END:
+
     Logger_trc("[  END  ]%s", __func__);
+    return result;
+}
+
+
+
+StatementResult
+Statement_executeList(
+    Interpreter interpreter,
+    CriaId object,
+    List		parameters,
+    List        statements
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    StatementResult result;
+    
+    int count = list_count(statements);
+    int index = 0;
+    
+    for (index = 0; index < count; index++)
+    {
+        Statement statement = (Statement)(list_get(statements, index));
+        result = Statement_execute(interpreter, object, parameters, statement);
+        if (result.type != STATEMENT_RESULT_NORMAL)
+        	break;
+    }
+    
+	Logger_dbg("result.type = %d", result.type);
+    if (result.type == STATEMENT_RESULT_RETURN)
+    {
+		Logger_dbg("result.returns.id->type = %d", result.returns.id->type);
+    }
+    
+    
+    Logger_trc("[  END  ]%s", __func__);
+    return result;
 }
 
 

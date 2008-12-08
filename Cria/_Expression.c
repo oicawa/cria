@@ -16,6 +16,11 @@
 #include "_Expression.h"
 
 
+ExpressionReference ExpressionFunctionCall_parse(Parser parser);
+ExpressionReference ExpressionVariable_parse(Parser parser);
+ExpressionReference ExpressionGenerate_parse(Parser parser);
+ExpressionParameters ExpressionParameters_parse(Parser parser);
+
 Expression
 expression_new(
     ExpressionKind  kind
@@ -193,6 +198,9 @@ END:
 
 
 
+//==============================
+//ExpressionReference
+//==============================
 CriaId
 ExpressionReference_evaluate(
     Interpreter         interpreter,
@@ -235,6 +243,42 @@ ExpressionReference_evaluate(
 END:
     Logger_trc("[  END  ]%s", __func__);
     return id;
+}
+
+
+
+ExpressionReference
+ExpressionReference_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    ExpressionReference expression = NULL;
+    
+    expression = ExpressionFunctionCall_parse(parser);
+    if (expression != NULL)
+    {
+    	Logger_dbg("Created FunctionCallExpression.");
+        goto END;
+    }
+    
+    expression = ExpressionVariable_parse(parser);
+    if (expression != NULL)
+    {
+    	Logger_dbg("Created VariableExpression.");
+        goto END;
+    }
+    
+    expression = ExpressionGenerate_parse(parser);
+    if (expression != NULL)
+    {
+    	Logger_dbg("Created GenerateExpression.");
+        goto END;
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
 }
 
 
@@ -456,6 +500,91 @@ END:
 
 
 
+//==============================
+//ExpressionGenerate
+//==============================
+ExpressionReference
+ExpressionGenerate_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Item position = parser_getPosition(parser);
+    ExpressionReference expression = NULL;
+    String name = NULL;
+    ExpressionParameters parameters = NULL;
+    
+    Token token = parser_getCurrent(parser);
+    if (token_type(token) != TOKEN_TYPE_CLASS_LITERAL)
+    {
+    	token_log(token);
+    	Logger_dbg("Not class literal.");
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    
+    name = token_buffer(token);
+    Logger_dbg("Class name is '%s'", name);
+    
+    
+    parser_next(parser);
+    token = parser_getCurrent(parser);
+    if (token_type(token) != TOKEN_TYPE_PARENTHESIS_LEFT)
+    {
+    	token_log(token);
+        Logger_dbg("Second token is not left parenthesis.");
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    
+    parser_next(parser);
+    parameters = ExpressionParameters_parse(parser);
+    if (parameters == NULL)
+    {
+        Logger_dbg("The tokens that before right parenthesis are not parameters.");
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    
+    token = parser_getCurrent(parser);
+    
+    
+    if (token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT)
+    {
+    	token_log(token);
+        Logger_dbg("Last token is not right parenthesis.");
+        goto END;
+    }
+    
+    
+    ExpressionGenerate generate = Memory_malloc(sizeof(struct ExpressionGenerateTag));
+    memset(generate, 0x00, sizeof(struct ExpressionGenerateTag));
+    generate->name = string_clone(name);
+    generate->parameters = parameters;
+    Logger_dbg("Created GenerateExpression");
+    
+    expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
+    memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
+    expression->type = REFERENCE_EXPRESSION_TYPE_GENERATE;
+    expression->of.generate = generate;
+    
+    
+    parser_next(parser);
+    if (token_type(token) == TOKEN_TYPE_PERIOD)
+    {
+        expression->next = ExpressionReference_parse(parser);
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
+}
+
+
+
 CriaId
 ExpressionIntegerLiteral_evaluate(
     Interpreter             interpreter,
@@ -613,6 +742,521 @@ Expression_evaluate(
     
     Logger_trc("[  END  ]%s", __func__);
     return id;
+}
+
+
+
+ExpressionReference
+ExpressionVariable_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Item position = parser_getPosition(parser);
+    ExpressionReference expression = NULL;
+    String name = NULL;
+    
+    Token token = parser_getCurrent(parser);
+    if (token_type(token) != TOKEN_TYPE_IDENTIFIER)
+    {
+        Logger_dbg("Not VariableExpression.");
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    name = token_buffer(token);
+    
+    parser_next(parser);
+    token = parser_getCurrent(parser);
+    if (token_type(token) == TOKEN_TYPE_PARENTHESIS_LEFT)
+    {
+        Logger_dbg("Maybe FunctionCallExpression name = %s", name);
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    Logger_dbg("VariableExpression name = %s", name);
+    ExpressionVariable variable = NULL;
+    variable = Memory_malloc(sizeof(struct ExpressionVariableTag));
+    memset(variable, 0x00, sizeof(struct ExpressionVariableTag));
+    variable->name = string_clone(name);
+    
+    expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
+    memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
+    expression->type = REFERENCE_EXPRESSION_TYPE_VARIABLE;
+    expression->of.variable = variable;
+
+	token_log(token);
+    if (token_type(token) == TOKEN_TYPE_PERIOD)
+    {
+    	Logger_dbg("Next ReferenceExprssion parse.");
+    	parser_next(parser);
+        expression->next = ExpressionReference_parse(parser);
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
+}
+
+
+
+ExpressionReference
+ExpressionFunctionCall_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Item position = parser_getPosition(parser);
+    ExpressionReference expression = NULL;
+    String name = NULL;
+    ExpressionParameters parameters = NULL;
+    
+    Token token = parser_getCurrent(parser);
+    if (token_type(token) != TOKEN_TYPE_IDENTIFIER)
+    {
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    
+    name = token_buffer(token);
+    
+    
+    parser_next(parser);
+    token = parser_getCurrent(parser);
+    
+    if (token_type(token) != TOKEN_TYPE_PARENTHESIS_LEFT)
+    {
+        Logger_dbg("Second token is not left parenthesis.");
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    
+    parser_next(parser);
+    parameters = ExpressionParameters_parse(parser);
+    if (parameters == NULL)
+    {
+        Logger_dbg("The tokens that before right parenthesis are not parameters.");
+        parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    
+    token = parser_getCurrent(parser);
+    
+    
+    if (token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT)
+    {
+        Logger_dbg("Last token is not right parenthesis.");
+        goto END;
+    }
+    
+    
+    ExpressionFunctionCall function = Memory_malloc(sizeof(struct ExpressionFunctionCallTag));
+    memset(function, 0x00, sizeof(struct ExpressionFunctionCallTag));
+    function->name = string_clone(name);
+    function->parameters = parameters;
+    
+    expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
+    memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
+    expression->type = REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL;
+    expression->of.function = function;
+    
+    
+    parser_next(parser);
+    if (token_type(token) == TOKEN_TYPE_PERIOD)
+    {
+        expression->next = ExpressionReference_parse(parser);
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
+}
+
+
+
+Expression
+ExpressionFactor_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Expression  expression = NULL;
+    Token token = parser_getCurrent(parser);
+    token_log(token);
+    
+    
+    Logger_dbg("Check integer literal.");
+    if (token_type(token) == TOKEN_TYPE_INTEGER_LITERAL)
+    {
+        Logger_dbg("This is an integer literal token.");
+        ExpressionIntegerLiteral integerLiteral = Memory_malloc(sizeof(struct ExpressionIntegerLiteralTag));
+        memset(integerLiteral, 0x00, sizeof(struct ExpressionIntegerLiteralTag));
+        integerLiteral->value = string_toInteger(token_buffer(token));
+        
+        expression = expression_new(EXPRESSION_KIND_INTEGER_LITERAL);
+        expression->of._integerLiteral_ = integerLiteral;
+        
+        parser_next(parser);
+        goto END;
+    }
+    
+    
+    Logger_dbg("Check boolean literal.");
+    if (token_type(token) == TOKEN_TYPE_BOOLEAN_LITERAL)
+    {
+        Logger_dbg("This is an integer literal token.");
+        ExpressionBooleanLiteral booleanLiteral = Memory_malloc(sizeof(struct ExpressionBooleanLiteralTag));
+        memset(booleanLiteral, 0x00, sizeof(struct ExpressionBooleanLiteralTag));
+        booleanLiteral->value = string_toBoolean(token_buffer(token));
+        
+        expression = expression_new(EXPRESSION_KIND_BOOLEAN_LITERAL);
+        expression->of._booleanLiteral_ = booleanLiteral;
+        
+        parser_next(parser);
+        goto END;
+    }
+    
+    
+    Logger_dbg("Check string literal.");
+    if (token_type(token) == TOKEN_TYPE_STRING_LITERAL)
+    {
+        Logger_dbg("This is a string literal token.");
+        ExpressionStringLiteral stringLiteral = Memory_malloc(sizeof(struct ExpressionStringLiteralTag));
+        memset(stringLiteral, 0x00, sizeof(struct ExpressionStringLiteralTag));
+        stringLiteral->value = string_clone(token_buffer(token));
+        
+        expression = expression_new(EXPRESSION_KIND_STRING_LITERAL);
+        expression->of._stringLiteral_ = stringLiteral;
+        
+        parser_next(parser);
+        goto END;
+    }
+    
+    
+    Logger_dbg("Check new expression.");
+    if (token_type(token) == TOKEN_TYPE_PARENTHESIS_LEFT)
+    {
+        Logger_dbg("This is a left parenthesis token.");
+        parser_next(parser);
+        expression = Expression_parse(parser);
+        token = parser_getCurrent(parser);
+        if (token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT)
+        {
+            parser_error(token);
+        }
+        parser_next(parser);
+        goto END;
+    }
+    
+    
+    Logger_dbg("Check reference expression.");
+    if (token_type(token) == TOKEN_TYPE_PERIOD ||
+        token_type(token) == TOKEN_TYPE_IDENTIFIER ||
+        token_type(token) == TOKEN_TYPE_CLASS_LITERAL ||
+        token_type(token) == TOKEN_TYPE_CONSTANT)
+    {
+        ExpressionReference reference = ExpressionReference_parse(parser);
+        if (reference == NULL)
+        {
+            Logger_err("Not reference expression.");
+            goto END;
+        }
+        
+        expression = expression_new(EXPRESSION_KIND_REFERENCE);
+        expression->of._reference_ = reference;
+        goto END;
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
+}
+
+
+
+Expression
+ExpressionMultiplyDivide_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Expression expression = NULL;
+    Expression left = NULL;
+    Expression right = NULL;
+    ExpressionOperation operation = NULL;
+    Token token = NULL;
+    OperationKind kind;
+    
+    left = ExpressionFactor_parse(parser);
+    
+    
+    token = parser_getCurrent(parser);
+    token_log(token);
+    if (token_type(token) == TOKEN_TYPE_MULTIPLY)
+    {
+        kind = OPERATION_KIND_MULTIPLY;
+    }
+    else if (token_type(token) == TOKEN_TYPE_DEVIDE)
+    {
+        kind = OPERATION_KIND_DIVIDE;
+    }
+    else
+    {
+        expression = left;
+        goto END;
+    }
+
+    
+    parser_next(parser);
+    right = Expression_parse(parser);
+    
+    
+    Logger_dbg("Create MultiplyDivide Expression.");
+    operation = Memory_malloc(sizeof(struct ExpressionOperationTag));
+    memset(operation, 0x00, sizeof(struct ExpressionOperationTag));
+    operation->kind = kind;
+    operation->left = left;
+    operation->right = right;
+    
+    expression = expression_new(EXPRESSION_KIND_OPERATION);
+    expression->of._operation_ = operation;
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
+}
+
+
+
+Expression
+ExpressionPlusMinus_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Expression expression = NULL;
+    Expression left = NULL;
+    Expression right = NULL;
+    ExpressionOperation operation = NULL;
+    Token token = NULL;
+    OperationKind kind;
+    
+    left = ExpressionMultiplyDivide_parse(parser);
+    
+    
+    token = parser_getCurrent(parser);
+    token_log(token);
+    if (token_type(token) == TOKEN_TYPE_PLUS)
+    {
+        kind = OPERATION_KIND_PLUS;
+    }
+    else if (token_type(token) == TOKEN_TYPE_MINUS)
+    {
+        kind = OPERATION_KIND_MINUS;
+    }
+    else
+    {
+        expression = left;
+        goto END;
+    }
+
+    
+    parser_next(parser);
+    right = Expression_parse(parser);
+    
+    
+    Logger_dbg("Create PlusMinus Expression.");
+    operation = Memory_malloc(sizeof(struct ExpressionOperationTag));
+    memset(operation, 0x00, sizeof(struct ExpressionOperationTag));
+    operation->kind = kind;
+    operation->left = left;
+    operation->right = right;
+    
+    expression = expression_new(EXPRESSION_KIND_OPERATION);
+    expression->of._operation_ = operation;
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
+}
+
+
+
+Expression
+ExpressionCompare_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Expression expression = NULL;
+    Expression left = NULL;
+    Expression right = NULL;
+    ExpressionOperation operation = NULL;
+    Token token = NULL;
+    OperationKind kind;
+    
+    left = ExpressionPlusMinus_parse(parser);
+    
+    token = parser_getCurrent(parser);
+    if (token_type(token) == TOKEN_TYPE_EQUAL)
+    {
+        kind = OPERATION_KIND_EQUAL;
+    }
+    else if (token_type(token) == TOKEN_TYPE_NOT_EQUAL)
+    {
+        kind = OPERATION_KIND_NOT_EQUAL;
+    }
+    else if (token_type(token) == TOKEN_TYPE_LESS_EQUAL)
+    {
+        kind = OPERATION_KIND_LESS_EQUAL;
+    }
+    else if (token_type(token) == TOKEN_TYPE_LESS_THAN)
+    {
+        kind = OPERATION_KIND_LESS_THAN;
+    }
+    else
+    {
+        expression = left;
+        goto END;
+    }
+
+    
+    parser_next(parser);
+    right = Expression_parse(parser);
+    
+    
+    Logger_dbg("Create Compare Expression.");
+    operation = Memory_malloc(sizeof(struct ExpressionOperationTag));
+    memset(operation, 0x00, sizeof(struct ExpressionOperationTag));
+    operation->kind = kind;
+    operation->left = left;
+    operation->right = right;
+    
+    expression = expression_new(EXPRESSION_KIND_OPERATION);
+    expression->of._operation_ = operation;
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
+}
+
+
+
+Expression
+ExpressionNot_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Expression expression = NULL;
+    Expression left = NULL;
+    Expression right = NULL;
+    ExpressionOperation operation = NULL;
+    Token token = NULL;
+    OperationKind kind;
+    
+    left = ExpressionCompare_parse(parser);
+    
+    token = parser_getCurrent(parser);
+    if (token_type(token) == TOKEN_TYPE_NOT_EQUAL)
+    {
+        kind = OPERATION_KIND_NOT_EQUAL;
+    }
+    else
+    {
+        expression = left;
+        goto END;
+    }
+
+    parser_next(parser);
+    right = Expression_parse(parser);
+    
+    Logger_dbg("Create NotEqual Expression.");
+    operation = Memory_malloc(sizeof(struct ExpressionOperationTag));
+    memset(operation, 0x00, sizeof(struct ExpressionOperationTag));
+    operation->kind = kind;
+    operation->left = left;
+    operation->right = right;
+    
+    expression = expression_new(EXPRESSION_KIND_OPERATION);
+    expression->of._operation_ = operation;
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
+}
+
+
+
+Expression
+ExpressionAndOr_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Expression expression = NULL;
+    Expression left = NULL;
+    Expression right = NULL;
+    ExpressionOperation operation = NULL;
+    Token token = NULL;
+    OperationKind kind;
+    
+    
+    left = ExpressionCompare_parse(parser);
+    
+    token = parser_getCurrent(parser);
+    if (token_type(token) == TOKEN_TYPE_OR)
+    {
+        kind = OPERATION_KIND_OR;
+    }
+    else if (token_type(token) == TOKEN_TYPE_AND)
+    {
+        kind = OPERATION_KIND_AND;
+    }
+    else
+    {
+        expression = left;
+        goto END;
+    }
+
+    
+    parser_next(parser);
+    right = Expression_parse(parser);
+    
+    
+    Logger_dbg("Create AndOr Expression.");
+    operation = Memory_malloc(sizeof(struct ExpressionOperationTag));
+    memset(operation, 0x00, sizeof(struct ExpressionOperationTag));
+    operation->kind = kind;
+    operation->left = left;
+    operation->right = right;
+    
+    expression = expression_new(EXPRESSION_KIND_OPERATION);
+    expression->of._operation_ = operation;
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
+}
+
+
+
+Expression
+Expression_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Expression  expression = NULL;
+    
+    expression = ExpressionAndOr_parse(parser);
+    
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
 }
 
 

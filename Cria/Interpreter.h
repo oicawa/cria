@@ -58,4 +58,19 @@ Interpreter_statements(
 
 
 
+void
+Interpreter_setRow(
+	Interpreter interpreter,
+	int row
+);
+
+
+
+List
+Interpreter_variables(
+	Interpreter interpreter
+);
+
+
+
 #endif

@@ -86,16 +86,26 @@ operationExpression_new(
 
 
 
-Expression
-parser_expression(
+ExpressionReference
+ExpressionReference_parse(
 	Parser parser
 );
 
 
 
-ExpressionReference
-parser_expression_reference(
+Expression
+Expression_parse(
 	Parser parser
+);
+
+
+
+CriaId
+ExpressionReference_evaluate(
+    Interpreter         interpreter,
+    CriaId variable,
+    List parameters,
+    ExpressionReference expression
 );
 
 

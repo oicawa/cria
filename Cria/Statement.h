@@ -38,4 +38,14 @@ Statement_parse(
 
 
 
+StatementResult
+Statement_executeList(
+    Interpreter interpreter,
+    CriaId object,
+    List		parameters,
+    List        statements
+);
+
+
+
 #endif

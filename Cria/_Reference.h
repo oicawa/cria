@@ -3,16 +3,11 @@
 
 
 
-#include "_String.h"
-#include "_Parser.h"
-#include "_Expression.h"
+#include "String.h"
+#include "Expression.h"
 
 
-
-typedef struct  ReferenceTag                    *Reference;
-typedef struct  ReferenceVariableTag            *ReferenceVariable;
-typedef struct  ReferenceFunctionCallTag        *ReferenceFunctionCall;
-typedef struct  ReferenceClassTag               *ReferenceClass;
+#include "Reference.h"
 
 
 
@@ -38,16 +33,6 @@ struct ReferenceClassTag
 
 
 
-typedef enum
-{
-    REFERENCE_TYPE_SELF,
-    REFERENCE_TYPE_VARIABLE,
-    REFERENCE_TYPE_FUNCTION_CALL,
-    REFERENCE_TYPE_CLASS,
-} ReferenceType;
-
-
-
 struct ReferenceTag
 {
     ReferenceType               type;
@@ -58,20 +43,6 @@ struct ReferenceTag
     } of;
     Reference                   next;
 };
-
-
-
-Reference
-parser_reference(
-	Parser parser
-);
-
-
-
-Reference
-reference_new(
-    ReferenceType   type
-);
 
 
 
