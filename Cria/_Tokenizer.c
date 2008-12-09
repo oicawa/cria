@@ -134,24 +134,6 @@ END:
 
 
 
-void
-Token_log(
-	Token token
-)
-{
-	Logger_dbg("token is [%p]", token);
-	char* buffer = NULL;
-	if (token == NULL)
-		Logger_dbg("Token type=NULL.");
-	else if (token->buffer != NULL)
-	{
-		buffer = token->buffer;
-		Logger_dbg("Token type=%2d(%3d, %2d) [%s]", token->type, token->row, token->column, buffer);
-	}
-}
-
-
-
 TokenType
 Token_type(
 	Token token
@@ -168,6 +150,16 @@ Token_row(
 )
 {
 	return token->row;
+}
+
+
+
+int
+Token_column(
+	Token token
+)
+{
+	return token->column;
 }
 
 
@@ -1248,7 +1240,7 @@ Tokenizer_log_all_tokens(
     
     while (index < count)
     {
-        Token token = (Token)list_get(tokens, index);
+        Token token = (Token)List_get(tokens, index);
         Token_log(token);
         index += 1;
     }

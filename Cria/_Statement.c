@@ -1010,7 +1010,7 @@ Statement_executeList(
     
     for (index = 0; index < count; index++)
     {
-        Statement statement = (Statement)(list_get(statements, index));
+        Statement statement = (Statement)(List_get(statements, index));
         result = Statement_execute(interpreter, object, parameters, statement);
         if (result.type != STATEMENT_RESULT_NORMAL)
         	break;

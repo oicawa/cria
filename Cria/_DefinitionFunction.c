@@ -203,7 +203,7 @@ definition_function_search(
     
     for (index = 0; index < count; index++)
     {
-        tmp = (DefinitionFunction)(list_get(functions, index));
+        tmp = (DefinitionFunction)(List_get(functions, index));
         if (strcmp(tmp->name, name) == 0)
         {
             definition = tmp;
@@ -267,8 +267,8 @@ definition_function_evaluate(
     //パラメータをセット
     for (i = 0; i < List_count(parameters); i++)
     {
-    	id = (CriaId)list_get(parameters, i);
-    	definition = (DefinitionVariable)list_get(function->of.cria.parameterList, i);
+    	id = (CriaId)List_get(parameters, i);
+    	definition = (DefinitionVariable)List_get(function->of.cria.parameterList, i);
     	definition_variable_set(definition, id);
     }
     

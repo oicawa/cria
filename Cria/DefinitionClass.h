@@ -2,10 +2,11 @@
 #define PUBLIC_DEFINITIONCLASS_H_INCLUDED
 
 
-#include "Boolean.h"
-#include "String.h"
-#include "List.h"
+
 #include "Interpreter.h"
+#include "String.h"
+#include "Boolean.h"
+#include "List.h"
 #include "CriaId.h"
 
 
@@ -19,7 +20,7 @@ typedef DefinitionClass CriaNativeClassLoader(Interpreter interpreter, char* nam
 
 
 DefinitionClass
-definition_class_new(
+DefinitionClass_new(
 	Interpreter interpreter,
     String name,
     Boolean isNative,
@@ -31,7 +32,7 @@ definition_class_new(
 
 
 DefinitionClass
-definition_class_search(
+DefinitionClass_search(
     List classList,
     char* name
 );
@@ -39,7 +40,7 @@ definition_class_search(
 
 
 CriaId
-definition_class_evaluate(
+DefinitionClass_evaluate(
     Interpreter interpreter,
     CriaId  id,
     List parameterList,

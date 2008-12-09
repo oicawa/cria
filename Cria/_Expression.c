@@ -3,23 +3,18 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
-#include "String.h"
-#include "StringBuffer.h"
-#include "CriaBoolean.h"
-#include "CriaString.h"
-#include "CriaInteger.h"
-#include "DefinitionVariable.h"
-#include "DefinitionClass.h"
-#include "DefinitionFunction.h"
-#include "Runtime.h"
+#include "_Cria.h"
 
 #include "_Expression.h"
+
 
 
 ExpressionReference ExpressionFunctionCall_parse(Parser parser);
 ExpressionReference ExpressionVariable_parse(Parser parser);
 ExpressionReference ExpressionGenerate_parse(Parser parser);
 ExpressionParameters ExpressionParameters_parse(Parser parser);
+
+
 
 Expression
 expression_new(
@@ -283,6 +278,22 @@ END:
 
 
 
+ExpressionParameters
+ExpressionParameters_new(
+    List parameterList
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    ExpressionParameters parameters = NULL;
+    parameters = Memory_malloc(sizeof(struct ExpressionParametersTag));
+    memset(parameters, 0x00, sizeof(struct ExpressionParametersTag));
+    parameters->list = parameterList;
+    Logger_trc("[  END  ]%s", __func__);
+    return parameters;
+}
+
+
+
 List
 ExpressionParameters_evaluate(
     Interpreter             interpreter,
@@ -302,7 +313,7 @@ ExpressionParameters_evaluate(
     
     for (i = 0; i < count; i++)
     {
-        expression = (Expression)(list_get(expressions, i));
+        expression = (Expression)(List_get(expressions, i));
         switch (expression->kind)
         {
         case EXPRESSION_KIND_STRING_LITERAL:
@@ -371,6 +382,79 @@ ExpressionParameters_evaluate(
 
 
 
+ExpressionParameters
+ExpressionParameters_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    ExpressionParameters parameters = NULL;
+    Expression expression = NULL;
+    Item position = parser_getPosition(parser);
+    Token token = NULL;
+    List list = List_new();
+    
+    
+    token = parser_getCurrent(parser);
+    Token_log(token);
+    Logger_dbg("Loop start.");
+    while (Token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT)
+    {
+        Logger_dbg("Parse expression.");
+        expression = Expression_parse(parser);
+        if (expression == NULL)
+        {
+            Logger_dbg("expression is NULL.");
+            parser_setPosition(parser, position);
+            parser_error(token);
+            goto END;
+        }
+        
+        
+        Logger_dbg("Add expression.");
+        list_add(list, expression);
+        
+        
+        Logger_dbg("Get current token.");
+        token = parser_getCurrent(parser);
+        Token_log(token);
+        if (Token_type(token) == TOKEN_TYPE_COMMA)
+        {
+            Logger_dbg("Token is Comma.");
+            if (parser_next(parser) == FALSE)
+            {
+                parser_setPosition(parser, position);
+                parser_error(token);
+                goto END;
+            }
+            token = parser_getCurrent(parser);
+            continue;
+        }
+        
+        
+        Logger_dbg("Token is not right parenthesis.");
+        if (Token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT)
+        {
+            Token_log(token);
+            parser_setPosition(parser, position);
+            parser_error(token);
+            goto END;
+        }
+    }
+    Logger_dbg("Loop end.");
+    
+    Logger_dbg("list count = %d", List_count(list));
+    
+    
+    parameters = ExpressionParameters_new(list);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return parameters;
+}
+
+
+
 CriaId
 ExpressionFunctionCall_evaluate(
     Interpreter interpreter,
@@ -389,7 +473,7 @@ ExpressionFunctionCall_evaluate(
     {
 		Logger_dbg("Method name is '%s'", expression->name);
 		
-		klass = definition_class_search(Interpreter_classes(interpreter), object->name);
+		klass = DefinitionClass_search(Interpreter_classes(interpreter), object->name);
 		if (klass == NULL)
 		{
 			runtime_error(interpreter);
@@ -477,7 +561,7 @@ ExpressionGenerate_evaluate(
     
     
     Logger_dbg("Class name is '%s'", expression->name);
-    klass = definition_class_search(Interpreter_classes(interpreter), expression->name);
+    klass = DefinitionClass_search(Interpreter_classes(interpreter), expression->name);
     if (klass == NULL)
     {
         Logger_dbg("Class is not found.");
@@ -491,7 +575,7 @@ ExpressionGenerate_evaluate(
     List parameters = ExpressionParameters_evaluate(interpreter, object, parameterList, expression->parameters);
     
     
-    id = definition_class_evaluate(interpreter, NULL, parameterList, "new", klass, parameters);
+    id = DefinitionClass_evaluate(interpreter, NULL, parameterList, "new", klass, parameters);
     
 END:
     Logger_trc("[  END  ]%s", __func__);

@@ -2,6 +2,7 @@
 #define PRIVATE_DEFINITIONCLASS_H_INCLUDED
 
 
+
 #include "DefinitionClass.h"
 
 

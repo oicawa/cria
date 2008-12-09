@@ -54,7 +54,7 @@ definition_variable_search(
     for (index = 0; index < List_count(variables); index++)
     {
         Logger_dbg("Condition OK.");
-        tmp = (DefinitionVariable)list_get(variables, index);
+        tmp = (DefinitionVariable)List_get(variables, index);
         Logger_dbg("tmp = %p", tmp);
         Logger_dbg("tmp->name = %s", tmp->name);
         if (strcmp(tmp->name, name) != 0)

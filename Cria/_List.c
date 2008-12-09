@@ -57,6 +57,26 @@ END:
 
 
 
+void*
+Item_getObject(
+	Item item
+)
+{
+	return item->object;
+}
+
+
+
+void*
+Item_getNext(
+	Item item
+)
+{
+	return item->next;
+}
+
+
+
 List
 List_newFunction(
     char    *fileName,
@@ -142,7 +162,7 @@ END:
 
 
 void*
-list_get(
+List_get(
     List    list,
     int     index
 )
@@ -173,3 +193,16 @@ List_count(
 {
 	return list->count;
 }
+
+
+
+Item
+List_startItem(
+    List    list
+)
+{
+	return list->item;
+}
+
+
+

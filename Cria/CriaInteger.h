@@ -2,10 +2,12 @@
 #define PUBLIC_CRIAINTEGER_H_INCLUDED
 
 
-#include "Boolean.h"
 #include "CriaId.h"
+#include "Boolean.h"
 #include "Interpreter.h"
 #include "Expression.h"
+
+
 
 typedef struct CriaIntegerTag
 {

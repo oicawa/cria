@@ -39,7 +39,7 @@ io_write(
         runtime_error(interpreter);
     }
     
-    id = (CriaId)list_get(args, 0);
+    id = (CriaId)List_get(args, 0);
     
     
     if (id->type == CRIA_DATA_TYPE_INTEGER)
@@ -62,7 +62,6 @@ io_write(
     if (id->type == CRIA_DATA_TYPE_STRING)
     {
         Logger_dbg("String");
-        //第一引数の文字列型データを抽出
         start = ((CriaString)id)->value;
         while((end = strstr(start, "%s")) != NULL)
         {
@@ -75,23 +74,20 @@ io_write(
             buffer = NULL;
             start = end + 2;
             
-            //引数の個数が埋め込みフィールド数よりすくなかった場合はエラー
             if (count < index)
             {
                 runtime_error(interpreter);
             }
             
             index += 1;
-            id = (CriaId)list_get(args, index);
+            id = (CriaId)List_get(args, index);
             
-            //NULLチェック
             if (id == NULL)
             {
                 printf("(null)");
                 continue;
             }
             
-            //型チェック
             if (id->type == CRIA_DATA_TYPE_STRING)
             {
                 Logger_dbg("[print]%s", ((CriaString)id));
@@ -144,7 +140,6 @@ io_read(
     StringBuffer stringBuffer = NULL;
     char buffer[BUFFER_SIZE];
     
-    //引数が０でない場合はエラー
     if (List_count(args) != 0)
     {
         Logger_err("Runtime error. (Argument count is not 0.)");
@@ -155,7 +150,6 @@ io_read(
     
     stringBuffer = StringBuffer_new();
     
-    //標準入力から文字列を取得
     memset(buffer, 0x00, sizeof(buffer));
     while (fgets(buffer, sizeof(buffer), stdin) != NULL)
     {

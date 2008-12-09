@@ -38,6 +38,13 @@ ReferenceVariable_evaluate(
 
 
 Reference
+ReferenceFunctionCall_parse(
+	Parser parser
+);
+
+
+
+Reference
 Reference_parse(
 	Parser parser
 );

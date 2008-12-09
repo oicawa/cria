@@ -15,6 +15,20 @@ Item_dispose(
 
 
 
+void*
+Item_getObject(
+	Item item
+);
+
+
+
+void*
+Item_getNext(
+	Item item
+);
+
+
+
 List
 List_newFunction(
     char    *fileName,
@@ -45,7 +59,7 @@ list_addFunction(
 
 
 void*
-list_get(
+List_get(
     List    list,
     int     index
 );
@@ -54,6 +68,13 @@ list_get(
 
 int
 List_count(
+    List    list
+);
+
+
+
+Item
+List_startItem(
     List    list
 );
 

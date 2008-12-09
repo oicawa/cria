@@ -10,6 +10,9 @@
 
 
 typedef struct CriaFileTag *CriaFile;
+
+
+
 struct CriaFileTag
 {
     struct CriaIdTag    id;

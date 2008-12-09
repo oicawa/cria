@@ -5,7 +5,6 @@
 
 #include "Runtime.h"
 #include "CriaString.h"
-#include "String.h"
 
 #include "_CriaBoolean.h"
 

@@ -2,9 +2,11 @@
 #define PUBLIC_EXPRESSION_H_INCLUDED
 
 
-#include "String.h"
+
 #include "Parser.h"
+#include "Expression.h"
 #include "CriaId.h"
+
 
 
 typedef enum
@@ -61,28 +63,6 @@ typedef enum
     REFERENCE_EXPRESSION_TYPE_CLASS,
     REFERENCE_EXPRESSION_TYPE_GENERATE,
 } ExpressionReferenceType;
-
-
-
-ExpressionStringLiteral
-stringLiteralExpression_parse(
-    Parser  parser
-);
-
-
-ExpressionParameters
-parametersExpression_parse(
-    Parser  parser
-);
-
-
-
-ExpressionOperation
-operationExpression_new(
-    OperationKind   kind,
-    Expression      left,
-    Expression      right
-);
 
 
 
@@ -155,6 +135,20 @@ functionCallExpression_parse(
 void
 parametersExpression_dispose(
     ExpressionParameters    expression
+);
+
+
+
+ExpressionParameters
+ExpressionParameters_new(
+    List parameterList
+);
+
+
+
+ExpressionParameters
+ExpressionParameters_parse(
+    Parser  parser
 );
 
 

@@ -53,4 +53,3 @@ _Statement.o: _Statement.c _Statement.h _Cria.h Cria.h ../Memory/Memory.h ../Log
 _Expression.o: _Expression.c _Expression.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _IO.o: _IO.c _IO.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Reference.o: _Reference.c _Reference.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
-

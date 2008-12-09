@@ -5,7 +5,7 @@
 
 #include "CriaBoolean.h"
 #include "Runtime.h"
-#include "String.h"
+//#include "String.h"
 
 #include "_CriaInteger.h"
 

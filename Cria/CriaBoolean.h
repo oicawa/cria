@@ -2,8 +2,9 @@
 #define PUBLIC_CRIABOOLEAN_H_INCLUDED
 
 
-#include "Boolean.h"
+
 #include "CriaId.h"
+#include "Boolean.h"
 #include "Interpreter.h"
 #include "Expression.h"
 

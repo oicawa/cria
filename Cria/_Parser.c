@@ -3,12 +3,12 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
-#include "_Tokenizer.h"
-#include "_DefinitionVariable.h"
-#include "_DefinitionFunction.h"
-#include "_Statement.h"
-#include "_Reference.h"
-#include "_Expression.h"
+#include "Tokenizer.h"
+#include "DefinitionVariable.h"
+#include "DefinitionFunction.h"
+#include "Statement.h"
+#include "Reference.h"
+#include "Expression.h"
 
 #include "_Parser.h"
 
@@ -23,8 +23,8 @@ parser_errorFunction(
 	int line
 )
 {
-	Logger_err("Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", token->buffer, token->row, token->column, file, line);
-	fprintf(stderr, "Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", token->buffer, token->row, token->column, file, line);
+	Logger_err("Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", Token_buffer(token), Token_row(token), Token_column(token), file, line);
+	fprintf(stderr, "Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", Token_buffer(token), Token_row(token), Token_column(token), file, line);
 	Memory_dispose();
 	exit(1);
 }
@@ -41,7 +41,7 @@ parser_new(
     
     parser->tokens = list;
     parser->current = NULL;
-    parser->next = list->item;
+    parser->next = List_startItem(list);
     parser->mark = NULL;
     
     Logger_trc("[  END  ]%s", __func__);
@@ -93,7 +93,7 @@ parser_getCurrent(
         return NULL;
     }
     Logger_dbg("item is not NULL.");
-    Token token = (Token)(item->object);
+    Token token = (Token)(Item_getObject(item));
     if (token == NULL)
     {
         Logger_dbg("token is NULL.");
@@ -127,9 +127,10 @@ parser_next(
     
     
     Item current = parser->next;
-    Token_log(((Token)(current->object)));
+    Token token = (Token)Item_getObject(current);
+    Token_log(token);
     parser->current = current;
-    parser->next = current->next;
+    parser->next = Item_getNext(current);
     
     return TRUE;
 }
@@ -164,9 +165,9 @@ parser_setPosition(
     parser->current = position;
     
     if (position == NULL)
-        parser->next = parser->tokens->item;
+        parser->next = List_startItem(parser->tokens);
     else
-        parser->next = position->next;
+        parser->next = Item_getNext(position);
     
     Logger_trc("[  END  ]%s", __func__);
 }
@@ -185,7 +186,7 @@ parser_eat(
 	if (token == NULL)
 		goto UNMATCH;
 	
-	if (token->type != type)
+	if (Token_type(token) != type)
 		goto UNMATCH;
 	
 	result = TRUE;
@@ -221,7 +222,7 @@ parser_is_end(
             goto END;
         }
         
-        if (token->type != TOKEN_TYPE_NEW_LINE)
+        if (Token_type(token) != TOKEN_TYPE_NEW_LINE)
             goto END;
         
         if (parser_next(parser) == FALSE)
@@ -233,266 +234,6 @@ parser_is_end(
 END:
     Logger_trc("[  END  ]%s", __func__);
     return result;
-}
-
-
-
-ExpressionParameters
-ExpressionParameters_parse(
-    Parser  parser
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    ExpressionParameters parameters = NULL;
-    Expression expression = NULL;
-    Item position = parser_getPosition(parser);
-    Token token = NULL;
-    List list = List_new();
-    
-    
-    token = parser_getCurrent(parser);
-    Token_log(token);
-    Logger_dbg("Loop start.");
-    while (token->type != TOKEN_TYPE_PARENTHESIS_RIGHT)
-    {
-        Logger_dbg("Parse expression.");
-        expression = Expression_parse(parser);
-        if (expression == NULL)
-        {
-            Logger_dbg("expression is NULL.");
-            parser_setPosition(parser, position);
-            parser_error(token);
-            goto END;
-        }
-        
-        
-        Logger_dbg("Add expression.");
-        list_add(list, expression);
-        
-        
-        Logger_dbg("Get current token.");
-        token = parser_getCurrent(parser);
-        Token_log(token);
-        if (token->type == TOKEN_TYPE_COMMA)
-        {
-            Logger_dbg("Token is Comma.");
-            if (parser_next(parser) == FALSE)
-            {
-                parser_setPosition(parser, position);
-                parser_error(token);
-                goto END;
-            }
-            token = parser_getCurrent(parser);
-            continue;
-        }
-        
-        
-        Logger_dbg("Token is not right parenthesis.");
-        if (token->type != TOKEN_TYPE_PARENTHESIS_RIGHT)
-        {
-            Token_log(token);
-            parser_setPosition(parser, position);
-            parser_error(token);
-            goto END;
-        }
-    }
-    Logger_dbg("Loop end.");
-    
-    Logger_dbg("list count = %d", list->count);
-    
-    
-    parameters = Memory_malloc(sizeof(struct ExpressionParametersTag));
-    memset(parameters, 0x00, sizeof(struct ExpressionParametersTag));
-    parameters->list = list;
-    
-END:
-    Logger_trc("[  END  ]%s", __func__);
-    return parameters;
-}
-
-
-
-Reference
-ReferenceVariable_parse(
-    Parser  parser
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    Reference reference = NULL;
-    ReferenceVariable variable = NULL;
-    Item position = parser_getPosition(parser);
-    String name = NULL;
-    
-    Token token = parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_IDENTIFIER)
-    {
-    	Token_log(token);
-    	Logger_dbg("Not identifier.");
-        parser_setPosition(parser, position);
-        goto END;
-    }
-    
-    name = token->buffer;
-	Logger_dbg("Variable name is '%s'", name);
-    
-    parser_next(parser);
-    token = parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_PERIOD && token->type != TOKEN_TYPE_SUBSTITUTE)
-    {
-    	Token_log(token);
-    	Logger_dbg("Not '.' and ' = '");
-        parser_setPosition(parser, position);
-        goto END;
-    }
-    
-    
-    variable = Memory_malloc(sizeof(struct ReferenceVariableTag));
-    memset(variable, 0x00, sizeof(struct ReferenceVariableTag));
-    variable->name = string_clone(name);
-	Logger_dbg("Created ReferenceVariable");
-
-    
-    reference = Reference_new(REFERENCE_TYPE_VARIABLE);
-    reference->of.variable = variable;
-    
-    
-    if (token->type != TOKEN_TYPE_PERIOD)
-    {
-    	Token_log(token);
-    	Logger_dbg("Not '.'");
-        goto END;
-    }
-    
-    
-    parser_next(parser);
-    token = parser_getCurrent(parser);
-    Token_log(token);
-    reference->next = Reference_parse(parser);
-    if (reference->next == NULL)
-        parser_error(token);
-    
-END:
-    Logger_trc("[  END  ]%s", __func__);
-    return reference;
-}
-
-
-
-Reference
-ReferenceFunctionCall_parse(
-	Parser parser
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    Item position = parser_getPosition(parser);
-    Reference reference = NULL;
-    ReferenceFunctionCall functionCall = NULL;
-    ExpressionParameters parameters = NULL;
-    String name = NULL;
-    
-    
-    Token token = parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_IDENTIFIER)
-    {
-    	Token_log(token);
-	    Logger_dbg("Not identifier.");
-        parser_setPosition(parser, position);
-        goto END;
-    }
-    
-    name = token->buffer;
-    Logger_dbg("function name is '%s'", name);
-    
-    parser_next(parser);
-    token = parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_PARENTHESIS_LEFT)
-    {
-    	Token_log(token);
-	    Logger_dbg("Not '('.");
-        parser_setPosition(parser, position);
-        goto END;
-    }
-    
-    parser_next(parser);
-    parameters = ExpressionParameters_parse(parser);
-    if (parameters == NULL)
-    {
-	    Logger_dbg("Not parameters.");
-        parser_setPosition(parser, position);
-        goto END;
-    }
-    
-    
-    token = parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_PARENTHESIS_RIGHT)
-    {
-    	Token_log(token);
-	    Logger_dbg("Not ')'.");
-    	parser_error(token);
-        goto END;
-    }
-    
-    functionCall = Memory_malloc(sizeof(struct ReferenceFunctionCallTag));
-    memset(functionCall, 0x00, sizeof(struct ReferenceFunctionCallTag));
-    functionCall->name = string_clone(name);
-    functionCall->parameters = parameters;
-    Logger_dbg("Created ReferenceFunctionCall");
-
-    reference = Reference_new(REFERENCE_TYPE_FUNCTION_CALL);
-    reference->of.function = functionCall;
-    
-    parser_next(parser);
-    token = parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_PERIOD)
-    {
-    	Token_log(token);
-	    Logger_dbg("Not '.'.");
-    	goto END;
-    }
-    
-	parser_next(parser);
-	reference->next = Reference_parse(parser);
-	if (reference->next == NULL)
-	{
-	    Logger_dbg("Not exist next Reference after '.'");
-		parser_error(token);
-	}
-	
-END:
-    Logger_trc("[  END  ]%s", __func__);
-    return reference;
-}
-
-
-
-Reference
-Reference_parse(
-    Parser  parser
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    Item position = parser_getPosition(parser);
-    Reference reference = NULL;
-    
-    
-    reference = ReferenceVariable_parse(parser);
-    if (reference != NULL)
-        goto END;
-    
-    reference = ReferenceFunctionCall_parse(parser);
-    if (reference != NULL)
-        goto END;
-    
-    //reference = reference_class(parser);
-    //if (reference != null)
-    //    goto END;
-        
-    
-    parser_setPosition(parser, position);
-    
-END:
-    Logger_trc("[  END  ]%s", __func__);
-    return reference;
 }
 
 
