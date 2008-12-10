@@ -3,7 +3,14 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
-#include "_Cria.h"
+#include "StringBuffer.h"
+#include "Runtime.h"
+#include "CriaBoolean.h"
+#include "CriaInteger.h"
+#include "CriaString.h"
+#include "DefinitionVariable.h"
+#include "DefinitionFunction.h"
+#include "DefinitionClass.h"
 
 #include "_Expression.h"
 
@@ -17,7 +24,7 @@ ExpressionParameters ExpressionParameters_parse(Parser parser);
 
 
 Expression
-expression_new(
+Expression_new(
     ExpressionKind  kind
 )
 {
@@ -32,7 +39,7 @@ expression_new(
 
 
 void
-expression_dispose(
+Expression_dispose(
     Expression  expression
 )
 {
@@ -166,7 +173,7 @@ ExpressionVariable_evaluate(
     
     if (parameterList != NULL)
     {
-        variable = definition_variable_search(parameterList, expression->name);
+        variable = DefinitionVariable_search(parameterList, expression->name);
         if (variable != NULL)
         {
             id = DefinitionVariable_getObject(variable);
@@ -175,7 +182,7 @@ ExpressionVariable_evaluate(
     }
     
     
-    variable = definition_variable_search(Interpreter_variables(interpreter), expression->name);
+    variable = DefinitionVariable_search(Interpreter_variables(interpreter), expression->name);
     if (variable != NULL)
     {
         id = DefinitionVariable_getObject(variable);
@@ -478,7 +485,7 @@ ExpressionFunctionCall_evaluate(
 		{
 			runtime_error(interpreter);
 		}
-		function = definition_function_search(DefinitionClass_getMethods(klass), expression->name);
+		function = DefinitionFunction_search(DefinitionClass_getMethods(klass), expression->name);
 		if (function == NULL)
 		{
 			Logger_dbg("Method is not found.");
@@ -490,7 +497,7 @@ ExpressionFunctionCall_evaluate(
     else
     {
 		Logger_dbg("Function name is '%s'", expression->name);
-		function = definition_function_search(Interpreter_functions(interpreter), expression->name);
+		function = DefinitionFunction_search(Interpreter_functions(interpreter), expression->name);
 		if (function == NULL)
 		{
 			Logger_dbg("Function is not found.");
@@ -518,7 +525,7 @@ ExpressionFunctionCall_evaluate(
     
     
     Logger_dbg("Call cria function.(%s)", expression->name);
-    id = definition_function_evaluate(interpreter, object, DefinitionFunction_getParameterList(function), function, parameters);
+    id = DefinitionFunction_evaluate(interpreter, object, DefinitionFunction_getParameterList(function), function, parameters);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -979,7 +986,7 @@ ExpressionFactor_parse(
         memset(integerLiteral, 0x00, sizeof(struct ExpressionIntegerLiteralTag));
         integerLiteral->value = string_toInteger(Token_buffer(token));
         
-        expression = expression_new(EXPRESSION_KIND_INTEGER_LITERAL);
+        expression = Expression_new(EXPRESSION_KIND_INTEGER_LITERAL);
         expression->of._integerLiteral_ = integerLiteral;
         
         parser_next(parser);
@@ -995,7 +1002,7 @@ ExpressionFactor_parse(
         memset(booleanLiteral, 0x00, sizeof(struct ExpressionBooleanLiteralTag));
         booleanLiteral->value = string_toBoolean(Token_buffer(token));
         
-        expression = expression_new(EXPRESSION_KIND_BOOLEAN_LITERAL);
+        expression = Expression_new(EXPRESSION_KIND_BOOLEAN_LITERAL);
         expression->of._booleanLiteral_ = booleanLiteral;
         
         parser_next(parser);
@@ -1011,7 +1018,7 @@ ExpressionFactor_parse(
         memset(stringLiteral, 0x00, sizeof(struct ExpressionStringLiteralTag));
         stringLiteral->value = string_clone(Token_buffer(token));
         
-        expression = expression_new(EXPRESSION_KIND_STRING_LITERAL);
+        expression = Expression_new(EXPRESSION_KIND_STRING_LITERAL);
         expression->of._stringLiteral_ = stringLiteral;
         
         parser_next(parser);
@@ -1048,7 +1055,7 @@ ExpressionFactor_parse(
             goto END;
         }
         
-        expression = expression_new(EXPRESSION_KIND_REFERENCE);
+        expression = Expression_new(EXPRESSION_KIND_REFERENCE);
         expression->of._reference_ = reference;
         goto END;
     }
@@ -1104,7 +1111,7 @@ ExpressionMultiplyDivide_parse(
     operation->left = left;
     operation->right = right;
     
-    expression = expression_new(EXPRESSION_KIND_OPERATION);
+    expression = Expression_new(EXPRESSION_KIND_OPERATION);
     expression->of._operation_ = operation;
     
 END:
@@ -1158,7 +1165,7 @@ ExpressionPlusMinus_parse(
     operation->left = left;
     operation->right = right;
     
-    expression = expression_new(EXPRESSION_KIND_OPERATION);
+    expression = Expression_new(EXPRESSION_KIND_OPERATION);
     expression->of._operation_ = operation;
     
 END:
@@ -1218,7 +1225,7 @@ ExpressionCompare_parse(
     operation->left = left;
     operation->right = right;
     
-    expression = expression_new(EXPRESSION_KIND_OPERATION);
+    expression = Expression_new(EXPRESSION_KIND_OPERATION);
     expression->of._operation_ = operation;
     
 END:
@@ -1264,7 +1271,7 @@ ExpressionNot_parse(
     operation->left = left;
     operation->right = right;
     
-    expression = expression_new(EXPRESSION_KIND_OPERATION);
+    expression = Expression_new(EXPRESSION_KIND_OPERATION);
     expression->of._operation_ = operation;
     
 END:
@@ -1317,7 +1324,7 @@ ExpressionAndOr_parse(
     operation->left = left;
     operation->right = right;
     
-    expression = expression_new(EXPRESSION_KIND_OPERATION);
+    expression = Expression_new(EXPRESSION_KIND_OPERATION);
     expression->of._operation_ = operation;
     
 END:

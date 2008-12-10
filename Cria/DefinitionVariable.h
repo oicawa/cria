@@ -14,14 +14,14 @@ typedef struct  DefinitionVariableTag *DefinitionVariable;
 
 
 DefinitionVariable
-definition_variable_new(
+DefinitionVariable_new(
     String  name
 );
 
 
 
 DefinitionVariable
-definition_variable_search(
+DefinitionVariable_search(
     List parameters,
     String name
 );
@@ -29,14 +29,14 @@ definition_variable_search(
 
 
 String
-definition_variable_name(
+DefinitionVariable_name(
 	DefinitionVariable variable
 );
 
 
 
 void
-definition_variable_set(
+DefinitionVariable_set(
 	DefinitionVariable variable,
 	CriaId id
 );

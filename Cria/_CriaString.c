@@ -3,10 +3,9 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
-//#include "CriaString.h"
 #include "CriaBoolean.h"
 #include "Runtime.h"
-//#include "String.h"
+#include "String.h"
 #include "StringBuffer.h"
 
 #include "_CriaString.h"

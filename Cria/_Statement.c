@@ -863,7 +863,7 @@ StatementSubstitute_execute(
     definition = Reference_evaluate(interpreter, object, parameters, reference);
     
     
-    definition_variable_set(definition, id);
+    DefinitionVariable_set(definition, id);
     
     
     Logger_trc("[  END  ]%s", __func__);

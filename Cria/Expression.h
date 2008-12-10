@@ -90,85 +90,8 @@ ExpressionReference_evaluate(
 
 
 
-Expression
-expression_new(
-    ExpressionKind  kind
-);
-
-
-
-void
-expression_dispose(
-    Expression  expression
-);
-
-
-
-void
-operationExpression_dispose(
-    ExpressionOperation expression
-);
-
-
-
-void
-stringLiteralExpression_dispose(
-    ExpressionStringLiteral expression
-);
-
-
-
-void
-functionCallExpression_dispose(
-    ExpressionFunctionCall  expression
-);
-
-
-
-ExpressionFunctionCall
-functionCallExpression_parse(
-    Parser  parser
-);
-
-
-
-void
-parametersExpression_dispose(
-    ExpressionParameters    expression
-);
-
-
-
-ExpressionParameters
-ExpressionParameters_new(
-    List parameterList
-);
-
-
-
 ExpressionParameters
 ExpressionParameters_parse(
-    Parser  parser
-);
-
-
-
-ExpressionVariable
-variableExpression_new(
-    String                  name
-);
-
-
-
-void
-variableExpression_dispose(
-    ExpressionVariable   expression
-);
-
-
-
-ExpressionVariable
-variableExpression_parse(
     Parser  parser
 );
 

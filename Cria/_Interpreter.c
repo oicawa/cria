@@ -20,7 +20,7 @@ Interpreter_addFunction(
 {
     Logger_trc("[ START ]%s", __func__);
     DefinitionFunction definition = NULL;
-    definition = definition_function_new(functionName, TRUE, TRUE, NULL, NULL, functionPoint);
+    definition = DefinitionFunction_new(functionName, TRUE, TRUE, NULL, NULL, functionPoint);
     list_add(interpreter->functions, definition);
     Logger_trc("[  END  ]%s", __func__);
 }

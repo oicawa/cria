@@ -21,14 +21,14 @@ struct DefinitionVariableTag
 
 
 DefinitionVariable
-definition_variable_new(
+DefinitionVariable_new(
     String  name
 );
 
 
 
 DefinitionVariable
-definition_variable_search(
+DefinitionVariable_search(
     List parameters,
     String name
 );

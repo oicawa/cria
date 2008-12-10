@@ -40,7 +40,7 @@ ReferenceVariable_evaluate(
     
     if (parameters != NULL)
     {
-        definition = definition_variable_search(parameters, variable->name);
+        definition = DefinitionVariable_search(parameters, variable->name);
         if (definition != NULL)
         {
             goto END;
@@ -48,7 +48,7 @@ ReferenceVariable_evaluate(
     }
     
     
-    definition = definition_variable_search(Interpreter_variables(interpreter), variable->name);
+    definition = DefinitionVariable_search(Interpreter_variables(interpreter), variable->name);
     if (definition != NULL)
     {
         goto END;
@@ -57,12 +57,12 @@ ReferenceVariable_evaluate(
     //存在しなかった場合は登録
     if (parameters != NULL)
     {
-        definition = definition_variable_new(variable->name);
+        definition = DefinitionVariable_new(variable->name);
         list_add(parameters, definition);
         goto END;
     }
     
-    definition = definition_variable_new(variable->name);
+    definition = DefinitionVariable_new(variable->name);
     list_add(Interpreter_variables(interpreter), definition);
     
 END:

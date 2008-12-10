@@ -11,7 +11,7 @@
 
 
 DefinitionVariable
-definition_variable_new(
+DefinitionVariable_new(
     String      name
 )
 {
@@ -26,7 +26,7 @@ definition_variable_new(
 
 
 DefinitionVariable
-definition_variable_search(
+DefinitionVariable_search(
     List    variables,
     String  name
 )
@@ -73,7 +73,7 @@ END:
 
 
 String
-definition_variable_name(
+DefinitionVariable_name(
 	DefinitionVariable variable
 )
 {
@@ -83,7 +83,7 @@ definition_variable_name(
 
 
 void
-definition_variable_set(
+DefinitionVariable_set(
 	DefinitionVariable variable,
 	CriaId id
 )

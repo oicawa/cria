@@ -16,7 +16,7 @@
 
 
 DefinitionFunction
-definition_function_new(
+DefinitionFunction_new(
     char*               name,
     Boolean             isNative,
     Boolean             isStatic,
@@ -48,7 +48,7 @@ definition_function_new(
 
 
 List
-definition_function_parse_parameters(
+DefinitionFunction_parse_parameters(
 	Parser parser
 )
 {
@@ -65,9 +65,9 @@ definition_function_parse_parameters(
 			break;
 	    }
 	    
-		DefinitionVariable variable = definition_variable_new(Token_buffer(token));
+		DefinitionVariable variable = DefinitionVariable_new(Token_buffer(token));
 		list_add(parameters, variable);
-	    Logger_dbg("Add parameter.(%s)", definition_variable_name(variable));
+	    Logger_dbg("Add parameter.(%s)", DefinitionVariable_name(variable));
 		
 		parser_next(parser);
 		token = parser_getCurrent(parser);
@@ -88,7 +88,7 @@ definition_function_parse_parameters(
 
 
 DefinitionFunction
-definition_function_parse(
+DefinitionFunction_parse(
     Parser parser
 )
 {
@@ -117,7 +117,7 @@ definition_function_parse(
     	goto END;
     }
     
-	parameters = definition_function_parse_parameters(parser);
+	parameters = DefinitionFunction_parse_parameters(parser);
 	if (parameters == NULL)
     {
         Logger_dbg("Not parameters.");
@@ -178,7 +178,7 @@ definition_function_parse(
     }
 	
     Logger_dbg("Create FunctionDefinition. (name=%s, parameter=%p)", name, parameters);
-    functionDefinition = definition_function_new(name, FALSE, TRUE, parameters, statements, NULL);
+    functionDefinition = DefinitionFunction_new(name, FALSE, TRUE, parameters, statements, NULL);
     
 END:
 	if (functionDefinition == NULL)
@@ -191,7 +191,7 @@ END:
 
 
 DefinitionFunction
-definition_function_search(
+DefinitionFunction_search(
     List    functions,
     char*   name
 )
@@ -218,7 +218,7 @@ definition_function_search(
 
 
 CriaId
-definition_function_evaluate(
+DefinitionFunction_evaluate(
 	Interpreter interpreter,
     CriaId object,
 	List parameterList,
@@ -269,7 +269,7 @@ definition_function_evaluate(
     {
     	id = (CriaId)List_get(parameters, i);
     	definition = (DefinitionVariable)List_get(function->of.cria.parameterList, i);
-    	definition_variable_set(definition, id);
+    	DefinitionVariable_set(definition, id);
     }
     
     //実行

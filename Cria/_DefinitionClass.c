@@ -89,7 +89,7 @@ DefinitionClass_evaluate(
     Logger_dbg("Method name is '%s'", name);
     Logger_dbg("klass is '%p'", klass);
     Logger_dbg("klass->methodList is '%p'", klass->methodList);
-    function = definition_function_search(klass->methodList, name);
+    function = DefinitionFunction_search(klass->methodList, name);
     if (function == NULL)
     {
     	Logger_err("Method is not found. (%s)/%d", name, List_count(klass->methodList));
@@ -97,7 +97,7 @@ DefinitionClass_evaluate(
     }
     
     Logger_dbg("parameters->count = %d", List_count(parameters));
-    value = definition_function_evaluate(interpreter, id, parameterList, function, parameters);
+    value = DefinitionFunction_evaluate(interpreter, id, parameterList, function, parameters);
     
     
     Logger_trc("[  END  ]%s", __func__);

@@ -255,7 +255,7 @@ parser_create_syntax_tree(
     parser_next(parser);
     while (TRUE)
     {
-        functionDefinition = definition_function_parse(parser);
+        functionDefinition = DefinitionFunction_parse(parser);
         if (functionDefinition != NULL)
         {
             Logger_dbg("Add created FunctionDefinition and parse next.");

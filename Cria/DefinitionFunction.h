@@ -15,7 +15,7 @@ typedef struct DefinitionFunctionTag *DefinitionFunction;
 
 
 DefinitionFunction
-definition_function_new(
+DefinitionFunction_new(
     char*               name,
     Boolean             isNative,
     Boolean             isStatic,
@@ -27,14 +27,14 @@ definition_function_new(
 
 
 DefinitionFunction
-definition_function_parse(
+DefinitionFunction_parse(
     Parser parser
 );
 
 
 
 DefinitionFunction
-definition_function_search(
+DefinitionFunction_search(
     List    functions,
     char*   name
 );
@@ -42,7 +42,7 @@ definition_function_search(
 
 
 CriaId
-definition_function_evaluate(
+DefinitionFunction_evaluate(
 	Interpreter interpreter,
     CriaId id,
 	List parameterList,
