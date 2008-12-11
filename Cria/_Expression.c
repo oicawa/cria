@@ -327,21 +327,21 @@ ExpressionParameters_evaluate(
             Logger_dbg("Do 'String literal expression'");
             id = (CriaId)ExpressionStringLiteral_evaluate(interpreter, object, parameterList, expression->of._stringLiteral_);
             Logger_dbg("Done 'String literal expression'");
-            list_add(list, id);
+            List_add(list, id);
             Logger_dbg("Add 'Cria Id'");
             break;
         case EXPRESSION_KIND_INTEGER_LITERAL:
             Logger_dbg("Do 'Integer literal expression'");
             id = ExpressionIntegerLiteral_evaluate(interpreter, object, parameterList, expression->of._integerLiteral_);
             Logger_dbg("Done 'Integer literal expression'");
-            list_add(list, id);
+            List_add(list, id);
             Logger_dbg("Add 'Cria Id'");
             break;
         case EXPRESSION_KIND_BOOLEAN_LITERAL:
             Logger_dbg("Do 'Boolean literal expression'");
             id = ExpressionBooleanLiteral_evaluate(interpreter, object, parameterList, expression->of._booleanLiteral_);
             Logger_dbg("Done 'Boolean literal expression'");
-            list_add(list, id);
+            List_add(list, id);
             Logger_dbg("Add 'Cria Id'");
             break;
         /*
@@ -356,14 +356,14 @@ ExpressionParameters_evaluate(
             Logger_dbg("Do 'Function call expression'");
             id = ExpressionFunctionCall_evaluate(interpreter, object, parameterList, expression->of._functionCall_);
             Logger_dbg("Done 'Function call expression'");
-            list_add(list, id);
+            List_add(list, id);
             Logger_dbg("Add 'Cria Id'");
             break;
         case EXPRESSION_KIND_REFERENCE:
             Logger_dbg("Do reference expression");
             id = ExpressionReference_evaluate(interpreter, object, parameterList, expression->of._reference_);
             Logger_dbg("Done reference expression");
-            list_add(list, id);
+            List_add(list, id);
             Logger_dbg("Add 'Cria Id'");
             break;
         /*
@@ -374,7 +374,7 @@ ExpressionParameters_evaluate(
             Logger_dbg("Do operation expression");
             id = ExpressionOperation_evaluate(interpreter, object, parameterList, expression->of._operation_);
             Logger_dbg("Done operation expression");
-            list_add(list, id);
+            List_add(list, id);
             Logger_dbg("Add 'Cria Id'");
             break;
         default:
@@ -397,12 +397,12 @@ ExpressionParameters_parse(
     Logger_trc("[ START ]%s", __func__);
     ExpressionParameters parameters = NULL;
     Expression expression = NULL;
-    Item position = parser_getPosition(parser);
+    Item position = Parser_getPosition(parser);
     Token token = NULL;
     List list = List_new();
     
     
-    token = parser_getCurrent(parser);
+    token = Parser_getCurrent(parser);
     Token_log(token);
     Logger_dbg("Loop start.");
     while (Token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT)
@@ -412,29 +412,29 @@ ExpressionParameters_parse(
         if (expression == NULL)
         {
             Logger_dbg("expression is NULL.");
-            parser_setPosition(parser, position);
-            parser_error(token);
+            Parser_setPosition(parser, position);
+            Parser_error(token);
             goto END;
         }
         
         
         Logger_dbg("Add expression.");
-        list_add(list, expression);
+        List_add(list, expression);
         
         
         Logger_dbg("Get current token.");
-        token = parser_getCurrent(parser);
+        token = Parser_getCurrent(parser);
         Token_log(token);
         if (Token_type(token) == TOKEN_TYPE_COMMA)
         {
             Logger_dbg("Token is Comma.");
-            if (parser_next(parser) == FALSE)
+            if (Parser_next(parser) == FALSE)
             {
-                parser_setPosition(parser, position);
-                parser_error(token);
+                Parser_setPosition(parser, position);
+                Parser_error(token);
                 goto END;
             }
-            token = parser_getCurrent(parser);
+            token = Parser_getCurrent(parser);
             continue;
         }
         
@@ -443,8 +443,8 @@ ExpressionParameters_parse(
         if (Token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT)
         {
             Token_log(token);
-            parser_setPosition(parser, position);
-            parser_error(token);
+            Parser_setPosition(parser, position);
+            Parser_error(token);
             goto END;
         }
     }
@@ -600,17 +600,17 @@ ExpressionGenerate_parse(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    Item position = parser_getPosition(parser);
+    Item position = Parser_getPosition(parser);
     ExpressionReference expression = NULL;
     String name = NULL;
     ExpressionParameters parameters = NULL;
     
-    Token token = parser_getCurrent(parser);
+    Token token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_CLASS_LITERAL)
     {
     	Token_log(token);
     	Logger_dbg("Not class literal.");
-        parser_setPosition(parser, position);
+        Parser_setPosition(parser, position);
         goto END;
     }
     
@@ -619,28 +619,28 @@ ExpressionGenerate_parse(
     Logger_dbg("Class name is '%s'", name);
     
     
-    parser_next(parser);
-    token = parser_getCurrent(parser);
+    Parser_next(parser);
+    token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_PARENTHESIS_LEFT)
     {
     	Token_log(token);
         Logger_dbg("Second token is not left parenthesis.");
-        parser_setPosition(parser, position);
+        Parser_setPosition(parser, position);
         goto END;
     }
     
     
-    parser_next(parser);
+    Parser_next(parser);
     parameters = ExpressionParameters_parse(parser);
     if (parameters == NULL)
     {
         Logger_dbg("The tokens that before right parenthesis are not parameters.");
-        parser_setPosition(parser, position);
+        Parser_setPosition(parser, position);
         goto END;
     }
     
     
-    token = parser_getCurrent(parser);
+    token = Parser_getCurrent(parser);
     
     
     if (Token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT)
@@ -663,7 +663,7 @@ ExpressionGenerate_parse(
     expression->of.generate = generate;
     
     
-    parser_next(parser);
+    Parser_next(parser);
     if (Token_type(token) == TOKEN_TYPE_PERIOD)
     {
         expression->next = ExpressionReference_parse(parser);
@@ -841,26 +841,26 @@ ExpressionVariable_parse(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    Item position = parser_getPosition(parser);
+    Item position = Parser_getPosition(parser);
     ExpressionReference expression = NULL;
     String name = NULL;
     
-    Token token = parser_getCurrent(parser);
+    Token token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
     {
         Logger_dbg("Not VariableExpression.");
-        parser_setPosition(parser, position);
+        Parser_setPosition(parser, position);
         goto END;
     }
     
     name = Token_buffer(token);
     
-    parser_next(parser);
-    token = parser_getCurrent(parser);
+    Parser_next(parser);
+    token = Parser_getCurrent(parser);
     if (Token_type(token) == TOKEN_TYPE_PARENTHESIS_LEFT)
     {
         Logger_dbg("Maybe FunctionCallExpression name = %s", name);
-        parser_setPosition(parser, position);
+        Parser_setPosition(parser, position);
         goto END;
     }
     
@@ -879,7 +879,7 @@ ExpressionVariable_parse(
     if (Token_type(token) == TOKEN_TYPE_PERIOD)
     {
     	Logger_dbg("Next ReferenceExprssion parse.");
-    	parser_next(parser);
+    	Parser_next(parser);
         expression->next = ExpressionReference_parse(parser);
     }
     
@@ -896,15 +896,15 @@ ExpressionFunctionCall_parse(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    Item position = parser_getPosition(parser);
+    Item position = Parser_getPosition(parser);
     ExpressionReference expression = NULL;
     String name = NULL;
     ExpressionParameters parameters = NULL;
     
-    Token token = parser_getCurrent(parser);
+    Token token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
     {
-        parser_setPosition(parser, position);
+        Parser_setPosition(parser, position);
         goto END;
     }
     
@@ -912,28 +912,28 @@ ExpressionFunctionCall_parse(
     name = Token_buffer(token);
     
     
-    parser_next(parser);
-    token = parser_getCurrent(parser);
+    Parser_next(parser);
+    token = Parser_getCurrent(parser);
     
     if (Token_type(token) != TOKEN_TYPE_PARENTHESIS_LEFT)
     {
         Logger_dbg("Second token is not left parenthesis.");
-        parser_setPosition(parser, position);
+        Parser_setPosition(parser, position);
         goto END;
     }
     
     
-    parser_next(parser);
+    Parser_next(parser);
     parameters = ExpressionParameters_parse(parser);
     if (parameters == NULL)
     {
         Logger_dbg("The tokens that before right parenthesis are not parameters.");
-        parser_setPosition(parser, position);
+        Parser_setPosition(parser, position);
         goto END;
     }
     
     
-    token = parser_getCurrent(parser);
+    token = Parser_getCurrent(parser);
     
     
     if (Token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT)
@@ -954,7 +954,7 @@ ExpressionFunctionCall_parse(
     expression->of.function = function;
     
     
-    parser_next(parser);
+    Parser_next(parser);
     if (Token_type(token) == TOKEN_TYPE_PERIOD)
     {
         expression->next = ExpressionReference_parse(parser);
@@ -974,7 +974,7 @@ ExpressionFactor_parse(
 {
     Logger_trc("[ START ]%s", __func__);
     Expression  expression = NULL;
-    Token token = parser_getCurrent(parser);
+    Token token = Parser_getCurrent(parser);
     Token_log(token);
     
     
@@ -989,7 +989,7 @@ ExpressionFactor_parse(
         expression = Expression_new(EXPRESSION_KIND_INTEGER_LITERAL);
         expression->of._integerLiteral_ = integerLiteral;
         
-        parser_next(parser);
+        Parser_next(parser);
         goto END;
     }
     
@@ -1005,7 +1005,7 @@ ExpressionFactor_parse(
         expression = Expression_new(EXPRESSION_KIND_BOOLEAN_LITERAL);
         expression->of._booleanLiteral_ = booleanLiteral;
         
-        parser_next(parser);
+        Parser_next(parser);
         goto END;
     }
     
@@ -1021,7 +1021,7 @@ ExpressionFactor_parse(
         expression = Expression_new(EXPRESSION_KIND_STRING_LITERAL);
         expression->of._stringLiteral_ = stringLiteral;
         
-        parser_next(parser);
+        Parser_next(parser);
         goto END;
     }
     
@@ -1030,14 +1030,14 @@ ExpressionFactor_parse(
     if (Token_type(token) == TOKEN_TYPE_PARENTHESIS_LEFT)
     {
         Logger_dbg("This is a left parenthesis token.");
-        parser_next(parser);
+        Parser_next(parser);
         expression = Expression_parse(parser);
-        token = parser_getCurrent(parser);
+        token = Parser_getCurrent(parser);
         if (Token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT)
         {
-            parser_error(token);
+            Parser_error(token);
         }
-        parser_next(parser);
+        Parser_next(parser);
         goto END;
     }
     
@@ -1083,7 +1083,7 @@ ExpressionMultiplyDivide_parse(
     left = ExpressionFactor_parse(parser);
     
     
-    token = parser_getCurrent(parser);
+    token = Parser_getCurrent(parser);
     Token_log(token);
     if (Token_type(token) == TOKEN_TYPE_MULTIPLY)
     {
@@ -1100,7 +1100,7 @@ ExpressionMultiplyDivide_parse(
     }
 
     
-    parser_next(parser);
+    Parser_next(parser);
     right = Expression_parse(parser);
     
     
@@ -1137,7 +1137,7 @@ ExpressionPlusMinus_parse(
     left = ExpressionMultiplyDivide_parse(parser);
     
     
-    token = parser_getCurrent(parser);
+    token = Parser_getCurrent(parser);
     Token_log(token);
     if (Token_type(token) == TOKEN_TYPE_PLUS)
     {
@@ -1154,7 +1154,7 @@ ExpressionPlusMinus_parse(
     }
 
     
-    parser_next(parser);
+    Parser_next(parser);
     right = Expression_parse(parser);
     
     
@@ -1190,7 +1190,7 @@ ExpressionCompare_parse(
     
     left = ExpressionPlusMinus_parse(parser);
     
-    token = parser_getCurrent(parser);
+    token = Parser_getCurrent(parser);
     if (Token_type(token) == TOKEN_TYPE_EQUAL)
     {
         kind = OPERATION_KIND_EQUAL;
@@ -1214,7 +1214,7 @@ ExpressionCompare_parse(
     }
 
     
-    parser_next(parser);
+    Parser_next(parser);
     right = Expression_parse(parser);
     
     
@@ -1250,7 +1250,7 @@ ExpressionNot_parse(
     
     left = ExpressionCompare_parse(parser);
     
-    token = parser_getCurrent(parser);
+    token = Parser_getCurrent(parser);
     if (Token_type(token) == TOKEN_TYPE_NOT_EQUAL)
     {
         kind = OPERATION_KIND_NOT_EQUAL;
@@ -1261,7 +1261,7 @@ ExpressionNot_parse(
         goto END;
     }
 
-    parser_next(parser);
+    Parser_next(parser);
     right = Expression_parse(parser);
     
     Logger_dbg("Create NotEqual Expression.");
@@ -1297,7 +1297,7 @@ ExpressionAndOr_parse(
     
     left = ExpressionCompare_parse(parser);
     
-    token = parser_getCurrent(parser);
+    token = Parser_getCurrent(parser);
     if (Token_type(token) == TOKEN_TYPE_OR)
     {
         kind = OPERATION_KIND_OR;
@@ -1313,7 +1313,7 @@ ExpressionAndOr_parse(
     }
 
     
-    parser_next(parser);
+    Parser_next(parser);
     right = Expression_parse(parser);
     
     

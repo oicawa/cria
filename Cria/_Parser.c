@@ -17,7 +17,7 @@
 
 
 void
-parser_errorFunction(
+Parser_errorFunction(
 	Token token,
 	char* file,
 	int line
@@ -31,7 +31,7 @@ parser_errorFunction(
 
 
 Parser
-parser_new(
+Parser_new(
     List    list
 )
 {
@@ -51,7 +51,7 @@ parser_new(
 
 
 void
-parser_dispose(
+Parser_dispose(
     Parser  parser
 )
 {
@@ -75,7 +75,7 @@ END:
 
 
 Token
-parser_getCurrent(
+Parser_getCurrent(
     Parser  parser
 )
 {
@@ -108,7 +108,7 @@ parser_getCurrent(
 
 
 Boolean
-parser_next(
+Parser_next(
     Parser  parser
 )
 {
@@ -138,7 +138,7 @@ parser_next(
 
 
 Item
-parser_getPosition(
+Parser_getPosition(
     Parser  parser
 )
 {
@@ -153,7 +153,7 @@ parser_getPosition(
 
 
 void
-parser_setPosition(
+Parser_setPosition(
     Parser  parser,
     Item    position
 )
@@ -175,14 +175,14 @@ parser_setPosition(
 
 
 Boolean
-parser_eat(
+Parser_eat(
 	Parser parser,
 	TokenType type,
 	Boolean isNessesally
 )
 {
 	Boolean result = FALSE;
-	Token token = parser_getCurrent(parser);
+	Token token = Parser_getCurrent(parser);
 	if (token == NULL)
 		goto UNMATCH;
 	
@@ -190,12 +190,12 @@ parser_eat(
 		goto UNMATCH;
 	
 	result = TRUE;
-	parser_next(parser);
+	Parser_next(parser);
 	goto END;
 
 UNMATCH:
 	if (isNessesally == TRUE)
-		parser_error(token);
+		Parser_error(token);
 	
 END:
 	return result;
@@ -204,7 +204,7 @@ END:
 
 
 Boolean
-parser_is_end(
+Parser_is_end(
     Parser parser
 )
 {
@@ -214,7 +214,7 @@ parser_is_end(
     
     while (TRUE)
     {
-        token = parser_getCurrent(parser);
+        token = Parser_getCurrent(parser);
         Token_log(token);
         if (token == NULL)
         {
@@ -225,7 +225,7 @@ parser_is_end(
         if (Token_type(token) != TOKEN_TYPE_NEW_LINE)
             goto END;
         
-        if (parser_next(parser) == FALSE)
+        if (Parser_next(parser) == FALSE)
         {
             result = TRUE;
             break;
@@ -239,27 +239,27 @@ END:
 
 
 Boolean
-parser_create_syntax_tree(
+Parser_create_syntax_tree(
     List tokens,
     Interpreter interpreter
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    Parser parser = parser_new(tokens);
+    Parser parser = Parser_new(tokens);
     Boolean result = FALSE;
     Statement statement = NULL;
     DefinitionFunction functionDefinition = NULL;
     Token errorToken = NULL;
     
     Logger_dbg("Loop start.");
-    parser_next(parser);
+    Parser_next(parser);
     while (TRUE)
     {
         functionDefinition = DefinitionFunction_parse(parser);
         if (functionDefinition != NULL)
         {
             Logger_dbg("Add created FunctionDefinition and parse next.");
-            list_add(Interpreter_functions(interpreter), functionDefinition);
+            List_add(Interpreter_functions(interpreter), functionDefinition);
             continue;
         }
         
@@ -268,15 +268,15 @@ parser_create_syntax_tree(
         if (statement != NULL)
         {
             Logger_dbg("Add created statement and parse next.");
-            list_add(Interpreter_statements(interpreter), statement);
+            List_add(Interpreter_statements(interpreter), statement);
             continue;
         }
         
-        if (parser_is_end(parser) == TRUE)
+        if (Parser_is_end(parser) == TRUE)
             break;
         
-        errorToken = parser_getCurrent(parser);
-        parser_error(errorToken);
+        errorToken = Parser_getCurrent(parser);
+        Parser_error(errorToken);
         goto END;
     }
     
@@ -287,7 +287,7 @@ parser_create_syntax_tree(
     result = TRUE;
     
 END:
-	parser_dispose(parser);
+	Parser_dispose(parser);
     Logger_trc("[  END  ]%s", __func__);
     return result;
 }

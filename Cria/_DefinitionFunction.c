@@ -58,7 +58,7 @@ DefinitionFunction_parse_parameters(
 	
 	while (TRUE)
 	{
-		token = parser_getCurrent(parser);
+		token = Parser_getCurrent(parser);
 		if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
 	    {
 	        Logger_dbg("Not identifier");
@@ -66,18 +66,18 @@ DefinitionFunction_parse_parameters(
 	    }
 	    
 		DefinitionVariable variable = DefinitionVariable_new(Token_buffer(token));
-		list_add(parameters, variable);
+		List_add(parameters, variable);
 	    Logger_dbg("Add parameter.(%s)", DefinitionVariable_name(variable));
 		
-		parser_next(parser);
-		token = parser_getCurrent(parser);
+		Parser_next(parser);
+		token = Parser_getCurrent(parser);
 		if (Token_type(token) != TOKEN_TYPE_COMMA)
 	    {
 	        Logger_dbg("Not ', '");
 			break;
 	    }
 	    
-		parser_next(parser);
+		Parser_next(parser);
 	}
 	
     Logger_dbg("parameters count = %d", List_count(parameters));
@@ -94,14 +94,14 @@ DefinitionFunction_parse(
 {
     Logger_trc("[ START ]%s", __func__);
     DefinitionFunction functionDefinition = NULL;
-    Item restore = parser_getPosition(parser);
+    Item restore = Parser_getPosition(parser);
     String name = NULL;
     List parameters = NULL;
     List statements = NULL;
     Statement statement = NULL;
     Token token = NULL;
     
-    token = parser_getCurrent(parser);
+    token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
     {
         Logger_dbg("Not identifier.");
@@ -109,9 +109,9 @@ DefinitionFunction_parse(
     }
     
     name = Token_buffer(token);
-    parser_next(parser);
+    Parser_next(parser);
     
-    if (parser_eat(parser, TOKEN_TYPE_PARENTHESIS_LEFT, FALSE) == FALSE)
+    if (Parser_eat(parser, TOKEN_TYPE_PARENTHESIS_LEFT, FALSE) == FALSE)
     {
         Logger_dbg("Not '('.");
     	goto END;
@@ -124,25 +124,25 @@ DefinitionFunction_parse(
     	goto END;
     }
 	
-	if (parser_eat(parser, TOKEN_TYPE_PARENTHESIS_RIGHT, FALSE) == FALSE)
+	if (Parser_eat(parser, TOKEN_TYPE_PARENTHESIS_RIGHT, FALSE) == FALSE)
     {
         Logger_dbg("Not ')'.");
     	goto END;
     }
 	
-	if (parser_eat(parser, TOKEN_TYPE_COLON, FALSE) == FALSE)
+	if (Parser_eat(parser, TOKEN_TYPE_COLON, FALSE) == FALSE)
     {
         Logger_dbg("Not ':'.");
     	goto END;
     }
     
-	if (parser_eat(parser, TOKEN_TYPE_NEW_LINE, TRUE) == FALSE)
+	if (Parser_eat(parser, TOKEN_TYPE_NEW_LINE, TRUE) == FALSE)
     {
         Logger_dbg("Not <<NEW LINE>>.");
     	goto END;
     }
     
-	if (parser_eat(parser, TOKEN_TYPE_INDENT, TRUE) == FALSE)
+	if (Parser_eat(parser, TOKEN_TYPE_INDENT, TRUE) == FALSE)
     {
         Logger_dbg("Not <<INDENT>>.");
     	goto END;
@@ -151,7 +151,7 @@ DefinitionFunction_parse(
 	statements = List_new();
     while(1)
     {
-        token = parser_getCurrent(parser);
+        token = Parser_getCurrent(parser);
         if (Token_type(token) == TOKEN_TYPE_DEDENT)
         {
             Logger_dbg("token type is 'DEDENT'.");
@@ -162,16 +162,16 @@ DefinitionFunction_parse(
         if (statement == NULL)
         {
             Logger_err("statement parse error.");
-            list_dispose(statements);
-            parser_error(token);
+            List_dispose(statements);
+            Parser_error(token);
             goto END;
         }
         
         Logger_dbg("Add statement.");
-        list_add(statements, statement);
+        List_add(statements, statement);
     }
     
-	if (parser_eat(parser, TOKEN_TYPE_DEDENT, TRUE) == FALSE)
+	if (Parser_eat(parser, TOKEN_TYPE_DEDENT, TRUE) == FALSE)
     {
         Logger_dbg("Not <<DEDENT>>.");
     	goto END;
@@ -182,7 +182,7 @@ DefinitionFunction_parse(
     
 END:
 	if (functionDefinition == NULL)
-		parser_setPosition(parser, restore);
+		Parser_setPosition(parser, restore);
 	
     Logger_trc("[  END  ]%s", __func__);
     return functionDefinition;

@@ -21,7 +21,7 @@ Interpreter_addFunction(
     Logger_trc("[ START ]%s", __func__);
     DefinitionFunction definition = NULL;
     definition = DefinitionFunction_new(functionName, TRUE, TRUE, NULL, NULL, functionPoint);
-    list_add(interpreter->functions, definition);
+    List_add(interpreter->functions, definition);
     Logger_trc("[  END  ]%s", __func__);
 }
 
@@ -37,7 +37,7 @@ Interpreter_addClass(
     Logger_trc("[ START ]%s", __func__);
     DefinitionClass definition = NULL;
     definition = DefinitionClass_new(interpreter, className, TRUE, NULL, NULL, classLoader);
-    list_add(interpreter->classes, definition);
+    List_add(interpreter->classes, definition);
     Logger_trc("[  END  ]%s", __func__);
 }
 
@@ -95,7 +95,7 @@ Interpreter_dispose(
     Logger_dbg("interpreter->statements is [%p]", interpreter->statements);
     if (interpreter->statements != NULL)
     {
-        list_dispose(interpreter->statements);
+        List_dispose(interpreter->statements);
         interpreter->statements = NULL;
     }
     
@@ -119,7 +119,7 @@ Interpreter_compile(
     
     tokens = Tokenizer_create_tokens(filePath);
     
-    if (parser_create_syntax_tree(tokens, interpreter) == FALSE)
+    if (Parser_create_syntax_tree(tokens, interpreter) == FALSE)
     {
         Logger_err("syntax parse error.");
         goto END;

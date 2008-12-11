@@ -95,7 +95,7 @@ stringBuffer_appendFunction(
     {
         buffer = Memory_mallocAt(fileName, line, STRING_BUFFER_SIZE);
         memset(buffer, 0x00, STRING_BUFFER_SIZE);
-        list_addFunction(list, buffer, fileName, line);
+        List_addFunction(list, buffer, fileName, line);
     }
     
     
@@ -116,7 +116,7 @@ stringBuffer_appendFunction(
     Logger_cor("Length is over.");
     buffer = Memory_mallocAt(fileName, line, STRING_BUFFER_SIZE);
     memset(buffer, 0x00, STRING_BUFFER_SIZE);
-    list_addFunction(list, buffer, fileName, line);
+    List_addFunction(list, buffer, fileName, line);
     stringBuffer_append(stringBuffer, &(string[filler]));
 
 }

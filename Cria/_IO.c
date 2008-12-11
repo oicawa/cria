@@ -3,11 +3,11 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
-#include "_Runtime.h"
-#include "_CriaInteger.h"
-#include "_CriaString.h"
-#include "_CriaBoolean.h"
-#include "_StringBuffer.h"
+#include "Runtime.h"
+#include "CriaInteger.h"
+#include "CriaString.h"
+#include "CriaBoolean.h"
+#include "StringBuffer.h"
 
 #include "_IO.h"
 

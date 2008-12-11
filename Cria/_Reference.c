@@ -58,12 +58,12 @@ ReferenceVariable_evaluate(
     if (parameters != NULL)
     {
         definition = DefinitionVariable_new(variable->name);
-        list_add(parameters, definition);
+        List_add(parameters, definition);
         goto END;
     }
     
     definition = DefinitionVariable_new(variable->name);
-    list_add(Interpreter_variables(interpreter), definition);
+    List_add(Interpreter_variables(interpreter), definition);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -80,28 +80,28 @@ ReferenceVariable_parse(
     Logger_trc("[ START ]%s", __func__);
     Reference reference = NULL;
     ReferenceVariable variable = NULL;
-    Item position = parser_getPosition(parser);
+    Item position = Parser_getPosition(parser);
     String name = NULL;
     
-    Token token = parser_getCurrent(parser);
+    Token token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
     {
     	Token_log(token);
     	Logger_dbg("Not identifier.");
-        parser_setPosition(parser, position);
+        Parser_setPosition(parser, position);
         goto END;
     }
     
     name = Token_buffer(token);
 	Logger_dbg("Variable name is '%s'", name);
     
-    parser_next(parser);
-    token = parser_getCurrent(parser);
+    Parser_next(parser);
+    token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_PERIOD && Token_type(token) != TOKEN_TYPE_SUBSTITUTE)
     {
     	Token_log(token);
     	Logger_dbg("Not '.' and ' = '");
-        parser_setPosition(parser, position);
+        Parser_setPosition(parser, position);
         goto END;
     }
     
@@ -126,12 +126,12 @@ ReferenceVariable_parse(
     }
     
     
-    parser_next(parser);
-    token = parser_getCurrent(parser);
+    Parser_next(parser);
+    token = Parser_getCurrent(parser);
     Token_log(token);
     reference->next = Reference_parse(parser);
     if (reference->next == NULL)
-        parser_error(token);
+        Parser_error(token);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -180,51 +180,51 @@ ReferenceFunctionCall_parse(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    Item position = parser_getPosition(parser);
+    Item position = Parser_getPosition(parser);
     Reference reference = NULL;
     ReferenceFunctionCall functionCall = NULL;
     ExpressionParameters parameters = NULL;
     String name = NULL;
     
     
-    Token token = parser_getCurrent(parser);
+    Token token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
     {
     	Token_log(token);
 	    Logger_dbg("Not identifier.");
-        parser_setPosition(parser, position);
+        Parser_setPosition(parser, position);
         goto END;
     }
     
     name = Token_buffer(token);
     Logger_dbg("function name is '%s'", name);
     
-    parser_next(parser);
-    token = parser_getCurrent(parser);
+    Parser_next(parser);
+    token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_PARENTHESIS_LEFT)
     {
     	Token_log(token);
 	    Logger_dbg("Not '('.");
-        parser_setPosition(parser, position);
+        Parser_setPosition(parser, position);
         goto END;
     }
     
-    parser_next(parser);
+    Parser_next(parser);
     parameters = ExpressionParameters_parse(parser);
     if (parameters == NULL)
     {
 	    Logger_dbg("Not parameters.");
-        parser_setPosition(parser, position);
+        Parser_setPosition(parser, position);
         goto END;
     }
     
     
-    token = parser_getCurrent(parser);
+    token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT)
     {
     	Token_log(token);
 	    Logger_dbg("Not ')'.");
-    	parser_error(token);
+    	Parser_error(token);
         goto END;
     }
     
@@ -237,8 +237,8 @@ ReferenceFunctionCall_parse(
     reference = Reference_new(REFERENCE_TYPE_FUNCTION_CALL);
     reference->of.function = functionCall;
     
-    parser_next(parser);
-    token = parser_getCurrent(parser);
+    Parser_next(parser);
+    token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_PERIOD)
     {
     	Token_log(token);
@@ -246,12 +246,12 @@ ReferenceFunctionCall_parse(
     	goto END;
     }
     
-	parser_next(parser);
+	Parser_next(parser);
 	reference->next = Reference_parse(parser);
 	if (reference->next == NULL)
 	{
 	    Logger_dbg("Not exist next Reference after '.'");
-		parser_error(token);
+		Parser_error(token);
 	}
 	
 END:
@@ -267,7 +267,7 @@ Reference_parse(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    Item position = parser_getPosition(parser);
+    Item position = Parser_getPosition(parser);
     Reference reference = NULL;
     
     
@@ -284,7 +284,7 @@ Reference_parse(
     //    goto END;
         
     
-    parser_setPosition(parser, position);
+    Parser_setPosition(parser, position);
     
 END:
     Logger_trc("[  END  ]%s", __func__);

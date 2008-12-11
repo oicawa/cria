@@ -40,21 +40,21 @@ List_newFunction(
 
 
 void
-list_dispose(
+List_dispose(
     List    list
 );
 
 
 
 void
-list_addFunction(
+List_addFunction(
     List    list,
     void    *object,
     char    *fileName,
     int     line
 );
-#define list_add(list, object)\
-    (list_addFunction(list, object, __FILE__, __LINE__))
+#define List_add(list, object)\
+    (List_addFunction(list, object, __FILE__, __LINE__))
 
 
 

@@ -94,7 +94,7 @@ List_newFunction(
 
 
 void
-list_dispose(
+List_dispose(
     List    list
 )
 {
@@ -127,7 +127,7 @@ END:
 
 
 void
-list_addFunction(
+List_addFunction(
     List    list,
     void    *object,
     char    *fileName,

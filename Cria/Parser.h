@@ -13,21 +13,21 @@ typedef struct  ParserTag *Parser;
 
 
 Token
-parser_getCurrent(
+Parser_getCurrent(
     Parser  parser
 );
 
 
 
 Item
-parser_getPosition(
+Parser_getPosition(
     Parser  parser
 );
 
 
 
 void
-parser_setPosition(
+Parser_setPosition(
     Parser  parser,
     Item    position
 );
@@ -35,14 +35,14 @@ parser_setPosition(
 
 
 Boolean
-parser_next(
+Parser_next(
     Parser  parser
 );
 
 
 
 Boolean
-parser_eat(
+Parser_eat(
 	Parser parser,
 	TokenType type,
 	Boolean isNessesally
@@ -51,7 +51,7 @@ parser_eat(
 
 
 Boolean
-parser_create_syntax_tree(
+Parser_create_syntax_tree(
     List tokens,
     Interpreter interpreter
 );
@@ -59,13 +59,13 @@ parser_create_syntax_tree(
 
 
 void
-parser_errorFunction(
+Parser_errorFunction(
 	Token token,
 	char* file,
 	int line
 );
-#define parser_error(token) \
-    parser_errorFunction(token, __FILE__, __LINE__)
+#define Parser_error(token) \
+    Parser_errorFunction(token, __FILE__, __LINE__)
 
 
 

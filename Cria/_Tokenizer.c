@@ -994,7 +994,7 @@ Tokenizer_indent_or_dedent(
             Logger_dbg("create TOKEN_TYPE_DEDENT");
             tokenizer->indentLevel -= 1;
             token = Token_new(TOKEN_TYPE_DEDENT, row, column, "<<DEDENT>>");
-            list_add(tokens, token);
+            List_add(tokens, token);
         }
     }
     else if (which == 1)
@@ -1002,7 +1002,7 @@ Tokenizer_indent_or_dedent(
         Logger_dbg("create TOKEN_TYPE_INDENT");
         tokenizer->indentLevel += 1;
         token = Token_new(TOKEN_TYPE_INDENT, row, column, "<<INDENT>>");
-        list_add(tokens, token);
+        List_add(tokens, token);
     }
     else if (which == 0)
     {
@@ -1045,7 +1045,7 @@ Tokenizer_newline_indent_dedent(
     string_dispose(tmp);
     
     
-    list_add(tokens, token);
+    List_add(tokens, token);
     result = TRUE;
     
     
@@ -1285,13 +1285,13 @@ Tokenizer_create_tokens(
         break;
         
 ADD_TOKEN:
-        list_add(tokens, token);
+        List_add(tokens, token);
         continue;        
     }
     
     token = Token_new(TOKEN_TYPE_NEW_LINE, -1, -1, "<<NEW_LINE>>");
     
-    list_add(tokens, token);
+    List_add(tokens, token);
     
     Tokenizer_log_all_tokens(tokens);
     

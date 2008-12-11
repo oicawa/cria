@@ -259,33 +259,33 @@ CriaFile_loadClass(
     Logger_dbg("4");
     string_dispose(variableName);
     Logger_dbg("5");
-    list_add(fieldList, variable);
+    List_add(fieldList, variable);
     Logger_dbg("6");
     
     function = DefinitionFunction_new("new", TRUE, FALSE, NULL, NULL, CriaFile_new);
     Logger_dbg("7");
-    list_add(methodList, function);
+    List_add(methodList, function);
     Logger_dbg("8");
     
     function = DefinitionFunction_new("open", TRUE, FALSE, NULL, NULL, CriaFile_open);
     Logger_dbg("9");
-    list_add(methodList, function);
+    List_add(methodList, function);
     Logger_dbg("10");
     
     function = DefinitionFunction_new("close", TRUE, FALSE, NULL, NULL, CriaFile_close);
     Logger_dbg("11");
-    list_add(methodList, function);
+    List_add(methodList, function);
     Logger_dbg("12");
     
     function = DefinitionFunction_new("read", TRUE, FALSE, NULL, NULL, CriaFile_read);
     Logger_dbg("13");
-    list_add(methodList, function);
+    List_add(methodList, function);
     Logger_dbg("14");
     
     
     function = DefinitionFunction_new("is_end", TRUE, FALSE, NULL, NULL, CriaFile_isEnd);
     Logger_dbg("15");
-    list_add(methodList, function);
+    List_add(methodList, function);
     Logger_dbg("16");
     
     
