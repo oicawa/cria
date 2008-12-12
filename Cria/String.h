@@ -17,32 +17,32 @@ String_newFunction(
 
 
 void
-string_dispose(
+String_dispose(
     String  string
 );
 
 
 
 long
-string_length(
+String_length(
     String  string
 );
 
 
 
 String
-string_cloneFunction(
+String_cloneFunction(
     String  source,
     char    *fileName,
     int     line
 );
-#define string_clone(source)\
-	string_cloneFunction(source, __FILE__, __LINE__)
+#define String_clone(source)\
+	String_cloneFunction(source, __FILE__, __LINE__)
 
 
 
 String
-string_subStringFunction(
+String_subStringFunction(
     String  source,
     long    start,
     long    length,
@@ -53,14 +53,14 @@ string_subStringFunction(
 
 
 int
-string_toInteger(
+String_toInteger(
     String  source
 );
 
 
 
 Boolean
-string_toBoolean(
+String_toBoolean(
     String  source
 );
 

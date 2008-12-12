@@ -357,7 +357,7 @@ StatementGoto_parse(
     memset(gotoStatement, 0x00, sizeof(struct StatementGotoTag));
     gotoStatement->type = type;
     if (label != NULL)
-    	gotoStatement->of.label = string_clone(label);
+    	gotoStatement->of.label = String_clone(label);
     gotoStatement->of.expression = expression;
     
     statement = Statement_new(STATEMENT_KIND_GOTO);

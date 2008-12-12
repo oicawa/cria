@@ -24,7 +24,7 @@ CriaString_new(
     criaString->id.name = String_new("String");
     criaString->id.type = CRIA_DATA_TYPE_STRING;
     criaString->isLiteral = isLiteral;
-    criaString->value = string_clone(value);
+    criaString->value = String_clone(value);
     
     Logger_trc("[  END  ]%s", __func__);
     return criaString;
@@ -39,8 +39,8 @@ CriaString_dispose(
 {
     Logger_trc("[ START ]%s", __func__);
     
-    string_dispose(criaString->id.name);
-    string_dispose(criaString->value);
+    String_dispose(criaString->id.name);
+    String_dispose(criaString->value);
     
     Memory_free(criaString);
     
@@ -67,10 +67,10 @@ CriaString_operate(
     {
     case OPERATION_KIND_PLUS:
         buffer = StringBuffer_new();
-        stringBuffer_append(buffer, leftValue);
-        stringBuffer_append(buffer, rightValue);
-        id = (CriaId)CriaString_new(FALSE, stringBuffer_toString(buffer));
-        stringBuffer_dispose(buffer);
+        StringBuffer_append(buffer, leftValue);
+        StringBuffer_append(buffer, rightValue);
+        id = (CriaId)CriaString_new(FALSE, StringBuffer_toString(buffer));
+        StringBuffer_dispose(buffer);
         break;
     case OPERATION_KIND_EQUAL:
         if (strcmp(leftValue, rightValue) == 0)

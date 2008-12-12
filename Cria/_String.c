@@ -15,23 +15,23 @@ String_newFunction(
     int     line
 )
 {
+	Logger_cor("[ START ]%s", __func__);
     char* string = NULL;
     
     if (input == NULL)
         return NULL;
     
-    //string = Memory_mallocAt(fileName, line, sizeof(struct StringTag));
-    //memset(string, 0x00, sizeof(struct StringTag));
     string = Memory_mallocAt(fileName, line, strlen(input) + 1);
     memset(string, 0x00, strlen(input) + 1);
     strcpy(string, input);
+	Logger_cor("[  END  ]%s", __func__);
     return (String)string;
 }
 
 
 
 void
-string_dispose(
+String_dispose(
     String  string
 )
 {
@@ -54,7 +54,7 @@ END:
 
 
 long
-string_length(
+String_length(
     String  string
 )
 {
@@ -64,7 +64,7 @@ string_length(
 
 
 String
-string_cloneFunction(
+String_cloneFunction(
     String  source,
     char    *fileName,
     int     line
@@ -87,7 +87,7 @@ string_cloneFunction(
 
 
 String
-string_subStringFunction(
+String_subStringFunction(
     String  source,
     long    start,
     long    length,
@@ -116,7 +116,7 @@ string_subStringFunction(
 
 
 int
-string_toInteger(
+String_toInteger(
     String  source
 )
 {
@@ -125,7 +125,7 @@ string_toInteger(
 
 
 Boolean
-string_toBoolean(
+String_toBoolean(
     String  source
 )
 {

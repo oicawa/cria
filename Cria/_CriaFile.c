@@ -45,7 +45,7 @@ CriaFile_new(
     memset(file, 0x00, sizeof(struct CriaFileTag));
     file->id.name = String_new("File");
     file->id.type = CRIA_DATA_TYPE_FILE;
-    file->path = string_clone(path->value);
+    file->path = String_clone(path->value);
     file->pointer = NULL;
     
 END:
@@ -166,14 +166,14 @@ CriaFile_read(
 		if (length == 0)
 			break;
 		
-		stringBuffer_append(stringBuffer, buffer);
+		StringBuffer_append(stringBuffer, buffer);
 		
 		if (buffer[length - 1] == '\n')
 			break;
     }
     
-    String line = stringBuffer_toString(stringBuffer);
-    stringBuffer_dispose(stringBuffer);
+    String line = StringBuffer_toString(stringBuffer);
+    StringBuffer_dispose(stringBuffer);
     
     CriaString string = CriaString_new(TRUE, line);
     
@@ -257,7 +257,7 @@ CriaFile_loadClass(
     Logger_dbg("3");
     variable = DefinitionVariable_new(variableName);
     Logger_dbg("4");
-    string_dispose(variableName);
+    String_dispose(variableName);
     Logger_dbg("5");
     List_add(fieldList, variable);
     Logger_dbg("6");

@@ -206,3 +206,13 @@ List_startItem(
 
 
 
+Item*
+List_lastItem(
+    List    list
+)
+{
+	return list->last;
+}
+
+
+

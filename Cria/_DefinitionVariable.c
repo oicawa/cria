@@ -17,7 +17,7 @@ DefinitionVariable_new(
 {
     DefinitionVariable definition = Memory_malloc(sizeof(struct DefinitionVariableTag));
     memset(definition, 0x00, sizeof(struct DefinitionVariableTag));
-    definition->name = string_clone(name);
+    definition->name = String_clone(name);
     definition->isStatic = TRUE;
 
     return definition;

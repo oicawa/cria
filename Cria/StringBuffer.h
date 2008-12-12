@@ -20,44 +20,44 @@ StringBuffer_newFunction(
 
 
 void
-stringBuffer_dispose(
+StringBuffer_dispose(
     StringBuffer    stringBuffer
 );
 
 
 
 void
-stringBuffer_appendCharFunction(
+StringBuffer_appendCharFunction(
     StringBuffer    stringBuffer,
     char            charactor,
     char*           fileName,
     int             line
 );
-#define stringBuffer_appendChar(buffer, charctor)\
-    (stringBuffer_appendCharFunction(buffer, charctor, __FILE__, __LINE__))
+#define StringBuffer_appendChar(buffer, charctor)\
+    (StringBuffer_appendCharFunction(buffer, charctor, __FILE__, __LINE__))
 
 
 
 void
-stringBuffer_appendFunction(
+StringBuffer_appendFunction(
     StringBuffer    stringBuffer,
     char*           string,
     char*           fileName,
     int             line
 );
-#define stringBuffer_append(buffer, string)\
-    (stringBuffer_appendFunction(buffer, string, __FILE__, __LINE__))
+#define StringBuffer_append(buffer, string)\
+    (StringBuffer_appendFunction(buffer, string, __FILE__, __LINE__))
 
 
 
 String
-stringBuffer_toStringFunction(
+StringBuffer_toStringFunction(
     StringBuffer    stringBuffer,
     char*           fileName,
     int             line
 );
-#define stringBuffer_toString(buffer)\
-    (stringBuffer_toStringFunction(buffer, __FILE__, __LINE__))
+#define StringBuffer_toString(buffer)\
+    (StringBuffer_toStringFunction(buffer, __FILE__, __LINE__))
 
 
 

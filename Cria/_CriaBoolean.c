@@ -84,7 +84,7 @@ CriaBoolean_toString(
         runtime_error(interpreter);
     
     string = CriaString_new(FALSE, value);
-    string_dispose(value);
+    String_dispose(value);
     
     return (CriaId)string;
 }

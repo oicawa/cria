@@ -80,6 +80,13 @@ List_startItem(
 
 
 
+Item*
+List_lastItem(
+    List    list
+);
+
+
+
 char*
 list_toStringFunction(
     List    list,

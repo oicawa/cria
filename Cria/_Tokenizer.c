@@ -120,7 +120,7 @@ Token_dispose(
     if (token->buffer != NULL)
     {
         Logger_dbg("Free 'token->buffer'");
-        string_dispose(token->buffer);
+        String_dispose(token->buffer);
         token->buffer = NULL;
     }
     
@@ -282,7 +282,7 @@ Tokenizer_number(
     
     
     buffer = StringBuffer_new();
-    stringBuffer_appendChar(buffer, tokenizer->next);
+    StringBuffer_appendChar(buffer, tokenizer->next);
     
     
     while (Tokenizer_read(tokenizer) == TRUE)
@@ -292,17 +292,17 @@ Tokenizer_number(
             Logger_dbg("Not number. (%c)", tokenizer->next);
             break;
         }
-        stringBuffer_appendChar(buffer, tokenizer->next);
+        StringBuffer_appendChar(buffer, tokenizer->next);
     }
     
     
-    String tmp = stringBuffer_toString(buffer);
+    String tmp = StringBuffer_toString(buffer);
     Logger_dbg("Add token. (%s)", tmp);
     token = Token_new(TOKEN_TYPE_INTEGER_LITERAL, row, column, tmp);
     
     
-    stringBuffer_dispose(buffer);
-    string_dispose(tmp);
+    StringBuffer_dispose(buffer);
+    String_dispose(tmp);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -324,7 +324,7 @@ Tokenizer_reserved(
     int    row = tokenizer->row;
     int    column = tokenizer->column;
     
-    value = stringBuffer_toString(buffer);
+    value = StringBuffer_toString(buffer);
     if (strcmp(value, TOKEN_LITERAL_NULL) == 0)
     {
         Logger_dbg("create TOKEN_TYPE_NULL");
@@ -451,7 +451,7 @@ READ:
 	Tokenizer_read(tokenizer);
     
 END:
-	string_dispose(tmp);
+	String_dispose(tmp);
     Logger_trc("[  END  ]%s", __func__);
     return token;
     
@@ -467,7 +467,7 @@ Tokenizer_identifier(
 {
     Logger_trc("[ START ]%s('%c')", __func__, tokenizer->next);
     Token token = NULL;
-    String tmp = stringBuffer_toString(buffer);
+    String tmp = StringBuffer_toString(buffer);
     char* identifier = tmp;
     
     
@@ -499,7 +499,7 @@ NEXT:
     token = Token_new(TOKEN_TYPE_IDENTIFIER, tokenizer->row, tokenizer->column, tmp);
     
 END:
-    string_dispose(tmp);
+    String_dispose(tmp);
     Logger_trc("[  END  ]%s", __func__);
     return token;
 }
@@ -514,7 +514,7 @@ Tokenizer_class_or_constant(
 {
     Logger_trc("[ START ]%s('%c')", __func__, tokenizer->next);
     Token token = NULL;
-    String tmp = stringBuffer_toString(buffer);
+    String tmp = StringBuffer_toString(buffer);
     char* value = tmp;
     TokenType type = TOKEN_TYPE_CONSTANT;
     
@@ -529,7 +529,7 @@ Tokenizer_class_or_constant(
     
     if (isupper(*value) == 0)
     {
-        Logger_dbg("First charactor is not upper alphabet. ('%c')", *buffer);
+        Logger_dbg("First charactor is not upper alphabet. ('%c')", *value);
         tokenizer_error(tmp, tokenizer->row, tokenizer->column);
         goto END;
     }
@@ -565,7 +565,7 @@ Tokenizer_class_or_constant(
     		continue;
     	}
     	
-		Logger_dbg("Not alphabet or underbar. (%c)", *buffer);
+		Logger_dbg("Not alphabet or underbar. (%c)", *value);
 		tokenizer_error(tmp, tokenizer->row, tokenizer->column);
 		goto END;
     }
@@ -573,7 +573,7 @@ Tokenizer_class_or_constant(
     token = Token_new(type, tokenizer->row, tokenizer->column, tmp);
     
 END:
-    string_dispose(tmp);
+    String_dispose(tmp);
     Logger_trc("[  END  ]%s", __func__);
     return token;
 }
@@ -588,7 +588,7 @@ Tokenizer_word(
     Logger_trc("[ START ]%s('%c')", __func__, tokenizer->next);
     Token token = NULL;
     StringBuffer buffer = StringBuffer_new();
-    stringBuffer_appendChar(buffer, tokenizer->next);
+    StringBuffer_appendChar(buffer, tokenizer->next);
     
     if (isalpha(tokenizer->next) == 0)
         goto END;
@@ -600,7 +600,7 @@ Tokenizer_word(
         if ((isalnum(tokenizer->next) != 0)
             || tokenizer->next == '_')
         {
-            stringBuffer_appendChar(buffer, tokenizer->next);
+            StringBuffer_appendChar(buffer, tokenizer->next);
             continue;
         }
         Logger_dbg("next is not alphabet, number, or underbar. '%c'", tokenizer->next);
@@ -619,12 +619,12 @@ Tokenizer_word(
     if (token != NULL)
     	goto END;
 
-	String tmp = stringBuffer_toString(buffer);
+	String tmp = StringBuffer_toString(buffer);
 	tokenizer_error(tmp, tokenizer->row, tokenizer->column);
-	string_dispose(tmp);
+	String_dispose(tmp);
 	
 END:
-    stringBuffer_dispose(buffer);
+    StringBuffer_dispose(buffer);
     Logger_trc("[  END  ]%s", __func__);
     return token;
 }
@@ -671,8 +671,8 @@ Tokenizer_space(
     Logger_trc("[ START ]%s('%c')", __func__, tokenizer->next);
     Token token = NULL;
     StringBuffer buffer = StringBuffer_new();
-    stringBuffer_appendChar(buffer, tokenizer->next);
-    String tmp = stringBuffer_toString(buffer);
+    StringBuffer_appendChar(buffer, tokenizer->next);
+    String tmp = StringBuffer_toString(buffer);
     char* value = NULL;
     int row = tokenizer->row;
     int column = tokenizer->column;
@@ -690,14 +690,14 @@ Tokenizer_space(
         goto END;
     }
     Logger_dbg("2nd charactor = '%c'", tokenizer->next);
-    stringBuffer_appendChar(buffer, tokenizer->next);
+    StringBuffer_appendChar(buffer, tokenizer->next);
     if (tokenizer->next == '_')
     {
         token = Tokenizer_dummy(tokenizer);
         goto END;
     }
-    string_dispose(tmp);
-    tmp = stringBuffer_toString(buffer);
+    String_dispose(tmp);
+    tmp = StringBuffer_toString(buffer);
     value = tmp;
     
     
@@ -712,9 +712,9 @@ Tokenizer_space(
         goto END;
     }
     Logger_dbg("3rd charactor = '%c'", tokenizer->next);
-    stringBuffer_appendChar(buffer, tokenizer->next);
-    string_dispose(tmp);
-    tmp = stringBuffer_toString(buffer);
+    StringBuffer_appendChar(buffer, tokenizer->next);
+    String_dispose(tmp);
+    tmp = StringBuffer_toString(buffer);
     value = tmp;
     
     if (strcmp(value, TOKEN_LITERAL_SUBSTITUTE) == 0)
@@ -784,9 +784,9 @@ Tokenizer_space(
         tokenizer_error(value, row, column);
         goto END;
     }
-    stringBuffer_appendChar(buffer, tokenizer->next);
-    string_dispose(tmp);
-    tmp = stringBuffer_toString(buffer);
+    StringBuffer_appendChar(buffer, tokenizer->next);
+    String_dispose(tmp);
+    tmp = StringBuffer_toString(buffer);
     value = tmp;
     
     if (strcmp(value, TOKEN_LITERAL_EQUAL) == 0)
@@ -864,8 +864,8 @@ Tokenizer_space(
 END:
     if (token != NULL)
         Tokenizer_read(tokenizer);
-    string_dispose(tmp);
-    stringBuffer_dispose(buffer);
+    String_dispose(tmp);
+    StringBuffer_dispose(buffer);
     Logger_trc("[  END  ]%s", __func__);
     return token;
 }
@@ -890,10 +890,10 @@ Tokenizer_string(
         goto END;
     
     
-    stringBuffer_appendChar(buffer, tokenizer->next);
+    StringBuffer_appendChar(buffer, tokenizer->next);
     while (Tokenizer_read(tokenizer) == TRUE)
     {
-        stringBuffer_appendChar(buffer, tokenizer->next);
+        StringBuffer_appendChar(buffer, tokenizer->next);
         
         
         if (tokenizer->next == '\\')
@@ -903,7 +903,7 @@ Tokenizer_string(
                 Logger_dbg("No string literal");
                 break;
             }
-            stringBuffer_appendChar(buffer, tokenizer->next);
+            StringBuffer_appendChar(buffer, tokenizer->next);
             continue;
         }
         
@@ -916,7 +916,7 @@ Tokenizer_string(
     }
     
     
-    tmp = stringBuffer_toString(buffer);
+    tmp = StringBuffer_toString(buffer);
     
     if (isEnd == FALSE)
     {
@@ -927,8 +927,8 @@ Tokenizer_string(
     token = Token_new(TOKEN_TYPE_STRING_LITERAL, row, column, tmp);
     
 END:
-    string_dispose(tmp);
-    stringBuffer_dispose(buffer);
+    String_dispose(tmp);
+    StringBuffer_dispose(buffer);
     Logger_trc("[  END  ]%s", __func__);
     return token;
 }
@@ -953,16 +953,16 @@ Tokenizer_indent_or_dedent(
     {
         if (tokenizer->next == ' ')
         {
-            stringBuffer_appendChar(buffer, tokenizer->next);
+            StringBuffer_appendChar(buffer, tokenizer->next);
             continue;
         }
         
         if (tokenizer->next == '\n')
         {
-        	String tmp1 = stringBuffer_toString(buffer);
+        	String tmp1 = StringBuffer_toString(buffer);
 		    Logger_dbg("Buffer clear. ('%s')", tmp1);
-		    string_dispose(tmp1);
-            stringBuffer_dispose(buffer);
+		    String_dispose(tmp1);
+            StringBuffer_dispose(buffer);
             buffer = StringBuffer_new();
             continue;
         }
@@ -972,7 +972,7 @@ Tokenizer_indent_or_dedent(
     }
     
     
-    tmp = stringBuffer_toString(buffer);
+    tmp = StringBuffer_toString(buffer);
     Logger_dbg("Next charactor = '%c'", tokenizer->next);
     Logger_dbg("buffer = '%s'", tmp);
     long length = strlen(tmp);
@@ -1016,8 +1016,8 @@ Tokenizer_indent_or_dedent(
         tokenizer_error("<<Indent/DEDENT>>", tokenizer->row, tokenizer->column);
     }
 END:
-    string_dispose(tmp);
-    stringBuffer_dispose(buffer);
+    String_dispose(tmp);
+    StringBuffer_dispose(buffer);
     Logger_trc("[  END  ]%s", __func__);
 }
 
@@ -1042,7 +1042,7 @@ Tokenizer_newline_indent_dedent(
     Logger_trc("Create 'TOKEN_TYPE_NEW_LINE'");
     String tmp = String_new("<<NEW_LINE>>");
     Token token = Token_new(TOKEN_TYPE_NEW_LINE, row, column, tmp);
-    string_dispose(tmp);
+    String_dispose(tmp);
     
     
     List_add(tokens, token);
@@ -1075,8 +1075,8 @@ Tokenizer_other(
     
     
     Logger_trc("Check first charactor.(%c)", tokenizer->next);
-    stringBuffer_appendChar(buffer, tokenizer->next);
-    tmp = stringBuffer_toString(buffer);
+    StringBuffer_appendChar(buffer, tokenizer->next);
+    tmp = StringBuffer_toString(buffer);
     value = tmp;
     if (strcmp(value, TOKEN_LITERAL_PARENTHESIS_LEFT) == 0)
     {
@@ -1186,9 +1186,9 @@ Tokenizer_other(
             goto END;
         }
         
-        string_dispose(tmp);
-        stringBuffer_appendChar(buffer, tokenizer->next);
-        tmp = stringBuffer_toString(buffer);
+        String_dispose(tmp);
+        StringBuffer_appendChar(buffer, tokenizer->next);
+        tmp = StringBuffer_toString(buffer);
         value = tmp;
         
         if (tokenizer->next != ' ')
@@ -1208,8 +1208,8 @@ Tokenizer_other(
     
 END:
     Tokenizer_read(tokenizer);
-    stringBuffer_dispose(buffer);
-    string_dispose(tmp);
+    StringBuffer_dispose(buffer);
+    String_dispose(tmp);
     Logger_trc("[  END  ]%s", __func__);
     return token;
 }
@@ -1235,7 +1235,7 @@ Tokenizer_log_all_tokens(
 )
 {
     long index = 0;
-    long count = tokens->count;
+    long count = List_count(tokens);
     
     
     while (index < count)

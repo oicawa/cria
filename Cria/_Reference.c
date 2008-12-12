@@ -111,7 +111,7 @@ ReferenceVariable_parse(
     
 	variable = Memory_malloc(sizeof(struct ReferenceVariableTag));
     memset(variable, 0x00, sizeof(struct ReferenceVariableTag));
-    variable->name = string_clone(name);
+    variable->name = String_clone(name);
     
     
     reference = Reference_new(REFERENCE_TYPE_VARIABLE);
@@ -230,7 +230,7 @@ ReferenceFunctionCall_parse(
     
     functionCall = Memory_malloc(sizeof(struct ReferenceFunctionCallTag));
     memset(functionCall, 0x00, sizeof(struct ReferenceFunctionCallTag));
-    functionCall->name = string_clone(name);
+    functionCall->name = String_clone(name);
     functionCall->parameters = parameters;
     Logger_dbg("Created ReferenceFunctionCall");
 

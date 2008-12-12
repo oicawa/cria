@@ -653,7 +653,7 @@ ExpressionGenerate_parse(
     
     ExpressionGenerate generate = Memory_malloc(sizeof(struct ExpressionGenerateTag));
     memset(generate, 0x00, sizeof(struct ExpressionGenerateTag));
-    generate->name = string_clone(name);
+    generate->name = String_clone(name);
     generate->parameters = parameters;
     Logger_dbg("Created GenerateExpression");
     
@@ -721,7 +721,7 @@ ExpressionStringLiteral_evaluate(
         if (next == NULL)
         {
             Logger_dbg("set all ");
-            stringBuffer_append(stringBuffer, start);
+            StringBuffer_append(stringBuffer, start);
             break;
         }
         
@@ -729,18 +729,18 @@ ExpressionStringLiteral_evaluate(
         char* tmp = Memory_malloc(length + 1);
         memset(tmp, 0x00, length + 1);
         strncpy(tmp, start, length);
-        stringBuffer_append(stringBuffer, tmp);
+        StringBuffer_append(stringBuffer, tmp);
         
         switch (*(next + 1))
         {
         case 'n':
-            stringBuffer_appendChar(stringBuffer, '\n');
+            StringBuffer_appendChar(stringBuffer, '\n');
             break;
         case '"':
-            stringBuffer_appendChar(stringBuffer, '"');
+            StringBuffer_appendChar(stringBuffer, '"');
             break;
         default:
-            stringBuffer_appendChar(stringBuffer, *(next + 1));
+            StringBuffer_appendChar(stringBuffer, *(next + 1));
             break;
         }
         
@@ -749,8 +749,8 @@ ExpressionStringLiteral_evaluate(
     
     
     //最後の'"'を消去
-    String value = stringBuffer_toString(stringBuffer);
-    stringBuffer_dispose(stringBuffer);
+    String value = StringBuffer_toString(stringBuffer);
+    StringBuffer_dispose(stringBuffer);
     value[strlen(value) - 1] = '\0';
     Logger_dbg("Edited string is '%s'", value);
     
@@ -868,7 +868,7 @@ ExpressionVariable_parse(
     ExpressionVariable variable = NULL;
     variable = Memory_malloc(sizeof(struct ExpressionVariableTag));
     memset(variable, 0x00, sizeof(struct ExpressionVariableTag));
-    variable->name = string_clone(name);
+    variable->name = String_clone(name);
     
     expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
     memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
@@ -945,7 +945,7 @@ ExpressionFunctionCall_parse(
     
     ExpressionFunctionCall function = Memory_malloc(sizeof(struct ExpressionFunctionCallTag));
     memset(function, 0x00, sizeof(struct ExpressionFunctionCallTag));
-    function->name = string_clone(name);
+    function->name = String_clone(name);
     function->parameters = parameters;
     
     expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
@@ -984,7 +984,7 @@ ExpressionFactor_parse(
         Logger_dbg("This is an integer literal token.");
         ExpressionIntegerLiteral integerLiteral = Memory_malloc(sizeof(struct ExpressionIntegerLiteralTag));
         memset(integerLiteral, 0x00, sizeof(struct ExpressionIntegerLiteralTag));
-        integerLiteral->value = string_toInteger(Token_buffer(token));
+        integerLiteral->value = String_toInteger(Token_buffer(token));
         
         expression = Expression_new(EXPRESSION_KIND_INTEGER_LITERAL);
         expression->of._integerLiteral_ = integerLiteral;
@@ -1000,7 +1000,7 @@ ExpressionFactor_parse(
         Logger_dbg("This is an integer literal token.");
         ExpressionBooleanLiteral booleanLiteral = Memory_malloc(sizeof(struct ExpressionBooleanLiteralTag));
         memset(booleanLiteral, 0x00, sizeof(struct ExpressionBooleanLiteralTag));
-        booleanLiteral->value = string_toBoolean(Token_buffer(token));
+        booleanLiteral->value = String_toBoolean(Token_buffer(token));
         
         expression = Expression_new(EXPRESSION_KIND_BOOLEAN_LITERAL);
         expression->of._booleanLiteral_ = booleanLiteral;
@@ -1016,7 +1016,7 @@ ExpressionFactor_parse(
         Logger_dbg("This is a string literal token.");
         ExpressionStringLiteral stringLiteral = Memory_malloc(sizeof(struct ExpressionStringLiteralTag));
         memset(stringLiteral, 0x00, sizeof(struct ExpressionStringLiteralTag));
-        stringLiteral->value = string_clone(Token_buffer(token));
+        stringLiteral->value = String_clone(Token_buffer(token));
         
         expression = Expression_new(EXPRESSION_KIND_STRING_LITERAL);
         expression->of._stringLiteral_ = stringLiteral;

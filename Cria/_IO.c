@@ -157,17 +157,17 @@ io_read(
         if (buffer[strlen(buffer) - 1] == '\n')
         {
             buffer[strlen(buffer) - 1] = '\0';
-            stringBuffer_append(stringBuffer, buffer);
+            StringBuffer_append(stringBuffer, buffer);
             break;
         }
-        stringBuffer_append(stringBuffer, buffer);
+        StringBuffer_append(stringBuffer, buffer);
         memset(buffer, 0x00, sizeof(buffer));
     }
     
-    returnString = CriaString_new(TRUE, stringBuffer_toString(stringBuffer));
+    returnString = CriaString_new(TRUE, StringBuffer_toString(stringBuffer));
     
 END:
-    stringBuffer_dispose(stringBuffer);
+    StringBuffer_dispose(stringBuffer);
     Logger_trc("[  END  ]%s", __func__);
     return (CriaId)returnString;
 }

@@ -2,11 +2,11 @@
 #define PRIVATE_STATEMENT_H_INCLUDED
 
 
-#include "_String.h"
-#include "_CriaId.h"
+#include "String.h"
+#include "CriaId.h"
 
-#include "_Expression.h"
-#include "_Reference.h"
+#include "Expression.h"
+#include "Reference.h"
 #include "Statement.h"
 
 typedef enum
