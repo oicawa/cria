@@ -5,7 +5,7 @@
 #include "String.h"
 #include "Interpreter.h"
 #include "CriaId.h"
-#include "DefinitionClass.h"
+#include "Definition.h"
 
 
 

@@ -6,7 +6,7 @@
 #include "List.h"
 #include "Parser.h"
 #include "Tokenizer.h"
-#include "DefinitionVariable.h"
+#include "Definition.h"
 #include "Expression.h"
 #include "Runtime.h"
 #include "CriaBoolean.h"

@@ -8,9 +8,7 @@ OBJS =\
     _List.o\
     _StringBuffer.o\
     _Interpreter.o\
-    _DefinitionVariable.o\
-    _DefinitionFunction.o\
-    _DefinitionClass.o\
+    _Definition.o\
     _CriaFile.o\
     _Tokenizer.o\
     _Parser.o\
@@ -44,9 +42,7 @@ _CriaString.o: _CriaString.c _CriaString.h _Cria.h Cria.h ../Memory/Memory.h ../
 _CriaInteger.o: _CriaInteger.c _CriaInteger.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaBoolean.o: _CriaBoolean.c _CriaBoolean.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaFile.o: _CriaFile.c _CriaFile.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
-_DefinitionVariable.o: _DefinitionVariable.c _DefinitionVariable.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
-_DefinitionFunction.o: _DefinitionFunction.c _DefinitionFunction.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
-_DefinitionClass.o: _DefinitionClass.c _DefinitionClass.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+_Definition.o: _Definition.c _Definition.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Tokenizer.o: _Tokenizer.c _Tokenizer.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Parser.o: _Parser.c _Parser.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Statement.o: _Statement.c _Statement.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h

@@ -3,18 +3,7 @@
 
 
 
-#include "DefinitionClass.h"
-
-
-
-struct DefinitionClassTag
-{
-    String      name;
-    Boolean     isNative;
-    List        baseList;
-    List        fieldList;
-    List        methodList;
-};
+#include "Definition.h"
 
 
 

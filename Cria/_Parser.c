@@ -4,8 +4,7 @@
 #include "../Logger/Logger.h"
 
 #include "Tokenizer.h"
-#include "DefinitionVariable.h"
-#include "DefinitionFunction.h"
+#include "Definition.h"
 #include "Statement.h"
 #include "Reference.h"
 #include "Expression.h"

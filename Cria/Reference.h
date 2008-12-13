@@ -6,7 +6,7 @@
 #include "String.h"
 #include "Parser.h"
 #include "Expression.h"
-#include "DefinitionVariable.h"
+#include "Definition.h"
 
 
 

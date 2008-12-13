@@ -6,8 +6,16 @@
 #include "List.h"
 #include "CriaId.h"
 #include "Boolean.h"
+#include "String.h"
+#include "Definition.h"
 
-#include "DefinitionFunction.h"
+
+struct DefinitionVariableTag
+{
+    String      name;
+    Boolean     isStatic;
+    CriaId      object;
+};
 
 
 
@@ -28,6 +36,17 @@ struct DefinitionFunctionTag
             CriaNativeFunction* function;
         } native;
     } of;
+};
+
+
+
+struct DefinitionClassTag
+{
+    String      name;
+    Boolean     isNative;
+    List        baseList;
+    List        fieldList;
+    List        methodList;
 };
 
 

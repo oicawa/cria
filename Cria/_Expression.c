@@ -8,9 +8,7 @@
 #include "CriaBoolean.h"
 #include "CriaInteger.h"
 #include "CriaString.h"
-#include "DefinitionVariable.h"
-#include "DefinitionFunction.h"
-#include "DefinitionClass.h"
+#include "Definition.h"
 
 #include "_Expression.h"
 

@@ -1,8 +1,7 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
-#include "DefinitionFunction.h"
-#include "DefinitionClass.h"
+#include "Definition.h"
 #include "IO.h"
 #include "CriaFile.h"
 #include "Tokenizer.h"

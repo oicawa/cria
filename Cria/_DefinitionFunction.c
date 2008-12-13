@@ -4,17 +4,117 @@
 #include "../Logger/Logger.h"
 
 #include "Boolean.h"
+#include "String.h"
 #include "List.h"
 #include "Interpreter.h"
 #include "CriaId.h"
 #include "Statement.h"
-#include "DefinitionVariable.h"
 #include "Runtime.h"
 #include "Parser.h"
 
 #include "_DefinitionFunction.h"
 
 
+
+//==============================
+//DefinitionVariable
+//==============================
+DefinitionVariable
+DefinitionVariable_new(
+    String      name
+)
+{
+    DefinitionVariable definition = Memory_malloc(sizeof(struct DefinitionVariableTag));
+    memset(definition, 0x00, sizeof(struct DefinitionVariableTag));
+    definition->name = String_clone(name);
+    definition->isStatic = TRUE;
+
+    return definition;
+}
+
+
+
+DefinitionVariable
+DefinitionVariable_search(
+    List    variables,
+    String  name
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    DefinitionVariable definition = NULL;
+    DefinitionVariable tmp = NULL;
+    int index = 0;
+    
+    Logger_dbg("variables pointer = %p", variables);
+    if (variables == NULL)
+    {
+        Logger_dbg("Variables is NULL.");
+        goto END;
+    }
+    
+    if (name == NULL)
+    {
+        Logger_dbg("'name' is NULL.");
+        goto END;
+    }
+    Logger_dbg("'name' is [%s].", name);
+    
+    Logger_dbg("Loop start.");
+    for (index = 0; index < List_count(variables); index++)
+    {
+        Logger_dbg("Condition OK.");
+        tmp = (DefinitionVariable)List_get(variables, index);
+        Logger_dbg("tmp = %p", tmp);
+        Logger_dbg("tmp->name = %s", tmp->name);
+        if (strcmp(tmp->name, name) != 0)
+            continue;
+        
+        definition = tmp;
+        break;
+    }
+    Logger_dbg("Loop end.");
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return definition;
+}
+
+
+
+String
+DefinitionVariable_name(
+	DefinitionVariable variable
+)
+{
+	return variable->name;
+}
+
+
+
+void
+DefinitionVariable_set(
+	DefinitionVariable variable,
+	CriaId id
+)
+{
+	variable->object = id;
+}
+
+
+
+CriaId
+DefinitionVariable_getObject(
+	DefinitionVariable variable
+)
+{
+	return variable->object;
+}
+
+
+
+//==============================
+//DefinitionFunction
+//==============================
 DefinitionFunction
 DefinitionFunction_new(
     char*               name,
@@ -290,3 +390,113 @@ DefinitionFunction_getParameterList(
 {
 	return function->of.cria.parameterList;
 }
+
+
+
+//==============================
+//DefinitionClass
+//==============================
+DefinitionClass
+DefinitionClass_new(
+	Interpreter interpreter,
+    char*               name,
+    Boolean             isNative,
+    List                fieldList,
+    List                methodList,
+    CriaNativeClassLoader* loader
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    DefinitionClass definition = NULL;
+    
+    if (isNative == TRUE)
+    {
+        Logger_dbg("Load Native Class");
+        definition = (*loader)(interpreter, name);
+        goto END;
+    }
+    
+    Logger_dbg("Cria Function (ParameterCount=%d, StatementCount=%d)", List_count(fieldList), List_count(methodList));
+    definition = Memory_malloc(sizeof(struct DefinitionClassTag));
+    memset(definition, 0x00, sizeof(struct DefinitionClassTag));
+    definition->fieldList = fieldList;
+    definition->methodList = methodList;
+    
+    definition->name = String_new(name);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return definition;
+}
+
+
+
+DefinitionClass
+DefinitionClass_search(
+    List classList,
+    char* name
+)
+{
+    int count = List_count(classList);
+    int index = 0;
+    DefinitionClass definition = NULL;
+    DefinitionClass tmp = NULL;
+    
+    for (index = 0; index < count; index++)
+    {
+        tmp = (DefinitionClass)(List_get(classList, index));
+        if (strcmp(tmp->name, name) == 0)
+        {
+            definition = tmp;
+            break;
+        }
+    }
+    
+    
+    return definition;
+}
+
+
+
+CriaId
+DefinitionClass_evaluate(
+    Interpreter interpreter,
+    CriaId  id,
+    List parameterList,
+    char*   name,
+    DefinitionClass klass,
+    List parameters
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId value = NULL;
+    DefinitionFunction function = NULL;
+    
+    Logger_dbg("Method name is '%s'", name);
+    Logger_dbg("klass is '%p'", klass);
+    Logger_dbg("klass->methodList is '%p'", klass->methodList);
+    function = DefinitionFunction_search(klass->methodList, name);
+    if (function == NULL)
+    {
+    	Logger_err("Method is not found. (%s)/%d", name, List_count(klass->methodList));
+        runtime_error(interpreter);
+    }
+    
+    Logger_dbg("parameters->count = %d", List_count(parameters));
+    value = DefinitionFunction_evaluate(interpreter, id, parameterList, function, parameters);
+    
+    
+    Logger_trc("[  END  ]%s", __func__);
+    return value;
+}
+
+
+
+List
+DefinitionClass_getMethods(
+	DefinitionClass klass
+)
+{
+	return klass->methodList;
+}
+

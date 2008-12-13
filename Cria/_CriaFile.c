@@ -7,9 +7,7 @@
 #include "Runtime.h"
 #include "StringBuffer.h"
 #include "CriaBoolean.h"
-#include "DefinitionVariable.h"
-#include "DefinitionFunction.h"
-#include "DefinitionClass.h"
+#include "Definition.h"
 
 #include "_CriaFile.h"
 
