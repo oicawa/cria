@@ -12,7 +12,7 @@
 #include "Runtime.h"
 #include "Parser.h"
 
-#include "_DefinitionFunction.h"
+#include "_Definition.h"
 
 
 

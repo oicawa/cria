@@ -1,5 +1,5 @@
-#ifndef PUBLIC_DEFINITIONFUNCTION_H_INCLUDED
-#define PUBLIC_DEFINITIONFUNCTION_H_INCLUDED
+#ifndef PUBLIC_DEFINITION_H_INCLUDED
+#define PUBLIC_DEFINITION_H_INCLUDED
 
 
 #include "Interpreter.h"
@@ -16,8 +16,8 @@ typedef struct  DefinitionVariableTag *DefinitionVariable;
 typedef CriaId CriaNativeFunction(Interpreter interpreter, CriaId object, List args);
 typedef struct DefinitionFunctionTag *DefinitionFunction;
 
-typedef DefinitionClass CriaNativeClassLoader(Interpreter interpreter, char* name);
 typedef struct DefinitionClassTag *DefinitionClass;
+typedef DefinitionClass CriaNativeClassLoader(Interpreter interpreter, char* name);
 
 
 
