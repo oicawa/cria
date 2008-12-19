@@ -35,7 +35,7 @@ Interpreter_addClass(
 {
     Logger_trc("[ START ]%s", __func__);
     DefinitionClass definition = NULL;
-    definition = DefinitionClass_new(interpreter, className, TRUE, NULL, NULL, classLoader);
+    definition = DefinitionClass_new(className, TRUE, NULL, NULL, classLoader);
     List_add(interpreter->classes, definition);
     Logger_trc("[  END  ]%s", __func__);
 }

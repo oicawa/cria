@@ -248,12 +248,21 @@ Parser_create_syntax_tree(
     Boolean result = FALSE;
     Statement statement = NULL;
     DefinitionFunction functionDefinition = NULL;
+    DefinitionClass classDefinition = NULL;
     Token errorToken = NULL;
     
     Logger_dbg("Loop start.");
     Parser_next(parser);
     while (TRUE)
     {
+        classDefinition = DefinitionClass_parse(parser);
+        if (classDefinition != NULL)
+        {
+            Logger_dbg("Add created DefinitionClass and parse next.");
+            List_add(Interpreter_classes(interpreter), classDefinition);
+            continue;
+        }
+        
         functionDefinition = DefinitionFunction_parse(parser);
         if (functionDefinition != NULL)
         {

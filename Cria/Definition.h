@@ -17,7 +17,7 @@ typedef CriaId CriaNativeFunction(Interpreter interpreter, CriaId object, List a
 typedef struct DefinitionFunctionTag *DefinitionFunction;
 
 typedef struct DefinitionClassTag *DefinitionClass;
-typedef DefinitionClass CriaNativeClassLoader(Interpreter interpreter, char* name);
+typedef DefinitionClass CriaNativeClassLoader(char* name);
 
 
 
@@ -26,7 +26,8 @@ typedef DefinitionClass CriaNativeClassLoader(Interpreter interpreter, char* nam
 //==============================
 DefinitionVariable
 DefinitionVariable_new(
-    String  name
+    String  name,
+    Boolean isStatic
 );
 
 
@@ -57,6 +58,13 @@ DefinitionVariable_set(
 CriaId
 DefinitionVariable_getObject(
 	DefinitionVariable variable
+);
+
+
+
+DefinitionVariable
+DefinitionVariable_parse(
+	Parser parser
 );
 
 
@@ -114,7 +122,6 @@ DefinitionFunction_getParameterList(
 //==============================
 DefinitionClass
 DefinitionClass_new(
-	Interpreter interpreter,
     String name,
     Boolean isNative,
     List fieldList,
@@ -147,6 +154,13 @@ DefinitionClass_evaluate(
 List
 DefinitionClass_getMethods(
 	DefinitionClass klass
+);
+
+
+
+DefinitionClass
+DefinitionClass_parse(
+    Parser parser
 );
 
 

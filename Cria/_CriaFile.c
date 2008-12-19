@@ -236,7 +236,6 @@ CriaFile_dispose(
 
 DefinitionClass
 CriaFile_loadClass(
-    Interpreter interpreter,
     String className
 )
 {
@@ -253,7 +252,7 @@ CriaFile_loadClass(
     
     variableName = String_new("file");
     Logger_dbg("3");
-    variable = DefinitionVariable_new(variableName);
+    variable = DefinitionVariable_new(variableName, FALSE);
     Logger_dbg("4");
     String_dispose(variableName);
     Logger_dbg("5");
@@ -287,7 +286,7 @@ CriaFile_loadClass(
     Logger_dbg("16");
     
     
-    klass = DefinitionClass_new(interpreter, className, FALSE, fieldList, methodList, NULL);
+    klass = DefinitionClass_new(className, FALSE, fieldList, methodList, NULL);
     Logger_dbg("17");
 
     Logger_trc("[  END  ]%s", __func__);

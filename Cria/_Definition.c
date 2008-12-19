@@ -21,7 +21,8 @@
 //==============================
 DefinitionVariable
 DefinitionVariable_new(
-    String      name
+    String name,
+    Boolean isStatic
 )
 {
     DefinitionVariable definition = Memory_malloc(sizeof(struct DefinitionVariableTag));
@@ -112,6 +113,71 @@ DefinitionVariable_getObject(
 
 
 
+DefinitionVariable
+DefinitionVariable_parse(
+	Parser parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Item position = Parser_getPosition(parser);
+    DefinitionVariable variable = NULL;
+    String name = NULL; 
+    Boolean isStatic = TRUE;
+    Token token = NULL;
+    
+    token = Parser_getCurrent(parser);
+    if (Token_type(token) == TOKEN_TYPE_ATMARK)
+    {
+    	Logger_dbg("Static FALSE");
+    	isStatic = FALSE;
+    	Parser_next(parser);
+	    token = Parser_getCurrent(parser);
+    }
+    
+	if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
+	{
+    	Logger_dbg("Not identifier");
+		Token_log(token);
+		goto END;
+	}
+	
+	name = Token_buffer(token);
+	
+	Parser_next(parser);
+	token = Parser_getCurrent(parser);
+	if (Token_type(token) != TOKEN_TYPE_COLON)
+	{
+    	Logger_dbg("Not ':'");
+		Token_log(token);
+		goto END;
+	}
+	
+	Parser_next(parser);
+	token = Parser_getCurrent(parser);
+	if (Token_type(token) != TOKEN_TYPE_NEW_LINE)
+	{
+    	Logger_dbg("Not <<NEW_LINE>>");
+		Token_log(token);
+		goto END;
+	}
+	
+	Parser_next(parser);
+	
+	variable = DefinitionVariable_new(name, isStatic);
+	
+END:
+	if (variable == NULL)
+	{
+		Logger_dbg("Not DefinitionVariable.");
+		Parser_setPosition(parser, position);
+	}
+	
+    Logger_trc("[  END  ]%s", __func__);
+    return variable;
+}
+
+
+
 //==============================
 //DefinitionFunction
 //==============================
@@ -165,7 +231,7 @@ DefinitionFunction_parse_parameters(
 			break;
 	    }
 	    
-		DefinitionVariable variable = DefinitionVariable_new(Token_buffer(token));
+		DefinitionVariable variable = DefinitionVariable_new(Token_buffer(token), TRUE);
 		List_add(parameters, variable);
 	    Logger_dbg("Add parameter.(%s)", DefinitionVariable_name(variable));
 		
@@ -195,6 +261,7 @@ DefinitionFunction_parse(
     Logger_trc("[ START ]%s", __func__);
     DefinitionFunction functionDefinition = NULL;
     Item restore = Parser_getPosition(parser);
+    Boolean isStatic = TRUE;
     String name = NULL;
     List parameters = NULL;
     List statements = NULL;
@@ -202,6 +269,13 @@ DefinitionFunction_parse(
     Token token = NULL;
     
     token = Parser_getCurrent(parser);
+    if (Token_type(token) == TOKEN_TYPE_ATMARK)
+    {
+    	isStatic = FALSE;
+    	Parser_next(parser);
+	    token = Parser_getCurrent(parser);
+    }
+    
     if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
     {
         Logger_dbg("Not identifier.");
@@ -278,7 +352,7 @@ DefinitionFunction_parse(
     }
 	
     Logger_dbg("Create FunctionDefinition. (name=%s, parameter=%p)", name, parameters);
-    functionDefinition = DefinitionFunction_new(name, FALSE, TRUE, parameters, statements, NULL);
+    functionDefinition = DefinitionFunction_new(name, FALSE, isStatic, parameters, statements, NULL);
     
 END:
 	if (functionDefinition == NULL)
@@ -398,7 +472,6 @@ DefinitionFunction_getParameterList(
 //==============================
 DefinitionClass
 DefinitionClass_new(
-	Interpreter interpreter,
     char*               name,
     Boolean             isNative,
     List                fieldList,
@@ -412,7 +485,7 @@ DefinitionClass_new(
     if (isNative == TRUE)
     {
         Logger_dbg("Load Native Class");
-        definition = (*loader)(interpreter, name);
+        definition = (*loader)(name);
         goto END;
     }
     
@@ -500,3 +573,87 @@ DefinitionClass_getMethods(
 	return klass->methodList;
 }
 
+
+DefinitionClass
+DefinitionClass_parse(
+    Parser parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    DefinitionClass klass = NULL;
+    DefinitionFunction function = NULL;
+    DefinitionVariable variable = NULL;
+    Item restore = Parser_getPosition(parser);
+    String name = NULL;
+    List fields = NULL;
+    List methods = NULL;
+    Token token = NULL;
+    
+    token = Parser_getCurrent(parser);
+    if (Token_type(token) != TOKEN_TYPE_CLASS_LITERAL)
+    {
+        Logger_dbg("Not identifier.");
+    	goto END;
+    }
+    
+    name = Token_buffer(token);
+    Parser_next(parser);
+    
+    if (Parser_eat(parser, TOKEN_TYPE_COLON, FALSE) == FALSE)
+    {
+        Logger_dbg("Not ':'.");
+    	goto END;
+    }
+    
+    if (Parser_eat(parser, TOKEN_TYPE_NEW_LINE, FALSE) == FALSE)
+    {
+        Logger_dbg("Not <<NEW_LINE>>.");
+    	goto END;
+    }
+    
+    if (Parser_eat(parser, TOKEN_TYPE_INDENT, FALSE) == FALSE)
+    {
+        Logger_dbg("Not <<INDENT>>.");
+    	goto END;
+    }
+    
+    fields = List_new();
+    while (TRUE)
+    {
+    	variable = DefinitionVariable_parse(parser);
+    	if (variable == NULL)
+    		break;
+    	
+    	Logger_dbg("Add variable.");
+    	List_add(fields, variable);
+    }
+    
+    methods = List_new();
+    while (TRUE)
+    {
+    	function = DefinitionFunction_parse(parser);
+    	if (function == NULL)
+    		break;
+    	
+    	Logger_dbg("Add method.");
+    	List_add(methods, function);
+    }
+    
+    token = Parser_getCurrent(parser);
+    if (Parser_eat(parser, TOKEN_TYPE_DEDENT, FALSE) == FALSE)
+    {
+        Logger_dbg("Not <<DEDENT>>.");
+        Token_log(token);
+    	goto END;
+    }
+    
+    
+    klass = DefinitionClass_new(name, FALSE, fields, methods, NULL);
+    
+END:
+	if (klass == NULL)
+		Parser_setPosition(parser, restore);
+	
+    Logger_trc("[  END  ]%s", __func__);
+    return klass;
+}

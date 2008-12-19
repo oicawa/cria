@@ -24,7 +24,6 @@ struct CriaFileTag
 
 DefinitionClass
 CriaFile_loadClass(
-    Interpreter interpreter,
     char* name
 );
 

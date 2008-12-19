@@ -57,12 +57,12 @@ ReferenceVariable_evaluate(
     //存在しなかった場合は登録
     if (parameters != NULL)
     {
-        definition = DefinitionVariable_new(variable->name);
+        definition = DefinitionVariable_new(variable->name, TRUE);
         List_add(parameters, definition);
         goto END;
     }
     
-    definition = DefinitionVariable_new(variable->name);
+    definition = DefinitionVariable_new(variable->name, TRUE);
     List_add(Interpreter_variables(interpreter), definition);
     
 END:

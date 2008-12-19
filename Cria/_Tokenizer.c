@@ -19,7 +19,7 @@
 #define TOKEN_LITERAL_GENERICS_LEFT         "<"
 #define TOKEN_LITERAL_GENERICS_RIGHT        ">"
 #define TOKEN_LITERAL_COLON                 ":"
-#define TOKEN_LITERAL_MEMBER                "@"
+#define TOKEN_LITERAL_ATMARK                "@"
 #define TOKEN_LITERAL_PERIOD                "."
 #define TOKEN_LITERAL_NEW_LINE              "\n"
 #define TOKEN_LITERAL_COMMA                 ", "
@@ -1141,10 +1141,10 @@ Tokenizer_other(
         goto END;
     }
     
-    if (strcmp(value, TOKEN_LITERAL_MEMBER) == 0)
+    if (strcmp(value, TOKEN_LITERAL_ATMARK) == 0)
     {
-        Logger_trc("Create 'TOKEN_TYPE_MEMBER'");
-        token = Token_new(TOKEN_TYPE_MEMBER, row, column, value);
+        Logger_trc("Create 'TOKEN_TYPE_ATMARK'");
+        token = Token_new(TOKEN_TYPE_ATMARK, row, column, value);
         goto END;
     }
     
