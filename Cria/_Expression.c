@@ -169,6 +169,21 @@ ExpressionVariable_evaluate(
     Logger_dbg("Variable name is '%s'", expression->name);
     
     
+    if (expression->isMember == TRUE)
+    {
+    	//Search Class of object
+        variable = DefinitionVariable_search(parameterList, expression->name);
+        if (variable != NULL)
+        {
+            id = DefinitionVariable_getObject(variable);
+            goto END;
+        }
+        
+        //Search variable
+    }
+    
+    
+    
     if (parameterList != NULL)
     {
         variable = DefinitionVariable_search(parameterList, expression->name);
@@ -840,10 +855,20 @@ ExpressionVariable_parse(
 {
     Logger_trc("[ START ]%s", __func__);
     Item position = Parser_getPosition(parser);
+    Token token = NULL;
     ExpressionReference expression = NULL;
+    Boolean isMember = FALSE;
     String name = NULL;
     
-    Token token = Parser_getCurrent(parser);
+    token = Parser_getCurrent(parser);
+    if (Token_type(token) == TOKEN_TYPE_PERIOD)
+    {
+        Logger_dbg("Member variable.");
+        Parser_next(parser);
+        isMember = TRUE;
+        token = Parser_getCurrent(parser);
+    }
+    
     if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
     {
         Logger_dbg("Not VariableExpression.");
@@ -867,6 +892,7 @@ ExpressionVariable_parse(
     variable = Memory_malloc(sizeof(struct ExpressionVariableTag));
     memset(variable, 0x00, sizeof(struct ExpressionVariableTag));
     variable->name = String_clone(name);
+    variable->isMember = isMember;
     
     expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
     memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));

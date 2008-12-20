@@ -324,16 +324,19 @@ StatementGoto_parse(
 	    Parser_next(parser);
         break;
     case TOKEN_TYPE_GOTO:
+    	Logger_dbg("Token 'goto?'");
     	type = GOTO_TYPE_LABEL;
 	    Parser_next(parser);
 	    token = Parser_getCurrent(parser);
 	    label = Token_buffer(token);
         break;
     case TOKEN_TYPE_RETURN:
+    	Logger_dbg("Token 'return'");
     	type = GOTO_TYPE_RETURN;
 	    Parser_next(parser);
         break;
     case TOKEN_TYPE_RETURN_VALUE:
+    	Logger_dbg("Token 'return <<VALUE>>'");
     	type = GOTO_TYPE_RETURN;
 	    Parser_next(parser);
 	    expression = Expression_parse(parser);

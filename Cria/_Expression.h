@@ -78,6 +78,7 @@ struct ExpressionBooleanLiteralTag
 struct ExpressionVariableTag
 {
     String  name;
+    Boolean isMember;
 };
 
 
