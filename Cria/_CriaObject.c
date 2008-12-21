@@ -4,6 +4,7 @@
 #include "../Logger/Logger.h"
 
 #include "CriaId.h"
+#include "String.h"
 #include "List.h"
 
 #include "_CriaObject.h"
@@ -25,7 +26,6 @@ CriaObject_new(
     object->id.type = CRIA_DATA_TYPE_CRIA_OBJECT;
     object->fields = fields;
     
-END:
     Logger_trc("[  END  ]%s", __func__);
     return (CriaId)object;
 }

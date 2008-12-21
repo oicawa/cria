@@ -20,4 +20,12 @@ struct CriaObjectTag
 
 
 
+CriaId
+CriaObject_new(
+	String className,
+    List fields
+);
+
+
+
 #endif

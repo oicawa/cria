@@ -11,6 +11,7 @@
 #include "Statement.h"
 #include "Runtime.h"
 #include "Parser.h"
+#include "CriaObject.h"
 
 #include "_Definition.h"
 
@@ -611,22 +612,24 @@ DefinitionClass_generateInstance(
     }
     
     
-    Logger_dbg("Method name is '%s'", name);
-    Logger_dbg("klass is '%p'", klass);
-    Logger_dbg("klass->methodList is '%p'", klass->methodList);
-    function = DefinitionFunction_search(klass->methodList, name);
-    if (function == NULL)
-    {
-    	Logger_err("Method is not found. (%s)/%d", name, List_count(klass->methodList));
-        runtime_error(interpreter);
-    }
+    CriaObject object = (CriaObject)CriaObject_new(klass->name, instance);
     
-    Logger_dbg("parameters->count = %d", List_count(parameters));
-    value = DefinitionFunction_evaluate(interpreter, id, parameterList, function, parameters);
+    //Logger_dbg("Method name is '%s'", name);
+    //Logger_dbg("klass is '%p'", klass);
+    //Logger_dbg("klass->methodList is '%p'", klass->methodList);
+    //function = DefinitionFunction_search(klass->methodList, name);
+    //if (function == NULL)
+    //{
+    	//Logger_err("Method is not found. (%s)/%d", name, List_count(klass->methodList));
+        //runtime_error(interpreter);
+    //}
+    
+    //Logger_dbg("parameters->count = %d", List_count(parameters));
+    //value = DefinitionFunction_evaluate(interpreter, id, parameterList, function, parameters);
     
     
     Logger_trc("[  END  ]%s", __func__);
-    return value;
+    return (CriaId)object;
 }
 
 
