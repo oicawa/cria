@@ -9,17 +9,18 @@ OBJS =\
     _StringBuffer.o\
     _Interpreter.o\
     _Definition.o\
-    _CriaFile.o\
     _Tokenizer.o\
     _Parser.o\
     _Statement.o\
     _Expression.o\
+    _Reference.o\
     _IO.o\
     _CriaId.o\
     _CriaString.o\
     _CriaInteger.o\
     _CriaBoolean.o\
-    _Reference.o\
+    _CriaFile.o\
+    _CriaObject.o\
 
 all:$(OBJS)
 	cd ../Logger; make;
@@ -42,6 +43,7 @@ _CriaString.o: _CriaString.c _CriaString.h _Cria.h Cria.h ../Memory/Memory.h ../
 _CriaInteger.o: _CriaInteger.c _CriaInteger.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaBoolean.o: _CriaBoolean.c _CriaBoolean.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaFile.o: _CriaFile.c _CriaFile.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+_CriaObject.o: _CriaObject.c _CriaObject.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Definition.o: _Definition.c _Definition.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Tokenizer.o: _Tokenizer.c _Tokenizer.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Parser.o: _Parser.c _Parser.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
