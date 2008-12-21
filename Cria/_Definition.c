@@ -566,6 +566,72 @@ DefinitionClass_evaluate(
 
 
 List
+DefinitionClass_getFields(
+	DefinitionClass klass
+)
+{
+	return klass->fieldList;
+}
+
+
+
+CriaId
+DefinitionClass_generateInstance(
+    Interpreter interpreter,
+    CriaId  id,
+    List parameterList,
+    char*   name,
+    DefinitionClass klass,
+    List parameters
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId value = NULL;
+    DefinitionVariable variable = NULL;
+    DefinitionFunction function = NULL;
+    List instance = NULL;
+    int i = 0;
+    
+    if (id == NULL && klass->isNative == FALSE)
+    {
+    	instance = List_new();
+    	List fields = DefinitionClass_getFields(klass);
+    	int count = List_count(fields);
+    	for (i = 0; i < count; i++)
+    	{
+    		variable = (DefinitionVariable)List_get(fields, i);
+    		if (variable->isStatic == TRUE)
+    		{
+    			continue;
+    		}
+    		
+    		variable = DefinitionVariable_new(variable->name, FALSE);
+    		List_add(instance, variable);
+    	}
+    }
+    
+    
+    Logger_dbg("Method name is '%s'", name);
+    Logger_dbg("klass is '%p'", klass);
+    Logger_dbg("klass->methodList is '%p'", klass->methodList);
+    function = DefinitionFunction_search(klass->methodList, name);
+    if (function == NULL)
+    {
+    	Logger_err("Method is not found. (%s)/%d", name, List_count(klass->methodList));
+        runtime_error(interpreter);
+    }
+    
+    Logger_dbg("parameters->count = %d", List_count(parameters));
+    value = DefinitionFunction_evaluate(interpreter, id, parameterList, function, parameters);
+    
+    
+    Logger_trc("[  END  ]%s", __func__);
+    return value;
+}
+
+
+
+List
 DefinitionClass_getMethods(
 	DefinitionClass klass
 )
