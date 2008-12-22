@@ -6,8 +6,6 @@ Person:
     mrs:
     miss:
     
-    new():
-    
     @get_honorific_name():
         honorific = ""
         if is_male == true

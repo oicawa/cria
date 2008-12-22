@@ -595,7 +595,7 @@ ExpressionGenerate_evaluate(
     List parameters = ExpressionParameters_evaluate(interpreter, object, parameterList, expression->parameters);
     
     
-    id = DefinitionClass_evaluate(interpreter, NULL, parameterList, "new", klass, parameters);
+	id = DefinitionClass_generateInstance(interpreter, klass, parameters);
     
 END:
     Logger_trc("[  END  ]%s", __func__);

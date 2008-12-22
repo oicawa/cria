@@ -165,4 +165,13 @@ DefinitionClass_parse(
 
 
 
+CriaId
+DefinitionClass_generateInstance(
+    Interpreter interpreter,
+    DefinitionClass klass,
+    List parameters
+);
+
+
+
 #endif

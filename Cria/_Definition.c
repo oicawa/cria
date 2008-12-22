@@ -579,57 +579,57 @@ DefinitionClass_getFields(
 CriaId
 DefinitionClass_generateInstance(
     Interpreter interpreter,
-    CriaId  id,
-    List parameterList,
-    char*   name,
     DefinitionClass klass,
     List parameters
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaId value = NULL;
+    CriaId id = NULL;
     DefinitionVariable variable = NULL;
-    DefinitionFunction function = NULL;
+    //DefinitionFunction constractor = NULL;
     List instance = NULL;
+    List fields = NULL;
+    int count = 0;
     int i = 0;
     
-    if (id == NULL && klass->isNative == FALSE)
+    
+    if (klass->isNative == TRUE)
     {
-    	instance = List_new();
-    	List fields = DefinitionClass_getFields(klass);
-    	int count = List_count(fields);
-    	for (i = 0; i < count; i++)
-    	{
-    		variable = (DefinitionVariable)List_get(fields, i);
-    		if (variable->isStatic == TRUE)
-    		{
-    			continue;
-    		}
-    		
-    		variable = DefinitionVariable_new(variable->name, FALSE);
-    		List_add(instance, variable);
-    	}
+    	Logger_dbg("Create object from native class.(%s)", klass->name);
+    	id = DefinitionClass_evaluate(interpreter, NULL, NULL, "new", klass, parameters);
+    	goto END;
     }
     
     
-    CriaObject object = (CriaObject)CriaObject_new(klass->name, instance);
+	instance = List_new();
+	fields = DefinitionClass_getFields(klass);
+	count = List_count(fields);
+	for (i = 0; i < count; i++)
+	{
+		variable = (DefinitionVariable)List_get(fields, i);
+		if (variable->isStatic == TRUE)
+		{
+			continue;
+		}
+		
+		variable = DefinitionVariable_new(variable->name, FALSE);
+		List_add(instance, variable);
+	}
     
-    //Logger_dbg("Method name is '%s'", name);
-    //Logger_dbg("klass is '%p'", klass);
-    //Logger_dbg("klass->methodList is '%p'", klass->methodList);
-    //function = DefinitionFunction_search(klass->methodList, name);
-    //if (function == NULL)
+    
+    id = CriaObject_new(klass->name, instance);
+    
+    
+    //constractor = DefinitionFunction_search(klass->methodList, "new");
+    //if (constractor != NULL)
     //{
-    	//Logger_err("Method is not found. (%s)/%d", name, List_count(klass->methodList));
-        //runtime_error(interpreter);
+    	//Logger_dbg("Exist constractor.");
+		//DefinitionFunction_evaluate(interpreter, (CriaId)object, parameterList, "new", klass, parameters);
     //}
     
-    //Logger_dbg("parameters->count = %d", List_count(parameters));
-    //value = DefinitionFunction_evaluate(interpreter, id, parameterList, function, parameters);
-    
-    
+END:
     Logger_trc("[  END  ]%s", __func__);
-    return (CriaId)object;
+    return id;
 }
 
 
