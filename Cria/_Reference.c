@@ -180,6 +180,7 @@ Reference_evaluate(
 {
     Logger_trc("[ START ]%s", __func__);
     DefinitionVariable definition = NULL;
+    CriaId id = NULL;
     
     switch (reference->type)
     {
@@ -198,8 +199,14 @@ Reference_evaluate(
     }
     
     //★DefinitionVariableの階層を遡っていく処理を実行。
+    if (reference->next == NULL)
+    	goto END;
+    	
+    id = (CriaId)DefinitionVariable_getObject(definition);
+    
+    definition = Reference_evaluate(interpreter, id, parameters, reference->next);
 
-//END:
+END:
 	
     Logger_trc("[  END  ]%s", __func__);
     return definition;
