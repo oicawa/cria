@@ -199,7 +199,7 @@ Reference_evaluate(
     
     //★DefinitionVariableの階層を遡っていく処理を実行。
 
-END:
+//END:
 	
     Logger_trc("[  END  ]%s", __func__);
     return definition;
