@@ -29,7 +29,7 @@ DefinitionVariable_new(
     DefinitionVariable definition = Memory_malloc(sizeof(struct DefinitionVariableTag));
     memset(definition, 0x00, sizeof(struct DefinitionVariableTag));
     definition->name = String_clone(name);
-    definition->isStatic = TRUE;
+    definition->isStatic = isStatic;
 
     return definition;
 }
@@ -104,7 +104,7 @@ DefinitionVariable_set(
 
 
 
-CriaId
+void*
 DefinitionVariable_getObject(
 	DefinitionVariable variable
 )
@@ -196,7 +196,7 @@ DefinitionFunction_new(
     memset(definition, 0x00, sizeof(struct DefinitionFunctionTag));
     definition->name = name;
     definition->isNative = isNative;
-    definition->isStatic = TRUE;
+    definition->isStatic = isStatic;
     if (isNative == TRUE)
     {
         Logger_dbg("Native Function");
@@ -483,7 +483,7 @@ DefinitionClass_new(
     Logger_trc("[ START ]%s", __func__);
     DefinitionClass definition = NULL;
     
-    if (isNative == TRUE)
+    if (loader != NULL)
     {
         Logger_dbg("Load Native Class");
         definition = (*loader)(name);
@@ -495,7 +495,7 @@ DefinitionClass_new(
     memset(definition, 0x00, sizeof(struct DefinitionClassTag));
     definition->fieldList = fieldList;
     definition->methodList = methodList;
-    
+    definition->isNative = isNative;
     definition->name = String_new(name);
     
 END:
@@ -585,49 +585,53 @@ DefinitionClass_generateInstance(
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
+    CriaObject object = NULL;
     DefinitionVariable variable = NULL;
-    //DefinitionFunction constractor = NULL;
-    List instance = NULL;
+    DefinitionFunction constractor = NULL;
     List fields = NULL;
     int count = 0;
     int i = 0;
     
     
+    Logger_dbg("Class name = '%s'", klass->name);
     if (klass->isNative == TRUE)
     {
     	Logger_dbg("Create object from native class.(%s)", klass->name);
-    	id = DefinitionClass_evaluate(interpreter, NULL, NULL, "new", klass, parameters);
-    	goto END;
+    	id = DefinitionClass_evaluate(interpreter, NULL, NULL, " generator ", klass, parameters);
+    }
+    else
+    {
+    	Logger_dbg("Create object from cria class.(%s)", klass->name);
+    	object = CriaObject_new(klass->name);
+		fields = DefinitionClass_getFields(klass);
+		count = List_count(fields);
+    	Logger_dbg("Fields count = %d", count);
+		for (i = 0; i < count; i++)
+		{
+			variable = (DefinitionVariable)List_get(fields, i);
+			if (variable->isStatic == TRUE)
+			{
+				Logger_dbg("variable->name = %s (Static)", variable->name);
+				continue;
+			}
+			
+			variable = DefinitionVariable_new(variable->name, FALSE);
+			Logger_dbg("variable->name = %s (Instance)", variable->name);
+			CriaObject_addField(object, variable);
+		}
+		
+		id = (CriaId)object;
     }
     
     
-	instance = List_new();
-	fields = DefinitionClass_getFields(klass);
-	count = List_count(fields);
-	for (i = 0; i < count; i++)
-	{
-		variable = (DefinitionVariable)List_get(fields, i);
-		if (variable->isStatic == TRUE)
-		{
-			continue;
-		}
-		
-		variable = DefinitionVariable_new(variable->name, FALSE);
-		List_add(instance, variable);
-	}
+    constractor = DefinitionFunction_search(klass->methodList, "new");
+    if (constractor != NULL)
+    {
+    	Logger_dbg("Exist constractor.");
+		DefinitionFunction_evaluate(interpreter, id, NULL, constractor, parameters);
+    }
     
-    
-    id = CriaObject_new(klass->name, instance);
-    
-    
-    //constractor = DefinitionFunction_search(klass->methodList, "new");
-    //if (constractor != NULL)
-    //{
-    	//Logger_dbg("Exist constractor.");
-		//DefinitionFunction_evaluate(interpreter, (CriaId)object, parameterList, "new", klass, parameters);
-    //}
-    
-END:
+
     Logger_trc("[  END  ]%s", __func__);
     return id;
 }

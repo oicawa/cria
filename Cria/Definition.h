@@ -55,7 +55,7 @@ DefinitionVariable_set(
 
 
 
-CriaId
+void*
 DefinitionVariable_getObject(
 	DefinitionVariable variable
 );

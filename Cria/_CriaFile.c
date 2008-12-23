@@ -7,9 +7,29 @@
 #include "Runtime.h"
 #include "StringBuffer.h"
 #include "CriaBoolean.h"
+#include "CriaObject.h"
 #include "Definition.h"
 
 #include "_CriaFile.h"
+
+
+
+CriaId
+CriaFile__generator_(
+	Interpreter interpreter,
+	CriaId object,
+    List args
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    
+    CriaObject file = CriaObject_new("File");
+    CriaObject_addField(file, DefinitionVariable_new("path", FALSE));
+    CriaObject_addField(file, DefinitionVariable_new("pointer", FALSE));
+    
+    Logger_trc("[  END  ]%s", __func__);
+    return (CriaId)file;
+}
 
 
 
@@ -22,6 +42,17 @@ CriaFile_new(
 {
     Logger_trc("[ START ]%s", __func__);
     CriaString path = NULL;
+    CriaObject file = NULL;
+    CriaId arg = NULL;
+    
+    
+    if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
+    {
+    	Logger_err("Object is not 'CRIA_DATA_TYPE_CRIA_OBJECT'.");
+    	runtime_error(interpreter);
+    	goto END;
+    }
+    
     
     if (List_count(args) != 1)
     {
@@ -29,22 +60,19 @@ CriaFile_new(
     	goto END;
     }
     
-    object = (CriaId)(List_get(args, 0));
-    if (object->type != CRIA_DATA_TYPE_STRING)
+    arg = (CriaId)(List_get(args, 0));
+    if (arg->type != CRIA_DATA_TYPE_STRING)
     {
     	runtime_error(interpreter);
     	goto END;
     }
     
-    path = (CriaString)object;
+    path = (CriaString)arg;
     
     
-    CriaFile file = Memory_malloc(sizeof(struct CriaFileTag));
-    memset(file, 0x00, sizeof(struct CriaFileTag));
-    file->id.name = String_new("File");
-    file->id.type = CRIA_DATA_TYPE_FILE;
-    file->path = String_clone(path->value);
-    file->pointer = NULL;
+    file = (CriaObject)object;
+    
+    CriaObject_set(interpreter, file, "path", CriaString_new(TRUE, path->value));
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -61,30 +89,44 @@ CriaFile_open(
 )	
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaId id = CriaId_new(NULL, CRIA_DATA_TYPE_VOID);
-    CriaFile file = NULL;
+    CriaId id = NULL;
+    CriaObject file = NULL;
+    CriaString path = NULL;
+    FILE* pointer = NULL;
+    void* tmp = NULL;
     
+    Logger_dbg("Check arguments count.");
     if (List_count(args) != 0)
     {
     	runtime_error(interpreter);
     	goto END;
     }
     
-    if (object->type != CRIA_DATA_TYPE_FILE)
+    Logger_dbg("Check object data type.");
+    if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
     {
     	runtime_error(interpreter);
     	goto END;
     }
     
-    file = (CriaFile)object;
     
-    file->pointer = fopen(file->path, "r");
-    if (file->pointer == NULL)
+    Logger_dbg("Cast object from CriaId.");
+    file = (CriaObject)object;
+    Logger_dbg("Casted object from CriaId.");
+    tmp = CriaObject_get(interpreter, file, "path");
+    Logger_dbg("object = %p.", tmp);
+    path = (CriaString)tmp;
+    
+    Logger_dbg("Path = '%s'", path->value);
+    pointer = fopen(path->value, "r");
+    if (pointer == NULL)
     {
     	runtime_error(interpreter);
     	goto END;
     }
-    Logger_inf("File opened. (%s)", file->path);
+    Logger_inf("File opened. (%s)", path->value);
+    
+    CriaObject_set(interpreter, file, "pointer", pointer);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -101,8 +143,9 @@ CriaFile_close(
 )	
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaId id = CriaId_new(NULL, CRIA_DATA_TYPE_VOID);
-    CriaFile file = NULL;
+    CriaId id = NULL;
+    CriaObject file = NULL;
+    FILE* pointer = NULL;
     
     if (List_count(args) != 0)
     {
@@ -110,16 +153,17 @@ CriaFile_close(
     	goto END;
     }
     
-    if (object->type != CRIA_DATA_TYPE_FILE)
+    if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
     {
     	runtime_error(interpreter);
     	goto END;
     }
     
-    file = (CriaFile)object;
+    file = (CriaObject)object;
     
-    fclose(file->pointer);
-    Logger_inf("File closed. (%s)", file->path);
+    pointer = (FILE*)CriaObject_get(interpreter, file, "pointer");
+    
+    fclose(pointer);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -139,7 +183,8 @@ CriaFile_read(
     char buffer[1024];
     StringBuffer stringBuffer = NULL;
     int length = 0;
-    CriaFile file = NULL;
+    CriaObject file = NULL;
+    FILE* pointer = NULL;
     
     if (List_count(args) != 0)
     {
@@ -147,19 +192,23 @@ CriaFile_read(
     	goto END;
     }
     
-    if (object->type != CRIA_DATA_TYPE_FILE)
+    if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
     {
     	runtime_error(interpreter);
     	goto END;
     }
     
-    file = (CriaFile)object;
+    
+    file = (CriaObject)object;
+    pointer = (FILE*)CriaObject_get(interpreter, file, "pointer");
+    
+    
     stringBuffer = StringBuffer_new();
     
-    while (feof(file->pointer) == 0)
+    while (feof(pointer) == 0)
     {
 		memset(buffer, 0x00, 1024);
-		fgets(buffer, 1024 - 1, file->pointer);
+		fgets(buffer, 1024 - 1, pointer);
 		length = strlen(buffer);
 		if (length == 0)
 			break;
@@ -191,7 +240,8 @@ CriaFile_isEnd(
 {
     Logger_trc("[ START ]%s", __func__);
     CriaBoolean result = CriaBoolean_new(TRUE, FALSE);
-    CriaFile file = NULL;
+    CriaObject file = NULL;
+    FILE* pointer = NULL;
     
     if (List_count(args) != 0)
     {
@@ -199,19 +249,19 @@ CriaFile_isEnd(
     	goto END;
     }
     
-    if (object->type != CRIA_DATA_TYPE_FILE)
+    if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
     {
     	runtime_error(interpreter);
     	goto END;
     }
     
-    file = (CriaFile)object;
+    file = (CriaObject)object;
+    pointer = (FILE*)CriaObject_get(interpreter, file, "pointer");
     
-    if (feof(file->pointer) != 0)
+    if (feof(pointer) != 0)
     {
     	result->value = TRUE;
     }
-    Logger_inf("File EOF. (%s)", file->path);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -222,7 +272,7 @@ END:
 
 void
 CriaFile_dispose(
-    CriaFile file
+    CriaObject file
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -259,6 +309,11 @@ CriaFile_loadClass(
     List_add(fieldList, variable);
     Logger_dbg("6");
     
+    function = DefinitionFunction_new(" generator ", TRUE, TRUE, NULL, NULL, CriaFile__generator_);
+    Logger_dbg("7");
+    List_add(methodList, function);
+    Logger_dbg("8");
+    
     function = DefinitionFunction_new("new", TRUE, FALSE, NULL, NULL, CriaFile_new);
     Logger_dbg("7");
     List_add(methodList, function);
@@ -286,7 +341,7 @@ CriaFile_loadClass(
     Logger_dbg("16");
     
     
-    klass = DefinitionClass_new(className, FALSE, fieldList, methodList, NULL);
+    klass = DefinitionClass_new(className, TRUE, fieldList, methodList, NULL);
     Logger_dbg("17");
 
     Logger_trc("[  END  ]%s", __func__);

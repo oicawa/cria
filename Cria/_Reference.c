@@ -5,6 +5,8 @@
 
 #include "Expression.h"
 #include "Tokenizer.h"
+#include "CriaObject.h"
+#include "Runtime.h"
 
 #include "_Reference.h"
 
@@ -38,8 +40,33 @@ ReferenceVariable_evaluate(
     DefinitionVariable definition = NULL;
     
     
+	Logger_dbg("object is %p", object);
+    if (object != NULL)
+    {
+		Logger_dbg("object = %p", object);
+    	if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
+    	{
+    		Logger_err("The target object is not CRIA_DATA_TYPE_CRIA_OBJECT. (%d)", object->type);
+    		runtime_error(interpreter);
+    		goto END;
+    	}
+		Logger_dbg("object->type = CRIA_DATA_TYPE_CRIA_OBJECT");
+		definition = DefinitionVariable_search(((CriaObject)object)->fields, variable->name);
+		if (definition == NULL)
+		{
+    		Logger_err("The target field does not exist. (%s)", variable->name);
+    		runtime_error(interpreter);
+    		goto END;
+		}
+		Logger_dbg("Found the target field. (%s)", variable->name);
+		goto END;
+    }
+    
+    
+	Logger_dbg("parameters is %p", parameters);
     if (parameters != NULL)
     {
+		Logger_dbg("Found the target field. (%s)", variable->name);
         definition = DefinitionVariable_search(parameters, variable->name);
         if (definition != NULL)
         {
@@ -49,12 +76,14 @@ ReferenceVariable_evaluate(
     
     
     definition = DefinitionVariable_search(Interpreter_variables(interpreter), variable->name);
+	Logger_dbg("definition is %p", definition);
     if (definition != NULL)
     {
+		Logger_dbg("definition is not NULL");
         goto END;
     }
     
-    //存在しなかった場合は登録
+    
     if (parameters != NULL)
     {
         definition = DefinitionVariable_new(variable->name, TRUE);
@@ -67,6 +96,7 @@ ReferenceVariable_evaluate(
     
 END:
     Logger_trc("[  END  ]%s", __func__);
+    Logger_dbg("definition->name is '%s'", DefinitionVariable_name(definition));
     return definition;
 }
 
@@ -167,7 +197,10 @@ Reference_evaluate(
         break;
     }
     
+    //★DefinitionVariableの階層を遡っていく処理を実行。
 
+END:
+	
     Logger_trc("[  END  ]%s", __func__);
     return definition;
 }

@@ -5,6 +5,7 @@
 
 #include "CriaId.h"
 #include "List.h"
+#include "Definition.h"
 
 
 
@@ -20,10 +21,36 @@ struct CriaObjectTag
 
 
 
-CriaId
+CriaObject
 CriaObject_new(
-	String className,
-    List fields
+	String className
+);
+
+
+
+void
+CriaObject_addField(
+	CriaObject object,
+    DefinitionVariable variable
+);
+
+
+
+void*
+CriaObject_get(
+	Interpreter interpreter,
+	CriaObject object,
+    String name
+);
+
+
+
+void
+CriaObject_set(
+	Interpreter interpreter,
+	CriaObject object,
+    String name,
+    void* value
 );
 
 

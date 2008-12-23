@@ -8,6 +8,7 @@
 #include "CriaBoolean.h"
 #include "CriaInteger.h"
 #include "CriaString.h"
+#include "CriaObject.h"
 #include "Definition.h"
 
 #include "_Expression.h"
@@ -169,17 +170,17 @@ ExpressionVariable_evaluate(
     Logger_dbg("Variable name is '%s'", expression->name);
     
     
-    if (expression->isMember == TRUE)
+    //if (expression->isMember == TRUE)
+    if (object != NULL)
     {
-    	//Search Class of object
-        variable = DefinitionVariable_search(parameterList, expression->name);
-        if (variable != NULL)
-        {
-            id = DefinitionVariable_getObject(variable);
-            goto END;
-        }
-        
-        //Search variable
+    	if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
+    	{
+    		id = (CriaId)object;
+    		goto END;
+    	}
+		id = (CriaId)CriaObject_get(interpreter, (CriaObject)object, expression->name);
+		Logger_dbg("Found the target field. (%s)", expression->name);
+		goto END;
     }
     
     
@@ -206,9 +207,8 @@ ExpressionVariable_evaluate(
     runtime_error(interpreter);
     
 END:
-	Logger_dbg("variable->object = [%p]", DefinitionVariable_getObject(variable));
     Logger_trc("[  END  ]%s", __func__);
-    return DefinitionVariable_getObject(variable);
+    return id;
 }
 
 
@@ -219,7 +219,7 @@ END:
 CriaId
 ExpressionReference_evaluate(
     Interpreter         interpreter,
-    CriaId variable,
+    CriaId object,
     List parameters,
     ExpressionReference expression
 )
@@ -230,17 +230,24 @@ ExpressionReference_evaluate(
     switch (expression->type)
     {
     case REFERENCE_EXPRESSION_TYPE_SELF:
+    	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_SELF");
         break;
     case REFERENCE_EXPRESSION_TYPE_VARIABLE:
-        id = ExpressionVariable_evaluate(interpreter, variable, parameters, expression->of.variable);
+    	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_VARIABLE");
+    	//Logger_dbg("object->type = %d", object->type);
+    	Logger_dbg("variable->name = %s", expression->of.variable->name);
+        id = ExpressionVariable_evaluate(interpreter, object, parameters, expression->of.variable);
         break;
     case REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL:
-        id = ExpressionFunctionCall_evaluate(interpreter, variable, parameters, expression->of.function);
+    	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL");
+        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, expression->of.function);
         break;
     case REFERENCE_EXPRESSION_TYPE_CLASS:
+    	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_CLASS");
         break;
     case REFERENCE_EXPRESSION_TYPE_GENERATE:
-        id = ExpressionGenerate_evaluate(interpreter, variable, parameters, expression->of.generate);
+    	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_GENERATE");
+        id = ExpressionGenerate_evaluate(interpreter, object, parameters, expression->of.generate);
         break;
     default:
         break;

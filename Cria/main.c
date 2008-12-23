@@ -40,7 +40,7 @@ main(
     //Logger_set(LOG_LEVEL_DEBUG, "functionDefinition_evaluate, CriaFile_loadClass, classDefinition_evaluate, evaluator_variable, evaluator_functionCall, evaluator_expression, evaluator_referenceExpression, evaluator_generate");
     //Logger_set(LOG_LEVEL_CORE, "Tokenizer_word, StringBuffer_newFunction, StringBuffer_appendCharFunction, StringBuffer_appendFunction");
     //Logger_set(LOG_LEVEL_INFORMATION, NULL);
-    Logger_set(LOG_LEVEL_DEBUG, "Expression_parse, StatementGoto_parse, Statement_parse, ExpressionVariable_parse");
+    Logger_set(LOG_LEVEL_DEBUG, "ReferenceVariable_evaluate, DefinitionClass_generateInstance, ");
     //Logger_set(LOG_LEVEL_TRACE, NULL);
     
     

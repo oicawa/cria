@@ -14,7 +14,7 @@ struct DefinitionVariableTag
 {
     String      name;
     Boolean     isStatic;
-    CriaId      object;
+    void*       object;
 };
 
 
