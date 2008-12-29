@@ -17,7 +17,7 @@ CriaString_new(
     String          value
 )
 {
-    Logger_trc("[ START ]%s", __func__);
+    Logger_trc("[ START ]%s(%s)", __func__, value);
     CriaString criaString = Memory_malloc(sizeof(struct CriaStringTag));
     memset(criaString, 0x00, sizeof(struct CriaStringTag));
     

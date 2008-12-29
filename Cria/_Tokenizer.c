@@ -25,6 +25,7 @@
 #define TOKEN_LITERAL_COMMA                 ", "
 #define TOKEN_LITERAL_MONADIC_MINUS         "-"
 #define TOKEN_LITERAL_UNDER                 "_"
+#define TOKEN_LITERAL_COMMENT               "#"
 
 
 #define TOKEN_LITERAL_UNDER_WITH_SPACE      " _"
@@ -180,20 +181,27 @@ Tokenizer_read(
 )
 {
     int c = fgetc(tokenizer->file);
+    
     if (tokenizer->next == 0x0A)
     {
         tokenizer->row += 1;
         tokenizer->column = 1;
     }
     else
-    {
         tokenizer->column += 1;
-    }
     
     
     if (c == EOF)
-    {
         return FALSE;
+    
+    if (c == '#')
+    {
+    	while (TRUE)
+    	{
+    		c = fgetc(tokenizer->file);
+    		if (c == '\n')
+    			break;
+    	}
     }
     
     
@@ -1285,6 +1293,9 @@ Tokenizer_create_tokens(
         break;
         
 ADD_TOKEN:
+		if (Token_type(token) == TOKEN_TYPE_DUMMY)
+			continue;
+		
         List_add(tokens, token);
         continue;        
     }

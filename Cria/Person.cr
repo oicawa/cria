@@ -9,14 +9,14 @@ Person:
     miss:
     
     @get_honorific_name():
-        honorific = ""
+        honorific = "fuga"
         if is_male == true
             honorific = "Mr."
         elif has_married == true
             honorific = "Mrs."
         else
             honorific = "Miss,"
-        return honorific + .name
+        return honorific + .family_name
 
 
 person = Person()
@@ -27,16 +27,17 @@ person.first_name = read()
 write("Input your family name. >> ")
 person.family_name = read()
 
-write("Input your sex.         >> ")
-person.sex = read()
+#write("Input your sex.         >> ")
+#person.sex = read()
 
-write("Input your age.         >> ")
-person.age = read()
+#write("Input your age.         >> ")
+#person.age = read()
 
-write("Input your birthday.    >> ")
-person.birthday = read()
+#write("Input your birthday.    >> ")
+#person.birthday = read()
 
-write("%s-%s\n", person.first_name, person.family_name)
-write("  sex     : %s\n", person.sex)
-write("  age     : %s\n", person.age)
-write("  birthday: %s\n", person.birthday)
+write("Hello, %s!\n", person.get_honorific_name())
+#write("%s-%s\n", person.first_name, person.family_name)
+#write("  sex     : %s\n", person.sex)
+#write("  age     : %s\n", person.age)
+#write("  birthday: %s\n", person.birthday)

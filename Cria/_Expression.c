@@ -935,12 +935,16 @@ ExpressionFunctionCall_parse(
     Token token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
     {
+    	Token_log(token);
+		Logger_dbg("First token is not identifier.");
         Parser_setPosition(parser, position);
         goto END;
     }
+	Logger_dbg("First token is identifier.");
     
     
     name = Token_buffer(token);
+	Logger_dbg("name = '%s'", name);
     
     
     Parser_next(parser);
@@ -952,6 +956,7 @@ ExpressionFunctionCall_parse(
         Parser_setPosition(parser, position);
         goto END;
     }
+	Logger_dbg("Second token is left parenthesis.");
     
     
     Parser_next(parser);
@@ -962,6 +967,7 @@ ExpressionFunctionCall_parse(
         Parser_setPosition(parser, position);
         goto END;
     }
+	Logger_dbg("The tokens that before right parenthesis are parameters.");
     
     
     token = Parser_getCurrent(parser);
@@ -972,6 +978,7 @@ ExpressionFunctionCall_parse(
         Logger_dbg("Last token is not right parenthesis.");
         goto END;
     }
+	Logger_dbg("Last token is right parenthesis.");
     
     
     ExpressionFunctionCall function = Memory_malloc(sizeof(struct ExpressionFunctionCallTag));
@@ -989,6 +996,7 @@ ExpressionFunctionCall_parse(
     if (Token_type(token) == TOKEN_TYPE_PERIOD)
     {
         expression->next = ExpressionReference_parse(parser);
+		Logger_dbg("Created next expression.");
     }
     
 END:
