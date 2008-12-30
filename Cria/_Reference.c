@@ -103,6 +103,51 @@ END:
 
 
 Reference
+ReferenceSelf_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Reference reference = NULL;
+    ReferenceVariable variable = NULL;
+    Item position = Parser_getPosition(parser);
+    
+    Token token = Parser_getCurrent(parser);
+    if (Token_type(token) != TOKEN_TYPE_COMMA)
+    {
+    	Token_log(token);
+    	Logger_dbg("Not comma.");
+        Parser_setPosition(parser, position);
+        goto END;
+    }
+    
+	Logger_dbg("Self object's pointer.");
+    
+	variable = Memory_malloc(sizeof(struct ReferenceVariableTag));
+    memset(variable, 0x00, sizeof(struct ReferenceVariableTag));
+    variable->name = String_clone("self.");
+    
+    reference = Reference_new(REFERENCE_TYPE_SELF);
+    reference->of.variable = variable;
+	Logger_dbg("Created ReferenceVariable");
+    
+    
+    Parser_next(parser);
+    token = Parser_getCurrent(parser);
+    Token_log(token);
+	Logger_dbg("Parse next 'Reference'");
+    reference->next = Reference_parse(parser);
+    if (reference->next == NULL)
+        Parser_error(token);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return reference;
+}
+
+
+
+Reference
 ReferenceVariable_parse(
     Parser  parser
 )
@@ -184,8 +229,9 @@ Reference_evaluate(
     
     switch (reference->type)
     {
-    //case REFERENCE_TYPE_SELF:
-    //    break;
+    case REFERENCE_TYPE_SELF:
+    	runtime_error(interpreter);
+        break;
     case REFERENCE_TYPE_VARIABLE:
         definition = ReferenceVariable_evaluate(interpreter, object, parameters, reference->of.variable);
         break;
