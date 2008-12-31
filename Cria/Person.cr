@@ -2,16 +2,16 @@ Person:
     @first_name:
     @family_name:
     @sex:
-    @age:
+    @has_married:
     @birthday:
     mr:
     mrs:
     miss:
     
     @get_honorific_name():
-        write("Call instance method test.")
+        write("Call instance method test.\n")
         honorific = "fuga"
-        if is_male == true
+        if sex == true
             honorific = "Mr."
         elif has_married == true
             honorific = "Mrs."
@@ -28,11 +28,19 @@ person.first_name = read()
 write("Input your family name. >> ")
 person.family_name = read()
 
-#write("Input your sex.         >> ")
-#person.sex = read()
+write("Are you male? (y/n)     >> ")
+answer = read()
+if answer == "y"
+    person.sex = true
+else
+    person.sex = false
 
-#write("Input your age.         >> ")
-#person.age = read()
+write("Have you married.(y/n)  >> ")
+answer = read()
+if answer == "y"
+    person.has_married = true
+else
+    person.has_married = false
 
 #write("Input your birthday.    >> ")
 #person.birthday = read()

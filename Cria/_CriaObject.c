@@ -60,12 +60,14 @@ CriaObject_get(
     CriaId id = NULL;
     DefinitionVariable variable = NULL;
     
+    
     variable = DefinitionVariable_search(object->fields, name);
     if (variable == NULL)
     {
-    	runtime_error(interpreter);
+    	Logger_err("Not found variable named '%s'", name);
     	goto END;
     }
+    
     
     id = DefinitionVariable_getObject(variable);
     

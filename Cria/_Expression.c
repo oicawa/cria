@@ -155,6 +155,105 @@ ExpressionOperation_evaluate(
 
 
 CriaId
+ExpressionVariable_evaluateFromObject(
+    Interpreter         interpreter,
+    CriaId object,
+    String variableName
+)
+{
+    Logger_trc("[ START ]%s (Variable Name = '%s')", __func__, variableName);
+    CriaId id = NULL;
+    
+    
+    Logger_dbg("Object is '%p'", object);
+    if (object == NULL)
+    {
+	    Logger_dbg("Object is NULL.");
+	    goto END;
+    }
+    
+    
+	if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
+	{
+	    Logger_dbg("object->type = '%d'", object->type);
+		goto END;
+	}
+	
+	
+	id = (CriaId)CriaObject_get(interpreter, (CriaObject)object, variableName);
+	Logger_dbg("Found the target field. (%s)", variableName);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
+CriaId
+ExpressionVariable_evaluateFromParameters(
+	Interpreter interpreter,
+	List parameters,
+	String variableName
+)
+{
+    Logger_trc("[ START ]%s (Variable Name = '%s')", __func__, variableName);
+    CriaId id = NULL;
+    DefinitionVariable variable = NULL;
+    
+    
+    Logger_dbg("Parameters is '%p'", parameters);
+    if (parameters == NULL)
+    {
+	    Logger_dbg("Parameters is NULL.");
+	    goto END;
+    }
+    
+    
+	variable = DefinitionVariable_search(parameters, variableName);
+	if (variable == NULL)
+	{
+	    Logger_dbg("Definition variable not found.");
+		goto END;
+	}
+
+	id = DefinitionVariable_getObject(variable);
+
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
+CriaId
+ExpressionVariable_evaluateFromInterpreter(
+	Interpreter interpreter,
+	String variableName
+)
+{
+    Logger_trc("[ START ]%s (Variable Name = '%s')", __func__, variableName);
+    CriaId id = NULL;
+    DefinitionVariable variable = NULL;
+    
+    
+    variable = DefinitionVariable_search(Interpreter_variables(interpreter), variableName);
+    if (variable == NULL)
+    {
+	    Logger_dbg("Definition variable not found.");
+        goto END;
+    }
+    
+	id = DefinitionVariable_getObject(variable);
+
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
+CriaId
 ExpressionVariable_evaluate(
     Interpreter         interpreter,
     CriaId object,
@@ -162,46 +261,24 @@ ExpressionVariable_evaluate(
     ExpressionVariable  expression
 )
 {
-    Logger_trc("[ START ]%s", __func__);
+    Logger_trc("[ START ]%s (variable name = '%s')", __func__, expression->name);
     CriaId id = NULL;
-    DefinitionVariable variable;
     
     
-    Logger_dbg("Variable name is '%s'", expression->name);
+    id = ExpressionVariable_evaluateFromObject(interpreter, object, expression->name);
+    if (id != NULL)
+    	goto END;
     
     
-    //if (expression->isMember == TRUE)
-    if (object != NULL)
-    {
-    	if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
-    	{
-    		id = (CriaId)object;
-    		goto END;
-    	}
-		id = (CriaId)CriaObject_get(interpreter, (CriaObject)object, expression->name);
-		Logger_dbg("Found the target field. (%s)", expression->name);
-		goto END;
-    }
+    id = ExpressionVariable_evaluateFromParameters(interpreter, parameterList, expression->name);
+    if (id != NULL)
+    	goto END;
     
     
+    id = ExpressionVariable_evaluateFromInterpreter(interpreter, expression->name);
+    if (id != NULL)
+    	goto END;
     
-    if (parameterList != NULL)
-    {
-        variable = DefinitionVariable_search(parameterList, expression->name);
-        if (variable != NULL)
-        {
-            id = DefinitionVariable_getObject(variable);
-            goto END;
-        }
-    }
-    
-    
-    variable = DefinitionVariable_search(Interpreter_variables(interpreter), expression->name);
-    if (variable != NULL)
-    {
-        id = DefinitionVariable_getObject(variable);
-        goto END;
-    }
     
     Logger_err("Variable is not found.");
     runtime_error(interpreter);
@@ -482,6 +559,79 @@ END:
 
 
 
+DefinitionFunction
+ExpressionFunctionCall_searchFromObject(
+	Interpreter interpreter,
+    CriaId object,
+    String functionName
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    DefinitionFunction function = NULL;
+    DefinitionClass klass = NULL;
+    
+	Logger_dbg("Object is %p.", object);
+    if (object == NULL)
+    {
+		Logger_dbg("Object is NULL.");
+    	goto END;
+    }
+    
+    
+	Logger_dbg("Search class named '%s'", object->name);
+	klass = DefinitionClass_search(Interpreter_classes(interpreter), object->name);
+	if (klass == NULL)
+	{
+		Logger_dbg("Not found class named '%s'", object->name);
+		goto END;
+	}
+	
+	
+	Logger_dbg("Search method named '%s'", functionName);
+	function = DefinitionFunction_search(DefinitionClass_getMethods(klass), functionName);
+	if (function == NULL)
+	{
+		Logger_dbg("Not found method named '%s'.", functionName);
+		goto END;
+	}
+	
+	Logger_dbg("Method pointer is %p.", function);
+	
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return function;
+}
+
+
+
+DefinitionFunction
+ExpressionFunctionCall_searchFromInterpreter(
+	Interpreter interpreter,
+    String functionName
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    DefinitionFunction function = NULL;
+
+
+	Logger_dbg("Search function named '%s'", functionName);
+	function = DefinitionFunction_search(Interpreter_functions(interpreter), functionName);
+	if (function == NULL)
+	{
+		Logger_dbg("Function is not found.");
+		goto END;
+	}
+	
+	
+	Logger_dbg("Function pointer is %p.", function);
+
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return function;
+}
+
+
+
 CriaId
 ExpressionFunctionCall_evaluate(
     Interpreter interpreter,
@@ -493,55 +643,33 @@ ExpressionFunctionCall_evaluate(
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
     DefinitionFunction  function = NULL;
-    DefinitionClass klass = NULL;
     
     
-    if (object != NULL)
-    {
-		Logger_dbg("Method name is '%s'", expression->name);
-		
-		klass = DefinitionClass_search(Interpreter_classes(interpreter), object->name);
-		if (klass == NULL)
-		{
-			runtime_error(interpreter);
-		}
-		function = DefinitionFunction_search(DefinitionClass_getMethods(klass), expression->name);
-		if (function == NULL)
-		{
-			Logger_dbg("Method is not found.");
-			runtime_error(interpreter);
-			goto END;
-		}
-		Logger_dbg("Method matched.");
-    }
-    else
-    {
-		Logger_dbg("Function name is '%s'", expression->name);
-		function = DefinitionFunction_search(Interpreter_functions(interpreter), expression->name);
-		if (function == NULL)
-		{
-			Logger_dbg("Function is not found.");
-			runtime_error(interpreter);
-			goto END;
-		}
-		Logger_dbg("Function matched.");
-    }
+    function = ExpressionFunctionCall_searchFromObject(interpreter, object, expression->name);
+    if (function != NULL)
+    	goto EVALUATE;
+
+
+	function = ExpressionFunctionCall_searchFromInterpreter(interpreter, expression->name);
+	if (function != NULL)
+		goto EVALUATE;
+	
+
+	if (function == NULL)
+	{
+		Logger_err("Function '%s' is not found.", expression->name);
+		runtime_error(interpreter);
+		goto END;
+	}
+	    
     
-    
+EVALUATE:
     
     //引数の式を実行
     Logger_dbg("expression->name->pointer = %s", expression->name);
     Logger_dbg("expression->parameters->list->count = %d", List_count(expression->parameters->list));
     List parameters = ExpressionParameters_evaluate(interpreter, object, parameterList, expression->parameters);
     Logger_dbg("execute parameters count is '%d'", List_count(parameters));
-    
-    
-    //if (function->isNative == TRUE)
-    //{
-        //Logger_dbg("Call native function.(%s)", expression->name);
-        //id = (*(function->of.native.function))(interpreter, object, parameters);
-        //goto END;
-    //}
     
     
     Logger_dbg("Call cria function.(%s)", expression->name);
