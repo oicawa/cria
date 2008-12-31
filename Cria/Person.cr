@@ -9,6 +9,7 @@ Person:
     miss:
     
     @get_honorific_name():
+        write("Call instance method test.")
         honorific = "fuga"
         if is_male == true
             honorific = "Mr."

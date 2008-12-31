@@ -29,6 +29,105 @@ Reference_new(
 
 
 DefinitionVariable
+ReferenceVariable_searchFromParameters(
+    List parameters,
+    String variableName
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    DefinitionVariable definition = NULL;
+    
+    
+	Logger_dbg("parameters is %p", parameters);
+    if (parameters == NULL)
+		goto END;
+
+	Logger_dbg("Find the target field. (%s)", variableName);
+	definition = DefinitionVariable_search(parameters, variableName);
+	if (definition == NULL)
+	{
+		Logger_dbg("Not found the target variable. (%s)", variableName);
+		goto END;
+	}
+	
+	
+	Logger_dbg("Found the target variable. (%s)", variableName);
+	
+END:    
+    Logger_trc("[  END  ]%s", __func__);
+    return definition;
+}
+
+
+
+DefinitionVariable
+ReferenceVariable_searchFromObject(
+    CriaId object,
+    String variableName
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    DefinitionVariable definition = NULL;
+    
+    
+	Logger_dbg("object is %p", object);
+    if (object == NULL)
+    {
+		Logger_dbg("The target object is NULL.");
+    	goto END;
+    }
+	
+	if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
+	{
+		Logger_dbg("The target object is not CRIA_DATA_TYPE_CRIA_OBJECT. (%d)", object->type);
+		goto END;
+	}
+	
+	
+	definition = DefinitionVariable_search(((CriaObject)object)->fields, variableName);
+	if (definition == NULL)
+	{
+		Logger_dbg("Not found the target field. (%s)", variableName);
+		goto END;
+	}
+	
+	
+	Logger_dbg("Found the target field. (%s)", variableName);
+	
+END:    
+    Logger_trc("[  END  ]%s", __func__);
+    return definition;
+}
+
+
+DefinitionVariable
+ReferenceVariable_searchFromInterpreter(
+    Interpreter interpreter,
+    String variableName
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    DefinitionVariable definition = NULL;
+    
+    
+    definition = DefinitionVariable_search(Interpreter_variables(interpreter), variableName);
+    if (definition != NULL)
+    {
+		Logger_dbg("Not found the target global variable. (%s)", variableName);
+        goto END;
+    }
+    
+    
+	Logger_dbg("Found the target global variable. (%s)", variableName);
+	
+END:    
+    Logger_trc("[  END  ]%s", __func__);
+    return definition;
+}
+
+
+
+DefinitionVariable
 ReferenceVariable_evaluate(
     Interpreter         interpreter,
     CriaId object,
@@ -40,48 +139,19 @@ ReferenceVariable_evaluate(
     DefinitionVariable definition = NULL;
     
     
-	Logger_dbg("object is %p", object);
-    if (object != NULL)
-    {
-		Logger_dbg("object = %p", object);
-    	if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
-    	{
-    		Logger_err("The target object is not CRIA_DATA_TYPE_CRIA_OBJECT. (%d)", object->type);
-    		runtime_error(interpreter);
-    		goto END;
-    	}
-		Logger_dbg("object->type = CRIA_DATA_TYPE_CRIA_OBJECT");
-		definition = DefinitionVariable_search(((CriaObject)object)->fields, variable->name);
-		if (definition == NULL)
-		{
-    		Logger_err("The target field does not exist. (%s)", variable->name);
-    		runtime_error(interpreter);
-    		goto END;
-		}
-		Logger_dbg("Found the target field. (%s)", variable->name);
+	definition = ReferenceVariable_searchFromParameters(parameters, variable->name);
+	if (definition != NULL)
 		goto END;
-    }
     
     
-	Logger_dbg("parameters is %p", parameters);
-    if (parameters != NULL)
-    {
-		Logger_dbg("Found the target field. (%s)", variable->name);
-        definition = DefinitionVariable_search(parameters, variable->name);
-        if (definition != NULL)
-        {
-            goto END;
-        }
-    }
+	definition = ReferenceVariable_searchFromObject(object, variable->name);
+	if (definition != NULL)
+		goto END;
     
     
-    definition = DefinitionVariable_search(Interpreter_variables(interpreter), variable->name);
-	Logger_dbg("definition is %p", definition);
-    if (definition != NULL)
-    {
-		Logger_dbg("definition is not NULL");
-        goto END;
-    }
+	definition = ReferenceVariable_searchFromInterpreter(interpreter, variable->name);
+	if (definition != NULL)
+		goto END;
     
     
     if (parameters != NULL)
