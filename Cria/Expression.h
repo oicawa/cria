@@ -57,7 +57,6 @@ typedef struct  ExpressionParametersTag         *ExpressionParameters;
 
 typedef enum
 {
-    REFERENCE_EXPRESSION_TYPE_SELF,
     REFERENCE_EXPRESSION_TYPE_VARIABLE,
     REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL,
     REFERENCE_EXPRESSION_TYPE_CLASS,

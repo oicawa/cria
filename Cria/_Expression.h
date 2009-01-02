@@ -35,6 +35,7 @@ struct ExpressionFunctionCallTag
 {
     String                  name;
     ExpressionParameters    parameters;
+    Boolean isMember;
 };
 
 

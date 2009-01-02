@@ -9,9 +9,12 @@ Person:
     miss:
     
     @get_honorific_name():
-        if sex == true
+        hoge = false
+        write("hoge = %s\n", hoge)
+        write(".sex = %s\n", .sex)
+        if .sex == true
             honorific = "Mr."
-        elif has_married == true
+        elif .has_married == true
             honorific = "Mrs."
         else
             honorific = "Miss,"

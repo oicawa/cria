@@ -19,7 +19,6 @@ typedef struct  ReferenceClassTag               *ReferenceClass;
 
 typedef enum
 {
-    REFERENCE_TYPE_SELF,
     REFERENCE_TYPE_VARIABLE,
     REFERENCE_TYPE_FUNCTION_CALL,
     REFERENCE_TYPE_CLASS,

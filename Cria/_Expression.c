@@ -265,22 +265,27 @@ ExpressionVariable_evaluate(
     CriaId id = NULL;
     
     
-    id = ExpressionVariable_evaluateFromObject(interpreter, object, expression->name);
-    if (id != NULL)
-    	goto END;
+    if (expression->isMember == TRUE)
+    {
+		id = ExpressionVariable_evaluateFromObject(interpreter, object, expression->name);
+		if (id != NULL)
+			goto END;
+		
+		Logger_err("Field named '%s' is not found.", expression->name);
+    }
+    else
+    {
+		id = ExpressionVariable_evaluateFromParameters(interpreter, parameterList, expression->name);
+		if (id != NULL)
+			goto END;
+		
+		id = ExpressionVariable_evaluateFromInterpreter(interpreter, expression->name);
+		if (id != NULL)
+			goto END;
+		
+    	Logger_err("Variable named '%s' is not found.", expression->name);
+    }
     
-    
-    id = ExpressionVariable_evaluateFromParameters(interpreter, parameterList, expression->name);
-    if (id != NULL)
-    	goto END;
-    
-    
-    id = ExpressionVariable_evaluateFromInterpreter(interpreter, expression->name);
-    if (id != NULL)
-    	goto END;
-    
-    
-    Logger_err("Variable is not found.");
     runtime_error(interpreter);
     
 END:
@@ -306,13 +311,8 @@ ExpressionReference_evaluate(
     
     switch (expression->type)
     {
-    case REFERENCE_EXPRESSION_TYPE_SELF:
-    	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_SELF");
-        break;
     case REFERENCE_EXPRESSION_TYPE_VARIABLE:
-    	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_VARIABLE");
-    	//Logger_dbg("object->type = %d", object->type);
-    	Logger_dbg("variable->name = %s", expression->of.variable->name);
+    	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_VARIABLE, variable->name = %s", expression->of.variable->name);
         id = ExpressionVariable_evaluate(interpreter, object, parameters, expression->of.variable);
         break;
     case REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL:
@@ -1059,8 +1059,19 @@ ExpressionFunctionCall_parse(
     ExpressionReference expression = NULL;
     String name = NULL;
     ExpressionParameters parameters = NULL;
+    Boolean isMember = FALSE;
+    Token token = NULL;
     
-    Token token = Parser_getCurrent(parser);
+    token = Parser_getCurrent(parser);
+    if (Token_type(token) == TOKEN_TYPE_PERIOD)
+    {
+        Logger_dbg("Member variable.");
+        Parser_next(parser);
+        isMember = TRUE;
+        token = Parser_getCurrent(parser);
+    }
+    
+    token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
     {
     	Token_log(token);
@@ -1113,6 +1124,7 @@ ExpressionFunctionCall_parse(
     memset(function, 0x00, sizeof(struct ExpressionFunctionCallTag));
     function->name = String_clone(name);
     function->parameters = parameters;
+    function->isMember = isMember;
     
     expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
     memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
