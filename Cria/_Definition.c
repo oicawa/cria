@@ -420,20 +420,6 @@ DefinitionFunction_evaluate(
     Logger_dbg("function->of.cria.parameterList->count is %d", List_count(function->of.cria.parameterList));
     Logger_dbg("parameters->count is %d", List_count(parameters));
     
-    //List list = function->of.cria.parameterList;
-    //Item item = list->item;
-    //Logger_dbg("item is %p", item);
-    //while (item != NULL)
-    //{
-        //Logger_dbg("item->object is %p", item->object);
-        //VariableDefinition def = (VariableDefinition)(item->object);
-        //Logger_dbg("Cast to VariableDefinition(item->object)");
-        //Logger_dbg("def->name is %p", def->name);
-        //Logger_dbg("def->name->pointer is %p", def->name->pointer);
-        //item = item->next;
-    //}
-    //Logger_dbg("Loop end.");
-    
     
     //パラメータ数のチェック
     if (List_count(function->of.cria.parameterList) != List_count(parameters))
@@ -448,6 +434,7 @@ DefinitionFunction_evaluate(
     }
     
     //実行
+    Logger_dbg("object is %p", object);
 	result = Statement_executeList(interpreter, object, parameterList, function->of.cria.statementList);
     id = result.returns.id;
     

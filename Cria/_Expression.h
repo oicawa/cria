@@ -35,7 +35,6 @@ struct ExpressionFunctionCallTag
 {
     String                  name;
     ExpressionParameters    parameters;
-    Boolean isMember;
 };
 
 
@@ -79,7 +78,6 @@ struct ExpressionBooleanLiteralTag
 struct ExpressionVariableTag
 {
     String  name;
-    Boolean isMember;
 };
 
 
@@ -102,7 +100,8 @@ ExpressionFunctionCall_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameterList,
-    ExpressionFunctionCall expression
+    ExpressionFunctionCall expression,
+    CriaId parent
 );
 
 

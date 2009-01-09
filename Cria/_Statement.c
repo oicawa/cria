@@ -385,8 +385,8 @@ StatementFunctionCall_execute(
     StatementFunctionCall statement
 )
 {
-    Logger_trc("[ START ]%s", __func__);
-    ExpressionReference_evaluate(interpreter, object, parameters, statement->expression);
+    Logger_trc("[ START ]%s(object is %p)", __func__, object);
+    ExpressionReference_evaluate(interpreter, object, parameters, statement->expression, NULL);
     Logger_trc("[  END  ]%s", __func__);
 }
 
@@ -863,7 +863,7 @@ StatementSubstitute_execute(
     id = Expression_evaluate(interpreter, object, parameters, statement->expression);
     
     
-    definition = Reference_evaluate(interpreter, object, parameters, reference);
+    definition = Reference_evaluate(interpreter, object, parameters, reference, NULL);
     
     
     DefinitionVariable_set(definition, id);
@@ -1005,7 +1005,7 @@ Statement_executeList(
     List        statements
 )
 {
-    Logger_trc("[ START ]%s", __func__);
+    Logger_trc("[ START ]%s(object is %p)", __func__, object);
     StatementResult result;
     
     int count = List_count(statements);

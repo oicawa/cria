@@ -14,7 +14,6 @@
 struct ReferenceVariableTag
 {
     String  name;
-    Boolean isMember;
 };
 
 
@@ -23,7 +22,6 @@ struct ReferenceFunctionCallTag
 {
     String                  name;
     ExpressionParameters    parameters;
-    Boolean isMember;
 };
 
 

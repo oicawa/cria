@@ -132,16 +132,18 @@ ReferenceVariable_evaluate(
     Interpreter         interpreter,
     CriaId object,
     List parameters,
-    ReferenceVariable   variable
+    ReferenceVariable   variable,
+    CriaId parent
 )
 {
     Logger_trc("[ START ]%s", __func__);
     DefinitionVariable definition = NULL;
     
     
-    if (variable->isMember == TRUE)
+    if (parent != NULL)
     {
-		definition = ReferenceVariable_evaluateFromObject(object, variable->name);
+		definition = ReferenceVariable_evaluateFromObject(parent, variable->name);
+		
 		if (definition != NULL)
 			goto END;
 		
@@ -189,17 +191,7 @@ ReferenceVariable_parse(
     ReferenceVariable variable = NULL;
     Item position = Parser_getPosition(parser);
     String name = NULL;
-    Boolean isMember = FALSE;
     Token token = NULL;
-    
-    token = Parser_getCurrent(parser);
-    if (Token_type(token) == TOKEN_TYPE_PERIOD)
-    {
-        Logger_dbg("Member variable.");
-        Parser_next(parser);
-        isMember = TRUE;
-        token = Parser_getCurrent(parser);
-    }
     
     token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
@@ -230,7 +222,6 @@ ReferenceVariable_parse(
 	variable = Memory_malloc(sizeof(struct ReferenceVariableTag));
     memset(variable, 0x00, sizeof(struct ReferenceVariableTag));
     variable->name = String_clone(name);
-    variable->isMember = isMember;
     
     
     reference = Reference_new(REFERENCE_TYPE_VARIABLE);
@@ -264,7 +255,8 @@ Reference_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
-    Reference   reference
+    Reference   reference,
+    CriaId parent
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -273,8 +265,12 @@ Reference_evaluate(
     
     switch (reference->type)
     {
+    case REFERENCE_TYPE_SELF:
+    	reference = reference->next;
+        definition = Reference_evaluate(interpreter, object, parameters, reference, object);
+        break;
     case REFERENCE_TYPE_VARIABLE:
-        definition = ReferenceVariable_evaluate(interpreter, object, parameters, reference->of.variable);
+        definition = ReferenceVariable_evaluate(interpreter, object, parameters, reference->of.variable, parent);
         break;
     //case REFERENCE_TYPE_FUNCTION_CALL:
     //    definition = evaluator_referenceFunctionCall(interpreter, reference->of.function);
@@ -291,7 +287,7 @@ Reference_evaluate(
     	
     id = (CriaId)DefinitionVariable_getObject(definition);
     
-    definition = Reference_evaluate(interpreter, id, parameters, reference->next);
+    definition = Reference_evaluate(interpreter, object, parameters, reference->next, id);
 
 END:
 	
@@ -312,17 +308,7 @@ ReferenceFunctionCall_parse(
     ReferenceFunctionCall functionCall = NULL;
     ExpressionParameters parameters = NULL;
     String name = NULL;
-    Boolean isMember = FALSE;
     Token token = NULL;
-    
-    token = Parser_getCurrent(parser);
-    if (Token_type(token) == TOKEN_TYPE_PERIOD)
-    {
-        Logger_dbg("Member variable.");
-        Parser_next(parser);
-        isMember = TRUE;
-        token = Parser_getCurrent(parser);
-    }
     
     token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
@@ -369,7 +355,6 @@ ReferenceFunctionCall_parse(
     memset(functionCall, 0x00, sizeof(struct ReferenceFunctionCallTag));
     functionCall->name = String_clone(name);
     functionCall->parameters = parameters;
-    functionCall->isMember = isMember;
     Logger_dbg("Created ReferenceFunctionCall");
 
     reference = Reference_new(REFERENCE_TYPE_FUNCTION_CALL);
@@ -400,6 +385,51 @@ END:
 
 
 Reference
+ReferenceSelf_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Reference reference = NULL;
+    ReferenceVariable variable = NULL;
+    Item position = Parser_getPosition(parser);
+    Token token = NULL;
+    
+    token = Parser_getCurrent(parser);
+    if (Token_type(token) != TOKEN_TYPE_PERIOD)
+    {
+    	Logger_dbg("Not self object.");
+    	Parser_setPosition(parser, position);
+    	goto END;
+    }
+    
+	Logger_dbg("Created ReferenceVariable");
+
+    
+	variable = Memory_malloc(sizeof(struct ReferenceVariableTag));
+    memset(variable, 0x00, sizeof(struct ReferenceVariableTag));
+    variable->name = String_clone("_self_");
+    
+    
+    reference = Reference_new(REFERENCE_TYPE_SELF);
+    reference->of.variable = variable;
+    
+    
+    Parser_next(parser);
+    token = Parser_getCurrent(parser);
+    Token_log(token);
+    reference->next = Reference_parse(parser);
+    if (reference->next == NULL)
+        Parser_error(token);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return reference;
+}
+
+
+
+Reference
 Reference_parse(
     Parser  parser
 )
@@ -408,6 +438,10 @@ Reference_parse(
     Item position = Parser_getPosition(parser);
     Reference reference = NULL;
     
+    
+    reference = ReferenceSelf_parse(parser);
+    if (reference != NULL)
+        goto END;
     
     reference = ReferenceVariable_parse(parser);
     if (reference != NULL)

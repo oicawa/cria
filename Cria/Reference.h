@@ -19,6 +19,7 @@ typedef struct  ReferenceClassTag               *ReferenceClass;
 
 typedef enum
 {
+	REFERENCE_TYPE_SELF,
     REFERENCE_TYPE_VARIABLE,
     REFERENCE_TYPE_FUNCTION_CALL,
     REFERENCE_TYPE_CLASS,
@@ -31,7 +32,8 @@ ReferenceVariable_evaluate(
     Interpreter         interpreter,
     CriaId object,
     List parameters,
-    ReferenceVariable   variable
+    ReferenceVariable   variable,
+    CriaId parent
 );
 
 
@@ -62,7 +64,8 @@ Reference_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
-    Reference   reference
+    Reference   reference,
+    CriaId parent
 );
 
 

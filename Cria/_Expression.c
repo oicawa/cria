@@ -82,6 +82,9 @@ END:
 
 
 
+//==============================
+//ExpressionOperation
+//==============================
 CriaId
 ExpressionOperation_evaluate(
     Interpreter         interpreter,
@@ -154,6 +157,52 @@ ExpressionOperation_evaluate(
 
 
 
+//==============================
+//ExpressionSelf
+//==============================
+ExpressionReference
+ExpressionSelf_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Item position = Parser_getPosition(parser);
+    Token token = NULL;
+    ExpressionReference expression = NULL;
+    
+    token = Parser_getCurrent(parser);
+    if (Token_type(token) != TOKEN_TYPE_PERIOD)
+    {
+        Logger_dbg("Not self object.");
+        Parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    Logger_dbg("VariableExpression name = '_self_'");
+    ExpressionVariable variable = NULL;
+    variable = Memory_malloc(sizeof(struct ExpressionVariableTag));
+    memset(variable, 0x00, sizeof(struct ExpressionVariableTag));
+    variable->name = String_clone("_self_");
+    
+    expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
+    memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
+    expression->type = REFERENCE_EXPRESSION_TYPE_SELF;
+    expression->of.variable = variable;
+
+	Logger_dbg("Next ReferenceExprssion parse.");
+	Parser_next(parser);
+	expression->next = ExpressionReference_parse(parser);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
+}
+
+
+
+//==============================
+//ExpressionVariable
+//==============================
 CriaId
 ExpressionVariable_evaluateFromObject(
     Interpreter         interpreter,
@@ -258,16 +307,18 @@ ExpressionVariable_evaluate(
     Interpreter         interpreter,
     CriaId object,
     List parameterList,
-    ExpressionVariable  expression
+    ExpressionVariable  expression,
+    CriaId parent
 )
 {
     Logger_trc("[ START ]%s (variable name = '%s')", __func__, expression->name);
     CriaId id = NULL;
     
     
-    if (expression->isMember == TRUE)
+    Logger_dbg("parent is %p", parent);
+    if (parent != NULL)
     {
-		id = ExpressionVariable_evaluateFromObject(interpreter, object, expression->name);
+		id = ExpressionVariable_evaluateFromObject(interpreter, parent, expression->name);
 		if (id != NULL)
 			goto END;
 		
@@ -303,7 +354,8 @@ ExpressionReference_evaluate(
     Interpreter         interpreter,
     CriaId object,
     List parameters,
-    ExpressionReference expression
+    ExpressionReference expression,
+    CriaId parent
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -311,13 +363,21 @@ ExpressionReference_evaluate(
     
     switch (expression->type)
     {
+    case REFERENCE_EXPRESSION_TYPE_SELF:
+    	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_SELF, variable->name = %s", expression->of.variable->name);
+    	Logger_dbg("object as parent is %p", object);
+    	expression = expression->next;
+        id = ExpressionReference_evaluate(interpreter, object, parameters, expression, object);
+        break;
     case REFERENCE_EXPRESSION_TYPE_VARIABLE:
     	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_VARIABLE, variable->name = %s", expression->of.variable->name);
-        id = ExpressionVariable_evaluate(interpreter, object, parameters, expression->of.variable);
+    	Logger_dbg("parent is %p", parent);
+        id = ExpressionVariable_evaluate(interpreter, object, parameters, expression->of.variable, parent);
         break;
     case REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL:
     	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL");
-        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, expression->of.function);
+    	Logger_dbg("parent is %p", parent);
+        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, expression->of.function, parent);
         break;
     case REFERENCE_EXPRESSION_TYPE_CLASS:
     	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_CLASS");
@@ -330,16 +390,12 @@ ExpressionReference_evaluate(
         break;
     }
     
-    if (expression->next == NULL)
+    if (expression->next != NULL)
     {
-    	Logger_dbg("Next ReferenceExpression does not exist.");
-    	goto END;
+		Logger_dbg("Evaluate next ReferenceExpression.");
+		id = ExpressionReference_evaluate(interpreter, object, parameters, expression->next, id);
     }
     
-    Logger_dbg("Evaluate next ReferenceExpression.");
-    id = ExpressionReference_evaluate(interpreter, id, parameters, expression->next);
-
-END:
     Logger_trc("[  END  ]%s", __func__);
     return id;
 }
@@ -354,24 +410,31 @@ ExpressionReference_parse(
     Logger_trc("[ START ]%s", __func__);
     ExpressionReference expression = NULL;
     
+    expression = ExpressionSelf_parse(parser);
+    if (expression != NULL)
+    {
+    	Logger_dbg("Created Expression of Self.");
+        goto END;
+    }
+    
     expression = ExpressionFunctionCall_parse(parser);
     if (expression != NULL)
     {
-    	Logger_dbg("Created FunctionCallExpression.");
+    	Logger_dbg("Created Expression of FunctionCall.");
         goto END;
     }
     
     expression = ExpressionVariable_parse(parser);
     if (expression != NULL)
     {
-    	Logger_dbg("Created VariableExpression.");
+    	Logger_dbg("Created Expression of Variable.");
         goto END;
     }
     
     expression = ExpressionGenerate_parse(parser);
     if (expression != NULL)
     {
-    	Logger_dbg("Created GenerateExpression.");
+    	Logger_dbg("Created Expression of Generate.");
         goto END;
     }
     
@@ -451,14 +514,14 @@ ExpressionParameters_evaluate(
         //*/
         case EXPRESSION_KIND_FUNCTION_CALL:
             Logger_dbg("Do 'Function call expression'");
-            id = ExpressionFunctionCall_evaluate(interpreter, object, parameterList, expression->of._functionCall_);
+            id = ExpressionFunctionCall_evaluate(interpreter, object, parameterList, expression->of._functionCall_, NULL);
             Logger_dbg("Done 'Function call expression'");
             List_add(list, id);
             Logger_dbg("Add 'Cria Id'");
             break;
         case EXPRESSION_KIND_REFERENCE:
             Logger_dbg("Do reference expression");
-            id = ExpressionReference_evaluate(interpreter, object, parameterList, expression->of._reference_);
+            id = ExpressionReference_evaluate(interpreter, object, parameterList, expression->of._reference_, NULL);
             Logger_dbg("Done reference expression");
             List_add(list, id);
             Logger_dbg("Add 'Cria Id'");
@@ -566,7 +629,7 @@ ExpressionFunctionCall_searchFromObject(
     String functionName
 )
 {
-    Logger_trc("[ START ]%s", __func__);
+    Logger_trc("[ START ]%s(function name is '%s')", __func__, functionName);
     DefinitionFunction function = NULL;
     DefinitionClass klass = NULL;
     
@@ -578,7 +641,7 @@ ExpressionFunctionCall_searchFromObject(
     }
     
     
-	Logger_dbg("Search class named '%s'", object->name);
+	Logger_dbg("Search class named '%p'", object->name);
 	klass = DefinitionClass_search(Interpreter_classes(interpreter), object->name);
 	if (klass == NULL)
 	{
@@ -637,22 +700,30 @@ ExpressionFunctionCall_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameterList,
-    ExpressionFunctionCall expression
+    ExpressionFunctionCall expression,
+    CriaId parent
 )
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
+    CriaId current = NULL;
     DefinitionFunction  function = NULL;
     
     
-    function = ExpressionFunctionCall_searchFromObject(interpreter, object, expression->name);
-    if (function != NULL)
-    	goto EVALUATE;
-
-
-	function = ExpressionFunctionCall_searchFromInterpreter(interpreter, expression->name);
-	if (function != NULL)
-		goto EVALUATE;
+    if (parent != NULL)
+    {
+    	current = parent;
+		function = ExpressionFunctionCall_searchFromObject(interpreter, parent, expression->name);
+		if (function != NULL)
+			goto EVALUATE;
+    }
+	else
+	{
+		current = object;
+		function = ExpressionFunctionCall_searchFromInterpreter(interpreter, expression->name);
+		if (function != NULL)
+			goto EVALUATE;
+	}
 	
 
 	if (function == NULL)
@@ -673,7 +744,7 @@ EVALUATE:
     
     
     Logger_dbg("Call cria function.(%s)", expression->name);
-    id = DefinitionFunction_evaluate(interpreter, object, DefinitionFunction_getParameterList(function), function, parameters);
+    id = DefinitionFunction_evaluate(interpreter, current, DefinitionFunction_getParameterList(function), function, parameters);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -952,17 +1023,17 @@ Expression_evaluate(
     //*/
     case EXPRESSION_KIND_FUNCTION_CALL:
         Logger_dbg("Do 'Function call expression'");
-        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, expression->of._functionCall_);
+        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, expression->of._functionCall_, NULL);
         Logger_dbg("Done 'Function call expression'");
         break;
     case EXPRESSION_KIND_REFERENCE:
         Logger_dbg("Do reference expression");
-        id = ExpressionReference_evaluate(interpreter, object, parameters, expression->of._reference_);
+        id = ExpressionReference_evaluate(interpreter, object, parameters, expression->of._reference_, NULL);
         Logger_dbg("Done reference expression");
         break;
     case EXPRESSION_KIND_VARIABLE:
         Logger_dbg("Do variable expression");
-        id = ExpressionVariable_evaluate(interpreter, object, parameters, expression->of._variable_);
+        id = ExpressionVariable_evaluate(interpreter, object, parameters, expression->of._variable_, NULL);
         Logger_dbg("Done variable expression");
         break;
     case EXPRESSION_KIND_OPERATION:
@@ -992,18 +1063,9 @@ ExpressionVariable_parse(
     Item position = Parser_getPosition(parser);
     Token token = NULL;
     ExpressionReference expression = NULL;
-    Boolean isMember = FALSE;
     String name = NULL;
     
     token = Parser_getCurrent(parser);
-    if (Token_type(token) == TOKEN_TYPE_PERIOD)
-    {
-        Logger_dbg("Member variable.");
-        Parser_next(parser);
-        isMember = TRUE;
-        token = Parser_getCurrent(parser);
-    }
-    
     if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
     {
         Logger_dbg("Not VariableExpression.");
@@ -1027,7 +1089,6 @@ ExpressionVariable_parse(
     variable = Memory_malloc(sizeof(struct ExpressionVariableTag));
     memset(variable, 0x00, sizeof(struct ExpressionVariableTag));
     variable->name = String_clone(name);
-    variable->isMember = isMember;
     
     expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
     memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
@@ -1059,17 +1120,7 @@ ExpressionFunctionCall_parse(
     ExpressionReference expression = NULL;
     String name = NULL;
     ExpressionParameters parameters = NULL;
-    Boolean isMember = FALSE;
     Token token = NULL;
-    
-    token = Parser_getCurrent(parser);
-    if (Token_type(token) == TOKEN_TYPE_PERIOD)
-    {
-        Logger_dbg("Member variable.");
-        Parser_next(parser);
-        isMember = TRUE;
-        token = Parser_getCurrent(parser);
-    }
     
     token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
@@ -1124,7 +1175,6 @@ ExpressionFunctionCall_parse(
     memset(function, 0x00, sizeof(struct ExpressionFunctionCallTag));
     function->name = String_clone(name);
     function->parameters = parameters;
-    function->isMember = isMember;
     
     expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
     memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
