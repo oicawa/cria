@@ -422,8 +422,8 @@ DefinitionFunction_evaluate(
     
     
     //パラメータ数のチェック
-    if (List_count(function->of.cria.parameterList) != List_count(parameters))
-    	runtime_error(interpreter);
+    //if (List_count(function->of.cria.parameterList) != List_count(parameters))
+    //	runtime_error(interpreter);
     
     //パラメータをセット
     for (i = 0; i < List_count(parameters); i++)

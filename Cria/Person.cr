@@ -9,9 +9,6 @@ Person:
     miss:
     
     @get_honorific_name():
-        #hoge = false
-        #write("hoge = %s\n", hoge)
-        write(".sex = %s\n", .sex)
         if .sex == true
             honorific = "Mr."
         elif .has_married == true
@@ -54,3 +51,20 @@ write("Hello, %s!\n", person.get_honorific_name())
 #write("  sex     : %s\n", person.sex)
 #write("  age     : %s\n", person.age)
 #write("  birthday: %s\n", person.birthday)
+
+
+watanabe = Person()
+watanabe.first_name = "Fumie"
+watanabe.family_name = "Watanabe"
+watanabe.sex = false
+watanabe.has_married = false
+write("Your honny is %s\n", watanabe.get_honorific_name())
+#write("Your honny is %s\n", watanabe.family_name)
+#write("Your name is %s\n", person.family_name)
+
+wife = Person()
+wife.first_name = "Fumie"
+wife.family_name = "Oikawa"
+wife.sex = false
+wife.has_married = true
+write("Your wife is %s\n", wife.get_honorific_name())
