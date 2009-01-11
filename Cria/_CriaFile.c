@@ -5,6 +5,7 @@
 
 #include "CriaString.h"
 #include "Runtime.h"
+#include "Hash.h"
 #include "StringBuffer.h"
 #include "CriaBoolean.h"
 #include "CriaObject.h"
@@ -295,7 +296,7 @@ CriaFile_loadClass(
     DefinitionFunction function = NULL;
     DefinitionClass klass = NULL;
 
-    List fieldList = List_new();
+    Hash fields = Hash_new(32);
     Logger_dbg("1");
     List methodList = List_new();
     Logger_dbg("2");
@@ -306,7 +307,7 @@ CriaFile_loadClass(
     Logger_dbg("4");
     String_dispose(variableName);
     Logger_dbg("5");
-    List_add(fieldList, variable);
+    Hash_put(fields, DefinitionVariable_name(variable), variable);
     Logger_dbg("6");
     
     function = DefinitionFunction_new(" generator ", TRUE, TRUE, NULL, NULL, CriaFile__generator_);
@@ -341,7 +342,7 @@ CriaFile_loadClass(
     Logger_dbg("16");
     
     
-    klass = DefinitionClass_new(className, TRUE, fieldList, methodList, NULL);
+    klass = DefinitionClass_new(className, TRUE, fields, methodList, NULL);
     Logger_dbg("17");
 
     Logger_trc("[  END  ]%s", __func__);

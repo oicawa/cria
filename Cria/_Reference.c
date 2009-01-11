@@ -84,7 +84,7 @@ ReferenceVariable_evaluateFromObject(
 	}
 	
 	
-	definition = DefinitionVariable_search(((CriaObject)object)->fields, variableName);
+	definition = (DefinitionVariable)Hash_get(((CriaObject)object)->fields, variableName);
 	if (definition == NULL)
 	{
 		Logger_dbg("Not found the target field. (%s)", variableName);
@@ -110,7 +110,7 @@ ReferenceVariable_evaluateFromInterpreter(
     DefinitionVariable definition = NULL;
     
     
-    definition = DefinitionVariable_search(Interpreter_variables(interpreter), variableName);
+    definition = (DefinitionVariable)Hash_get(Interpreter_variables(interpreter), variableName);
     if (definition != NULL)
     {
 		Logger_dbg("Not found the target global variable. (%s)", variableName);
@@ -171,7 +171,7 @@ ReferenceVariable_evaluate(
 	}
     
     definition = DefinitionVariable_new(variable->name, TRUE);
-    List_add(Interpreter_variables(interpreter), definition);
+    Hash_put(Interpreter_variables(interpreter), variable->name, definition);
     
 END:
     Logger_trc("[  END  ]%s", __func__);

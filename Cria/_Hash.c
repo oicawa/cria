@@ -18,8 +18,9 @@ Hash_new(
     memset(hash, 0x00, sizeof(struct HashTag));
     hash->size = size;
     hash->count = 0;
-    Entry* entrys = Memory_malloc(size);
-    memset(entrys, 0x00, size);
+    hash->keys = List_new();
+    Entry* entrys = Memory_malloc(sizeof(Entry) * size);
+    memset(entrys, 0x00, sizeof(Entry) * size);
     hash->entrys = entrys;
     
     Logger_trc("[  END  ]%s", __func__);
@@ -28,7 +29,27 @@ Hash_new(
 
 
 
-unsigned int 
+int
+Hash_get_count(
+	Hash hash
+)
+{
+    return hash->count;
+}
+
+
+
+List
+Hash_get_keys(
+	Hash hash
+)
+{
+    return hash->keys;
+}
+
+
+
+unsigned int
 Hash_get_key_value(
 	int size,
     char* key
@@ -51,12 +72,43 @@ Hash_get_key_value(
 Entry
 Hash_get_entry(
 	Hash hash,
-	int hash_value,
+	unsigned int hash_value,
 	char* key
 )
 {
+    Logger_trc("[ START ]%s(hash is %p, hash_value='%d', key='%s')", __func__, hash, hash_value, key);
 	Entry entry = NULL;
+	//Entry* root = NULL;
 	
+	//root = hash->entrys;
+	//int i = 0;
+	//for (i = 0; i <= hash->size; i++)
+	//{
+		//Logger_dbg("--- i = %d --", i);
+		//Logger_dbg("(root + %d) is %p", i, root + i);
+		//Logger_dbg("*(root + %d) is %p", i, *(root + i));
+	//}
+	
+	entry = (Entry)((hash->entrys)[hash_value]);
+	Logger_dbg("entry is %p", entry);
+	if (entry == NULL)
+		goto END;
+	
+	Logger_dbg("entry->key = '%s'", entry->key);
+	while (strcmp(entry->key, key) != 0)
+	{
+		Logger_dbg("entry->next is %p", entry->next);
+		if (entry->next == NULL)
+		{
+			entry = NULL;
+			break;
+		}
+		entry = entry->next;
+	}
+
+	Logger_dbg("entry is %p", entry);
+END:	
+    Logger_trc("[  END  ]%s", __func__);
 	return entry;
 }
 
@@ -70,7 +122,7 @@ Hash_put(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    int hash_value;
+    unsigned int hash_value;
     Entry entry;
     Entry cursor;
     
@@ -94,6 +146,7 @@ Hash_put(
 	if (cursor == NULL)
 	{
 		(hash->entrys)[hash_value] = entry;
+		List_add(hash->keys, key);
 		goto END;
 	}
 	
@@ -117,8 +170,20 @@ Hash_get(
 	char* key
 )
 {
+    Logger_trc("[ START ]%s", __func__);
 	void* object = NULL;
+	Entry entry = NULL;
 	
+	unsigned int hash_value = Hash_get_key_value(hash->size, key);
+	
+	entry = Hash_get_entry(hash, hash_value, key);
+	if (entry == NULL)
+		goto END;
+	
+	object = entry->object;
+	
+END:
+    Logger_trc("[  END  ]%s", __func__);
 	return object;
 }
 

@@ -20,7 +20,7 @@ Interpreter_addFunction(
     Logger_trc("[ START ]%s", __func__);
     DefinitionFunction definition = NULL;
     definition = DefinitionFunction_new(functionName, TRUE, TRUE, NULL, NULL, functionPoint);
-    List_add(interpreter->functions, definition);
+    Hash_put(interpreter->functions, functionName, definition);
     Logger_trc("[  END  ]%s", __func__);
 }
 
@@ -36,7 +36,7 @@ Interpreter_addClass(
     Logger_trc("[ START ]%s", __func__);
     DefinitionClass definition = NULL;
     definition = DefinitionClass_new(className, TRUE, NULL, NULL, classLoader);
-    List_add(interpreter->classes, definition);
+    Hash_put(interpreter->classes, className, definition);
     Logger_trc("[  END  ]%s", __func__);
 }
 
@@ -65,10 +65,10 @@ Interpreter_new(
     
     interpreter = Memory_malloc(sizeof(struct InterpreterTag));
     interpreter->statements = List_new();
-    Logger_dbg("interpreter->statementList is [%p]", interpreter->statements);
-    interpreter->variables = List_new();
-    interpreter->functions = List_new();
-    interpreter->classes = List_new();
+    Logger_dbg("interpreter->statements is [%p]", interpreter->statements);
+    interpreter->variables = Hash_new(32);
+    interpreter->functions = Hash_new(64);
+    interpreter->classes = Hash_new(64);
     interpreter->row = 0;
     interpreter->column = 0;
     interpreter->indentLevel = 0;
@@ -157,7 +157,7 @@ Interpreter_row(
 
 
 
-List
+Hash
 Interpreter_classes(
 	Interpreter interpreter
 )
@@ -167,7 +167,7 @@ Interpreter_classes(
 
 
 
-List
+Hash
 Interpreter_functions(
 	Interpreter interpreter
 )
@@ -177,7 +177,7 @@ Interpreter_functions(
 
 
 
-List
+Hash
 Interpreter_variables(
 	Interpreter interpreter
 )

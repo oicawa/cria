@@ -3,6 +3,7 @@
 
 #include "Boolean.h"
 #include "List.h"
+#include "Hash.h"
 
 typedef struct InterpreterTag *Interpreter;
 
@@ -44,7 +45,7 @@ Interpreter_row(
 
 
 
-List
+Hash
 Interpreter_functions(
 	Interpreter interpreter
 );
@@ -66,14 +67,14 @@ Interpreter_setRow(
 
 
 
-List
+Hash
 Interpreter_variables(
 	Interpreter interpreter
 );
 
 
 
-List
+Hash
 Interpreter_classes(
 	Interpreter interpreter
 );

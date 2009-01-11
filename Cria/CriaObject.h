@@ -5,6 +5,7 @@
 
 #include "CriaId.h"
 #include "List.h"
+#include "Hash.h"
 #include "Definition.h"
 
 
@@ -15,8 +16,8 @@ typedef struct CriaObjectTag *CriaObject;
 
 struct CriaObjectTag
 {
-    struct CriaIdTag    id;
-    List fields;
+    struct CriaIdTag id;
+    Hash fields;
 };
 
 

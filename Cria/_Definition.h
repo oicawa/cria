@@ -21,15 +21,15 @@ struct DefinitionVariableTag
 
 struct DefinitionFunctionTag
 {
-    char*                       name;
-    Boolean                     isNative;
-    Boolean                    isStatic;
+    char* name;
+    Boolean isNative;
+    Boolean isStatic;
     union
     {
         struct
         {
-            List                parameterList;
-            List                statementList;
+            List parameterList;
+            List statementList;
         } cria;
         struct
         {
@@ -42,11 +42,11 @@ struct DefinitionFunctionTag
 
 struct DefinitionClassTag
 {
-    String      name;
-    Boolean     isNative;
-    List        baseList;
-    List        fieldList;
-    List        methodList;
+    String name;
+    Boolean isNative;
+    List baseList;
+    Hash fields;
+    List methodList;
 };
 
 

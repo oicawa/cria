@@ -259,7 +259,7 @@ Parser_create_syntax_tree(
         if (classDefinition != NULL)
         {
             Logger_dbg("Add created DefinitionClass and parse next.");
-            List_add(Interpreter_classes(interpreter), classDefinition);
+            Hash_put(Interpreter_classes(interpreter), DefinitionClass_getName(classDefinition), classDefinition);
             continue;
         }
         
@@ -267,7 +267,7 @@ Parser_create_syntax_tree(
         if (functionDefinition != NULL)
         {
             Logger_dbg("Add created FunctionDefinition and parse next.");
-            List_add(Interpreter_functions(interpreter), functionDefinition);
+            Hash_put(Interpreter_functions(interpreter), DefinitionFunction_get_name(functionDefinition), functionDefinition);
             continue;
         }
         

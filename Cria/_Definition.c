@@ -6,6 +6,7 @@
 #include "Boolean.h"
 #include "String.h"
 #include "List.h"
+#include "Hash.h"
 #include "Interpreter.h"
 #include "CriaId.h"
 #include "Statement.h"
@@ -365,6 +366,14 @@ END:
 
 
 
+String
+DefinitionFunction_get_name(
+	DefinitionFunction function
+)
+{
+	return function->name;
+}
+
 DefinitionFunction
 DefinitionFunction_search(
     List    functions,
@@ -460,10 +469,10 @@ DefinitionFunction_getParameterList(
 //==============================
 DefinitionClass
 DefinitionClass_new(
-    char*               name,
-    Boolean             isNative,
-    List                fieldList,
-    List                methodList,
+    char* name,
+    Boolean isNative,
+    Hash fields,
+    List methodList,
     CriaNativeClassLoader* loader
 )
 {
@@ -477,10 +486,10 @@ DefinitionClass_new(
         goto END;
     }
     
-    Logger_dbg("Cria Function (ParameterCount=%d, StatementCount=%d)", List_count(fieldList), List_count(methodList));
+    Logger_dbg("Cria Function (ParameterCount=%d, StatementCount=%d)", Hash_get_count(fields), List_count(methodList));
     definition = Memory_malloc(sizeof(struct DefinitionClassTag));
     memset(definition, 0x00, sizeof(struct DefinitionClassTag));
-    definition->fieldList = fieldList;
+    definition->fields = fields;
     definition->methodList = methodList;
     definition->isNative = isNative;
     definition->name = String_new(name);
@@ -553,12 +562,22 @@ DefinitionClass_evaluate(
 
 
 
-List
+String
+DefinitionClass_getName(
+	DefinitionClass klass
+)
+{
+	return klass->name;
+}
+
+
+
+Hash
 DefinitionClass_getFields(
 	DefinitionClass klass
 )
 {
-	return klass->fieldList;
+	return klass->fields;
 }
 
 
@@ -576,6 +595,7 @@ DefinitionClass_generateInstance(
     DefinitionVariable variable = NULL;
     DefinitionFunction constractor = NULL;
     List fields = NULL;
+    String name = NULL;
     int count = 0;
     int i = 0;
     
@@ -590,20 +610,21 @@ DefinitionClass_generateInstance(
     {
     	Logger_dbg("Create object from cria class.(%s)", klass->name);
     	object = CriaObject_new(klass->name);
-		fields = DefinitionClass_getFields(klass);
+		fields = Hash_get_keys(DefinitionClass_getFields(klass));
 		count = List_count(fields);
-    	Logger_dbg("Fields count = %d", count);
+		Logger_dbg("fields count = %d", count);
 		for (i = 0; i < count; i++)
 		{
-			variable = (DefinitionVariable)List_get(fields, i);
-			if (variable->isStatic == TRUE)
-			{
-				Logger_dbg("variable->name = %s (Static)", variable->name);
-				continue;
-			}
+			//variable = (DefinitionVariable)List_get(fields, i);
+			//if (variable->isStatic == TRUE)
+			//{
+				//Logger_dbg("variable->name = %s (Static)", variable->name);
+				//continue;
+			//}
+			name = (String)List_get(fields, i);
 			
-			variable = DefinitionVariable_new(variable->name, FALSE);
-			Logger_dbg("variable->name = %s (Instance)", variable->name);
+			variable = DefinitionVariable_new(name, FALSE);
+			Logger_dbg("variable->name = %s (Instance)", name);
 			CriaObject_addField(object, variable);
 		}
 		
@@ -645,7 +666,7 @@ DefinitionClass_parse(
     DefinitionVariable variable = NULL;
     Item restore = Parser_getPosition(parser);
     String name = NULL;
-    List fields = NULL;
+    Hash fields = NULL;
     List methods = NULL;
     Token token = NULL;
     
@@ -677,7 +698,7 @@ DefinitionClass_parse(
     	goto END;
     }
     
-    fields = List_new();
+    fields = Hash_new(32);
     while (TRUE)
     {
     	variable = DefinitionVariable_parse(parser);
@@ -685,7 +706,7 @@ DefinitionClass_parse(
     		break;
     	
     	Logger_dbg("Add variable.");
-    	List_add(fields, variable);
+    	Hash_put(fields, DefinitionVariable_name(variable), variable);
     }
     
     methods = List_new();

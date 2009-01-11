@@ -286,7 +286,7 @@ ExpressionVariable_evaluateFromInterpreter(
     DefinitionVariable variable = NULL;
     
     
-    variable = DefinitionVariable_search(Interpreter_variables(interpreter), variableName);
+    variable = (DefinitionVariable)Hash_get(Interpreter_variables(interpreter), variableName);
     if (variable == NULL)
     {
 	    Logger_dbg("Definition variable not found.");
@@ -642,7 +642,7 @@ ExpressionFunctionCall_searchFromObject(
     
     
 	Logger_dbg("Search class named '%p'", object->name);
-	klass = DefinitionClass_search(Interpreter_classes(interpreter), object->name);
+	klass = (DefinitionClass)Hash_get(Interpreter_classes(interpreter), object->name);
 	if (klass == NULL)
 	{
 		Logger_dbg("Not found class named '%s'", object->name);
@@ -678,7 +678,7 @@ ExpressionFunctionCall_searchFromInterpreter(
 
 
 	Logger_dbg("Search function named '%s'", functionName);
-	function = DefinitionFunction_search(Interpreter_functions(interpreter), functionName);
+	function = (DefinitionFunction)Hash_get(Interpreter_functions(interpreter), functionName);
 	if (function == NULL)
 	{
 		Logger_dbg("Function is not found.");
@@ -787,7 +787,7 @@ ExpressionGenerate_evaluate(
     
     
     Logger_dbg("Class name is '%s'", expression->name);
-    klass = DefinitionClass_search(Interpreter_classes(interpreter), expression->name);
+    klass = (DefinitionClass)Hash_get(Interpreter_classes(interpreter), expression->name);
     if (klass == NULL)
     {
         Logger_dbg("Class is not found.");

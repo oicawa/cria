@@ -91,6 +91,13 @@ DefinitionFunction_parse(
 
 
 
+String
+DefinitionFunction_get_name(
+	DefinitionFunction function
+);
+
+
+
 DefinitionFunction
 DefinitionFunction_search(
     List    functions,
@@ -118,15 +125,22 @@ DefinitionFunction_getParameterList(
 
 
 //==============================
-//DefinitionFunction
+//DefinitionClass
 //==============================
 DefinitionClass
 DefinitionClass_new(
     String name,
     Boolean isNative,
-    List fieldList,
+    Hash fields,
     List methodList,
     CriaNativeClassLoader* classLoader
+);
+
+
+
+String
+DefinitionClass_getName(
+	DefinitionClass klass
 );
 
 

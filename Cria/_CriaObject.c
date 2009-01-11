@@ -6,6 +6,7 @@
 #include "CriaId.h"
 #include "String.h"
 #include "List.h"
+#include "Hash.h"
 #include "Definition.h"
 #include "Runtime.h"
 
@@ -18,14 +19,14 @@ CriaObject_new(
 	String className
 )
 {
-    Logger_trc("[ START ]%s", __func__);
+    Logger_trc("[ START ]%s(class name = '%s')", __func__);
     CriaObject object = NULL;
     
     object = Memory_malloc(sizeof(struct CriaObjectTag));
     memset(object, 0x00, sizeof(struct CriaObjectTag));
     object->id.name = String_clone(className);
     object->id.type = CRIA_DATA_TYPE_CRIA_OBJECT;
-    object->fields = List_new();
+    object->fields = Hash_new(16);
     
     Logger_trc("[  END  ]%s", __func__);
     return object;
@@ -41,7 +42,7 @@ CriaObject_addField(
 {
     Logger_trc("[ START ]%s", __func__);
     
-    List_add(object->fields, variable);
+    Hash_put(object->fields, DefinitionVariable_name(variable), variable);
     
     Logger_trc("[  END  ]%s", __func__);
     return;
@@ -61,7 +62,8 @@ CriaObject_get(
     DefinitionVariable variable = NULL;
     
     
-    variable = DefinitionVariable_search(object->fields, name);
+    //variable = DefinitionVariable_search(object->fields, name);
+    variable = (DefinitionVariable)Hash_get(object->fields, name);
     if (variable == NULL)
     {
     	Logger_err("Not found variable named '%s'", name);
@@ -90,7 +92,7 @@ CriaObject_set(
     DefinitionVariable variable = NULL;
     
     Logger_dbg("variable name = '%s'", name);
-    variable = DefinitionVariable_search(object->fields, name);
+    variable = (DefinitionVariable)Hash_get(object->fields, name);
     Logger_dbg("fields = '%p'", object->fields);
     if (variable == NULL)
     {

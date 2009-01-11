@@ -10,7 +10,8 @@ struct HashTag
 {
 	int size;
     int count;
-    Entry*  entrys;
+    List keys;
+    Entry* entrys;
 };
 
 

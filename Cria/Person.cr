@@ -18,6 +18,7 @@ Person:
         return honorific + .family_name
 
 
+write("Hello, cria world.\n")
 oikawa = Person()
 oikawa.first_name = "Masamitsu"
 oikawa.family_name = "Oikawa"

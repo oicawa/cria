@@ -4,16 +4,17 @@
 
 
 #include "List.h"
+#include "Hash.h"
 
 struct InterpreterTag
 {
-    List    statements;
-    List    variables;
-    List    functions;
-    List    classes;
-    int     row;
-    int     column;
-    int     indentLevel;
+    List statements;
+    Hash variables;
+    Hash functions;
+    Hash classes;
+    int row;
+    int column;
+    int indentLevel;
 };
 
 
