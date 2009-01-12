@@ -407,7 +407,8 @@ DefinitionFunction_evaluate(
     CriaId object,
 	List parameterList,
 	DefinitionFunction function,
-	List parameters
+	List parameters,
+    CriaId parent
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -443,6 +444,8 @@ DefinitionFunction_evaluate(
     }
     
     //実行
+    if (parent != NULL)
+    	object = parent;
     Logger_dbg("object is %p", object);
 	result = Statement_executeList(interpreter, object, parameterList, function->of.cria.statementList);
     id = result.returns.id;
@@ -553,7 +556,7 @@ DefinitionClass_evaluate(
     }
     
     Logger_dbg("parameters->count = %d", List_count(parameters));
-    value = DefinitionFunction_evaluate(interpreter, id, parameterList, function, parameters);
+    value = DefinitionFunction_evaluate(interpreter, id, parameterList, function, parameters, NULL);
     
     
     Logger_trc("[  END  ]%s", __func__);
@@ -615,12 +618,6 @@ DefinitionClass_generateInstance(
 		Logger_dbg("fields count = %d", count);
 		for (i = 0; i < count; i++)
 		{
-			//variable = (DefinitionVariable)List_get(fields, i);
-			//if (variable->isStatic == TRUE)
-			//{
-				//Logger_dbg("variable->name = %s (Static)", variable->name);
-				//continue;
-			//}
 			name = (String)List_get(fields, i);
 			
 			variable = DefinitionVariable_new(name, FALSE);
@@ -629,6 +626,7 @@ DefinitionClass_generateInstance(
 		}
 		
 		id = (CriaId)object;
+		Logger_dbg("id is %p, object is %p", id, object);
     }
     
     
@@ -636,7 +634,7 @@ DefinitionClass_generateInstance(
     if (constractor != NULL)
     {
     	Logger_dbg("Exist constractor.");
-		DefinitionFunction_evaluate(interpreter, id, NULL, constractor, parameters);
+		DefinitionFunction_evaluate(interpreter, id, parameters, constractor, parameters, id);
     }
     
 

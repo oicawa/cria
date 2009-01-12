@@ -41,7 +41,7 @@ main(
     //Logger_set(LOG_LEVEL_CORE, "Tokenizer_word, StringBuffer_newFunction, StringBuffer_appendCharFunction, StringBuffer_appendFunction");
     //Logger_set(LOG_LEVEL_INFORMATION, NULL);
     //Logger_set(LOG_LEVEL_DEBUG, "ExpressionVariable_evaluateFromInterpreter, ExpressionVariable_evaluateFromParameters, ExpressionVariable_evaluateFromObject, ExpressionVariable_evaluate, ExpressionReference_evaluate");
-    Logger_set(LOG_LEVEL_DEBUG, "Hash_get_keys, DefinitionClass_generateInstance, ReferenceVariable_evaluateFromObject, Hash_new, Hash_put, Hash_get, Hash_get_entry");
+    Logger_set(LOG_LEVEL_DEBUG, "Expression_evaluate, ExpressionReference_evaluate, DefinitionFunction_evaluate, DefinitionClass_generateInstance, ExpressionVariable_evaluate, ExpressionVariable_evaluateFromParameters");
     //Logger_set(LOG_LEVEL_TRACE, NULL);
     
     

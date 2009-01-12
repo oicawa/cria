@@ -744,7 +744,7 @@ EVALUATE:
     
     
     Logger_dbg("Call cria function.(%s)", expression->name);
-    id = DefinitionFunction_evaluate(interpreter, current, DefinitionFunction_getParameterList(function), function, parameters);
+    id = DefinitionFunction_evaluate(interpreter, current, DefinitionFunction_getParameterList(function), function, parameters, parent);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
