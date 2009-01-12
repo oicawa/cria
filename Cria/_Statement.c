@@ -691,10 +691,18 @@ StatementIf_parseElifBlock(
     
     
     token = Parser_getCurrent(parser);
+    if (Token_type(token) == TOKEN_TYPE_ELIF)
+    {
+        Logger_dbg("token type is 'ELIF'.");
+        ifStatement->_if_ = StatementIf_parseElifBlock(parser);
+        goto END;
+    }
+    
     if (Token_type(token) == TOKEN_TYPE_ELSE)
     {
         Logger_dbg("token type is 'ELSE'.");
         ifStatement->_if_ = StatementIf_parseElseBlock(parser);
+        goto END;
     }
     
 END:

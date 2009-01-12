@@ -19,28 +19,46 @@ Person:
             honorific = "Mrs."
         else
             honorific = "Miss,"
-        return honorific + .family_name
+        return honorific + .family_name + "(" + .first_name + "-" + .family_name + ")"
+    
+    @get_full_name():
+        return .first_name + "-" + .family_name
+
+marry(man, woman):
+    if man.sex != true
+        write("'%s' is not male.\n", man.get_full_name())
+        return
+    if woman.sex != false
+        write("'%s' is not female.\n", woman.get_full_name())
+        return
+    elif man.has_married != false
+        write("'%s' has already married.\n", man.get_full_name())
+        return
+    elif woman.has_married != false
+        write("'%s' has already married.\n", woman.get_full_name())
+        return
+    
+    write("Man's family name is '%s'\n", man.family_name)
+    write("Woman's family name is '%s'\n", woman.family_name)
+    write("Marry!\n")
+    woman.family_name = man.family_name
+    woman.has_married = true
+    write("Woman's new family name is '%s'\n", woman.family_name)
 
 
 write("Hello, cria world.\n")
 oikawa = Person("Masamitsu", "Oikawa")
-#oikawa.first_name = "Masamitsu"
-#oikawa.family_name = "Oikawa"
 oikawa.sex = true
-oikawa.has_married = true
+oikawa.has_married = false
 
-#watanabe = Person()
-#watanabe.first_name = "Fumie"
-#watanabe.family_name = "Watanabe"
-#watanabe.sex = false
-#watanabe.has_married = false
-
-#fumie = Person()
-#fumie.first_name = "Fumie"
-#fumie.family_name = "Oikawa"
-#fumie.sex = false
-#fumie.has_married = true
+watanabe = Person("Fumie", "Watanabe")
+watanabe.sex = false
+watanabe.has_married = false
 
 write("Your name is %s\n", oikawa.get_honorific_name())
-#write("Your honny is %s\n", watanabe.get_honorific_name())
-#write("Your wife is %s\n", fumie.get_honorific_name())
+write("Your honny is %s\n", watanabe.get_honorific_name())
+
+
+marry(oikawa, watanabe)
+
+write("Your wife is %s\n", watanabe.get_honorific_name())

@@ -60,7 +60,3 @@ else
     say_nice_to_meet_you(name)
 
 write("Good bye.\n")
-write("\n\n")
-write("true is '%s'\n", true)
-write("\n\n")
-write("false is '%s'\n", false)

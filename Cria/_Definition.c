@@ -631,10 +631,11 @@ DefinitionClass_generateInstance(
     
     
     constractor = DefinitionFunction_search(klass->methodList, "new");
+    
     if (constractor != NULL)
     {
     	Logger_dbg("Exist constractor.");
-		DefinitionFunction_evaluate(interpreter, id, parameters, constractor, parameters, id);
+		DefinitionFunction_evaluate(interpreter, id, DefinitionFunction_getParameterList(constractor), constractor, parameters, id);
     }
     
 
