@@ -78,6 +78,9 @@ DefinitionVariable_search(
     Logger_dbg("Loop end.");
     
 END:
+    Logger_dbg("DefinitionVariable is %p", definition);
+    if (definition != NULL)
+    	Logger_dbg("DefinitionVariable name = '%s'", definition->name);
     Logger_trc("[  END  ]%s", __func__);
     return definition;
 }
@@ -431,10 +434,6 @@ DefinitionFunction_evaluate(
     Logger_dbg("parameters->count is %d", List_count(parameters));
     
     
-    //パラメータ数のチェック
-    //if (List_count(function->of.cria.parameterList) != List_count(parameters))
-    //	runtime_error(interpreter);
-    
     //パラメータをセット
     for (i = 0; i < List_count(parameters); i++)
     {
@@ -474,8 +473,10 @@ DefinitionClass
 DefinitionClass_new(
     char* name,
     Boolean isNative,
-    Hash fields,
-    List methodList,
+    Hash i_fields,
+    Hash s_fields,
+    Hash i_methods,
+    Hash s_methods,
     CriaNativeClassLoader* loader
 )
 {
@@ -484,16 +485,21 @@ DefinitionClass_new(
     
     if (loader != NULL)
     {
-        Logger_dbg("Load Native Class");
+        Logger_dbg("Load Native Class ('%s')", name);
+        Logger_dbg("Load Native Class constractor is %p", loader);
+        Logger_dbg("Load Native Class constractor is *%p", *loader);
         definition = (*loader)(name);
         goto END;
     }
     
-    Logger_dbg("Cria Function (ParameterCount=%d, StatementCount=%d)", Hash_get_count(fields), List_count(methodList));
+    Logger_dbg("Cria Function (Field  instance=%d, static=%d)", Hash_get_count(i_fields), Hash_get_count(s_fields));
+    Logger_dbg("Cria Function (Method instance=%d, static=%d)", Hash_get_count(i_methods), Hash_get_count(s_methods));
     definition = Memory_malloc(sizeof(struct DefinitionClassTag));
     memset(definition, 0x00, sizeof(struct DefinitionClassTag));
-    definition->fields = fields;
-    definition->methodList = methodList;
+    definition->i_fields = i_fields;
+    definition->s_fields = s_fields;
+    definition->i_methods = i_methods;
+    definition->s_methods = s_methods;
     definition->isNative = isNative;
     definition->name = String_new(name);
     
@@ -547,11 +553,12 @@ DefinitionClass_evaluate(
     
     Logger_dbg("Method name is '%s'", name);
     Logger_dbg("klass is '%p'", klass);
-    Logger_dbg("klass->methodList is '%p'", klass->methodList);
-    function = DefinitionFunction_search(klass->methodList, name);
+    Logger_dbg("klass->i_methods is '%p'", klass->i_methods);
+    Logger_dbg("klass->s_methods is '%p'", klass->s_methods);
+    function = Hash_get(klass->i_methods, name);
     if (function == NULL)
     {
-    	Logger_err("Method is not found. (%s)/%d", name, List_count(klass->methodList));
+    	Logger_err("Method is not found. (%s)/%d", name, Hash_get_count(klass->i_methods));
         runtime_error(interpreter);
     }
     
@@ -577,10 +584,14 @@ DefinitionClass_getName(
 
 Hash
 DefinitionClass_getFields(
-	DefinitionClass klass
+	DefinitionClass klass,
+	Boolean isStatic
 )
 {
-	return klass->fields;
+	if (isStatic == TRUE)
+		return klass->s_fields;
+	else
+		return klass->i_fields;
 }
 
 
@@ -613,7 +624,7 @@ DefinitionClass_generateInstance(
     {
     	Logger_dbg("Create object from cria class.(%s)", klass->name);
     	object = CriaObject_new(klass->name);
-		fields = Hash_get_keys(DefinitionClass_getFields(klass));
+		fields = Hash_get_keys(DefinitionClass_getFields(klass, FALSE));
 		count = List_count(fields);
 		Logger_dbg("fields count = %d", count);
 		for (i = 0; i < count; i++)
@@ -630,7 +641,7 @@ DefinitionClass_generateInstance(
     }
     
     
-    constractor = DefinitionFunction_search(klass->methodList, "new");
+    constractor = Hash_get(klass->s_methods, "new");
     
     if (constractor != NULL)
     {
@@ -645,12 +656,16 @@ DefinitionClass_generateInstance(
 
 
 
-List
+Hash
 DefinitionClass_getMethods(
-	DefinitionClass klass
+	DefinitionClass klass,
+	Boolean isStatic
 )
 {
-	return klass->methodList;
+	if (isStatic == TRUE)
+		return klass->s_methods;
+	else
+		return klass->i_methods;
 }
 
 
@@ -665,8 +680,10 @@ DefinitionClass_parse(
     DefinitionVariable variable = NULL;
     Item restore = Parser_getPosition(parser);
     String name = NULL;
-    Hash fields = NULL;
-    List methods = NULL;
+    Hash i_fields = NULL;
+    Hash s_fields = NULL;
+    Hash i_methods = NULL;
+    Hash s_methods = NULL;
     Token token = NULL;
     
     token = Parser_getCurrent(parser);
@@ -697,26 +714,44 @@ DefinitionClass_parse(
     	goto END;
     }
     
-    fields = Hash_new(32);
+    i_fields = Hash_new(32);
+    s_fields = Hash_new(32);
     while (TRUE)
     {
     	variable = DefinitionVariable_parse(parser);
     	if (variable == NULL)
     		break;
     	
-    	Logger_dbg("Add variable.");
-    	Hash_put(fields, DefinitionVariable_name(variable), variable);
+    	if (variable->isStatic == TRUE)
+    	{
+			Logger_dbg("Add instance variable.");
+			Hash_put(s_fields, DefinitionVariable_name(variable), variable);
+    	}
+    	else
+    	{
+			Logger_dbg("Add static variable.");
+			Hash_put(i_fields, DefinitionVariable_name(variable), variable);
+    	}
     }
     
-    methods = List_new();
+    i_methods = Hash_new(32);
+    s_methods = Hash_new(32);
     while (TRUE)
     {
     	function = DefinitionFunction_parse(parser);
     	if (function == NULL)
     		break;
     	
-    	Logger_dbg("Add method.");
-    	List_add(methods, function);
+    	if (function->isStatic == TRUE)
+    	{
+			Logger_dbg("Add instance method.");
+			Hash_put(s_methods, DefinitionFunction_get_name(function), function);
+    	}
+    	else
+    	{
+			Logger_dbg("Add static method.");
+			Hash_put(i_methods, DefinitionFunction_get_name(function), function);
+    	}
     }
     
     token = Parser_getCurrent(parser);
@@ -728,7 +763,7 @@ DefinitionClass_parse(
     }
     
     
-    klass = DefinitionClass_new(name, FALSE, fields, methods, NULL);
+    klass = DefinitionClass_new(name, FALSE, i_fields, s_fields, i_methods, s_methods, NULL);
     
 END:
 	if (klass == NULL)

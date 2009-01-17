@@ -48,4 +48,18 @@ Hash_put(
 );
 
 
+
+#define Hash_log_key(hash) \
+	do { \
+		int i = 0; \
+		Logger_dbg("Hash keys:"); \
+		for (i = 0; i < List_count(Hash_get_keys(hash)); i++) \
+		{ \
+			String name = List_get(Hash_get_keys(hash), i); \
+			Logger_dbg(" >> %s", name); \
+		} \
+	} while(0) \
+
+
+
 #endif

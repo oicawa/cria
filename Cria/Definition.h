@@ -132,8 +132,10 @@ DefinitionClass
 DefinitionClass_new(
     String name,
     Boolean isNative,
-    Hash fields,
-    List methodList,
+    Hash i_fields,
+    Hash s_fields,
+    Hash i_methods,
+    Hash s_methods,
     CriaNativeClassLoader* classLoader
 );
 
@@ -166,9 +168,10 @@ DefinitionClass_evaluate(
 
 
 
-List
+Hash
 DefinitionClass_getMethods(
-	DefinitionClass klass
+	DefinitionClass klass,
+	Boolean isStatic
 );
 
 

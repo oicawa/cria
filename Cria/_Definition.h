@@ -45,8 +45,10 @@ struct DefinitionClassTag
     String name;
     Boolean isNative;
     List baseList;
-    Hash fields;
-    List methodList;
+    Hash i_fields;
+    Hash s_fields;
+    Hash i_methods;
+    Hash s_methods;
 };
 
 

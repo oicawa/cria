@@ -291,58 +291,39 @@ CriaFile_loadClass(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    String variableName = NULL;
     DefinitionVariable variable = NULL;
     DefinitionFunction function = NULL;
     DefinitionClass klass = NULL;
 
-    Hash fields = Hash_new(32);
-    Logger_dbg("1");
-    List methodList = List_new();
-    Logger_dbg("2");
+    Hash i_fields = Hash_new(32);
+    Hash s_fields = Hash_new(32);
+    Hash i_methods = Hash_new(32);
+    Hash s_methods = Hash_new(32);
     
-    variableName = String_new("file");
-    Logger_dbg("3");
-    variable = DefinitionVariable_new(variableName, FALSE);
-    Logger_dbg("4");
-    String_dispose(variableName);
-    Logger_dbg("5");
-    Hash_put(fields, DefinitionVariable_name(variable), variable);
-    Logger_dbg("6");
+    variable = DefinitionVariable_new("file", FALSE);
+    Hash_put(i_fields, DefinitionVariable_name(variable), variable);
     
     function = DefinitionFunction_new(" generator ", TRUE, TRUE, NULL, NULL, CriaFile__generator_);
-    Logger_dbg("7");
-    List_add(methodList, function);
-    Logger_dbg("8");
+    Hash_put(s_methods, DefinitionFunction_get_name(function), function);
     
     function = DefinitionFunction_new("new", TRUE, FALSE, NULL, NULL, CriaFile_new);
-    Logger_dbg("7");
-    List_add(methodList, function);
-    Logger_dbg("8");
+    Hash_put(s_methods, DefinitionFunction_get_name(function), function);
     
     function = DefinitionFunction_new("open", TRUE, FALSE, NULL, NULL, CriaFile_open);
-    Logger_dbg("9");
-    List_add(methodList, function);
-    Logger_dbg("10");
+    Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     function = DefinitionFunction_new("close", TRUE, FALSE, NULL, NULL, CriaFile_close);
-    Logger_dbg("11");
-    List_add(methodList, function);
-    Logger_dbg("12");
+    Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     function = DefinitionFunction_new("read", TRUE, FALSE, NULL, NULL, CriaFile_read);
-    Logger_dbg("13");
-    List_add(methodList, function);
-    Logger_dbg("14");
+    Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     
     function = DefinitionFunction_new("is_end", TRUE, FALSE, NULL, NULL, CriaFile_isEnd);
-    Logger_dbg("15");
-    List_add(methodList, function);
-    Logger_dbg("16");
+    Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     
-    klass = DefinitionClass_new(className, TRUE, fields, methodList, NULL);
+    klass = DefinitionClass_new(className, TRUE, i_fields, s_fields, i_methods, s_methods, NULL);
     Logger_dbg("17");
 
     Logger_trc("[  END  ]%s", __func__);

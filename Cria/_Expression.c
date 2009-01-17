@@ -10,6 +10,7 @@
 #include "CriaString.h"
 #include "CriaObject.h"
 #include "Definition.h"
+#include "Hash.h"
 
 #include "_Expression.h"
 
@@ -632,6 +633,7 @@ ExpressionFunctionCall_searchFromObject(
     Logger_trc("[ START ]%s(function name is '%s')", __func__, functionName);
     DefinitionFunction function = NULL;
     DefinitionClass klass = NULL;
+    Hash i_methods = NULL;
     
 	Logger_dbg("Object is %p.", object);
     if (object == NULL)
@@ -641,7 +643,7 @@ ExpressionFunctionCall_searchFromObject(
     }
     
     
-	Logger_dbg("Search class named '%p'", object->name);
+	Logger_dbg("Search class named '%s'", object->name);
 	klass = (DefinitionClass)Hash_get(Interpreter_classes(interpreter), object->name);
 	if (klass == NULL)
 	{
@@ -651,7 +653,10 @@ ExpressionFunctionCall_searchFromObject(
 	
 	
 	Logger_dbg("Search method named '%s'", functionName);
-	function = DefinitionFunction_search(DefinitionClass_getMethods(klass), functionName);
+	
+	i_methods = DefinitionClass_getMethods(klass, FALSE);
+	Hash_log_key(i_methods);
+	function = Hash_get(i_methods, functionName);
 	if (function == NULL)
 	{
 		Logger_dbg("Not found method named '%s'.", functionName);
@@ -967,7 +972,6 @@ ExpressionStringLiteral_evaluate(
     }
     
     
-    //最後の'"'を消去
     String value = StringBuffer_toString(stringBuffer);
     StringBuffer_dispose(stringBuffer);
     value[strlen(value) - 1] = '\0';
