@@ -19,7 +19,7 @@ CriaId
 io_write(
     Interpreter interpreter,
     CriaId object,
-    List        args
+    List args
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -90,7 +90,7 @@ io_write(
             
             if (id->type == CRIA_DATA_TYPE_STRING)
             {
-                Logger_dbg("[print]%s", ((CriaString)id));
+                Logger_dbg("[print]%p", ((CriaString)id));
                 printf("%s", ((CriaString)id)->value);
                 continue;
             }

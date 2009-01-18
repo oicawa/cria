@@ -1,10 +1,8 @@
-increment(value):
-    if (value == 10)
-        return value
-    write("current value = %s\n", value)
-    return increment(value + 1)
+increment(i):
+    write("i = %s\n", i)
+    i = i + 1
+    if i < 10
+        increment(i)
+    return i
 
-write("answer = %s\n\n", (1 + 2 - 5) * 3)
-
-write("value = %s\n", increment(1))
-
+increment(2)

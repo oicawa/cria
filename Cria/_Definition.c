@@ -543,6 +543,7 @@ DefinitionClass_evaluate(
     CriaId  id,
     List parameterList,
     char*   name,
+    Boolean isStatic,
     DefinitionClass klass,
     List parameters
 )
@@ -555,7 +556,16 @@ DefinitionClass_evaluate(
     Logger_dbg("klass is '%p'", klass);
     Logger_dbg("klass->i_methods is '%p'", klass->i_methods);
     Logger_dbg("klass->s_methods is '%p'", klass->s_methods);
-    function = Hash_get(klass->i_methods, name);
+    if (isStatic == TRUE)
+    {
+    	Hash_log_key(klass->s_methods);
+    	function = Hash_get(klass->s_methods, name);
+    }
+    else
+    {
+    	Hash_log_key(klass->i_methods);
+    	function = Hash_get(klass->i_methods, name);
+    }
     if (function == NULL)
     {
     	Logger_err("Method is not found. (%s)/%d", name, Hash_get_count(klass->i_methods));
@@ -618,7 +628,7 @@ DefinitionClass_generateInstance(
     if (klass->isNative == TRUE)
     {
     	Logger_dbg("Create object from native class.(%s)", klass->name);
-    	id = DefinitionClass_evaluate(interpreter, NULL, NULL, " generator ", klass, parameters);
+    	id = DefinitionClass_evaluate(interpreter, NULL, NULL, " generator ", TRUE, klass, parameters);
     }
     else
     {

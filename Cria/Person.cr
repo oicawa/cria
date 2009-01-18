@@ -8,6 +8,12 @@ Person:
     mrs:
     miss:
     
+    static():
+        .mr = "Mr."
+        .mrs = "Mrs."
+        .miss = "Miss,"
+    
+    
     new(first_name, family_name):
         .first_name = first_name
         .family_name = family_name
@@ -19,7 +25,7 @@ Person:
             honorific = "Mrs."
         else
             honorific = "Miss,"
-        return honorific + .family_name + "(" + .first_name + "-" + .family_name + ")"
+        return honorific + .family_name + "(" + .get_full_name() + ")"
     
     @get_full_name():
         return .first_name + "-" + .family_name
@@ -62,3 +68,8 @@ write("Your honny is %s\n", watanabe.get_honorific_name())
 marry(oikawa, watanabe)
 
 write("Your wife is %s\n", watanabe.get_honorific_name())
+
+file = File("test.txt")
+file.open("w")
+file.write("write test!")
+file.close()

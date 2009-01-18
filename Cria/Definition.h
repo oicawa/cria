@@ -162,6 +162,7 @@ DefinitionClass_evaluate(
     CriaId  id,
     List parameterList,
     char*   name,
+    Boolean isStatic,
     DefinitionClass klass,
     List parameters
 );
