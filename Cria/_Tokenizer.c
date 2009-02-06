@@ -71,6 +71,7 @@
 #define TOKEN_LITERAL_ELSE                  "else"
 #define TOKEN_LITERAL_TRUE                  "true"
 #define TOKEN_LITERAL_FALSE                 "false"
+#define TOKEN_LITERAL_CLASS                 "class"
 #define TOKEN_LITERAL_BREAK                 "break"
 #define TOKEN_LITERAL_CATCH                 "catch"
 #define TOKEN_LITERAL_RETURN                "return"
@@ -372,6 +373,13 @@ Tokenizer_reserved(
     {
         Logger_dbg("create TOKEN_TYPE_BOOLEAN_LITERAL");
         token = Token_new(TOKEN_TYPE_BOOLEAN_LITERAL, row, column, value);
+        goto END;
+    }
+    
+    if (strcmp(value, TOKEN_LITERAL_CLASS) == 0)
+    {
+        Logger_dbg("create TOKEN_TYPE_CLASS");
+        token = Token_new(TOKEN_TYPE_CLASS, row, column, value);
         goto END;
     }
     

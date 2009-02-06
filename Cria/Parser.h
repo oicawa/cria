@@ -12,6 +12,13 @@ typedef struct  ParserTag *Parser;
 
 
 
+Interpreter
+Parser_getInterpreter(
+    Parser parser
+);
+
+
+
 Token
 Parser_getCurrent(
     Parser  parser

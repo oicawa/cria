@@ -421,7 +421,9 @@ StatementFunctionCall_parse(
         Logger_dbg("Not new line token.");
         Token_log(token);
         Parser_setPosition(parser, position);
-        Parser_error(token);
+        //Why parser error?
+        //This statement is not 'function call', but may be another statement.
+        //Parser_error(token);
         goto END;
     }
     

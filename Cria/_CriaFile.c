@@ -26,8 +26,8 @@ CriaFile__generator_(
     Logger_trc("[ START ]%s", __func__);
     
     CriaObject file = CriaObject_new("File");
-    CriaObject_addField(file, DefinitionVariable_new("path", FALSE));
-    CriaObject_addField(file, DefinitionVariable_new("pointer", FALSE));
+    CriaObject_addField(file, DefinitionVariable_new("path", FALSE, FALSE));
+    CriaObject_addField(file, DefinitionVariable_new("pointer", FALSE, FALSE));
     
     Logger_trc("[  END  ]%s", __func__);
     return (CriaId)file;
@@ -443,7 +443,7 @@ CriaFile_loadClass(
     Hash i_methods = Hash_new(32);
     Hash s_methods = Hash_new(32);
     
-    variable = DefinitionVariable_new("file", FALSE);
+    variable = DefinitionVariable_new("file", FALSE, FALSE);
     Hash_put(i_fields, DefinitionVariable_name(variable), variable);
     
     function = DefinitionFunction_new(" generator ", TRUE, TRUE, NULL, NULL, CriaFile__generator_);

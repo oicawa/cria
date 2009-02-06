@@ -43,6 +43,7 @@ typedef enum
 
 
 typedef struct  ExpressionTag                   *Expression;
+typedef struct  ExpressionClassTag              *ExpressionClass;
 typedef struct  ExpressionOperationTag          *ExpressionOperation;
 typedef struct  ExpressionVariableTag           *ExpressionVariable;
 typedef struct  ExpressionReferenceTag          *ExpressionReference;

@@ -11,10 +11,11 @@
 
 struct ParserTag
 {
-    List    tokens;
-    Item    current;
-    Item    next;
-    Item    mark;
+    Interpreter interpreter;
+    List tokens;
+    Item current;
+    Item next;
+    Item mark;
 };
 
 

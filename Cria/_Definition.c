@@ -13,6 +13,7 @@
 #include "Runtime.h"
 #include "Parser.h"
 #include "CriaObject.h"
+#include "Expression.h"
 
 #include "_Definition.h"
 
@@ -24,13 +25,15 @@
 DefinitionVariable
 DefinitionVariable_new(
     String name,
-    Boolean isStatic
+    Boolean isStatic,
+    Boolean isConstant
 )
 {
     DefinitionVariable definition = Memory_malloc(sizeof(struct DefinitionVariableTag));
     memset(definition, 0x00, sizeof(struct DefinitionVariableTag));
     definition->name = String_clone(name);
     definition->isStatic = isStatic;
+    definition->isConstant = isConstant;
 
     return definition;
 }
@@ -128,7 +131,10 @@ DefinitionVariable_parse(
     DefinitionVariable variable = NULL;
     String name = NULL; 
     Boolean isStatic = TRUE;
+    Boolean isConstant = FALSE;
     Token token = NULL;
+    Expression expression = NULL;
+    CriaId value = NULL;
     
     token = Parser_getCurrent(parser);
     if (Token_type(token) == TOKEN_TYPE_ATMARK)
@@ -139,36 +145,65 @@ DefinitionVariable_parse(
 	    token = Parser_getCurrent(parser);
     }
     
-	if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
+	
+	if (Token_type(token) == TOKEN_TYPE_CONSTANT)
+    {
+        isConstant = TRUE;
+    }
+    else if (Token_type(token) == TOKEN_TYPE_IDENTIFIER)
 	{
-    	Logger_dbg("Not identifier");
-		Token_log(token);
-		goto END;
+        isConstant = FALSE;
 	}
+    else
+    {
+    	Logger_err("Not field variable.");
+        Parser_error(token);
+		goto END;
+    }
+    
+    
+    if (isStatic == FALSE && isConstant == TRUE)
+    {
+    	Logger_err("A constant literal can not be a instance variable.");
+        Parser_error(token);
+		goto END;
+    }
+        
 	
 	name = Token_buffer(token);
 	
+    
 	Parser_next(parser);
 	token = Parser_getCurrent(parser);
-	if (Token_type(token) != TOKEN_TYPE_COLON)
-	{
-    	Logger_dbg("Not ':'");
-		Token_log(token);
-		goto END;
-	}
+	if (Token_type(token) == TOKEN_TYPE_NEW_LINE)
+		goto CREATE;
 	
+    
+	if (Token_type(token) != TOKEN_TYPE_SUBSTITUTE)
+    {
+    	Logger_dbg("It may be a method.");
+		goto END;
+    }
+    
+    
 	Parser_next(parser);
 	token = Parser_getCurrent(parser);
-	if (Token_type(token) != TOKEN_TYPE_NEW_LINE)
+	expression = Expression_parse(parser);
+    if (expression == NULL)
 	{
-    	Logger_dbg("Not <<NEW_LINE>>");
-		Token_log(token);
+    	Logger_err("No expression.");
+        Parser_error(token);
 		goto END;
 	}
+    
+    value = Expression_evaluate(Parser_getInterpreter(parser), NULL, NULL, expression);
 	
+CREATE:
 	Parser_next(parser);
-	
-	variable = DefinitionVariable_new(name, isStatic);
+    
+	variable = DefinitionVariable_new(name, isStatic, isConstant);
+    if (value != NULL)
+        variable->object = value;
 	
 END:
 	if (variable == NULL)
@@ -236,7 +271,7 @@ DefinitionFunction_parse_parameters(
 			break;
 	    }
 	    
-		DefinitionVariable variable = DefinitionVariable_new(Token_buffer(token), TRUE);
+		DefinitionVariable variable = DefinitionVariable_new(Token_buffer(token), TRUE, FALSE);
 		List_add(parameters, variable);
 	    Logger_dbg("Add parameter.(%s)", DefinitionVariable_name(variable));
 		
@@ -641,7 +676,7 @@ DefinitionClass_generateInstance(
 		{
 			name = (String)List_get(fields, i);
 			
-			variable = DefinitionVariable_new(name, FALSE);
+			variable = DefinitionVariable_new(name, FALSE, FALSE);
 			Logger_dbg("variable->name = %s (Instance)", name);
 			CriaObject_addField(object, variable);
 		}

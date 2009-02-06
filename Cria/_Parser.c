@@ -31,13 +31,15 @@ Parser_errorFunction(
 
 Parser
 Parser_new(
-    List    list
+    Interpreter interpreter,
+    List list
 )
 {
     Logger_trc("[ START ]%s", __func__);
     Parser parser = Memory_malloc(sizeof(struct ParserTag));
     memset(parser, 0x00, sizeof(struct ParserTag));
     
+    parser->interpreter = interpreter;
     parser->tokens = list;
     parser->current = NULL;
     parser->next = List_startItem(list);
@@ -69,6 +71,16 @@ Parser_dispose(
     
 END:
     Logger_trc("[  END  ]%s", __func__);
+}
+
+
+
+Interpreter
+Parser_getInterpreter(
+    Parser parser
+)
+{
+    return parser->interpreter;
 }
 
 
@@ -244,7 +256,7 @@ Parser_create_syntax_tree(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    Parser parser = Parser_new(tokens);
+    Parser parser = Parser_new(interpreter, tokens);
     Boolean result = FALSE;
     Statement statement = NULL;
     DefinitionFunction functionDefinition = NULL;

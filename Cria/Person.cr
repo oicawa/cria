@@ -1,30 +1,29 @@
 Person:
-    @first_name:
-    @family_name:
-    @sex:
-    @has_married:
-    @birthday:
-    mr:
-    mrs:
-    miss:
-    
-    static():
-        .mr = "Mr."
-        .mrs = "Mrs."
-        .miss = "Miss,"
+    @first_name
+    @family_name
+    @sex
+    @has_married
+    @birthday
+    MR = "Mr."
+    MRS = "Mrs."
+    MISS = "Miss,"
     
     
     new(first_name, family_name):
         .first_name = first_name
         .family_name = family_name
     
+    
+    #is_male(person):
+    #    return person.sex
+    
     @get_honorific_name():
         if .sex == true
-            honorific = "Mr."
+            honorific = class.MR
         elif .has_married == true
-            honorific = "Mrs."
+            honorific = class.MRS
         else
-            honorific = "Miss,"
+            honorific = class.MISS
         return honorific + .family_name + "(" + .get_full_name() + ")"
     
     @get_full_name():
@@ -69,7 +68,3 @@ marry(oikawa, watanabe)
 
 write("Your wife is %s\n", watanabe.get_honorific_name())
 
-file = File("test.txt")
-file.open("w")
-file.write("write test!")
-file.close()

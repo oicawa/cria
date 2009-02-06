@@ -78,6 +78,15 @@ struct ExpressionBooleanLiteralTag
 struct ExpressionVariableTag
 {
     String  name;
+    Boolean isStatic;
+    Boolean isConstant;
+};
+
+
+
+struct ExpressionClassTag
+{
+    String  name;
 };
 
 
@@ -86,6 +95,7 @@ struct ExpressionReferenceTag
 {
     ExpressionReferenceType     type;
     union {
+        ExpressionClass      klass;
         ExpressionVariable      variable;
         ExpressionFunctionCall  function;
         ExpressionGenerate      generate;

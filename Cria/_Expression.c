@@ -9,6 +9,7 @@
 #include "CriaInteger.h"
 #include "CriaString.h"
 #include "CriaObject.h"
+#include "CriaClass.h"
 #include "Definition.h"
 #include "Hash.h"
 
@@ -19,7 +20,9 @@
 ExpressionReference ExpressionFunctionCall_parse(Parser parser);
 ExpressionReference ExpressionVariable_parse(Parser parser);
 ExpressionReference ExpressionGenerate_parse(Parser parser);
+ExpressionReference ExpressionClass_parse(Parser parser);
 ExpressionParameters ExpressionParameters_parse(Parser parser);
+
 
 
 
@@ -241,6 +244,42 @@ END:
 
 
 CriaId
+ExpressionVariable_evaluateFromClass(
+    Interpreter         interpreter,
+    CriaId klass,
+    String variableName
+)
+{
+    Logger_trc("[ START ]%s (Variable Name = '%s')", __func__, variableName);
+    CriaId id = NULL;
+    
+    
+    Logger_dbg("Class is '%p'", klass);
+    if (klass == NULL)
+    {
+	    Logger_dbg("Class is NULL.");
+	    goto END;
+    }
+    
+    
+	if (klass->type != CRIA_DATA_TYPE_CRIA_CLASS)
+	{
+	    Logger_dbg("klass->type = '%d'", klass->type);
+		goto END;
+	}
+	
+	
+	id = (CriaId)CriaClass_get(interpreter, (CriaClass)klass, variableName);
+	Logger_dbg("Found the target field. (%s)", variableName);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
+CriaId
 ExpressionVariable_evaluateFromParameters(
 	Interpreter interpreter,
 	List parameters,
@@ -317,15 +356,7 @@ ExpressionVariable_evaluate(
     
     
     Logger_dbg("parent is %p", parent);
-    if (parent != NULL)
-    {
-		id = ExpressionVariable_evaluateFromObject(interpreter, parent, expression->name);
-		if (id != NULL)
-			goto END;
-		
-		Logger_err("Field named '%s' is not found.", expression->name);
-    }
-    else
+    if (parent == NULL)
     {
 		id = ExpressionVariable_evaluateFromParameters(interpreter, parameterList, expression->name);
 		if (id != NULL)
@@ -335,14 +366,128 @@ ExpressionVariable_evaluate(
 		if (id != NULL)
 			goto END;
 		
-    	Logger_err("Variable named '%s' is not found.", expression->name);
+        runtime_error(interpreter);
+        goto END;
     }
+    else if (parent->type == CRIA_DATA_TYPE_CRIA_OBJECT)
+    {
+    	id = ExpressionVariable_evaluateFromObject(interpreter, parent, expression->name);
+    	if (id != NULL)
+    		goto END;
+    }
+    else if (parent->type == CRIA_DATA_TYPE_CRIA_CLASS)
+    {
+    	id = ExpressionVariable_evaluateFromClass(interpreter, parent, expression->name);
+    	if (id != NULL)
+    		goto END;
+    }
+	
+	Logger_err("Field named '%s' is not found.", expression->name);
     
-    runtime_error(interpreter);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
     return id;
+}
+
+
+
+//==============================
+//ExpressionClass
+//==============================
+CriaId
+ExpressionClass_evaluate(
+    Interpreter interpreter,
+    CriaId object,
+    List parameters,
+    ExpressionClass klass,
+    CriaId parent
+)
+{
+    Logger_trc("[ START ]%s (class name = '%s')", __func__, klass->name);
+    CriaId id = NULL;
+    String className = NULL;
+    DefinitionClass definition = NULL;
+    Hash classes = NULL;
+    
+    if (strcmp(klass->name, "class") == 0)
+    {
+		className = object->name;
+    }
+    else
+    {
+		className = klass->name;
+    }
+    Logger_dbg("Real class name = '%s'.", className);
+    
+    
+    classes = Interpreter_classes(interpreter);
+    definition = (DefinitionClass)Hash_get(classes, className);
+    if (definition == NULL)
+    {
+        Logger_err("Specified class not found. ('%s')", className);
+        runtime_error(interpreter);
+        goto END;
+    }
+    
+    id = (CriaId)CriaClass_new(definition);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
+ExpressionReference
+ExpressionClass_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Item position = Parser_getPosition(parser);
+    Token token = NULL;
+    ExpressionReference expression = NULL;
+    String name = NULL;
+    
+    token = Parser_getCurrent(parser);
+    if (Token_type(token) != TOKEN_TYPE_CLASS &&
+        Token_type(token) != TOKEN_TYPE_CLASS_LITERAL)
+    {
+        Logger_dbg("Not VariableExpression.");
+        Parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    name = Token_buffer(token);
+    
+    Parser_next(parser);
+    token = Parser_getCurrent(parser);
+    if (Token_type(token) != TOKEN_TYPE_PERIOD)
+    {
+        Logger_dbg("Not period. this is not ExpressionClass.");
+        Parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    Logger_dbg("ExpressionClass name = %s", name);
+    ExpressionClass klass = NULL;
+    klass = Memory_malloc(sizeof(struct ExpressionClassTag));
+    memset(klass, 0x00, sizeof(struct ExpressionClassTag));
+    klass->name = String_clone(name);
+    
+    expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
+    memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
+    expression->type = REFERENCE_EXPRESSION_TYPE_CLASS;
+    expression->of.klass = klass;
+
+	Logger_dbg("Next ReferenceExprssion parse.");
+	Parser_next(parser);
+    expression->next = ExpressionReference_parse(parser);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
 }
 
 
@@ -382,6 +527,7 @@ ExpressionReference_evaluate(
         break;
     case REFERENCE_EXPRESSION_TYPE_CLASS:
     	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_CLASS");
+        id = ExpressionClass_evaluate(interpreter, object, parameters, expression->of.klass, parent);
         break;
     case REFERENCE_EXPRESSION_TYPE_GENERATE:
     	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_GENERATE");
@@ -412,6 +558,13 @@ ExpressionReference_parse(
     ExpressionReference expression = NULL;
     
     expression = ExpressionSelf_parse(parser);
+    if (expression != NULL)
+    {
+    	Logger_dbg("Created Expression of Self.");
+        goto END;
+    }
+    
+    expression = ExpressionClass_parse(parser);
     if (expression != NULL)
     {
     	Logger_dbg("Created Expression of Self.");
@@ -778,6 +931,9 @@ ExpressionBooleanLiteral_evaluate(
 
 
 
+//==============================
+//ExpressionGenerate
+//==============================
 CriaId
 ExpressionGenerate_evaluate(
     Interpreter             interpreter,
@@ -815,9 +971,6 @@ END:
 
 
 
-//==============================
-//ExpressionGenerate
-//==============================
 ExpressionReference
 ExpressionGenerate_parse(
     Parser  parser
@@ -1068,9 +1221,12 @@ ExpressionVariable_parse(
     Token token = NULL;
     ExpressionReference expression = NULL;
     String name = NULL;
+    Boolean isStatic = FALSE;
+    Boolean isConstant = FALSE;
     
     token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
+    if (Token_type(token) != TOKEN_TYPE_IDENTIFIER &&
+        Token_type(token) != TOKEN_TYPE_CONSTANT)
     {
         Logger_dbg("Not VariableExpression.");
         Parser_setPosition(parser, position);
@@ -1093,6 +1249,8 @@ ExpressionVariable_parse(
     variable = Memory_malloc(sizeof(struct ExpressionVariableTag));
     memset(variable, 0x00, sizeof(struct ExpressionVariableTag));
     variable->name = String_clone(name);
+    variable->isStatic = isStatic;
+    variable->isConstant = isConstant;
     
     expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
     memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
@@ -1278,6 +1436,7 @@ ExpressionFactor_parse(
     Logger_dbg("Check reference expression.");
     if (Token_type(token) == TOKEN_TYPE_PERIOD ||
         Token_type(token) == TOKEN_TYPE_IDENTIFIER ||
+        Token_type(token) == TOKEN_TYPE_CLASS ||
         Token_type(token) == TOKEN_TYPE_CLASS_LITERAL ||
         Token_type(token) == TOKEN_TYPE_CONSTANT)
     {

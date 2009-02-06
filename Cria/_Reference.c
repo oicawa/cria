@@ -166,13 +166,13 @@ ReferenceVariable_evaluate(
 	
 	if (parameters != NULL)
 	{
-		definition = DefinitionVariable_new(variable->name, TRUE);
+		definition = DefinitionVariable_new(variable->name, TRUE, FALSE);
 		List_add(parameters, definition);
 		Logger_dbg("Add field named '%s' to parameters.", DefinitionVariable_name(definition));
 		goto END;
 	}
     
-    definition = DefinitionVariable_new(variable->name, TRUE);
+    definition = DefinitionVariable_new(variable->name, TRUE, FALSE);
     Hash_put(Interpreter_variables(interpreter), variable->name, definition);
 	Logger_dbg("Add field named '%s' to interpreter as global.", DefinitionVariable_name(definition));
     

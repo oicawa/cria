@@ -27,7 +27,8 @@ typedef DefinitionClass CriaNativeClassLoader(char* name);
 DefinitionVariable
 DefinitionVariable_new(
     String  name,
-    Boolean isStatic
+    Boolean isStatic,
+    Boolean isConstant
 );
 
 
@@ -165,6 +166,14 @@ DefinitionClass_evaluate(
     Boolean isStatic,
     DefinitionClass klass,
     List parameters
+);
+
+
+
+Hash
+DefinitionClass_getFields(
+	DefinitionClass klass,
+	Boolean isStatic
 );
 
 

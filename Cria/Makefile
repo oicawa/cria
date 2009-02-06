@@ -22,6 +22,7 @@ OBJS =\
     _CriaBoolean.o\
     _CriaFile.o\
     _CriaObject.o\
+    _CriaClass.o\
 
 all:$(OBJS)
 	cd ../Logger; make;
@@ -45,6 +46,7 @@ _CriaInteger.o: _CriaInteger.c _CriaInteger.h _Cria.h Cria.h ../Memory/Memory.h 
 _CriaBoolean.o: _CriaBoolean.c _CriaBoolean.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaFile.o: _CriaFile.c _CriaFile.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaObject.o: _CriaObject.c _CriaObject.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+_CriaClass.o: _CriaClass.c _CriaClass.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Definition.o: _Definition.c _Definition.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Tokenizer.o: _Tokenizer.c _Tokenizer.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Parser.o: _Parser.c _Parser.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h

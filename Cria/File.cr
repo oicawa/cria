@@ -13,3 +13,9 @@ while (file.is_end() == false)
 
 file.close()
 
+file = File("test.txt")
+file.open("w")
+file.write("write test!\n")
+file.write("write test2!\n")
+file.write("write test3!\n")
+file.close()
