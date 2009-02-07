@@ -13,6 +13,8 @@ Person:
         .first_name = first_name
         .family_name = family_name
     
+    get_all_honorific(message):
+        return class.MR + "/" + class.MRS + "/" + class.MISS + "(" + message + ")"
     
     #is_male(person):
     #    return person.sex
@@ -68,3 +70,8 @@ marry(oikawa, watanabe)
 
 write("Your wife is %s\n", watanabe.get_honorific_name())
 
+write("Person.MR   = '%s'\n", Person.MR)
+write("Person.MRS  = '%s'\n", Person.MRS)
+write("Person.MISS = '%s'\n", Person.MISS)
+
+write("All Honorifics = '%s'\n", Person.get_all_honorific("!!!hoge,fuga!!!"))

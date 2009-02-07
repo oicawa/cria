@@ -409,20 +409,25 @@ ExpressionClass_evaluate(
     String className = NULL;
     DefinitionClass definition = NULL;
     Hash classes = NULL;
+
     
-    if (strcmp(klass->name, "class") == 0)
+    classes = Interpreter_classes(interpreter);
+    if (strcmp(klass->name, "class") != 0)
     {
-		className = object->name;
+        definition = (DefinitionClass)Hash_get(classes, klass->name);
     }
-    else
+    else if (object->type == CRIA_DATA_TYPE_CRIA_OBJECT)
     {
-		className = klass->name;
+        definition = (DefinitionClass)Hash_get(classes, object->name);
     }
+    else if (object->type == CRIA_DATA_TYPE_CRIA_CLASS)
+    {
+        definition = ((CriaClass)object)->definition;
+    }
+    className = DefinitionClass_getName(definition);
     Logger_dbg("Real class name = '%s'.", className);
     
     
-    classes = Interpreter_classes(interpreter);
-    definition = (DefinitionClass)Hash_get(classes, className);
     if (definition == NULL)
     {
         Logger_err("Specified class not found. ('%s')", className);
@@ -826,6 +831,49 @@ END:
 
 
 DefinitionFunction
+ExpressionFunctionCall_searchFromClass(
+	Interpreter interpreter,
+    CriaId object,
+    String functionName
+)
+{
+    Logger_trc("[ START ]%s(function name is '%s')", __func__, functionName);
+    DefinitionFunction function = NULL;
+    DefinitionClass klass = NULL;
+    Hash s_methods = NULL;
+    
+	Logger_dbg("Object is %p.", object);
+    if (object == NULL)
+    {
+		Logger_dbg("Object is NULL.");
+    	goto END;
+    }
+
+    
+    klass = ((CriaClass)object)->definition;
+	
+	
+	Logger_dbg("Search method named '%s'", functionName);
+	
+	s_methods = DefinitionClass_getMethods(klass, TRUE);
+	Hash_log_key(s_methods);
+	function = Hash_get(s_methods, functionName);
+	if (function == NULL)
+	{
+		Logger_dbg("Not found method named '%s'.", functionName);
+		goto END;
+	}
+	
+	Logger_dbg("Method pointer is %p.", function);
+	
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return function;
+}
+
+
+
+DefinitionFunction
 ExpressionFunctionCall_searchFromInterpreter(
 	Interpreter interpreter,
     String functionName
@@ -868,21 +916,22 @@ ExpressionFunctionCall_evaluate(
     DefinitionFunction  function = NULL;
     
     
-    if (parent != NULL)
+    if (parent == NULL)
+    {
+		current = object;
+		function = ExpressionFunctionCall_searchFromInterpreter(interpreter, expression->name);
+    }
+    else if (parent->type == CRIA_DATA_TYPE_CRIA_OBJECT)
     {
     	current = parent;
 		function = ExpressionFunctionCall_searchFromObject(interpreter, parent, expression->name);
-		if (function != NULL)
-			goto EVALUATE;
     }
-	else
-	{
-		current = object;
-		function = ExpressionFunctionCall_searchFromInterpreter(interpreter, expression->name);
-		if (function != NULL)
-			goto EVALUATE;
-	}
-	
+    else if (parent->type == CRIA_DATA_TYPE_CRIA_CLASS)
+    {
+    	current = parent;
+		function = ExpressionFunctionCall_searchFromClass(interpreter, parent, expression->name);
+    }
+    
 
 	if (function == NULL)
 	{
@@ -891,8 +940,6 @@ ExpressionFunctionCall_evaluate(
 		goto END;
 	}
 	    
-    
-EVALUATE:
     
     //引数の式を実行
     Logger_dbg("expression->name->pointer = %s", expression->name);
