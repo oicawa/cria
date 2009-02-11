@@ -38,6 +38,17 @@ ReferenceVariable_evaluate(
 
 
 
+CriaId
+ReferenceClass_evaluate(
+    Interpreter interpreter,
+    CriaId object,
+    List parameters,
+    ReferenceClass klass,
+    CriaId parent
+);
+
+
+
 Reference
 ReferenceFunctionCall_parse(
 	Parser parser

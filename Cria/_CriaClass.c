@@ -63,3 +63,27 @@ END:
 
 
 
+DefinitionVariable
+CriaClass_getVariable(
+    Interpreter interpreter,
+    CriaClass klass,
+    String variableName
+)
+{
+    Logger_trc("[ START ]%s(class name = '%s')", __func__);
+    
+    DefinitionClass definition = klass->definition;
+    
+    Hash fields = DefinitionClass_getFields(definition, TRUE);
+    DefinitionVariable variable = (DefinitionVariable)Hash_get(fields, variableName);
+    if (variable == NULL)
+    {
+    	Logger_err("Not found variable named '%s'", variableName);
+        runtime_error(interpreter);
+    	goto END;
+    }
+
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return variable;
+}

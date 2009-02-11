@@ -38,4 +38,13 @@ CriaClass_get(
 
 
 
+DefinitionVariable
+CriaClass_getVariable(
+    Interpreter interpreter,
+    CriaClass klass,
+    String variableName
+);
+
+
+
 #endif

@@ -7,6 +7,7 @@ Person:
     MR = "Mr."
     MRS = "Mrs."
     MISS = "Miss,"
+    test = "hogehoge"
     
     
     new(first_name, family_name):
@@ -75,3 +76,8 @@ write("Person.MRS  = '%s'\n", Person.MRS)
 write("Person.MISS = '%s'\n", Person.MISS)
 
 write("All Honorifics = '%s'\n", Person.get_all_honorific("!!!hoge,fuga!!!"))
+
+write("Test static field 'test' = '%s'\n", Person.test)
+Person.test = "fugafuga"
+write("Test again static field 'test' = '%s'\n", Person.test)
+

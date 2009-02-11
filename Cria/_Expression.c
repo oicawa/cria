@@ -459,7 +459,7 @@ ExpressionClass_parse(
     if (Token_type(token) != TOKEN_TYPE_CLASS &&
         Token_type(token) != TOKEN_TYPE_CLASS_LITERAL)
     {
-        Logger_dbg("Not VariableExpression.");
+        Logger_dbg("Not ExpressionClass.");
         Parser_setPosition(parser, position);
         goto END;
     }
