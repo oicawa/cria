@@ -15,7 +15,7 @@ Person:
         .family_name = family_name
     
     get_all_honorific(message):
-        return class.MR + "/" + class.MRS + "/" + class.MISS + "(" + message + ")"
+        return class.MR + "/" + class.MRS + "/" + Person.MISS + "(" + message + ")"
     
     #is_male(person):
     #    return person.sex
@@ -31,6 +31,9 @@ Person:
     
     @get_full_name():
         return .first_name + "-" + .family_name
+    
+    @write_all_honorific(message):
+        write("Test all honorific -> '%s'\n", class.get_all_honorific(message))
 
 marry(man, woman):
     if man.sex != true
@@ -80,4 +83,6 @@ write("All Honorifics = '%s'\n", Person.get_all_honorific("!!!hoge,fuga!!!"))
 write("Test static field 'test' = '%s'\n", Person.test)
 Person.test = "fugafuga"
 write("Test again static field 'test' = '%s'\n", Person.test)
+
+oikawa.write_all_honorific("!!mogamoga!!")
 
