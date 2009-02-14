@@ -93,7 +93,7 @@ StringBuffer_appendFunction(
     Logger_cor("[ START ]%s", __func__);
     List    list = (List)stringBuffer;
     char*   buffer = NULL;
-    Item*   lastItem = NULL;
+    Item    lastItem = NULL;
     long    length = 0;
     long    filler = 0;
     
@@ -111,7 +111,7 @@ StringBuffer_appendFunction(
     
     
     Logger_cor("Get lastItem object");
-    buffer = (char*)(Item_getObject(*lastItem));
+    buffer = (char*)(Item_getObject(lastItem));
     Logger_cor("Got lastItem object");
     
     length = strlen(string);

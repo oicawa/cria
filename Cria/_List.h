@@ -8,15 +8,16 @@
 
 
 struct ItemTag {
-    void    *object;
-    Item    next;
+    void *object;
+    Item prev;
+    Item next;
 };
 
 
 
 struct ListTag {
-    Item        item;
-    Item*       last;
+    Item item;
+    Item last;
     int         count;
 };
 

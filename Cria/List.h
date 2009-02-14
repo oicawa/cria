@@ -80,7 +80,7 @@ List_startItem(
 
 
 
-Item*
+Item
 List_lastItem(
     List    list
 );

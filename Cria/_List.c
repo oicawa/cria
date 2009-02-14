@@ -17,6 +17,7 @@ Item_newFunction(
     Item item = Memory_mallocAt(fileName, line, sizeof(struct ItemTag));
     memset(item, 0x00, sizeof(struct ItemTag));
     item->object = object;
+    item->prev = NULL;
     item->next = NULL;
     return item;
 }
@@ -73,6 +74,16 @@ Item_getNext(
 )
 {
 	return item->next;
+}
+
+
+
+void*
+Item_getPrev(
+	Item item
+)
+{
+	return item->prev;
 }
 
 
@@ -138,21 +149,16 @@ List_addFunction(
     Logger_cor("list [%p]", list);
     if (list->item == NULL)
     {
-        Logger_cor("list->item is NULL.");
         list->item = Item_newFunction(object, fileName, line);
-        Logger_cor("list->item is generated.");
-        list->last = &(list->item);
-        Logger_cor("Set list->last.");
+        list->last = list->item;
         list->count++;
-        Logger_cor("Increment list->count.");
         goto END;
     }
     
     
-    Logger_cor("list->item is not NULL.");
-    Item* lastItem = list->last;
-    (*lastItem)->next = Item_newFunction(object, fileName, line);
-    list->last = &((*lastItem)->next);
+    Item last = list->last;
+    last->next = Item_newFunction(object, fileName, line);
+    list->last = last->next;
     list->count++;
     
 END:
@@ -206,7 +212,7 @@ List_startItem(
 
 
 
-Item*
+Item
 List_lastItem(
     List    list
 )
