@@ -7,6 +7,8 @@
 #include "Runtime.h"
 #include "String.h"
 #include "StringBuffer.h"
+#include "CriaObject.h"
+#include "CriaInteger.h"
 
 #include "_CriaList.h"
 
@@ -164,13 +166,119 @@ END:
 
 
 
+CriaId
+CriaList_insert(
+	Interpreter interpreter,
+	CriaId object,
+    List args
+)	
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    CriaObject list = NULL;
+    void* tmp = NULL;
+    List pointer = NULL;
+    CriaId index = NULL;
+    CriaId target = NULL;
+
+    
+    Logger_dbg("Check object data type.");
+    if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+
+    list = (CriaObject)object;
+    tmp = CriaObject_get(interpreter, list, "pointer");
+    pointer = (List)tmp;
+    
+    
+    Logger_dbg("Check arguments count.");
+    if (List_count(args) != 2)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+    
+    
+    index = (CriaId)(List_get(args, 0));
+    if (index->type != CRIA_DATA_TYPE_INTEGER)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+    
+    target = (CriaId)(List_get(args, 1));
+    
+    List_insert(pointer, ((CriaInteger)index)->value, target);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
+CriaId
+CriaList_get(
+	Interpreter interpreter,
+	CriaId object,
+    List args
+)	
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    CriaObject list = NULL;
+    void* tmp = NULL;
+    List pointer = NULL;
+    CriaId index = NULL;
+
+    
+    Logger_dbg("Check object data type.");
+    if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+
+    list = (CriaObject)object;
+    tmp = CriaObject_get(interpreter, list, "pointer");
+    pointer = (List)tmp;
+    
+    
+    Logger_dbg("Check arguments count.");
+    if (List_count(args) != 1)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+    
+    
+    index = (CriaId)(List_get(args, 0));
+    if (index->type != CRIA_DATA_TYPE_INTEGER)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+    
+    
+    id = (CriaId)List_get(pointer, ((CriaInteger)index)->value);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
 DefinitionClass
 CriaList_loadClass(
     String className
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    DefinitionVariable variable = NULL;
+//    DefinitionVariable variable = NULL;
     DefinitionFunction function = NULL;
     DefinitionClass klass = NULL;
 
@@ -192,6 +300,12 @@ CriaList_loadClass(
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     function = DefinitionFunction_new("delete", TRUE, FALSE, NULL, NULL, CriaList_delete);
+    Hash_put(i_methods, DefinitionFunction_get_name(function), function);
+    
+    function = DefinitionFunction_new("insert", TRUE, FALSE, NULL, NULL, CriaList_insert);
+    Hash_put(i_methods, DefinitionFunction_get_name(function), function);
+    
+    function = DefinitionFunction_new("get", TRUE, FALSE, NULL, NULL, CriaList_get);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     

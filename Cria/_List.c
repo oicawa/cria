@@ -3,6 +3,8 @@
 #include "../Memory/Memory.h"
 #include "../Logger/Logger.h"
 
+#include "Boolean.h"
+
 #include "_List.h"
 
 
@@ -157,12 +159,136 @@ List_addFunction(
     
     
     Item last = list->last;
-    last->next = Item_newFunction(object, fileName, line);
-    list->last = last->next;
+    Item newItem = Item_newFunction(object, fileName, line);
+    newItem->prev = last;
+    last->next = newItem;
+    list->last = newItem;
     list->count++;
     
 END:
     Logger_cor("[ START ]%s", __func__);
+}
+
+
+
+Item
+List_getItem(
+    List list,
+    int index
+)
+{
+    Logger_cor("[ START ]%s", __func__);
+    Item current = NULL;
+    int i = 0;
+    
+    if (list->count < index)
+    {
+        Logger_err("Specified index('%d') does not exist in target list. (last index is '%d')", index, list->count);
+        goto END;
+    }
+    
+    current = list->item;
+    for (i = 0; i < index; i++)
+    {
+        current = current->next;
+    }
+    
+END:
+    Logger_cor("[ START ]%s", __func__);
+    return current;
+}
+
+
+
+Boolean
+List_delete(
+    List list,
+    int index
+)
+{
+    Logger_cor("[ START ]%s", __func__);
+    Logger_cor("list [%p]", list);
+    Item target = NULL;
+    Item prev = NULL;
+    Item next = NULL;
+    Boolean result = FALSE;
+    
+    target = List_getItem(list, index);
+    if (target == NULL)
+    {
+        result = FALSE;
+        goto END;
+    }
+    
+    prev = target->prev;
+    next = target->next;
+    
+    if (prev == NULL)
+        list->item = next;
+    else
+        prev->next = next;
+    
+    if (next == NULL)
+        list->last = prev;
+    else
+        next->prev = prev;
+    
+    list->count--;
+    
+    result = TRUE;
+    
+END:
+    Logger_cor("[ START ]%s", __func__);
+    return result;
+}
+
+
+
+Boolean
+List_insert(
+    List list,
+    int index,
+    void* object
+)
+{
+    Logger_cor("[ START ]%s", __func__);
+    Logger_cor("list [%p]", list);
+    Item target = NULL;
+    Item prev = NULL;
+    Item newItem = NULL;
+    Boolean result = FALSE;
+    
+    target = List_getItem(list, index);
+    if (target == NULL)
+    {
+        result = FALSE;
+        goto END;
+    }
+    
+    prev = target->prev;
+    newItem = Item_newFunction(object, __FILE__, __LINE__);
+    
+    target->prev = newItem;
+    newItem->next = target;
+    
+    if (prev == NULL)
+    {
+        list->item = newItem;
+    }
+    else
+    {
+        prev->next = newItem;
+        newItem->prev = prev;
+    }
+    
+    
+    list->count++;
+    
+    result = TRUE;
+    
+END:
+    Logger_cor("[ START ]%s", __func__);
+    return result;
 }
 
 
@@ -173,21 +299,16 @@ List_get(
     int     index
 )
 {
-    Item*   address = &(list->item);
-    int     i = 0;
+    Item target = List_getItem(list, index);
+    void* object = NULL;
     
-    for (i = 0; i < index; i++)
-    {
-        if (*address == NULL)
-            return NULL;
-        
-        address = &((*address)->next);
-    }
+    if (target == NULL)
+        goto END;
     
-    if (&((*address)->object) == NULL)
-        return NULL;
+    object = target->object;
     
-    return (*address)->object;
+END:
+    return object;
 }
 
 

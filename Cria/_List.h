@@ -23,4 +23,12 @@ struct ListTag {
 
 
 
+Item
+List_getItem(
+    List list,
+    int index
+);
+
+
+
 #endif

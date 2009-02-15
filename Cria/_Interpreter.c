@@ -4,6 +4,7 @@
 #include "Definition.h"
 #include "IO.h"
 #include "CriaFile.h"
+#include "CriaList.h"
 #include "Tokenizer.h"
 #include "Parser.h"
 #include "Statement.h"
@@ -51,6 +52,7 @@ interpreter_loadCore(
     Interpreter_addFunction(interpreter, "write", io_write);
     Interpreter_addFunction(interpreter, "read", io_read);
     Interpreter_addClass(interpreter, "File", CriaFile_loadClass);
+    Interpreter_addClass(interpreter, "List", CriaList_loadClass);
     Logger_trc("[  END  ]%s", __func__);
 }
 

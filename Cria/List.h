@@ -58,6 +58,23 @@ List_addFunction(
 
 
 
+Boolean
+List_delete(
+    List list,
+    int index
+);
+
+
+
+Boolean
+List_insert(
+    List list,
+    int index,
+    void* object
+);
+
+
+
 void*
 List_get(
     List    list,

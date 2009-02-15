@@ -21,6 +21,7 @@ OBJS =\
     _CriaInteger.o\
     _CriaBoolean.o\
     _CriaFile.o\
+    _CriaList.o\
     _CriaObject.o\
     _CriaClass.o\
 
@@ -45,6 +46,7 @@ _CriaString.o: _CriaString.c _CriaString.h _Cria.h Cria.h ../Memory/Memory.h ../
 _CriaInteger.o: _CriaInteger.c _CriaInteger.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaBoolean.o: _CriaBoolean.c _CriaBoolean.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaFile.o: _CriaFile.c _CriaFile.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
+_CriaList.o: _CriaList.c _CriaList.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaObject.o: _CriaObject.c _CriaObject.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _CriaClass.o: _CriaClass.c _CriaClass.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _Definition.o: _Definition.c _Definition.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
