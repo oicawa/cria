@@ -31,6 +31,38 @@ CriaList__generator_(
 
 
 
+List
+CriaList__core_(
+	Interpreter interpreter,
+	CriaId object
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    List list = NULL;
+
+    
+    Logger_dbg("Check object data type.");
+    if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+
+    if (strcmp(object->name, "List") != 0)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+
+    list = (List)CriaObject_get(interpreter, (CriaObject)object, "pointer");
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return list;
+}
+
+
+
 CriaId
 CriaList_new(
 	Interpreter interpreter,
@@ -76,22 +108,11 @@ CriaList_add(
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
-    CriaObject list = NULL;
-    void* tmp = NULL;
     List pointer = NULL;
     CriaId arg = NULL;
 
     
-    Logger_dbg("Check object data type.");
-    if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
-    {
-    	runtime_error(interpreter);
-    	goto END;
-    }
-
-    list = (CriaObject)object;
-    tmp = CriaObject_get(interpreter, list, "pointer");
-    pointer = (List)tmp;
+    pointer = CriaList__core_(interpreter, object);
     
     
     Logger_dbg("Check arguments count.");
@@ -123,22 +144,11 @@ CriaList_delete(
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
-    CriaObject list = NULL;
-    void* tmp = NULL;
     List pointer = NULL;
     CriaId arg = NULL;
 
     
-    Logger_dbg("Check object data type.");
-    if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
-    {
-    	runtime_error(interpreter);
-    	goto END;
-    }
-
-    list = (CriaObject)object;
-    tmp = CriaObject_get(interpreter, list, "pointer");
-    pointer = (List)tmp;
+    pointer = CriaList__core_(interpreter, object);
     
     
     Logger_dbg("Check arguments count.");
@@ -175,23 +185,12 @@ CriaList_insert(
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
-    CriaObject list = NULL;
-    void* tmp = NULL;
     List pointer = NULL;
     CriaId index = NULL;
     CriaId target = NULL;
 
     
-    Logger_dbg("Check object data type.");
-    if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
-    {
-    	runtime_error(interpreter);
-    	goto END;
-    }
-
-    list = (CriaObject)object;
-    tmp = CriaObject_get(interpreter, list, "pointer");
-    pointer = (List)tmp;
+    pointer = CriaList__core_(interpreter, object);
     
     
     Logger_dbg("Check arguments count.");
@@ -229,22 +228,11 @@ CriaList_get(
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
-    CriaObject list = NULL;
-    void* tmp = NULL;
     List pointer = NULL;
     CriaId index = NULL;
 
     
-    Logger_dbg("Check object data type.");
-    if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
-    {
-    	runtime_error(interpreter);
-    	goto END;
-    }
-
-    list = (CriaObject)object;
-    tmp = CriaObject_get(interpreter, list, "pointer");
-    pointer = (List)tmp;
+    pointer = CriaList__core_(interpreter, object);
     
     
     Logger_dbg("Check arguments count.");
@@ -265,6 +253,38 @@ CriaList_get(
     
     id = (CriaId)List_get(pointer, ((CriaInteger)index)->value);
     
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
+CriaId
+CriaList_count(
+	Interpreter interpreter,
+	CriaId object,
+    List args
+)	
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    List pointer = NULL;
+
+    
+    pointer = CriaList__core_(interpreter, object);
+    
+    
+    Logger_dbg("Check arguments count.");
+    if (List_count(args) != 0)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+    
+    
+    id = (CriaId)CriaInteger_new(FALSE, List_count(pointer));
+
 END:
     Logger_trc("[  END  ]%s", __func__);
     return id;
@@ -306,6 +326,9 @@ CriaList_loadClass(
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     function = DefinitionFunction_new("get", TRUE, FALSE, NULL, NULL, CriaList_get);
+    Hash_put(i_methods, DefinitionFunction_get_name(function), function);
+    
+    function = DefinitionFunction_new("count", TRUE, FALSE, NULL, NULL, CriaList_count);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     

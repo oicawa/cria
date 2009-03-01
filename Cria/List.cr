@@ -1,20 +1,30 @@
+print_list_contents(list):
+    count = list.count()
+    i = 0
+    while i < count
+        write("%s: '%s'\n", i, list.get(i))
+        i = i + 1
+    write("\n")
+
+
 list = List()
+
+write("add items to list.\n\n")
 list.add("hogehoge")
 list.add("fugafuga")
 list.add("mogamoga")
+print_list_contents(list)
 
-write("0: '%s'\n", list.get(0))
-write("1: '%s'\n", list.get(1))
-write("2: '%s'\n", list.get(2))
-
-write("\ndelete 1.\n\n")
+write("delete 1.\n\n")
 list.delete(1)
-write("0: '%s'\n", list.get(0))
-write("1: '%s'\n", list.get(1))
+print_list_contents(list)
 
 value = "I love Fumie!"
-write("\ninsert '%s' at index 1.\n\n", value)
+write("insert '%s' at index 1.\n\n", value)
 list.insert(1, value)
-write("0: '%s'\n", list.get(0))
-write("1: '%s'\n", list.get(1))
-write("2: '%s'\n", list.get(2))
+print_list_contents(list)
+
+    
+        
+
+
