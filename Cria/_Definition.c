@@ -376,7 +376,6 @@ DefinitionFunction_parse(
         if (statement == NULL)
         {
             Logger_err("statement parse error.");
-            List_dispose(statements);
             Parser_error(token);
             goto END;
         }

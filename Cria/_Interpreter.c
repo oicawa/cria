@@ -82,32 +82,6 @@ Interpreter_new(
 
 
 
-void
-Interpreter_dispose(
-    Interpreter interpreter
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    if (interpreter == NULL)
-    {
-        goto END;
-    }
-    
-    Logger_dbg("interpreter->statements is [%p]", interpreter->statements);
-    if (interpreter->statements != NULL)
-    {
-        List_dispose(interpreter->statements);
-        interpreter->statements = NULL;
-    }
-    
-    interpreter = NULL;
-    
-END:
-    Logger_trc("[  END  ]%s", __func__);
-}
-
-
-
 Boolean
 Interpreter_compile(
     Interpreter interpreter,

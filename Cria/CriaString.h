@@ -38,11 +38,4 @@ CriaString_operate(
 
 
 
-void
-CriaString_dispose(
-    CriaString criaString
-);
-
-
-
 #endif

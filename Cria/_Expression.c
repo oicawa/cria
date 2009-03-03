@@ -41,51 +41,6 @@ Expression_new(
 
 
 
-void
-Expression_dispose(
-    Expression  expression
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    if (expression == NULL)
-    {
-        goto END;
-    }
-    
-    switch (expression->kind)
-    {
-    case EXPRESSION_KIND_OPERATION:
-        //operationExpression_dispose(expression->of._operation_);
-        break;
-    case EXPRESSION_KIND_STRING_LITERAL:
-        break;
-    case EXPRESSION_KIND_INTEGER_LITERAL:
-        break;
-    case EXPRESSION_KIND_REAL_LITERAL:
-        break;
-    case EXPRESSION_KIND_BOOLEAN_LITERAL:
-        break;
-    case EXPRESSION_KIND_NULL_LITERAL:
-        break;
-    case EXPRESSION_KIND_GENERATE:
-        break;
-    case EXPRESSION_KIND_FUNCTION_CALL:
-        break;
-    case EXPRESSION_KIND_VARIABLE:
-        break;
-    default:
-        Logger_err("Illegal statement type. (%d)", expression->kind);
-        break;
-    }
-    Memory_free(expression);
-    expression = NULL;
-    
-END:
-    Logger_trc("[  END  ]%s", __func__);
-}
-
-
-
 //==============================
 //ExpressionOperation
 //==============================
@@ -1173,7 +1128,6 @@ ExpressionStringLiteral_evaluate(
     
     
     String value = StringBuffer_toString(stringBuffer);
-    StringBuffer_dispose(stringBuffer);
     value[strlen(value) - 1] = '\0';
     Logger_dbg("Edited string is '%s'", value);
     

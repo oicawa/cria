@@ -241,7 +241,6 @@ CriaFile_read(
     Logger_dbg("Loop end.");
     
     String line = StringBuffer_toString(stringBuffer);
-    StringBuffer_dispose(stringBuffer);
     Logger_dbg("line = '%s'", line);
     
     CriaString string = CriaString_new(TRUE, line);
@@ -303,7 +302,6 @@ CriaFile_write(
         Logger_dbg("Boolean");
         CriaString string = (CriaString)CriaBoolean_toString(interpreter, (CriaBoolean)id);
         printf("%s", string->value);
-        CriaString_dispose(string);
         goto END;
     }
     
@@ -322,7 +320,6 @@ CriaFile_write(
 		memset(buffer, 0x00, size + 1);
 		strncpy(buffer, start, size);
 		fprintf(pointer, buffer);
-		Memory_free(buffer);
 		buffer = NULL;
 		start = end + 2;
 		
@@ -357,7 +354,6 @@ CriaFile_write(
 		{
 			CriaString string = (CriaString)CriaBoolean_toString(interpreter, (CriaBoolean)id);
 			fprintf(pointer, "%s", string->value);
-			CriaString_dispose(string);
 			continue;
 		}
 		
@@ -410,20 +406,6 @@ CriaFile_isEnd(
 END:
     Logger_trc("[  END  ]%s", __func__);
     return (CriaId)result;
-}
-
-
-
-void
-CriaFile_dispose(
-    CriaObject file
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    
-    Memory_free(file);
-    
-    Logger_trc("[  END  ]%s", __func__);
 }
 
 

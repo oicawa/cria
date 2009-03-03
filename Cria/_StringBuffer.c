@@ -29,60 +29,6 @@ StringBuffer_newFunction(
 
 
 void
-StringBuffer_dispose(
-    StringBuffer    stringBuffer
-)
-{
-    Logger_cor("[ START ]%s", __func__);
-    void* object = NULL;
-    
-    if (stringBuffer == NULL)
-    {
-        Logger_cor("stringBuffer is NULL.");
-        return;
-    }
-    
-    Logger_cor("stringBuffer is casted to List.");
-    List list = (List)stringBuffer;
-    
-    
-    Item item = NULL;
-    item = List_startItem(list);
-    Logger_cor("Loop start.");
-    while(item != NULL)
-    {
-    	object = Item_getObject(item);
-        if (object != NULL)
-        {
-            Logger_cor("Free item->object.");
-            Memory_free(object);
-            Logger_cor("Set NULL to item->object.");
-            object = NULL;
-        }
-        Logger_cor("Set next item.");
-        item = Item_getNext(item);
-    }
-    Logger_cor("Loop end.");
-    
-    
-    Logger_cor("Free list->item.");
-    item = List_startItem(list);
-    Item_dispose(item);
-    item = NULL;
-    
-    Logger_cor("Free list.");
-    Memory_free(list);
-    Logger_cor("Set NULL to list.");
-    list = NULL;
-    
-    Logger_cor("Set NULL to stringBuffer.");
-    stringBuffer = NULL;
-    Logger_cor("[  END  ]%s", __func__);
-}
-
-
-
-void
 StringBuffer_appendFunction(
     StringBuffer    stringBuffer,
     char*           string,
@@ -103,7 +49,7 @@ StringBuffer_appendFunction(
     if (lastItem == NULL)
     {
 	    Logger_cor("lastItem is NULL");
-        buffer = Memory_mallocAt(fileName, line, STRING_BUFFER_SIZE);
+        buffer = Memory_malloc(STRING_BUFFER_SIZE);
         memset(buffer, 0x00, STRING_BUFFER_SIZE);
         List_addFunction(list, buffer, fileName, line);
         lastItem = List_lastItem(list);
@@ -129,7 +75,7 @@ StringBuffer_appendFunction(
     
     
     Logger_cor("Length is over.");
-    buffer = Memory_mallocAt(fileName, line, STRING_BUFFER_SIZE);
+    buffer = Memory_malloc(STRING_BUFFER_SIZE);
     memset(buffer, 0x00, STRING_BUFFER_SIZE);
     List_addFunction(list, buffer, fileName, line);
     StringBuffer_append(stringBuffer, &(string[filler]));
@@ -192,7 +138,7 @@ StringBuffer_toStringFunction(
     
     
     Logger_cor("buffer set.");
-    char* buffer = Memory_mallocAt(fileName, line, length + 1);
+    char* buffer = Memory_malloc(length + 1);
     memset(buffer, 0x00, length + 1);
     
     
@@ -208,7 +154,6 @@ StringBuffer_toStringFunction(
     
     Logger_cor("Create string value.");
     value = String_new(buffer);
-    Memory_free(buffer);
     buffer = NULL;
     
     

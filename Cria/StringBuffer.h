@@ -20,13 +20,6 @@ StringBuffer_newFunction(
 
 
 void
-StringBuffer_dispose(
-    StringBuffer    stringBuffer
-);
-
-
-
-void
 StringBuffer_appendCharFunction(
     StringBuffer    stringBuffer,
     char            charactor,

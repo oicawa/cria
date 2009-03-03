@@ -16,13 +16,6 @@ String_newFunction(
 	String_newFunction(input, __FILE__, __LINE__)
 
 
-void
-String_dispose(
-    String  string
-);
-
-
-
 long
 String_length(
     String  string

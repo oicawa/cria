@@ -32,23 +32,6 @@ CriaString_new(
 
 
 
-void
-CriaString_dispose(
-    CriaString criaString
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    
-    String_dispose(criaString->id.name);
-    String_dispose(criaString->value);
-    
-    Memory_free(criaString);
-    
-    Logger_trc("[  END  ]%s", __func__);
-}
-
-
-
 CriaId
 CriaString_operate(
     Interpreter     interpreter,
@@ -70,7 +53,6 @@ CriaString_operate(
         StringBuffer_append(buffer, leftValue);
         StringBuffer_append(buffer, rightValue);
         id = (CriaId)CriaString_new(FALSE, StringBuffer_toString(buffer));
-        StringBuffer_dispose(buffer);
         break;
     case OPERATION_KIND_EQUAL:
         if (strcmp(leftValue, rightValue) == 0)

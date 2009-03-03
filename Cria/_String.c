@@ -21,34 +21,11 @@ String_newFunction(
     if (input == NULL)
         return NULL;
     
-    string = Memory_mallocAt(fileName, line, strlen(input) + 1);
+    string = Memory_malloc(strlen(input) + 1);
     memset(string, 0x00, strlen(input) + 1);
     strcpy(string, input);
 	Logger_cor("[  END  ]%s", __func__);
     return (String)string;
-}
-
-
-
-void
-String_dispose(
-    String  string
-)
-{
-    Logger_cor("[ START ]%s", __func__);
-    if (string == NULL)
-    {
-        Logger_cor("string is NULL.");
-        goto END;
-    }
-    
-	Logger_cor("Free string.");
-	Memory_free(string);
-	Logger_cor("Set NULL to string.");
-	string = NULL;
-    
-END:
-    Logger_cor("[  END  ]%s", __func__);
 }
 
 
@@ -74,12 +51,11 @@ String_cloneFunction(
         return NULL;
 
     long size = strlen(source);
-    char* buffer = Memory_mallocAt(fileName, line, size + 1);
+    char* buffer = Memory_malloc(size + 1);
     memset(buffer, 0x00, size + 1);
     strncpy(buffer, source, size);
     
     String string = String_newFunction(buffer, fileName, line);
-    Memory_free(buffer);
     buffer = NULL;
     return string;
 }
@@ -103,12 +79,11 @@ String_subStringFunction(
     if (size < start + length)
         return NULL;
     
-    char* buffer = Memory_mallocAt(fileName, line, length + 1);
+    char* buffer = Memory_malloc(length + 1);
     memset(buffer, 0x00, length + 1);
     strncpy(buffer, &(source[start]), length);
     
     String string = String_newFunction(buffer, fileName, line);
-    Memory_free(buffer);
     buffer = NULL;
     return string;
 }

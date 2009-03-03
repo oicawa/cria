@@ -24,7 +24,6 @@ Parser_errorFunction(
 {
 	Logger_err("Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", Token_buffer(token), Token_row(token), Token_column(token), file, line);
 	fprintf(stderr, "Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", Token_buffer(token), Token_row(token), Token_column(token), file, line);
-	Memory_dispose();
 	exit(1);
 }
 
@@ -47,30 +46,6 @@ Parser_new(
     
     Logger_trc("[  END  ]%s", __func__);
     return parser;
-}
-
-
-
-void
-Parser_dispose(
-    Parser  parser
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    Logger_dbg("Check parser.");
-    if (parser == NULL)
-    {
-        Logger_dbg("parser is NULL.");
-        goto END;
-    }
-    
-    Logger_dbg("Free parser.");
-    Memory_free(parser);
-    Logger_dbg("Set NULL to parser.");
-    parser = NULL;
-    
-END:
-    Logger_trc("[  END  ]%s", __func__);
 }
 
 
@@ -307,7 +282,6 @@ Parser_create_syntax_tree(
     result = TRUE;
     
 END:
-	Parser_dispose(parser);
     Logger_trc("[  END  ]%s", __func__);
     return result;
 }

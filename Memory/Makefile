@@ -1,13 +1,15 @@
 TARGET = Memory.o
-CFLAGS = -c -g -DDEBUG -Wall
+CFLAGS = -c -g -DDEBUG -Wall -I../Library/include/
+LDFLAGS = -L../Library/lib -lgc
+CC=gcc
 OBJS =\
     _Memory.o
 
 
 $(TARGET):$(OBJS)
-	ld -r -o $@ $(OBJS)
+	ld -r -o $@ $(OBJS) $(LDFLAGS)
 MemoryTest : $(TARGET) _MemoryTest.o
-	$(CC) -o $@ $(TARGET) _MemoryTest.o
+	$(CC) -o $@ $(TARGET) _MemoryTest.o $(LDFLAGS)
 .c.o:
 	$(CC) $(CFLAGS) -I.. $*.c
 clean:

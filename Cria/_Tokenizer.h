@@ -32,7 +32,6 @@ struct TokenizerTag
     do { \
         fprintf(stderr, "Syntax error near '%s'. [%s, %d]\n", buffer, __FILE__, __LINE__); \
         Logger_err("Token error near '%s'. (line:%d, column:%d) [%s, %d]\n", buffer, row, column, __FILE__, __LINE__); \
-        Memory_dispose(); \
         exit(1); \
     } while(0) \
 

@@ -1,5 +1,6 @@
 TARGET = cria
-CFLAGS = -c -g -DDEBUG -Wall
+CFLAGS = -c -g -DDEBUG -Wall -I../Library/include/
+LDFLAGS = -L../Library/lib/ -lgc
 OBJS =\
     main.o\
     ../Memory/Memory.o\
@@ -28,7 +29,7 @@ OBJS =\
 all:$(OBJS)
 	cd ../Logger; make;
 	cd ../Memory; make;
-	$(CC) -o $(TARGET) $(OBJS)
+	$(CC) -o $(TARGET) $(OBJS) $(LDFLAGS)
 
 .c.o:
 	$(CC) $(CFLAGS) -I.. $*.c

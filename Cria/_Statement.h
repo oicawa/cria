@@ -102,11 +102,4 @@ Statement_new(
 
 
 
-void
-Statement_dispose(
-    Statement   statement
-);
-
-
-
 #endif

@@ -55,7 +55,6 @@ io_write(
         Logger_dbg("Boolean");
         CriaString string = (CriaString)CriaBoolean_toString(interpreter, (CriaBoolean)id);
         printf("%s", string->value);
-        CriaString_dispose(string);
         goto END;
     }
     
@@ -70,7 +69,6 @@ io_write(
             memset(buffer, 0x00, size + 1);
             strncpy(buffer, start, size);
             printf(buffer);
-            Memory_free(buffer);
             buffer = NULL;
             start = end + 2;
             
@@ -105,7 +103,6 @@ io_write(
             {
                 CriaString string = (CriaString)CriaBoolean_toString(interpreter, (CriaBoolean)id);
                 printf("%s", string->value);
-                CriaString_dispose(string);
                 continue;
             }
             
@@ -167,7 +164,6 @@ io_read(
     returnString = CriaString_new(TRUE, StringBuffer_toString(stringBuffer));
     
 END:
-    StringBuffer_dispose(stringBuffer);
     Logger_trc("[  END  ]%s", __func__);
     return (CriaId)returnString;
 }

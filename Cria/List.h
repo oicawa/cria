@@ -9,13 +9,6 @@ typedef struct ListTag *List;
 
 
 
-void
-Item_dispose(
-    Item    item
-);
-
-
-
 void*
 Item_getObject(
 	Item item
@@ -37,13 +30,6 @@ List_newFunction(
 );
 #define List_new()\
     (List_newFunction(__FILE__, __LINE__))
-
-
-
-void
-List_dispose(
-    List    list
-);
 
 
 

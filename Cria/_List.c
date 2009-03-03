@@ -16,46 +16,12 @@ Item_newFunction(
     int     line
 )
 {
-    Item item = Memory_mallocAt(fileName, line, sizeof(struct ItemTag));
+    Item item = Memory_malloc(sizeof(struct ItemTag));
     memset(item, 0x00, sizeof(struct ItemTag));
     item->object = object;
     item->prev = NULL;
     item->next = NULL;
     return item;
-}
-
-
-
-void
-Item_dispose(
-    Item    item
-)
-{
-    Logger_cor("[ START ]%s", __func__);
-    Item next = NULL;
-    
-    Logger_cor("Check item. (%p)", item);
-    if (item == NULL)
-    {
-        Logger_cor("item is NULL.");
-        goto END;
-    }
-    
-    
-    Logger_cor("Get next item.");
-    next = item->next;
-    
-    Logger_cor("Free item.");
-    Memory_free(item);
-    Logger_cor("Set NULL to item.");
-    item = NULL;
-    
-    
-    Item_dispose(next);
-    next = NULL;
-    
-END:
-    Logger_cor("[  END  ]%s", __func__);
 }
 
 
@@ -96,45 +62,12 @@ List_newFunction(
     int     line
 )
 {
-    List list = Memory_mallocAt(fileName, line, sizeof(struct ListTag));
+    List list = Memory_malloc(sizeof(struct ListTag));
     memset(list, 0x00, sizeof(struct ListTag));
     list->item = NULL;
     Logger_cor("&(list->item) = %p", &(list->item));
     list->last = NULL;
     return list;
-}
-
-
-
-void
-List_dispose(
-    List    list
-)
-{
-    Logger_cor("[ START ]%s", __func__);
-    Logger_cor("Check list. (%p)", list);
-    if (list == NULL)
-    {
-        Logger_cor("list is NULL.");
-        goto END;
-    }
-    
-    Logger_cor("Check list->item. (%p)", list->item);
-    if (list->item != NULL)
-    {
-        Logger_cor("Free list->item.");
-        Item_dispose(list->item);
-        Logger_cor("Set NULL to list->item.");
-        list->item = NULL;
-    }
-    
-    Logger_cor("Free list.");
-    Memory_free(list);
-    Logger_cor("Set NULL to list.");
-    list = NULL;
-    
-END:
-    Logger_cor("[  END  ]%s", __func__);
 }
 
 

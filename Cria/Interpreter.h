@@ -16,13 +16,6 @@ Interpreter_new(
 
 
 
-void
-Interpreter_dispose(
-    Interpreter interpreter
-);
-
-
-
 Boolean
 Interpreter_compile(
     Interpreter interpreter,
