@@ -1,18 +1,26 @@
 TARGET = cria
 
-CC=gcc
+CRIA = $(TARGET)
+CRIAINC = ../Cria
+CRIALIB = lib$(CRIA).so
+
+GC = gc
+GCLIB = lib$(GC).so
+GCINC = ../Library/include
+
+CC = gcc
 CFLAGS = -c -g -DDEBUG -Wall
-INCLUDE_CRIA = -I../Cria
-INCLUDE_GC = -I../Library/include
-LD_CRIA = -L. -lcria
-LD_GC = -L../Library/lib -lgc
+INCLUDES = -I$(CRIAINC) -I$(GCINC)
+
 
 all:main.o
-	$(CC) -o cria main.o ../Cria/libcria.so ../Library/lib/libgc.so
+	cp ../Library/lib/$(GCLIB) ./$(GCLIB);
+	cp ../Cria/$(CRIALIB) ./$(CRIALIB);
+	$(CC) -o cria main.o $(CRIALIB) $(GCLIB)
 
 main.o: main.c
-	$(CC) $(CFLAGS) main.c $(INCLUDE_CRIA)
+	$(CC) $(CFLAGS) main.c $(INCLUDES)
 
 clean:
-	rm -f *.o cria
+	rm -f *.o $(TARGET) $(CRIALIB) $(GCLIB)
 
