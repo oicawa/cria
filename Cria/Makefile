@@ -1,6 +1,8 @@
 TARGET = libcria.so
-CFLAGS = -c -g -DDEBUG -Wall -I../Library/include/
-LDFLAGS = -L../Library/lib/ -lgc
+CFLAGS = -fPIC -c -g -DDEBUG -Wall -I../Library/include/
+LDFLAGS = -L. -lgc
+GC = gc
+GCLIB = lib$(GC).so
 OBJS =\
     ../Memory/Memory.o\
     ../Logger/Logger.o\
@@ -28,13 +30,15 @@ OBJS =\
 all:$(OBJS)
 	cd ../Logger; make;
 	cd ../Memory; make;
-	$(CC) -shared -o $(TARGET) $(OBJS) $(LDFLAGS)
+	cp ../Library/lib/$(GCLIB) .
+	$(CC) -shared -Wl,-soname,$(TARGET) -o $(TARGET) $(OBJS) $(LDFLAGS)
+
 
 .c.o:
-	$(CC) $(CFLAGS) -I.. $*.c
+	$(CC) $(CFLAGS) $*.c
 
 clean:
-	rm -f *.o cria
+	rm -f *.o $(TARGET) $(GCLIB)
 
 _String.o: _String.c _String.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
 _List.o: _List.c _List.h _Cria.h Cria.h ../Memory/Memory.h ../Logger/Logger.h
