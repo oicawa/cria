@@ -9,14 +9,14 @@
 #include "CriaBoolean.h"
 #include "StringBuffer.h"
 
-#include "_IO.h"
+#include "_CriaIO.h"
 
 
 #define BUFFER_SIZE 5
 
 
 CriaId
-io_write(
+CriaIO_write(
     Interpreter interpreter,
     CriaId object,
     List args
@@ -126,7 +126,7 @@ END:
 
 
 CriaId
-io_read(
+CriaIO_read(
     Interpreter interpreter,
     CriaId object,
     List        args

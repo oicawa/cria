@@ -1,5 +1,5 @@
-#ifndef PUBLIC_IO_H_INCLUDED
-#define PUBLIC_IO_H_INCLUDED
+#ifndef PUBLIC_CRIAIO_H_INCLUDED
+#define PUBLIC_CRIAIO_H_INCLUDED
 
 
 #include "CriaId.h"
@@ -8,7 +8,7 @@
 
 
 CriaId
-io_write(
+CriaIO_write(
     Interpreter interpreter,
     CriaId object,
     List        args
@@ -17,7 +17,7 @@ io_write(
 
 
 CriaId
-io_read(
+CriaIO_read(
     Interpreter interpreter,
     CriaId object,
     List        args

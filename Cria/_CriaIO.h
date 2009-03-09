@@ -1,8 +1,8 @@
-#ifndef PRIVATE_IO_H_INCLUDED
-#define PRIVATE_IO_H_INCLUDED
+#ifndef PRIVATE_CRIAIO_H_INCLUDED
+#define PRIVATE_CRIAIO_H_INCLUDED
 
 
-#include "IO.h"
+#include "CriaIO.h"
 
 
 

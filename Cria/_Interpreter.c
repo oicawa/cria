@@ -2,7 +2,7 @@
 #include "../Logger/Logger.h"
 
 #include "Definition.h"
-#include "IO.h"
+#include "CriaIO.h"
 #include "CriaFile.h"
 #include "CriaList.h"
 #include "Tokenizer.h"
@@ -44,13 +44,13 @@ Interpreter_addClass(
 
 
 void
-interpreter_loadCore(
+Interpreter_loadCore(
     Interpreter interpreter
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    Interpreter_addFunction(interpreter, "write", io_write);
-    Interpreter_addFunction(interpreter, "read", io_read);
+    Interpreter_addFunction(interpreter, "write", CriaIO_write);
+    Interpreter_addFunction(interpreter, "read", CriaIO_read);
     Interpreter_addClass(interpreter, "File", CriaFile_loadClass);
     Interpreter_addClass(interpreter, "List", CriaList_loadClass);
     Logger_trc("[  END  ]%s", __func__);
@@ -75,7 +75,7 @@ Interpreter_new(
     interpreter->column = 0;
     interpreter->indentLevel = 0;
     
-    interpreter_loadCore(interpreter);
+    Interpreter_loadCore(interpreter);
     
     return interpreter;
 }
