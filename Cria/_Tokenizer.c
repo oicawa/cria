@@ -1,7 +1,7 @@
 #include <memory.h>
 #include <ctype.h>
 
-#include "../Memory/Memory.h"
+#include "Memory.h"
 #include "../Logger/Logger.h"
 
 #include "List.h"

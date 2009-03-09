@@ -1,6 +1,6 @@
 #include <string.h>
 
-#include "../Memory/Memory.h"
+#include "Memory.h"
 #include "../Logger/Logger.h"
 
 #include "Runtime.h"

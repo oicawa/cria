@@ -1,4 +1,4 @@
-#include "../Memory/Memory.h"
+#include "Memory.h"
 #include "../Logger/Logger.h"
 
 #include "Definition.h"
