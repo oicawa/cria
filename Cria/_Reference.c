@@ -1,7 +1,7 @@
-#include <memory.h>
+#include <string.h>
 
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 #include "Expression.h"
 #include "Tokenizer.h"
@@ -21,7 +21,6 @@ Reference_new(
     Reference reference = NULL;
     
     reference = Memory_malloc(sizeof(struct ReferenceTag));
-    memset(reference, 0x00, sizeof(struct ReferenceTag));
     reference->type = type;
     
     return reference;
@@ -276,7 +275,6 @@ ReferenceVariable_parse(
 
     
 	variable = Memory_malloc(sizeof(struct ReferenceVariableTag));
-    memset(variable, 0x00, sizeof(struct ReferenceVariableTag));
     variable->name = String_clone(name);
     
     
@@ -411,7 +409,6 @@ ReferenceFunctionCall_parse(
     }
     
     functionCall = Memory_malloc(sizeof(struct ReferenceFunctionCallTag));
-    memset(functionCall, 0x00, sizeof(struct ReferenceFunctionCallTag));
     functionCall->name = String_clone(name);
     functionCall->parameters = parameters;
     Logger_dbg("Created ReferenceFunctionCall");
@@ -545,7 +542,6 @@ ReferenceClass_parse(
 
     
 	klass = Memory_malloc(sizeof(struct ReferenceClassTag));
-    memset(klass, 0x00, sizeof(struct ReferenceClassTag));
     klass->name = String_clone(name);
     
     
@@ -590,7 +586,6 @@ ReferenceSelf_parse(
 
     
 	variable = Memory_malloc(sizeof(struct ReferenceVariableTag));
-    memset(variable, 0x00, sizeof(struct ReferenceVariableTag));
     variable->name = String_clone("_self_");
     
     

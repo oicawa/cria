@@ -1,5 +1,5 @@
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 #include "Definition.h"
 #include "CriaIO.h"

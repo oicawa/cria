@@ -1,7 +1,7 @@
-#include <memory.h>
+#include <string.h>
 
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 #include "Boolean.h"
 #include "String.h"
@@ -30,7 +30,6 @@ DefinitionVariable_new(
 )
 {
     DefinitionVariable definition = Memory_malloc(sizeof(struct DefinitionVariableTag));
-    memset(definition, 0x00, sizeof(struct DefinitionVariableTag));
     definition->name = String_clone(name);
     definition->isStatic = isStatic;
     definition->isConstant = isConstant;
@@ -232,7 +231,6 @@ DefinitionFunction_new(
 )
 {
     DefinitionFunction definition = Memory_malloc(sizeof(struct DefinitionFunctionTag));
-    memset(definition, 0x00, sizeof(struct DefinitionFunctionTag));
     definition->name = name;
     definition->isNative = isNative;
     definition->isStatic = isStatic;
@@ -529,7 +527,6 @@ DefinitionClass_new(
     Logger_dbg("Cria Function (Field  instance=%d, static=%d)", Hash_get_count(i_fields), Hash_get_count(s_fields));
     Logger_dbg("Cria Function (Method instance=%d, static=%d)", Hash_get_count(i_methods), Hash_get_count(s_methods));
     definition = Memory_malloc(sizeof(struct DefinitionClassTag));
-    memset(definition, 0x00, sizeof(struct DefinitionClassTag));
     definition->i_fields = i_fields;
     definition->s_fields = s_fields;
     definition->i_methods = i_methods;

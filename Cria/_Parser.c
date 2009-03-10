@@ -1,7 +1,5 @@
-#include <memory.h>
-
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 #include "Tokenizer.h"
 #include "Definition.h"
@@ -36,7 +34,6 @@ Parser_new(
 {
     Logger_trc("[ START ]%s", __func__);
     Parser parser = Memory_malloc(sizeof(struct ParserTag));
-    memset(parser, 0x00, sizeof(struct ParserTag));
     
     parser->interpreter = interpreter;
     parser->tokens = list;

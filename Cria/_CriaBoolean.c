@@ -1,7 +1,5 @@
-#include <memory.h>
-
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 #include "Runtime.h"
 #include "CriaString.h"
@@ -18,7 +16,6 @@ CriaBoolean_new(
 {
     Logger_trc("[ START ]%s", __func__);
     CriaBoolean boolean = Memory_malloc(sizeof(struct CriaBooleanTag));
-    memset(boolean, 0x00, sizeof(struct CriaBooleanTag));
     
     char name[] = "Boolean";
     boolean->id.name = String_new(name);

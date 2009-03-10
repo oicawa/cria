@@ -1,7 +1,7 @@
-#include <memory.h>
+#include <string.h>
 
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 #include "String.h"
 
@@ -15,12 +15,10 @@ Hash_new(
 {
     Logger_trc("[ START ]%s", __func__);
     Hash hash = Memory_malloc(sizeof(struct HashTag));
-    memset(hash, 0x00, sizeof(struct HashTag));
     hash->size = size;
     hash->count = 0;
     hash->keys = List_new();
     Entry* entrys = Memory_malloc(sizeof(Entry) * size);
-    memset(entrys, 0x00, sizeof(Entry) * size);
     hash->entrys = entrys;
     
     Logger_trc("[  END  ]%s", __func__);
@@ -136,7 +134,6 @@ Hash_put(
 
 
     entry = Memory_malloc(sizeof(struct EntryTag));
-    memset(entry, 0x00, sizeof(struct EntryTag));
     entry->key = String_clone(key);
     entry->hash_value = hash_value;
     entry->next = NULL;

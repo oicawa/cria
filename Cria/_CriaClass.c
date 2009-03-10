@@ -1,7 +1,5 @@
-#include <memory.h>
-
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 #include "CriaId.h"
 #include "String.h"
@@ -22,7 +20,6 @@ CriaClass_new(
     CriaClass klass = NULL;
     
     klass = Memory_malloc(sizeof(struct CriaClassTag));
-    memset(klass, 0x00, sizeof(struct CriaClassTag));
     klass->id.name = String_clone("Class");
     klass->id.type = CRIA_DATA_TYPE_CRIA_CLASS;
     klass->definition = definition;

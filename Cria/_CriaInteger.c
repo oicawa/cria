@@ -1,7 +1,5 @@
-#include <memory.h>
-
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 #include "CriaBoolean.h"
 #include "Runtime.h"
@@ -18,7 +16,6 @@ CriaInteger_new(
 {
     Logger_trc("[ START ]%s", __func__);
     CriaInteger integer = Memory_malloc(sizeof(struct CriaIntegerTag));
-    memset(integer, 0x00, sizeof(struct CriaIntegerTag));
     
     integer->id.name = String_new("Integer");
     integer->id.type = CRIA_DATA_TYPE_INTEGER;

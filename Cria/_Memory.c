@@ -3,6 +3,8 @@
 #include <string.h>
 #include <ctype.h>
 #include <assert.h>
+#include <memory.h>
+
 #include "gc.h"
 #include "_Memory.h"
 
@@ -13,7 +15,19 @@ Memory_malloc(
     size_t  size
 )
 {
-    return GC_MALLOC(size);
+    void* pointer = NULL;
+    pointer = GC_MALLOC(size);
+    memset(pointer, 0x00, size);
+    return pointer;
 }
 
 
+
+void
+Memory_reset(
+    void* pointer,
+    size_t size
+)
+{
+    memset(pointer, 0x00, size);
+}

@@ -1,7 +1,7 @@
 #include <string.h>
 
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 
 #include "_String.h"
@@ -22,7 +22,6 @@ String_newFunction(
         return NULL;
     
     string = Memory_malloc(strlen(input) + 1);
-    memset(string, 0x00, strlen(input) + 1);
     strcpy(string, input);
 	Logger_cor("[  END  ]%s", __func__);
     return (String)string;
@@ -52,7 +51,6 @@ String_cloneFunction(
 
     long size = strlen(source);
     char* buffer = Memory_malloc(size + 1);
-    memset(buffer, 0x00, size + 1);
     strncpy(buffer, source, size);
     
     String string = String_newFunction(buffer, fileName, line);
@@ -80,7 +78,6 @@ String_subStringFunction(
         return NULL;
     
     char* buffer = Memory_malloc(length + 1);
-    memset(buffer, 0x00, length + 1);
     strncpy(buffer, &(source[start]), length);
     
     String string = String_newFunction(buffer, fileName, line);

@@ -1,7 +1,7 @@
-#include <memory.h>
+#include <string.h>
 
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 #include "CriaString.h"
 #include "Runtime.h"
@@ -226,7 +226,7 @@ CriaFile_read(
     Logger_dbg("Loop start.");
     while (feof(pointer) == 0)
     {
-		memset(buffer, 0x00, 1024);
+		Memory_reset(buffer, 1024);
 		fgets(buffer, 1024 - 1, pointer);
 	    Logger_dbg("buffer = '%s'", buffer);
 		length = strlen(buffer);
@@ -317,7 +317,6 @@ CriaFile_write(
 	{
 		long size = end - start;
 		char* buffer = Memory_malloc(size + 1);
-		memset(buffer, 0x00, size + 1);
 		strncpy(buffer, start, size);
 		fprintf(pointer, buffer);
 		buffer = NULL;

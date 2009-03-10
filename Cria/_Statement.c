@@ -1,7 +1,5 @@
-#include <memory.h>
-
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 #include "List.h"
 #include "Parser.h"
@@ -24,7 +22,6 @@ Statement_new(
 )
 {
     Statement statement = Memory_malloc(sizeof(struct StatementTag));
-    memset(statement, 0x00, sizeof(struct StatementTag));
     statement->kind = kind;
     return statement;
 }
@@ -178,7 +175,6 @@ StatementWhile_parse(
     
     Logger_dbg("Create 'WhileStatement'");
     whileStatement = Memory_malloc(sizeof(struct StatementWhileTag));
-    memset(whileStatement, 0x00, sizeof(struct StatementWhileTag));
     whileStatement->condition = condition;
     whileStatement->statements = statements;
     
@@ -307,7 +303,6 @@ StatementGoto_parse(
     
     Logger_dbg("Create 'GotoStatement'");
     gotoStatement = Memory_malloc(sizeof(struct StatementGotoTag));
-    memset(gotoStatement, 0x00, sizeof(struct StatementGotoTag));
     gotoStatement->type = type;
     if (label != NULL)
     	gotoStatement->of.label = String_clone(label);
@@ -383,7 +378,6 @@ StatementFunctionCall_parse(
     
     Logger_dbg("Create 'FunctionCallStatement'");
     function = Memory_malloc(sizeof(struct StatementFunctionCallTag));
-    memset(function, 0x00, sizeof(struct StatementFunctionCallTag));
     function->expression = expression;
     
     statement = Statement_new(STATEMENT_KIND_FUNCTION_CALL);
@@ -541,7 +535,6 @@ StatementIf_parseElseBlock(
     
     Logger_dbg("Create 'IfStatement'");
     ifStatement = Memory_malloc(sizeof(struct StatementIfTag));
-    memset(ifStatement, 0x00, sizeof(struct StatementIfTag));
     ifStatement->statements = statements;
     
 END:
@@ -637,7 +630,6 @@ StatementIf_parseElifBlock(
     
     Logger_dbg("Create 'IfStatement'");
     ifStatement = Memory_malloc(sizeof(struct StatementIfTag));
-    memset(ifStatement, 0x00, sizeof(struct StatementIfTag));
     ifStatement->condition = condition;
     ifStatement->statements = statements;
     
@@ -749,7 +741,6 @@ StatementIf_parseIfBlock(
     
     Logger_dbg("Create 'IfStatement'");
     ifStatement = Memory_malloc(sizeof(struct StatementIfTag));
-    memset(ifStatement, 0x00, sizeof(struct StatementIfTag));
     ifStatement->condition = condition;
     ifStatement->statements = statements;
     
@@ -892,7 +883,6 @@ StatementSubstitute_parse(
     
     Logger_dbg("Create 'SubstituteStatement'");
     substitute = Memory_malloc(sizeof(struct StatementSubstituteTag));
-    memset(substitute, 0x00, sizeof(struct StatementSubstituteTag));
     substitute->reference = reference;
     substitute->expression = expression;
     

@@ -1,7 +1,7 @@
-#include <memory.h>
+#include <string.h>
 
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 
 #include "List.h"
@@ -50,7 +50,6 @@ StringBuffer_appendFunction(
     {
 	    Logger_cor("lastItem is NULL");
         buffer = Memory_malloc(STRING_BUFFER_SIZE);
-        memset(buffer, 0x00, STRING_BUFFER_SIZE);
         List_addFunction(list, buffer, fileName, line);
         lastItem = List_lastItem(list);
     }
@@ -76,7 +75,6 @@ StringBuffer_appendFunction(
     
     Logger_cor("Length is over.");
     buffer = Memory_malloc(STRING_BUFFER_SIZE);
-    memset(buffer, 0x00, STRING_BUFFER_SIZE);
     List_addFunction(list, buffer, fileName, line);
     StringBuffer_append(stringBuffer, &(string[filler]));
     Logger_cor("[  END  ]%s", __func__);
@@ -95,7 +93,7 @@ StringBuffer_appendCharFunction(
 {
     Logger_cor("[ START ]%s", __func__);
     char buffer[1 + 1];
-    memset(buffer, 0x00, sizeof(buffer));
+    Memory_reset(buffer, sizeof(buffer));
     sprintf(buffer, "%c", charactor);
     Logger_cor("buffer = [%s]", buffer);
     StringBuffer_append(stringBuffer, buffer);
@@ -139,7 +137,6 @@ StringBuffer_toStringFunction(
     
     Logger_cor("buffer set.");
     char* buffer = Memory_malloc(length + 1);
-    memset(buffer, 0x00, length + 1);
     
     
     Logger_cor("start concat.");

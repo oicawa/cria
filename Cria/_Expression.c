@@ -1,7 +1,7 @@
-#include <memory.h>
+#include <string.h>
 
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 #include "StringBuffer.h"
 #include "Runtime.h"
@@ -33,7 +33,6 @@ Expression_new(
 {
     Logger_trc("[ START ]%s", __func__);
     Expression expression = Memory_malloc(sizeof(struct ExpressionTag));
-    memset(expression, 0x00, sizeof(struct ExpressionTag));
     expression->kind = kind;
     Logger_trc("[  END  ]%s", __func__);
     return expression;
@@ -140,11 +139,9 @@ ExpressionSelf_parse(
     Logger_dbg("VariableExpression name = '_self_'");
     ExpressionVariable variable = NULL;
     variable = Memory_malloc(sizeof(struct ExpressionVariableTag));
-    memset(variable, 0x00, sizeof(struct ExpressionVariableTag));
     variable->name = String_clone("_self_");
     
     expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
-    memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
     expression->type = REFERENCE_EXPRESSION_TYPE_SELF;
     expression->of.variable = variable;
 
@@ -433,11 +430,9 @@ ExpressionClass_parse(
     Logger_dbg("ExpressionClass name = %s", name);
     ExpressionClass klass = NULL;
     klass = Memory_malloc(sizeof(struct ExpressionClassTag));
-    memset(klass, 0x00, sizeof(struct ExpressionClassTag));
     klass->name = String_clone(name);
     
     expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
-    memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
     expression->type = REFERENCE_EXPRESSION_TYPE_CLASS;
     expression->of.klass = klass;
 
@@ -567,7 +562,6 @@ ExpressionParameters_new(
     Logger_trc("[ START ]%s", __func__);
     ExpressionParameters parameters = NULL;
     parameters = Memory_malloc(sizeof(struct ExpressionParametersTag));
-    memset(parameters, 0x00, sizeof(struct ExpressionParametersTag));
     parameters->list = parameterList;
     Logger_trc("[  END  ]%s", __func__);
     return parameters;
@@ -1031,13 +1025,11 @@ ExpressionGenerate_parse(
     
     
     ExpressionGenerate generate = Memory_malloc(sizeof(struct ExpressionGenerateTag));
-    memset(generate, 0x00, sizeof(struct ExpressionGenerateTag));
     generate->name = String_clone(name);
     generate->parameters = parameters;
     Logger_dbg("Created GenerateExpression");
     
     expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
-    memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
     expression->type = REFERENCE_EXPRESSION_TYPE_GENERATE;
     expression->of.generate = generate;
     
@@ -1106,7 +1098,6 @@ ExpressionStringLiteral_evaluate(
         
         long length = next - start;
         char* tmp = Memory_malloc(length + 1);
-        memset(tmp, 0x00, length + 1);
         strncpy(tmp, start, length);
         StringBuffer_append(stringBuffer, tmp);
         
@@ -1248,13 +1239,11 @@ ExpressionVariable_parse(
     Logger_dbg("VariableExpression name = %s", name);
     ExpressionVariable variable = NULL;
     variable = Memory_malloc(sizeof(struct ExpressionVariableTag));
-    memset(variable, 0x00, sizeof(struct ExpressionVariableTag));
     variable->name = String_clone(name);
     variable->isStatic = isStatic;
     variable->isConstant = isConstant;
     
     expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
-    memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
     expression->type = REFERENCE_EXPRESSION_TYPE_VARIABLE;
     expression->of.variable = variable;
 
@@ -1335,12 +1324,10 @@ ExpressionFunctionCall_parse(
     
     
     ExpressionFunctionCall function = Memory_malloc(sizeof(struct ExpressionFunctionCallTag));
-    memset(function, 0x00, sizeof(struct ExpressionFunctionCallTag));
     function->name = String_clone(name);
     function->parameters = parameters;
     
     expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
-    memset(expression, 0x00, sizeof(struct ExpressionReferenceTag));
     expression->type = REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL;
     expression->of.function = function;
     
@@ -1375,7 +1362,6 @@ ExpressionFactor_parse(
     {
         Logger_dbg("This is an integer literal token.");
         ExpressionIntegerLiteral integerLiteral = Memory_malloc(sizeof(struct ExpressionIntegerLiteralTag));
-        memset(integerLiteral, 0x00, sizeof(struct ExpressionIntegerLiteralTag));
         integerLiteral->value = String_toInteger(Token_buffer(token));
         
         expression = Expression_new(EXPRESSION_KIND_INTEGER_LITERAL);
@@ -1391,7 +1377,6 @@ ExpressionFactor_parse(
     {
         Logger_dbg("This is an integer literal token.");
         ExpressionBooleanLiteral booleanLiteral = Memory_malloc(sizeof(struct ExpressionBooleanLiteralTag));
-        memset(booleanLiteral, 0x00, sizeof(struct ExpressionBooleanLiteralTag));
         booleanLiteral->value = String_toBoolean(Token_buffer(token));
         
         expression = Expression_new(EXPRESSION_KIND_BOOLEAN_LITERAL);
@@ -1407,7 +1392,6 @@ ExpressionFactor_parse(
     {
         Logger_dbg("This is a string literal token.");
         ExpressionStringLiteral stringLiteral = Memory_malloc(sizeof(struct ExpressionStringLiteralTag));
-        memset(stringLiteral, 0x00, sizeof(struct ExpressionStringLiteralTag));
         stringLiteral->value = String_clone(Token_buffer(token));
         
         expression = Expression_new(EXPRESSION_KIND_STRING_LITERAL);
@@ -1499,7 +1483,6 @@ ExpressionMultiplyDivide_parse(
     
     Logger_dbg("Create MultiplyDivide Expression.");
     operation = Memory_malloc(sizeof(struct ExpressionOperationTag));
-    memset(operation, 0x00, sizeof(struct ExpressionOperationTag));
     operation->kind = kind;
     operation->left = left;
     operation->right = right;
@@ -1553,7 +1536,6 @@ ExpressionPlusMinus_parse(
     
     Logger_dbg("Create PlusMinus Expression.");
     operation = Memory_malloc(sizeof(struct ExpressionOperationTag));
-    memset(operation, 0x00, sizeof(struct ExpressionOperationTag));
     operation->kind = kind;
     operation->left = left;
     operation->right = right;
@@ -1613,7 +1595,6 @@ ExpressionCompare_parse(
     
     Logger_dbg("Create Compare Expression.");
     operation = Memory_malloc(sizeof(struct ExpressionOperationTag));
-    memset(operation, 0x00, sizeof(struct ExpressionOperationTag));
     operation->kind = kind;
     operation->left = left;
     operation->right = right;
@@ -1659,7 +1640,6 @@ ExpressionNot_parse(
     
     Logger_dbg("Create NotEqual Expression.");
     operation = Memory_malloc(sizeof(struct ExpressionOperationTag));
-    memset(operation, 0x00, sizeof(struct ExpressionOperationTag));
     operation->kind = kind;
     operation->left = left;
     operation->right = right;
@@ -1712,7 +1692,6 @@ ExpressionAndOr_parse(
     
     Logger_dbg("Create AndOr Expression.");
     operation = Memory_malloc(sizeof(struct ExpressionOperationTag));
-    memset(operation, 0x00, sizeof(struct ExpressionOperationTag));
     operation->kind = kind;
     operation->left = left;
     operation->right = right;

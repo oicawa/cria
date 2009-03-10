@@ -1,7 +1,7 @@
 #include <memory.h>
 
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 #include "CriaBoolean.h"
 #include "Runtime.h"

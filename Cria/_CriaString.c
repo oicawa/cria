@@ -1,7 +1,7 @@
-#include <memory.h>
+#include <string.h>
 
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 #include "CriaBoolean.h"
 #include "Runtime.h"
@@ -19,7 +19,6 @@ CriaString_new(
 {
     Logger_trc("[ START ]%s(%s)", __func__, value);
     CriaString criaString = Memory_malloc(sizeof(struct CriaStringTag));
-    memset(criaString, 0x00, sizeof(struct CriaStringTag));
     
     criaString->id.name = String_new("String");
     criaString->id.type = CRIA_DATA_TYPE_STRING;

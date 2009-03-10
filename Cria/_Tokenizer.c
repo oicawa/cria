@@ -1,8 +1,8 @@
-#include <memory.h>
+#include <string.h>
 #include <ctype.h>
 
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 #include "List.h"
 #include "StringBuffer.h"
@@ -90,7 +90,6 @@ Token_new(
 {
     Logger_trc("[ START ]%s", __func__);
     Token token = Memory_malloc(sizeof(struct TokenTag));
-    memset(token, 0x00, sizeof(struct TokenTag));
     token->type = type;
     token->row = row;
     token->column = column;
@@ -198,7 +197,6 @@ Tokenizer_new(
     }
     
     tokenizer = Memory_malloc(sizeof(struct TokenizerTag));
-    memset(tokenizer, 0x00, sizeof(struct TokenizerTag));
     tokenizer->file = file;
     tokenizer->row = 1;
     tokenizer->column = 0;

@@ -1,7 +1,7 @@
 #include <string.h>
 
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 #include "Runtime.h"
 #include "CriaInteger.h"
@@ -66,7 +66,6 @@ CriaIO_write(
         {
             long size = end - start;
             char* buffer = Memory_malloc(size + 1);
-            memset(buffer, 0x00, size + 1);
             strncpy(buffer, start, size);
             printf(buffer);
             buffer = NULL;
@@ -147,7 +146,7 @@ CriaIO_read(
     
     stringBuffer = StringBuffer_new();
     
-    memset(buffer, 0x00, sizeof(buffer));
+    Memory_reset(buffer, sizeof(buffer));
     while (fgets(buffer, sizeof(buffer), stdin) != NULL)
     {
         Logger_dbg("input = '%s'", buffer);
@@ -158,7 +157,7 @@ CriaIO_read(
             break;
         }
         StringBuffer_append(stringBuffer, buffer);
-        memset(buffer, 0x00, sizeof(buffer));
+        Memory_reset(buffer, sizeof(buffer));
     }
     
     returnString = CriaString_new(TRUE, StringBuffer_toString(stringBuffer));

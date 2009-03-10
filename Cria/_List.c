@@ -1,7 +1,5 @@
-#include <memory.h>
-
 #include "Memory.h"
-#include "../Logger/Logger.h"
+#include "Logger.h"
 
 #include "Boolean.h"
 
@@ -17,7 +15,6 @@ Item_newFunction(
 )
 {
     Item item = Memory_malloc(sizeof(struct ItemTag));
-    memset(item, 0x00, sizeof(struct ItemTag));
     item->object = object;
     item->prev = NULL;
     item->next = NULL;
@@ -63,7 +60,6 @@ List_newFunction(
 )
 {
     List list = Memory_malloc(sizeof(struct ListTag));
-    memset(list, 0x00, sizeof(struct ListTag));
     list->item = NULL;
     Logger_cor("&(list->item) = %p", &(list->item));
     list->last = NULL;
