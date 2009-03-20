@@ -235,7 +235,7 @@ Parser_create_syntax_tree(
     Statement statement = NULL;
     DefinitionFunction functionDefinition = NULL;
     DefinitionClass classDefinition = NULL;
-    //Import import = NULL;
+    Import import = NULL;
     Token errorToken = NULL;
     
     
@@ -243,17 +243,17 @@ Parser_create_syntax_tree(
     Parser_next(parser);
     
     
-    //while (TRUE)
-    //{
-    //    import = Import_parse(parser);
-    //    if (import == NULL)
-    //    {
-    //        break;
-    //    }
-    //    
-    //    Logger_dbg("Add created Import and parse next.");
-    //    Interpreter_import(interpreter, import);
-    //}
+    while (TRUE)
+    {
+        import = Import_parse(parser);
+        if (import == NULL)
+        {
+            break;
+        }
+        
+        Logger_dbg("Add created Import and parse next.");
+        Hash_put(Interpreter_imports(interpreter), Import_get_package_name(import), import);
+    }
     
     
     while (TRUE)

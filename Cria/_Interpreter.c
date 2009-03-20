@@ -181,3 +181,13 @@ Interpreter_setRow(
 {
 	interpreter->row = row;
 }
+
+
+
+Hash
+Interpreter_imports(
+    Interpreter interpreter
+)
+{
+    return interpreter->imports;
+}

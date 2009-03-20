@@ -9,6 +9,7 @@
 struct InterpreterTag
 {
     List statements;
+    Hash imports;
     Hash variables;
     Hash functions;
     Hash classes;

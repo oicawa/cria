@@ -74,4 +74,11 @@ Interpreter_classes(
 
 
 
+Hash
+Interpreter_imports(
+    Interpreter interpreter
+);
+
+
+
 #endif
