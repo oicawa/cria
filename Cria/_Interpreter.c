@@ -68,6 +68,7 @@ Interpreter_new(
     interpreter = Memory_malloc(sizeof(struct InterpreterTag));
     interpreter->statements = List_new();
     Logger_dbg("interpreter->statements is [%p]", interpreter->statements);
+    interpreter->imports = Hash_new(16);
     interpreter->variables = Hash_new(32);
     interpreter->functions = Hash_new(64);
     interpreter->classes = Hash_new(64);
