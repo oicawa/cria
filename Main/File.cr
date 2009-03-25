@@ -1,4 +1,6 @@
 import Cria::Stream
+
+
 write("Read file of 'Integer.cr'\n---\n")
 
 file = File("./Integer.cr")
