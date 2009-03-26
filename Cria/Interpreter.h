@@ -75,7 +75,7 @@ Interpreter_classes(
 
 
 Hash
-Interpreter_imports(
+Interpreter_get_imports(
     Interpreter interpreter
 );
 

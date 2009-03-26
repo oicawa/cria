@@ -17,7 +17,7 @@ OBJS =\
 	_Expression.o\
 	_Reference.o\
 	_Hash.o\
-	_Import.o\
+	_Loader.o\
 	_CriaId.o\
 	_CriaObject.o\
 	_CriaClass.o\
@@ -55,7 +55,7 @@ _Statement.o: _Statement.c _Statement.h _Cria.h Cria.h Memory.h Logger.h
 _Expression.o: _Expression.c _Expression.h _Cria.h Cria.h Memory.h Logger.h
 _Reference.o: _Reference.c _Reference.h _Cria.h Cria.h Memory.h Logger.h
 _Hash.o: _Hash.c _Hash.h Hash.h
-_Import.o: _Import.c _Import.h Memory.h Logger.h
+_Loader.o: _Loader.c _Loader.h Memory.h Logger.h
 _CriaIO.o: _CriaIO.c _CriaIO.h _Cria.h Cria.h Memory.h Logger.h
 _CriaString.o: _CriaString.c _CriaString.h _Cria.h Cria.h Memory.h Logger.h
 _CriaInteger.o: _CriaInteger.c _CriaInteger.h _Cria.h Cria.h Memory.h Logger.h
