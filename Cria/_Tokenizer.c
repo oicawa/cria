@@ -63,10 +63,10 @@
 #define TOKEN_LITERAL_FOR                   "for "
 #define TOKEN_LITERAL_ELIF                  "elif "
 #define TOKEN_LITERAL_GOTO                  "goto "
+#define TOKEN_LITERAL_LOAD                  "load "
 #define TOKEN_LITERAL_THROW                 "throw "
 #define TOKEN_LITERAL_WHILE                 "while "
 #define TOKEN_LITERAL_RETURN_VALUE          "return "
-#define TOKEN_LITERAL_IMPORT               "import "
 
 #define TOKEN_LITERAL_NULL                  "null"
 #define TOKEN_LITERAL_ELSE                  "else"
@@ -380,10 +380,10 @@ Tokenizer_reserved(
         goto READ;
     }
     
-    if (strncmp(value, TOKEN_LITERAL_IMPORT, strlen(TOKEN_LITERAL_IMPORT) - 1) == 0)
+    if (strncmp(value, TOKEN_LITERAL_LOAD, strlen(TOKEN_LITERAL_LOAD) - 1) == 0)
     {
-        Logger_dbg("create TOKEN_TYPE_IMPORT");
-        token = Token_new(TOKEN_TYPE_IMPORT, row, column, value);
+        Logger_dbg("create TOKEN_TYPE_LOAD");
+        token = Token_new(TOKEN_TYPE_LOAD, row, column, value);
         goto READ;
     }
     
