@@ -6,7 +6,7 @@
 #include "Statement.h"
 #include "Reference.h"
 #include "Expression.h"
-#include "Import.h"
+#include "Loader.h"
 #include "Interpreter.h"
 
 #include "_Parser.h"
@@ -235,7 +235,7 @@ Parser_create_syntax_tree(
     Statement statement = NULL;
     DefinitionFunction functionDefinition = NULL;
     DefinitionClass classDefinition = NULL;
-    Import import = NULL;
+    Loader loader = NULL;
     Token errorToken = NULL;
     
     
@@ -245,14 +245,14 @@ Parser_create_syntax_tree(
     
     while (TRUE)
     {
-        import = Import_parse(parser);
-        if (import == NULL)
+        loader = Loader_parse(parser);
+        if (loader == NULL)
         {
             break;
         }
         
-        Logger_dbg("Add created Import and parse next.");
-        Hash_put(Interpreter_imports(interpreter), Import_get_package_name(import), import);
+        Logger_dbg("Load library.");
+        Loader_load(loader, interpreter);
     }
     
     
