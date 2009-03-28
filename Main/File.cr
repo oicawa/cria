@@ -1,4 +1,4 @@
-import Cria::Stream
+load Cria::Stream
 
 
 write("Read file of 'Integer.cr'\n---\n")
