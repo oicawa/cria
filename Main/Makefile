@@ -16,8 +16,9 @@ INCLUDES = -I$(CRIAINC) -I$(GCINC)
 all:main.o
 	cp ../Library/lib/$(GCLIB) ./$(GCLIB);
 	cp ../Cria/$(CRIALIB) ./$(CRIALIB);
-	#$(CC) -o cria main.o $(CRIALIB) $(GCLIB)
 	$(CC) -Wl,-rpath,. -o cria main.o -L. -l$(CRIA) -l$(GC)
+	#$(CC) -Wl,-rpath,'$ORIGIN' -o cria main.o -L. -l$(CRIA) -l$(GC)
+	#ld -o cria main.o -L. -l$(CRIA) -l$(GC)
 
 main.o: main.c
 	$(CC) $(CFLAGS) main.c $(INCLUDES)
