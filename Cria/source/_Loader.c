@@ -10,6 +10,7 @@
 #include "Tokenizer.h"
 #include "Parser.h"
 #include "Runtime.h"
+#include "Boolean.h"
 
 #include "_Loader.h"
 
@@ -118,6 +119,61 @@ Loader_get_package_name(
 }
 
 
+Boolean
+Loader_load_native(
+    Interpreter interpreter,
+	String library_path
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+	void *library = NULL;
+	void (*Package_loader)(Interpreter);
+	Boolean result = FALSE;
+    
+    
+	library = dlopen(library_path, RTLD_LAZY);
+	if (library == NULL)
+	{
+		Logger_err("%s", dlerror());
+		goto END;
+	}
+
+
+	Package_loader = dlsym (library, "__Package_load__");
+	if (Package_loader == NULL)
+	{
+		Logger_err("%s", dlerror());
+		goto END;
+	}
+	
+	
+	(Package_loader)(interpreter);
+	
+	
+	dlclose(library);
+	result = TRUE;
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return result;
+}
+
+
+
+Boolean
+Loader_load_cria(
+    Interpreter interpreter,
+	String library_path
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+	Boolean result = FALSE;
+    
+//END:
+    Logger_trc("[  END  ]%s", __func__);
+    return result;
+}
+
 void
 Loader_load(
     Loader loader,
@@ -130,8 +186,7 @@ Loader_load(
     StringBuffer current_path = StringBuffer_new();
 	String cria_package_base = NULL;
 	String current_package_base = NULL;
-	void *library = NULL;
-	int	(*Package_loader)(int);
+	Boolean result = FALSE;
     
     
     //カレントディレクトリのパスを取得StringBuffer_toString(current_path)
@@ -167,30 +222,52 @@ Loader_load(
     memset(buffer, 0x00, MAX_PATH_LENGTH);
     strcat(buffer, cria_package_base);
     strcat(buffer, ".so");
-
-
-	library = dlopen(buffer, RTLD_LAZY);
-	if (library == NULL)
+	result = Loader_load_native(interpreter, buffer);
+	if (result == TRUE)
 	{
-		Logger_err("%s", dlerror());
-		runtime_error(interpreter);
+		Logger_dbg("Loaded native package. [%s]", buffer);
 		goto END;
 	}
 
 
-	Package_loader = dlsym (library, "__Package_load__");
-	if (Package_loader == NULL)
+    memset(buffer, 0x00, MAX_PATH_LENGTH);
+    strcat(buffer, cria_package_base);
+    strcat(buffer, ".ca");
+	result = Loader_load_cria(interpreter, buffer);
+	if (result == TRUE)
 	{
-		Logger_err("%s", dlerror());
-		runtime_error(interpreter);
+		Logger_dbg("Loaded cria package. [%s]", buffer);
 		goto END;
 	}
 
-	printf ("%d\n", (Package_loader)(200));
-	dlclose(library);
+
+    memset(buffer, 0x00, MAX_PATH_LENGTH);
+    strcat(buffer, current_package_base);
+    strcat(buffer, ".so");
+	result = Loader_load_native(interpreter, buffer);
+	if (result == TRUE)
+	{
+		Logger_dbg("Loaded native package. [%s]", buffer);
+		goto END;
+	}
+
+
+    memset(buffer, 0x00, MAX_PATH_LENGTH);
+    strcat(buffer, current_package_base);
+    strcat(buffer, ".ca");
+	result = Loader_load_cria(interpreter, buffer);
+	if (result == TRUE)
+	{
+		Logger_dbg("Loaded cria package. [%s]", buffer);
+		goto END;
+	}
+	
+	
+	Logger_err("Not found library named %s.", loader->library_name);
+	runtime_error(interpreter);
+
     
 END:
     Logger_trc("[  END  ]%s", __func__);
     return;
 }
-
