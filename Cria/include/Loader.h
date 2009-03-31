@@ -3,9 +3,17 @@
 
 
 #include "Parser.h"
+#include "List.h"
 
 
 typedef struct LoaderTag *Loader;
+
+
+
+Loader
+Loader_new(
+	List path
+);
 
 
 
@@ -27,6 +35,31 @@ void
 Loader_load(
     Loader loader,
     Interpreter interpreter
+);
+
+
+
+void
+Loader_add_function(
+    Interpreter interpreter,
+    char* functionName,
+    CriaNativeFunction* functionPoint
+);
+
+
+
+void
+Loader_add_class(
+    Interpreter interpreter,
+    char* className,
+    CriaNativeClassLoader* classLoader
+);
+
+
+
+void
+Loader_unload(
+	Loader loader
 );
 
 

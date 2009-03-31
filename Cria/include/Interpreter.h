@@ -5,6 +5,8 @@
 #include "List.h"
 #include "Hash.h"
 
+
+
 typedef struct InterpreterTag *Interpreter;
 
 
@@ -77,6 +79,13 @@ Interpreter_classes(
 Hash
 Interpreter_get_imports(
     Interpreter interpreter
+);
+
+
+
+void
+Interpreter_dispose(
+	Interpreter interpreter
 );
 
 
