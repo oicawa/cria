@@ -1,12 +1,14 @@
 TARGET = Cria.Core.so
-CFLAGS = -fPIC -c -g -DDEBUG -Wall -I../include
+CFLAGS = -fPIC -c -g -DDEBUG -Wall -I../include -I../../Cria/include
 CC=gcc
 
 OBJS =\
-    Package.o\
+	Package.o\
+	_IO.o\
+
 
 all:$(OBJS)
-	$(CC) -shared -o ../../$(TARGET) $(OBJS)
+	$(CC) -Wl,-rpath,'$$ORIGIN' -shared -o ../../$(TARGET) $(OBJS) -L../.. -lcria
 
 
 .c.o:
@@ -16,3 +18,5 @@ clean:
 	rm -f *.o ../../$(TARGET)
 
 Package.o: Package.c
+_IO.o: _IO.c ../include/IO.h
+
