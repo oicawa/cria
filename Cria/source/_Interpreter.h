@@ -6,10 +6,12 @@
 #include "List.h"
 #include "Hash.h"
 
+#include "Interpreter.h"
+
 struct InterpreterTag
 {
     List statements;
-    Hash imports;
+    Hash libraries;
     Hash variables;
     Hash functions;
     Hash classes;

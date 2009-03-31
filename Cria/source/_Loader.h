@@ -13,7 +13,7 @@ struct LoaderTag
 {
     String package_name;
     String library_name;
-    String function_name;
+    void* library;
 };
 
 

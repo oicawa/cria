@@ -11,8 +11,67 @@
 #include "Parser.h"
 #include "Runtime.h"
 #include "Boolean.h"
+#include "Definition.h"
 
 #include "_Loader.h"
+
+
+
+String
+Loader_create_path(
+	List path,
+	String separator
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    char buffer[MAX_PATH_LENGTH];
+	int count = List_count(path);
+	int index = 0;
+	int end = 0;
+	int length = 0;
+	
+	memset(buffer, 0x00, MAX_PATH_LENGTH);
+	
+	count = List_count(path);
+	index = 0;
+	for (index = 0; index < count; index++)
+	{
+		strcat(buffer, (String)(List_get(path, index)));
+		strcat(buffer, separator);
+	}
+	
+	
+	end = strlen(buffer);
+	length = strlen(separator);
+	memset(&buffer[end - length], 0x00, length);
+
+	
+    String full_path = String_new(buffer);
+	
+    Logger_trc("[  END  ]%s", __func__);
+    return full_path;
+}
+
+
+Loader
+Loader_new(
+	List path
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Loader loader = NULL;
+	
+	
+    loader = Memory_malloc(sizeof(struct LoaderTag));
+	loader->package_name = Loader_create_path(path, "::");
+    loader->library_name = Loader_create_path(path, ".");
+	loader->library = NULL;
+    
+
+    Logger_trc("[  END  ]%s", __func__);
+    return loader;
+}
+
 
 
 Loader
@@ -24,11 +83,10 @@ Loader_parse(
     Loader loader = NULL;
     Item position = Parser_getPosition(parser);
     Token token = NULL;
-    StringBuffer package_name = NULL;
-    StringBuffer library_name = NULL;
-	StringBuffer function_name = NULL;
+    List path = NULL;
     
-    Logger_dbg("Check TOKEN_TYPE_LOAD.");
+
+	Logger_dbg("Check TOKEN_TYPE_LOAD.");
     token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_LOAD)
     {
@@ -38,9 +96,7 @@ Loader_parse(
     }
     
     
-    package_name = StringBuffer_new();
-    library_name = StringBuffer_new();
-    function_name = StringBuffer_new();
+    path = List_new();
     while (TRUE)
     {
         Logger_dbg("Check package field");
@@ -55,9 +111,7 @@ Loader_parse(
         }
         
         
-        StringBuffer_append(package_name, Token_buffer(token));
-        StringBuffer_append(library_name, Token_buffer(token));
-        StringBuffer_append(function_name, Token_buffer(token));
+        List_add(path, Token_buffer(token));
         
         
         Logger_dbg("Check colon or NEW_LINE");
@@ -86,11 +140,6 @@ Loader_parse(
             Parser_error(token);
             goto END;
         }
-        
-        
-        StringBuffer_append(package_name, "::");
-        StringBuffer_append(library_name, ".");
-        StringBuffer_append(function_name, "_");
     }
     
     
@@ -98,10 +147,7 @@ Loader_parse(
     
     
     Logger_dbg("Create 'Loader'");
-    loader = Memory_malloc(sizeof(struct LoaderTag));
-    loader->package_name = StringBuffer_toString(package_name);
-    loader->library_name = StringBuffer_toString(library_name);
-    loader->function_name = StringBuffer_toString(function_name);
+    loader = Loader_new(path);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -119,8 +165,43 @@ Loader_get_package_name(
 }
 
 
+void
+Loader_add_function(
+    Interpreter interpreter,
+    char* functionName,
+    CriaNativeFunction* functionPoint
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+	Hash functions = Interpreter_functions(interpreter);
+    DefinitionFunction definition = NULL;
+    definition = DefinitionFunction_new(functionName, TRUE, TRUE, NULL, NULL, functionPoint);
+    Hash_put(functions, functionName, definition);
+    Logger_trc("[  END  ]%s", __func__);
+}
+
+
+
+void
+Loader_add_class(
+    Interpreter interpreter,
+    char* className,
+    CriaNativeClassLoader* classLoader
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+	Hash classes = Interpreter_classes(interpreter);
+    DefinitionClass definition = NULL;
+    definition = DefinitionClass_new(className, TRUE, NULL, NULL, NULL, NULL, classLoader);
+    Hash_put(classes, className, definition);
+    Logger_trc("[  END  ]%s", __func__);
+}
+
+
+
 Boolean
 Loader_load_native(
+	Loader loader,
     Interpreter interpreter,
 	String library_path
 )
@@ -147,10 +228,22 @@ Loader_load_native(
 	}
 	
 	
+	//Save library handler pointer
+	loader->library = library;
+	
+	
+	//Load package
 	(Package_loader)(interpreter);
 	
+		if (loader == NULL)
+	{
+		Logger_dbg("Not native library.");
+		goto END;
+	}
+
+	//!! "dlclose()" must be called in "Loader_unload_native()".
 	
-	dlclose(library);
+	
 	result = TRUE;
     
 END:
@@ -160,8 +253,36 @@ END:
 
 
 
+void
+Loader_unload_native(
+	Loader loader
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+	if (loader == NULL)
+	{
+		Logger_dbg("Dose not exist loader object.");
+		goto END;
+	}
+	
+	if (loader->library == NULL)
+	{
+		Logger_dbg("Not native library.");
+		goto END;
+	}
+	
+	
+	dlclose(loader->library);
+	
+END:
+    Logger_trc("[  END  ]%s", __func__);
+}
+
+
+
 Boolean
 Loader_load_cria(
+	Loader loader,
     Interpreter interpreter,
 	String library_path
 )
@@ -182,8 +303,6 @@ Loader_load(
 {
     Logger_trc("[ START ]%s", __func__);
     char buffer[MAX_PATH_LENGTH];
-    StringBuffer cria_home_path = StringBuffer_new();
-    StringBuffer current_path = StringBuffer_new();
 	String cria_package_base = NULL;
 	String current_package_base = NULL;
 	Boolean result = FALSE;
@@ -192,11 +311,10 @@ Loader_load(
     //カレントディレクトリのパスを取得StringBuffer_toString(current_path)
     memset(buffer, 0x00, MAX_PATH_LENGTH);
     getcwd(buffer, MAX_PATH_LENGTH);
-    StringBuffer_append(current_path, buffer);
-    StringBuffer_append(current_path, "/");
-    StringBuffer_append(current_path, loader->library_name);
-	current_package_base = StringBuffer_toString(current_path);
-    printf("*** [%s] ***\n", current_package_base);
+	strcat(buffer, "/");
+	strcat(buffer, loader->library_name);
+	current_package_base = String_new(buffer);
+    printf("*** current is [%s] ***\n", current_package_base);
     
     
     //実行ファイルが存在するパスを取得
@@ -206,23 +324,22 @@ Loader_load(
     readlink("/proc/self/exe", buffer, MAX_PATH_LENGTH);
     
 
-    //ここにディレクトリパスだけ取得する処理を。。
-    size_t length = strlen(buffer);
+    //ディレクトリパスだけ取得
+	size_t length = strlen(buffer);
     char* pointer = strrchr(buffer, '/');
     size_t index = pointer - buffer;
     memset(pointer + 1, 0x00, length - index);
     
     
-    StringBuffer_append(cria_home_path, buffer);
-    StringBuffer_append(cria_home_path, loader->library_name);
-	cria_package_base = StringBuffer_toString(cria_home_path);
+    strcat(buffer, loader->library_name);
+	cria_package_base = String_new(buffer);
     printf("*** [%s] ***\n", cria_package_base);
     
     
     memset(buffer, 0x00, MAX_PATH_LENGTH);
     strcat(buffer, cria_package_base);
     strcat(buffer, ".so");
-	result = Loader_load_native(interpreter, buffer);
+	result = Loader_load_native(loader, interpreter, buffer);
 	if (result == TRUE)
 	{
 		Logger_dbg("Loaded native package. [%s]", buffer);
@@ -233,7 +350,7 @@ Loader_load(
     memset(buffer, 0x00, MAX_PATH_LENGTH);
     strcat(buffer, cria_package_base);
     strcat(buffer, ".ca");
-	result = Loader_load_cria(interpreter, buffer);
+	result = Loader_load_cria(loader, interpreter, buffer);
 	if (result == TRUE)
 	{
 		Logger_dbg("Loaded cria package. [%s]", buffer);
@@ -244,7 +361,7 @@ Loader_load(
     memset(buffer, 0x00, MAX_PATH_LENGTH);
     strcat(buffer, current_package_base);
     strcat(buffer, ".so");
-	result = Loader_load_native(interpreter, buffer);
+	result = Loader_load_native(loader, interpreter, buffer);
 	if (result == TRUE)
 	{
 		Logger_dbg("Loaded native package. [%s]", buffer);
@@ -255,7 +372,7 @@ Loader_load(
     memset(buffer, 0x00, MAX_PATH_LENGTH);
     strcat(buffer, current_package_base);
     strcat(buffer, ".ca");
-	result = Loader_load_cria(interpreter, buffer);
+	result = Loader_load_cria(loader, interpreter, buffer);
 	if (result == TRUE)
 	{
 		Logger_dbg("Loaded cria package. [%s]", buffer);
@@ -270,4 +387,14 @@ Loader_load(
 END:
     Logger_trc("[  END  ]%s", __func__);
     return;
+}
+
+
+
+void
+Loader_unload(
+	Loader loader
+)
+{
+	Loader_unload_native(loader);
 }
