@@ -61,12 +61,10 @@ String_cloneFunction(
 
 
 String
-String_subStringFunction(
+String_sub(
     String  source,
     long    start,
-    long    length,
-    char    *fileName,
-    int     line
+    long    length
 )
 {
     if (source == NULL)
@@ -74,15 +72,45 @@ String_subStringFunction(
     
     long size = strlen(source);
     
+    if (start < 0 || length < 0)
+        return NULL;
+    
     if (size < start + length)
         return NULL;
     
     char* buffer = Memory_malloc(length + 1);
     strncpy(buffer, &(source[start]), length);
     
-    String string = String_newFunction(buffer, fileName, line);
+    String string = String_new(buffer);
     buffer = NULL;
     return string;
+}
+
+
+
+long
+String_find(
+    String source,
+    String string,
+    long offset
+)
+{
+    long index = 0;
+    char* pointer = NULL;
+    
+    if (source == NULL)
+        return -1;
+    
+    if (source == NULL)
+        return -1;
+    
+    pointer = strstr(&(source[offset]), string);
+    if (pointer == NULL)
+        return -1;
+
+    index = pointer - source;
+    
+    return index;
 }
 
 

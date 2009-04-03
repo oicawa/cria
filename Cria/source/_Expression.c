@@ -870,7 +870,8 @@ ExpressionFunctionCall_evaluate(
 		current = object;
 		function = ExpressionFunctionCall_searchFromInterpreter(interpreter, expression->name);
     }
-    else if (parent->type == CRIA_DATA_TYPE_CRIA_OBJECT)
+    else if (parent->type == CRIA_DATA_TYPE_CRIA_OBJECT ||
+              parent->type == CRIA_DATA_TYPE_STRING)
     {
     	current = parent;
 		function = ExpressionFunctionCall_searchFromObject(interpreter, parent, expression->name);

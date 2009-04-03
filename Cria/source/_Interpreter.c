@@ -1,13 +1,14 @@
 #include "Memory.h"
 #include "Logger.h"
 #include "Definition.h"
-#include "CriaIO.h"
-#include "CriaFile.h"
-#include "CriaList.h"
 #include "Tokenizer.h"
 #include "Parser.h"
 #include "Statement.h"
 #include "Loader.h"
+#include "CriaIO.h"
+#include "CriaString.h"
+#include "CriaFile.h"
+#include "CriaList.h"
 
 #include "_Interpreter.h"
 
@@ -45,15 +46,13 @@ Interpreter_compile(
     Logger_trc("[ START ]%s", __func__);
     Boolean result = FALSE;
     List tokens = NULL;
-	Loader loader = NULL;
 	
-	//Load "Cria.Core.so"
-	List paths = List_new();
-	List_add(paths, String_new("Cria"));
-	List_add(paths, String_new("Core"));
-	loader = Loader_new(paths);
-	Loader_load(loader, interpreter);
-    
+	Loader_add_function(interpreter, "write", CriaIO_write);
+	Loader_add_function(interpreter, "read", CriaIO_read);
+	Loader_add_class(interpreter, "String", CriaString_loadClass);
+	Loader_add_class(interpreter, "File", CriaFile_loadClass);
+	Loader_add_class(interpreter, "List", CriaList_loadClass);
+	
 	//Load target script file.
     tokens = Tokenizer_create_tokens(filePath);
     
