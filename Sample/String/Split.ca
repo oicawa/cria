@@ -1,0 +1,11 @@
+write("If you want to debug, Attach to cria process...\n\n")
+read()
+
+hoge = "Oikawa,Watanabe,Masamitsu,Fumie"
+write(hoge + "\n----------\n\n")
+fields = hoge.split("a")
+index = 0
+while index < fields.count()
+    write("field %s : [%s]\n", index, fields.get(index))
+    index = index + 1
+

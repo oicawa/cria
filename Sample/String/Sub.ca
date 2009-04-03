@@ -1,0 +1,17 @@
+read()
+oikawa_masamitsu = "Oikawa Masamitsu"
+oikawa_fumie = "Oikawa Fumie"
+
+
+write_substring(string):
+    write(string + "\n\n")
+    count = 0
+    while count < 14
+        write("%s : [%s] / [%s]\n", count, string.sub(count), string.sub(count, 3))
+        count = count + 1
+    write("----------\n\n")
+
+
+write_substring(oikawa_masamitsu)
+write_substring(oikawa_fumie)
+

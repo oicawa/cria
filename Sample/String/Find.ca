@@ -1,0 +1,15 @@
+hoge = "Fumie Oikawa is Masamitsu Oikawa's wife."
+memory = "012345678901234567890123456789012345678901234567890"
+
+write(hoge + "\n")
+write(memory + "\n----------\n\n")
+
+
+index = hoge.find("Oikawa")
+write("Search from head:\n")
+write("index = %s : [%s]\n\n", index, hoge.sub(index))
+
+index = hoge.find("Oikawa", index + 1)
+write("Search from index:\n")
+write("index = %s : [%s]\n", index, hoge.sub(index))
+

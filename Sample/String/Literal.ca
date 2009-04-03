@@ -1,0 +1,1 @@
+write("hogefuga".sub(3) + "\n")
