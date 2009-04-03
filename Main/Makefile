@@ -18,6 +18,7 @@ INCLUDES = -I$(CRIAINC) -I$(GCINC)
 
 all:main.o $(CRIALIB)
 	cd $(CRIADIR)/source;make;
+	cd ../Cria.Core/source;make;
 	$(CC) -Wl,-rpath,'$$ORIGIN' -o ../$(TARGET) main.o -L.. -l$(TARGET) -L$(LIBDIR) -l$(GC)
 
 main.o: main.c

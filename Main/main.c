@@ -43,6 +43,9 @@ main(
     
     Interpreter_run(interpreter);
     
+	
+	Interpreter_dispose(interpreter);
+	
     
     endCode = 1;
     
