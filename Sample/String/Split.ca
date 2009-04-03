@@ -1,9 +1,10 @@
-write("If you want to debug, Attach to cria process...\n\n")
-read()
+write("Input sample string...    >> ")
+hoge = read()
+write("Input separator string... >> ")
+separator = read()
 
-hoge = "Oikawa,Watanabe,Masamitsu,Fumie"
 write(hoge + "\n----------\n\n")
-fields = hoge.split("a")
+fields = hoge.split(separator)
 index = 0
 while index < fields.count()
     write("field %s : [%s]\n", index, fields.get(index))
