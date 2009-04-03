@@ -8,7 +8,7 @@
 #include "String.h"
 #include "Interpreter.h"
 #include "Expression.h"
-
+#include "Definition.h"
 
 
 typedef struct CriaStringTag
@@ -34,6 +34,12 @@ CriaString_operate(
     OperationKind   kind,
     CriaString      left,
     CriaString      right
+);
+
+
+DefinitionClass
+CriaString_loadClass(
+    String className
 );
 
 

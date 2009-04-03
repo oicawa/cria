@@ -35,12 +35,19 @@ String_cloneFunction(
 
 
 String
-String_subStringFunction(
+String_sub(
     String  source,
     long    start,
-    long    length,
-    char    *fileName,
-    int     line
+    long    length
+);
+
+
+
+long
+String_find(
+    String source,
+    String string,
+    long offset
 );
 
 

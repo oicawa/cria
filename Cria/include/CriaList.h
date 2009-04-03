@@ -29,4 +29,13 @@ CriaList_loadClass(
 
 
 
+CriaId
+CriaList__generator_(
+	Interpreter interpreter,
+	CriaId object,
+    List args
+);
+
+
+
 #endif
