@@ -17,6 +17,7 @@ main(
     int endCode = 0;
     
     //Logger_set(LOG_LEVEL_DEBUG, "DefinitionVariable_new, CriaFile_loadClass, Hash_put, DefinitionVariable_name");
+    //kLogger_set(LOG_LEVEL_TRACE, NULL);
 
     Interpreter interpreter = NULL;
     int result = 0;

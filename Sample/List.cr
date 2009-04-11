@@ -34,3 +34,7 @@ print_list_contents(list)
 
 write("use indexer.\n\n")
 print_list_contents_by_indexer(list)
+
+write("use indexer reference.\n\n")
+list[2] = "Indexer reference test, SUCCESSED!\n"
+print_list_contents_by_indexer(list)

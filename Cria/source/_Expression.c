@@ -1169,10 +1169,12 @@ Expression_evaluate(
         id = ExpressionGenerate_evaluate(interpreter, object, parameters, expression->of._generate_);
         Logger_dbg("Done 'Generate  expression'");
         break;
-    /*
-    case EXPRESSION_KIND_REAL_LITERAL:
+    case EXPRESSION_KIND_NULL:
+        Logger_dbg("Do 'Null expression'");
+        //id = CriaId_new("Null", CRIA_DATA_TYPE_NULL);
+        id = NULL;
+        Logger_dbg("Done 'Generate  expression'");
         break;
-    //*/
     case EXPRESSION_KIND_BOOLEAN_LITERAL:
         id = ExpressionBooleanLiteral_evaluate(interpreter, object, parameters, expression->of._booleanLiteral_);
         break;
@@ -1463,6 +1465,16 @@ ExpressionFactor_parse(
         expression = Expression_new(EXPRESSION_KIND_BOOLEAN_LITERAL);
         expression->of._booleanLiteral_ = booleanLiteral;
         
+        Parser_next(parser);
+        goto END;
+    }
+    
+    
+    Logger_dbg("Check null literal.");
+    if (Token_type(token) == TOKEN_TYPE_NULL)
+    {
+        Logger_dbg("This is a null literal token.");
+        expression = Expression_new(EXPRESSION_KIND_NULL);
         Parser_next(parser);
         goto END;
     }

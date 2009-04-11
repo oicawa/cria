@@ -332,7 +332,7 @@ Reference_evaluate(
         definition = ReferenceVariable_evaluate(interpreter, object, parameters, reference->of.variable, parent);
         break;
     //case REFERENCE_TYPE_FUNCTION_CALL:
-    //    definition = evaluator_referenceFunctionCall(interpreter, reference->of.function);
+    //    definition = ReferenceFunctionCall_evaluate(interpreter, object, reference->of.function);
     //    break;
     case REFERENCE_TYPE_CLASS:
         id = ReferenceClass_evaluate(interpreter, object, parameters, reference->of.klass, parent);
@@ -482,7 +482,7 @@ ReferenceIndexer_parse(
     if (Token_type(token) != TOKEN_TYPE_BRACKET_RIGHT)
     {
     	Token_log(token);
-	    Logger_dbg("Not ')'.");
+	    Logger_dbg("Not ']'.");
     	Parser_error(token);
         goto END;
     }
