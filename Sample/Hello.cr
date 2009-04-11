@@ -23,7 +23,7 @@ answer = read()
 if answer == "yes"
 
     write("Nice to meet you, %s\n\n", create_name(name, true, true))
-    write("Is your wife beautiful? >> ")
+    write("Is your wife cute? >> ")
     is_beautiful = read()
     
     while is_beautiful != "yes"

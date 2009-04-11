@@ -6,6 +6,14 @@ print_list_contents(list):
         i = i + 1
     write("\n")
 
+print_list_contents_by_indexer(list):
+    count = list.count()
+    i = 0
+    while i < count
+        write("%s: '%s'\n", i, list[i])
+        i = i + 1
+    write("\n")
+
 
 list = List()
 
@@ -24,7 +32,5 @@ write("insert '%s' at index 1.\n\n", value)
 list.insert(1, value)
 print_list_contents(list)
 
-    
-        
-
-
+write("use indexer.\n\n")
+print_list_contents_by_indexer(list)
