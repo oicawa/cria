@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "Interpreter.h"
+#include "Logger.h"
 
 
 
@@ -15,6 +16,8 @@ main(
 {
     int endCode = 0;
     
+    //Logger_set(LOG_LEVEL_DEBUG, "DefinitionVariable_new, CriaFile_loadClass, Hash_put, DefinitionVariable_name");
+
     Interpreter interpreter = NULL;
     int result = 0;
     
@@ -32,7 +35,6 @@ main(
         goto END;
     }
     
-    
     result = Interpreter_compile(interpreter, argv[1]);
     if (result == FALSE)
     {
@@ -40,12 +42,11 @@ main(
         goto END;
     }
     
-    
     Interpreter_run(interpreter);
     
 	
-	Interpreter_dispose(interpreter);
-	
+    Interpreter_dispose(interpreter);
+    
     
     endCode = 1;
     
