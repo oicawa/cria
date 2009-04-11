@@ -1,3 +1,4 @@
+write("Push the return key...")
 read()
 oikawa_masamitsu = "Oikawa Masamitsu"
 oikawa_fumie = "Oikawa Fumie"
