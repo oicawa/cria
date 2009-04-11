@@ -16,7 +16,7 @@
 #include "_Expression.h"
 
 
-
+ExpressionReference ExpressionIndexer_parse(Parser  parser);
 ExpressionReference ExpressionFunctionCall_parse(Parser parser);
 ExpressionReference ExpressionVariable_parse(Parser parser);
 ExpressionReference ExpressionGenerate_parse(Parser parser);
@@ -547,6 +547,13 @@ ExpressionReference_parse(
         goto END;
     }
     
+    expression = ExpressionIndexer_parse(parser);
+    if (expression != NULL)
+    {
+    	Logger_dbg("Created Expression of Indexer.");
+        goto END;
+    }
+    
 END:
     Logger_trc("[  END  ]%s", __func__);
     return expression;
@@ -673,7 +680,8 @@ ExpressionParameters_parse(
     token = Parser_getCurrent(parser);
     Token_log(token);
     Logger_dbg("Loop start.");
-    while (Token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT)
+    while (Token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT &&
+           Token_type(token) != TOKEN_TYPE_BRACKET_RIGHT)
     {
         Logger_dbg("Parse expression.");
         expression = Expression_parse(parser);
@@ -708,7 +716,8 @@ ExpressionParameters_parse(
         
         
         Logger_dbg("Token is not right parenthesis.");
-        if (Token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT)
+        if (Token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT &&
+            Token_type(token) != TOKEN_TYPE_BRACKET_RIGHT)
         {
             Token_log(token);
             Parser_setPosition(parser, position);
@@ -1237,6 +1246,7 @@ ExpressionVariable_parse(
         goto END;
     }
     
+   
     Logger_dbg("VariableExpression name = %s", name);
     ExpressionVariable variable = NULL;
     variable = Memory_malloc(sizeof(struct ExpressionVariableTag));
@@ -1254,6 +1264,76 @@ ExpressionVariable_parse(
     	Logger_dbg("Next ReferenceExprssion parse.");
     	Parser_next(parser);
         expression->next = ExpressionReference_parse(parser);
+    }
+    else if (Token_type(token) == TOKEN_TYPE_BRACKET_LEFT)
+    {
+    	Logger_dbg("Next ReferenceExprssion parse.");
+        expression->next = ExpressionReference_parse(parser);
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
+}
+
+
+
+ExpressionReference
+ExpressionIndexer_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Item position = Parser_getPosition(parser);
+    ExpressionReference expression = NULL;
+    ExpressionParameters parameters = NULL;
+    Token token = NULL;
+    
+    token = Parser_getCurrent(parser);
+    if (Token_type(token) != TOKEN_TYPE_BRACKET_LEFT)
+    {
+    	Token_log(token);
+		Logger_dbg("First token is not '['.");
+        Parser_setPosition(parser, position);
+        goto END;
+    }
+	Logger_dbg("First token is '['.");
+    
+    
+    Parser_next(parser);
+    parameters = ExpressionParameters_parse(parser);
+    if (parameters == NULL)
+    {
+        Logger_dbg("The tokens that before right parenthesis are not parameters.");
+        Parser_setPosition(parser, position);
+        goto END;
+    }
+	Logger_dbg("The tokens that before right parenthesis are parameters.");
+    
+    
+    token = Parser_getCurrent(parser);
+    if (Token_type(token) != TOKEN_TYPE_BRACKET_RIGHT)
+    {
+        Logger_dbg("Last token is not right parenthesis.");
+        goto END;
+    }
+	Logger_dbg("Last token is right parenthesis.");
+    
+    
+    ExpressionFunctionCall function = Memory_malloc(sizeof(struct ExpressionFunctionCallTag));
+    function->name = String_new(" indexer ");
+    function->parameters = parameters;
+    
+    expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
+    expression->type = REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL;
+    expression->of.function = function;
+    
+    
+    Parser_next(parser);
+    if (Token_type(token) == TOKEN_TYPE_PERIOD)
+    {
+        expression->next = ExpressionReference_parse(parser);
+		Logger_dbg("Created next expression.");
     }
     
 END:

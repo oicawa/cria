@@ -23,7 +23,7 @@ CriaList__generator_(
     Logger_trc("[ START ]%s", __func__);
     
     CriaObject list = CriaObject_new("List");
-    CriaObject_addField(list, DefinitionVariable_new("pointer", FALSE, FALSE));
+    CriaObject_addField(list, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "pointer", FALSE, FALSE, NULL));
     
     Logger_trc("[  END  ]%s", __func__);
     return (CriaId)list;
@@ -326,6 +326,9 @@ CriaList_loadClass(
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     function = DefinitionFunction_new("get", TRUE, FALSE, NULL, NULL, CriaList_get);
+    Hash_put(i_methods, DefinitionFunction_get_name(function), function);
+    
+    function = DefinitionFunction_new(" indexer ", TRUE, FALSE, NULL, NULL, CriaList_get);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     function = DefinitionFunction_new("count", TRUE, FALSE, NULL, NULL, CriaList_count);

@@ -33,6 +33,17 @@ Item_getObject(
 
 
 
+void
+Item_setObject(
+	Item item,
+    void* object
+)
+{
+	item->object = object;
+}
+
+
+
 void*
 Item_getNext(
 	Item item

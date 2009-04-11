@@ -26,8 +26,8 @@ CriaFile__generator_(
     Logger_trc("[ START ]%s", __func__);
     
     CriaObject file = CriaObject_new("File");
-    CriaObject_addField(file, DefinitionVariable_new("path", FALSE, FALSE));
-    CriaObject_addField(file, DefinitionVariable_new("pointer", FALSE, FALSE));
+    CriaObject_addField(file, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "path", FALSE, FALSE, NULL));
+    CriaObject_addField(file, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "pointer", FALSE, FALSE, NULL));
     
     Logger_trc("[  END  ]%s", __func__);
     return (CriaId)file;
@@ -424,30 +424,48 @@ CriaFile_loadClass(
     Hash i_methods = Hash_new(32);
     Hash s_methods = Hash_new(32);
     
-    variable = DefinitionVariable_new("file", FALSE, FALSE);
+    variable = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "file", FALSE, FALSE, NULL);
+    
+    Logger_dbg("0");
+    
     Hash_put(i_fields, DefinitionVariable_name(variable), variable);
+    
+    Logger_dbg("1");
     
     function = DefinitionFunction_new(" generator ", TRUE, TRUE, NULL, NULL, CriaFile__generator_);
     Hash_put(s_methods, DefinitionFunction_get_name(function), function);
     
+    Logger_dbg("2");
+    
     function = DefinitionFunction_new("new", TRUE, TRUE, NULL, NULL, CriaFile_new);
     Hash_put(s_methods, DefinitionFunction_get_name(function), function);
+    
+    Logger_dbg("3");
     
     function = DefinitionFunction_new("open", TRUE, FALSE, NULL, NULL, CriaFile_open);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
+    Logger_dbg("4");
+    
     function = DefinitionFunction_new("close", TRUE, FALSE, NULL, NULL, CriaFile_close);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
+    
+    Logger_dbg("5");
     
     function = DefinitionFunction_new("read", TRUE, FALSE, NULL, NULL, CriaFile_read);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
+    Logger_dbg("6");
+    
     function = DefinitionFunction_new("write", TRUE, FALSE, NULL, NULL, CriaFile_write);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
+    
+    Logger_dbg("7");
     
     function = DefinitionFunction_new("is_end", TRUE, FALSE, NULL, NULL, CriaFile_isEnd);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
+    Logger_dbg("Create class definition.");
     
     klass = DefinitionClass_new(className, TRUE, i_fields, s_fields, i_methods, s_methods, NULL);
     Logger_dbg("17");

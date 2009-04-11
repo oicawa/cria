@@ -218,13 +218,13 @@ ReferenceVariable_evaluate(
 	
 	if (parameters != NULL)
 	{
-		definition = DefinitionVariable_new(variable->name, TRUE, FALSE);
+		definition = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, variable->name, TRUE, FALSE, NULL);
 		List_add(parameters, definition);
 		Logger_dbg("Add field named '%s' to parameters.", DefinitionVariable_name(definition));
 		goto END;
 	}
     
-    definition = DefinitionVariable_new(variable->name, TRUE, FALSE);
+    definition = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, variable->name, TRUE, FALSE, NULL);
     Hash_put(Interpreter_variables(interpreter), variable->name, definition);
 	Logger_dbg("Add field named '%s' to interpreter as global.", DefinitionVariable_name(definition));
     
@@ -262,7 +262,9 @@ ReferenceVariable_parse(
     
     Parser_next(parser);
     token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_PERIOD && Token_type(token) != TOKEN_TYPE_SUBSTITUTE)
+    if (Token_type(token) != TOKEN_TYPE_PERIOD &&
+        Token_type(token) != TOKEN_TYPE_BRACKET_LEFT &&
+        Token_type(token) != TOKEN_TYPE_SUBSTITUTE)
     {
     	Token_log(token);
     	Logger_dbg("Not '.' and ' = '");
@@ -282,20 +284,23 @@ ReferenceVariable_parse(
     reference->of.variable = variable;
     
     
-    if (Token_type(token) != TOKEN_TYPE_PERIOD)
+    if (Token_type(token) == TOKEN_TYPE_PERIOD)
     {
-    	Token_log(token);
-    	Logger_dbg("Not '.'");
-        goto END;
+        Parser_next(parser);
+        token = Parser_getCurrent(parser);
+        Token_log(token);
+        reference->next = Reference_parse(parser);
+        if (reference->next == NULL)
+            Parser_error(token);
     }
-    
-    
-    Parser_next(parser);
-    token = Parser_getCurrent(parser);
-    Token_log(token);
-    reference->next = Reference_parse(parser);
-    if (reference->next == NULL)
-        Parser_error(token);
+    else if (Token_type(token) == TOKEN_TYPE_BRACKET_LEFT)
+    {
+        //Parser_next(parser);
+    	Logger_dbg("Next Reference parse.");
+        reference->next = Reference_parse(parser);
+        if (reference->next == NULL)
+            Parser_error(token);
+    }
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -410,6 +415,80 @@ ReferenceFunctionCall_parse(
     
     functionCall = Memory_malloc(sizeof(struct ReferenceFunctionCallTag));
     functionCall->name = String_clone(name);
+    functionCall->parameters = parameters;
+    Logger_dbg("Created ReferenceFunctionCall");
+
+    reference = Reference_new(REFERENCE_TYPE_FUNCTION_CALL);
+    reference->of.function = functionCall;
+    
+    Parser_next(parser);
+    token = Parser_getCurrent(parser);
+    if (Token_type(token) != TOKEN_TYPE_PERIOD)
+    {
+    	Token_log(token);
+	    Logger_dbg("Not '.'.");
+    	goto END;
+    }
+    
+	Parser_next(parser);
+	reference->next = Reference_parse(parser);
+	if (reference->next == NULL)
+	{
+	    Logger_dbg("Not exist next Reference after '.'");
+		Parser_error(token);
+	}
+	
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return reference;
+}
+
+
+
+Reference
+ReferenceIndexer_parse(
+	Parser parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Item position = Parser_getPosition(parser);
+    ExpressionParameters parameters = NULL;
+    //String name = NULL;
+    Token token = NULL;
+    Reference reference = NULL;
+    ReferenceFunctionCall functionCall = NULL;
+    
+    
+    token = Parser_getCurrent(parser);
+    if (Token_type(token) != TOKEN_TYPE_BRACKET_LEFT)
+    {
+    	Token_log(token);
+	    Logger_dbg("Not identifier.");
+        Parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    Parser_next(parser);
+    parameters = ExpressionParameters_parse(parser);
+    if (parameters == NULL)
+    {
+	    Logger_dbg("Not parameters.");
+        Parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    
+    token = Parser_getCurrent(parser);
+    if (Token_type(token) != TOKEN_TYPE_BRACKET_RIGHT)
+    {
+    	Token_log(token);
+	    Logger_dbg("Not ')'.");
+    	Parser_error(token);
+        goto END;
+    }
+    
+    functionCall = Memory_malloc(sizeof(struct ReferenceFunctionCallTag));
+    functionCall->name = String_new(" indexer reference ");
     functionCall->parameters = parameters;
     Logger_dbg("Created ReferenceFunctionCall");
 
@@ -633,6 +712,9 @@ Reference_parse(
     if (reference != NULL)
         goto END;
         
+    reference = ReferenceIndexer_parse(parser);
+    if (reference != NULL)
+        goto END;
     
     Parser_setPosition(parser, position);
     

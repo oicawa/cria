@@ -10,12 +10,24 @@
 #include "Definition.h"
 
 
+
+struct DefinitionVariableNormalTag
+{
+    void* object;
+    String name;
+    Boolean isStatic;
+    Boolean isConstant;
+};
+
+
 struct DefinitionVariableTag
 {
-    String      name;
-    Boolean     isStatic;
-    Boolean     isConstant;
-    void*       object;
+    DefinitionVariableType type;
+    union
+    {
+        DefinitionVariableNormal normal;
+        Item item;
+    } of;
 };
 
 

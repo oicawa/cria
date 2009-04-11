@@ -22,18 +22,50 @@
 //==============================
 //DefinitionVariable
 //==============================
-DefinitionVariable
-DefinitionVariable_new(
+DefinitionVariableNormal
+DefinitionVariableNormal_new(
     String name,
     Boolean isStatic,
     Boolean isConstant
 )
 {
-    DefinitionVariable definition = Memory_malloc(sizeof(struct DefinitionVariableTag));
-    definition->name = String_clone(name);
-    definition->isStatic = isStatic;
-    definition->isConstant = isConstant;
+    DefinitionVariableNormal normal = NULL;
+    normal = Memory_malloc(sizeof(struct DefinitionVariableNormalTag));
+    normal->name = String_clone(name);
+    normal->isStatic = isStatic;
+    normal->isConstant = isConstant;
 
+    return normal;
+}
+
+
+
+DefinitionVariable
+DefinitionVariable_new(
+    DefinitionVariableType type,
+    String name,
+    Boolean isStatic,
+    Boolean isConstant,
+    Item item
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    DefinitionVariable definition = Memory_malloc(sizeof(struct DefinitionVariableTag));
+    Logger_dbg("Created empty definition.");
+    definition->type = type;
+    Logger_dbg("Set definition type.");
+    if (type == DEFINITION_VARIABLE_TYPE_NORMAL)
+    {
+        Logger_dbg("Normal variable.");
+        definition->of.normal = DefinitionVariableNormal_new(name, isStatic, isConstant);
+    }
+    else
+    {
+        Logger_dbg("Item variable.");
+        definition->of.item = item;
+    }
+
+    Logger_trc("[  END  ]%s", __func__);
     return definition;
 }
 
@@ -70,8 +102,12 @@ DefinitionVariable_search(
         Logger_dbg("Condition OK.");
         tmp = (DefinitionVariable)List_get(variables, index);
         Logger_dbg("tmp = %p", tmp);
-        Logger_dbg("tmp->name = %s", tmp->name);
-        if (strcmp(tmp->name, name) != 0)
+        
+        if (tmp->type != DEFINITION_VARIABLE_TYPE_NORMAL)
+            continue;
+
+        Logger_dbg("tmp->of.normal->name = %s", tmp->of.normal->name);
+        if (strcmp(tmp->of.normal->name, name) != 0)
             continue;
         
         definition = tmp;
@@ -82,7 +118,7 @@ DefinitionVariable_search(
 END:
     Logger_dbg("DefinitionVariable is %p", definition);
     if (definition != NULL)
-    	Logger_dbg("DefinitionVariable name = '%s'", definition->name);
+    	Logger_dbg("DefinitionVariable name = '%s'", definition->of.normal->name);
     Logger_trc("[  END  ]%s", __func__);
     return definition;
 }
@@ -94,7 +130,31 @@ DefinitionVariable_name(
 	DefinitionVariable variable
 )
 {
-	return variable->name;
+    Logger_trc("[ START ]%s", __func__);
+    String name = NULL;
+    
+    if (variable == NULL)
+    {
+        Logger_dbg("variable is NULL.");
+        goto END;
+    }
+    
+    if (variable->type != DEFINITION_VARIABLE_TYPE_NORMAL)
+    {
+        Logger_dbg("variable->type != DEFINITION_VARIABLE_TYPE_NORMAL");
+        goto END;
+    }
+    
+    if (variable->of.normal == NULL)
+    {
+        Logger_dbg("variable->of.normal == NULL");
+        goto END;
+    }
+    name = variable->of.normal->name;
+   
+END:
+    Logger_trc("[  END  ]%s", __func__);
+	return name;
 }
 
 
@@ -105,7 +165,10 @@ DefinitionVariable_set(
 	CriaId id
 )
 {
-	variable->object = id;
+    if (variable->type == DEFINITION_VARIABLE_TYPE_NORMAL)
+    	variable->of.normal->object = id;
+    else if (variable->type == DEFINITION_VARIABLE_TYPE_ITEM)
+    	Item_setObject(variable->of.item, id);
 }
 
 
@@ -115,7 +178,12 @@ DefinitionVariable_getObject(
 	DefinitionVariable variable
 )
 {
-	return variable->object;
+    if (variable->type == DEFINITION_VARIABLE_TYPE_NORMAL)
+    	return variable->of.normal->object;
+    else if (variable->type == DEFINITION_VARIABLE_TYPE_ITEM)
+    	return Item_getObject(variable->of.item);
+    
+    return NULL;    
 }
 
 
@@ -200,9 +268,9 @@ DefinitionVariable_parse(
 CREATE:
 	Parser_next(parser);
     
-	variable = DefinitionVariable_new(name, isStatic, isConstant);
+	variable = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, name, isStatic, isConstant, NULL);
     if (value != NULL)
-        variable->object = value;
+        variable->of.normal->object = value;
 	
 END:
 	if (variable == NULL)
@@ -259,6 +327,7 @@ DefinitionFunction_parse_parameters(
     Logger_trc("[ START ]%s", __func__);
 	List parameters = List_new();
 	Token token = NULL;
+    DefinitionVariable variable = NULL;
 	
 	while (TRUE)
 	{
@@ -269,7 +338,7 @@ DefinitionFunction_parse_parameters(
 			break;
 	    }
 	    
-		DefinitionVariable variable = DefinitionVariable_new(Token_buffer(token), TRUE, FALSE);
+	    variable = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, Token_buffer(token), TRUE, FALSE, NULL);
 		List_add(parameters, variable);
 	    Logger_dbg("Add parameter.(%s)", DefinitionVariable_name(variable));
 		
@@ -672,7 +741,7 @@ DefinitionClass_generateInstance(
 		{
 			name = (String)List_get(fields, i);
 			
-			variable = DefinitionVariable_new(name, FALSE, FALSE);
+			variable = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, name, FALSE, FALSE, NULL);
 			Logger_dbg("variable->name = %s (Instance)", name);
 			CriaObject_addField(object, variable);
 		}
@@ -763,7 +832,10 @@ DefinitionClass_parse(
     	if (variable == NULL)
     		break;
     	
-    	if (variable->isStatic == TRUE)
+    	if (variable->type != DEFINITION_VARIABLE_TYPE_NORMAL)
+            continue;
+        
+    	if (variable->of.normal->isStatic == TRUE)
     	{
 			Logger_dbg("Add instance variable.");
 			Hash_put(s_fields, DefinitionVariable_name(variable), variable);
