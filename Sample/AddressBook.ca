@@ -1,0 +1,153 @@
+Entry:
+    @name
+    @address
+    @birthday
+
+    @to_string():
+        return "----------\nName    : " + .name + "\nAddress : " + .address + "\nBirthday: " + .birthday + "\n"
+
+    @to_csv():
+        return .name + "," + .address + "," + .birthday + "\n"
+
+AddressBook:
+    @entrys
+    @file_path
+    NAME = 0
+    ADDRESS = 1
+    BIRTHDAY = 2
+
+    new():
+        .entrys = List()
+
+    @load(file_path):
+        .file_path = file_path
+        file = File(.file_path)
+        file.open("r")
+        while file.is_end() == false
+            line = file.read()
+            fields = line.split(",")
+            entry = Entry()
+            entry.name = fields[class.NAME]
+            entry.address = fields[class.ADDRESS]
+            entry.birthday = fields[class.BIRTHDAY]
+            entrys = .entrys
+            entrys.add(entry)
+            #TODO: 
+            #.entrys.add(entry)
+        file.close()
+
+    @print(index):
+        #tmp = .entrys[index]
+        entrys = .entrys
+        tmp = entrys[index]
+        write("[%s] %s", index, tmp.to_string())
+
+    @save():
+        if .file_path == null
+            write("Input save file name >> ")
+            .file_path = read()
+            if .file_path == ""
+                .file_path = "TemplateAddressBook.csv"
+        file = File(.file_path, "w")
+        file.open()
+        index = 0
+        while index < .entrys.count()
+            #file.write(.entrys[index].to_csv())
+            tmp = .entrys[index]
+            file.write(tmp.to_csv())
+            index = index + 1
+        file.close()
+
+    @add(entry):
+        .entrys.add(entry)
+
+    @delete(index):
+        .entrys.delete(index)
+
+    @edit(index, entry):
+        .entrys.insert(index, entry)
+        .entrys.delete(index + 1)
+
+AddressBookCUI:
+    @address_book
+
+    new():
+        .address_book = AddressBook()
+
+    @menu():
+        write("\n")
+        write("===<< MENU >> ===========================\n")
+        write("  1. Load exist address book.\n")
+        write("  2. Save.\n")
+        write("  3. Print all entries.\n")
+        write("  4. Print specified entry.\n")
+        write("  5. Delete specified entry.\n")
+        write("  6. Edit specified entry.\n")
+        write("  7. Quit.\n")
+        write("=========================================\n")
+        write("Select menu number. >> ")
+        return read()
+
+    @error():
+        write("<<ERROR>>\n")
+        write("[%s] is illegal number. Select again.\n")
+        read()
+
+    @load():
+        write("> Input file name. >> ")
+        file_path = read()
+        #.address_book.load(file_path)
+        book = .address_book
+        book.load(file_path)
+
+    @print_all():
+        index = 0
+        #while index < .address_book.entrys.count()
+        book = .address_book
+        entrys = book.entrys
+        while index < entrys.count()
+            #.address_book.print(index)
+            book.print(index)
+            index = index + 1
+
+    @print():
+        write(" Input entry number. >> ")
+        number = read()
+        write(" Number = %s\n", number)
+        
+    @quit():
+        write(" Good bye.\n\n")
+        
+
+    @run():
+        while true
+            number = .menu()
+            if (number == "1")
+                .load()
+            elif (number == "2")
+                .save()
+            elif (number == "3")
+                .print_all()
+            elif (number == "4")
+                .print()
+            elif (number == "5")
+                .print()
+                #.delete()
+            elif (number == "6")
+                .print()
+                #.edit()
+            elif (number == "7")
+                .quit()
+                break
+            else
+                .error()
+
+ 
+#cui = AddressBookCUI()
+#cui.run()
+
+list1 = List()
+list1.add(List())
+#list1.get(0).add(List())
+item = list1.get(0)
+item.add(List())
