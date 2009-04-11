@@ -11,7 +11,16 @@
 
 
 
-typedef struct  DefinitionVariableTag *DefinitionVariable;
+typedef enum 
+{
+    DEFINITION_VARIABLE_TYPE_NORMAL,
+    DEFINITION_VARIABLE_TYPE_ITEM,
+} DefinitionVariableType;
+
+
+
+typedef struct DefinitionVariableTag *DefinitionVariable;
+typedef struct DefinitionVariableNormalTag *DefinitionVariableNormal;
 
 typedef CriaId CriaNativeFunction(Interpreter interpreter, CriaId object, List args);
 typedef struct DefinitionFunctionTag *DefinitionFunction;
@@ -26,9 +35,11 @@ typedef DefinitionClass CriaNativeClassLoader(char* name);
 //==============================
 DefinitionVariable
 DefinitionVariable_new(
-    String  name,
+    DefinitionVariableType type,
+    String name,
     Boolean isStatic,
-    Boolean isConstant
+    Boolean isConstant,
+    Item item
 );
 
 
