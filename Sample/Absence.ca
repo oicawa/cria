@@ -1,0 +1,82 @@
+load Cria::Tk
+
+#画面設定
+window = Window("休暇届", 300, 200)
+
+applicant_lable = Label("申請者")
+applicant_panel = Panel()
+id_label = Lable("社員番号")
+id_text = Text()
+name_label = Label("氏名")
+name_text = Text()
+search_button = Button("検索")
+applicant_panel.add(id_label)
+applicant_panel.add(id_text)
+applicant_panel.add(name_label)
+applicant_panel.add(name_text)
+applicant_panel.add(search_button)
+
+term_label = Label("期間")
+term_panel = Panel(Tk.GRID)
+term_from = Text()
+term_childa = Label("〜")
+term_to = Text()
+term_panel[0].add(term_from)
+term_panel[0].add(term_childa)
+term_panel[0].add(term_to)
+
+division_label = Label("区分")
+divisions = Radios()
+divisions.add("有休", 0)
+divisions.add("慶弔", 1)
+divisions.add("傷休", 2)
+divisions.add("特別", 3)
+divisions.selected(0)
+
+reason_label = Label("事由")
+reason_text = TextArea()
+
+message = Label()
+message.forecolor = "red"
+
+regist_button = Button("申請依頼")
+regist_button.click()(event, control):
+    exception = null
+    MessageBox.show("申請中です。。", Button.CANCEL)():
+        input = Information()
+        input.id = id_text.text
+        input.name = name_text
+        input.from = term_from
+        input.to = term_to
+        input.division = divisions.value
+        input.reason = reason_text.text
+        client = HttpClient("https://metronet.metro.co.jp/Absence")
+        client.send(input)
+    catch ex
+        exception = ex
+
+    if exception == null
+        MessageBox.show("休暇届申請に失敗しました。")
+        message.text = exception.message
+    else
+        message.text = null
+        MessageBox.show("休暇届申請が完了しました。")
+        window.close()
+
+#レイアウト設定
+window[0, 0].put(applicant_label)
+window[0, 1].put(applicant_panel)
+
+window[1, 0].put(term_label)
+window[1, 1].put(term_panel)
+
+window[2, 0].put(division_label)
+window[2, 1].put(divisions)
+
+window[3, 0].put(reason_label)
+window[3][1].put(reason_text)
+
+window[4, 0].put(message).colspan(2)
+
+#画面表示
+window.show()
