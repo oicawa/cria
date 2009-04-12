@@ -13,6 +13,9 @@
 
 
 
+DefinitionVariable ReferenceFunctionCall_evaluate(Interpreter interpreter, CriaId object, List parameters, ReferenceFunctionCall function, CriaId parent);
+
+
 Reference
 Reference_new(
     ReferenceType   type
@@ -331,9 +334,9 @@ Reference_evaluate(
     case REFERENCE_TYPE_VARIABLE:
         definition = ReferenceVariable_evaluate(interpreter, object, parameters, reference->of.variable, parent);
         break;
-    //case REFERENCE_TYPE_FUNCTION_CALL:
-    //    definition = ReferenceFunctionCall_evaluate(interpreter, object, reference->of.function);
-    //    break;
+    case REFERENCE_TYPE_FUNCTION_CALL:
+        definition = ReferenceFunctionCall_evaluate(interpreter, object, parameters, reference->of.function, parent);
+        break;
     case REFERENCE_TYPE_CLASS:
         id = ReferenceClass_evaluate(interpreter, object, parameters, reference->of.klass, parent);
     	reference = reference->next;
@@ -355,6 +358,29 @@ END:
 	
     Logger_trc("[  END  ]%s", __func__);
     return definition;
+}
+
+
+
+DefinitionVariable
+ReferenceFunctionCall_evaluate(
+    Interpreter interpreter,
+    CriaId object,
+    List parameters,
+    ReferenceFunctionCall function,
+    CriaId parent
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    DefinitionVariable variable = NULL;
+    
+    //TODO:
+    id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, NULL, parent);
+    
+//END:
+    Logger_trc("[  END  ]%s", __func__);
+    return variable;
 }
 
 
@@ -469,11 +495,13 @@ ReferenceIndexer_parse(
     }
     
     Parser_next(parser);
+    token = Parser_getCurrent(parser);
     parameters = ExpressionParameters_parse(parser);
     if (parameters == NULL)
     {
 	    Logger_dbg("Not parameters.");
         Parser_setPosition(parser, position);
+        Parser_error(token);
         goto END;
     }
     
