@@ -960,10 +960,13 @@ Statement_executeList(
     
     int count = List_count(statements);
     int index = 0;
+    int dummy = 0;
     
     for (index = 0; index < count; index++)
     {
         Statement statement = (Statement)(List_get(statements, index));
+        if (statement->line == 24)
+            dummy++;
         result = Statement_execute(interpreter, object, parameters, statement);
         if (result.type != STATEMENT_RESULT_NORMAL)
         	break;

@@ -63,10 +63,21 @@ ExpressionOperation_evaluate(
     CriaId right = Expression_evaluate(interpreter, object, parameters, expression->right);
     Logger_dbg("Evaluated right expression.");
     
-    if (left == NULL)
+    if (left == NULL && right == NULL)
     {
-        Logger_dbg("Left is NULL!");
+        goto END;
     }
+    else if (left == NULL && right != NULL)
+    {
+        id = right;
+        goto END;
+    }
+    else if (left != NULL && right == NULL)
+    {
+        id = left;
+        goto END;
+    }
+    
     Logger_dbg("Check data type.");
     Logger_dbg("Data type = %d. (INTEGER is %d)", left->type, CRIA_DATA_TYPE_INTEGER);
     Logger_dbg("Checked data type.");
@@ -108,7 +119,7 @@ ExpressionOperation_evaluate(
         break;
     }
     
-    
+END:
     Logger_trc("[  END  ]%s", __func__);
     return id;
 }
@@ -467,8 +478,9 @@ ExpressionReference_evaluate(
     case REFERENCE_EXPRESSION_TYPE_SELF:
     	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_SELF, variable->name = %s", expression->of.variable->name);
     	Logger_dbg("object as parent is %p", object);
-    	expression = expression->next;
-        id = ExpressionReference_evaluate(interpreter, object, parameters, expression, object);
+    	//expression = expression->next;
+        //id = ExpressionReference_evaluate(interpreter, object, parameters, expression, object);
+        id = object;
         break;
     case REFERENCE_EXPRESSION_TYPE_VARIABLE:
     	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_VARIABLE, variable->name = %s", expression->of.variable->name);
@@ -872,6 +884,7 @@ ExpressionFunctionCall_evaluate(
     CriaId id = NULL;
     CriaId current = NULL;
     DefinitionFunction  function = NULL;
+    List tmp = NULL;
     
     
     if (parent == NULL)
@@ -908,7 +921,8 @@ ExpressionFunctionCall_evaluate(
     
     
     Logger_dbg("Call cria function.(%s)", expression->name);
-    id = DefinitionFunction_evaluate(interpreter, current, DefinitionFunction_getParameterList(function), function, parameters, parent);
+    tmp = DefinitionFunction_getParameterList(function);
+    id = DefinitionFunction_evaluate(interpreter, current, tmp, function, parameters, parent);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -1332,8 +1346,11 @@ ExpressionIndexer_parse(
     
     
     Parser_next(parser);
+    token = Parser_getCurrent(parser);
     if (Token_type(token) == TOKEN_TYPE_PERIOD)
     {
+        Parser_next(parser);
+        token = Parser_getCurrent(parser);
         expression->next = ExpressionReference_parse(parser);
 		Logger_dbg("Created next expression.");
     }
@@ -1416,8 +1433,11 @@ ExpressionFunctionCall_parse(
     
     
     Parser_next(parser);
+    token = Parser_getCurrent(parser);
     if (Token_type(token) == TOKEN_TYPE_PERIOD)
     {
+        Parser_next(parser);
+        token = Parser_getCurrent(parser);
         expression->next = ExpressionReference_parse(parser);
 		Logger_dbg("Created next expression.");
     }
