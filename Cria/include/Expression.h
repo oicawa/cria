@@ -82,6 +82,17 @@ Expression_parse(
 
 
 CriaId
+ExpressionFunctionCall_evaluate(
+    Interpreter interpreter,
+    CriaId object,
+    List parameterList,
+    ExpressionFunctionCall expression,
+    CriaId parent
+);
+
+
+
+CriaId
 ExpressionReference_evaluate(
     Interpreter         interpreter,
     CriaId variable,
