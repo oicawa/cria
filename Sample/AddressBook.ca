@@ -30,17 +30,11 @@ AddressBook:
             entry.name = fields[class.NAME]
             entry.address = fields[class.ADDRESS]
             entry.birthday = fields[class.BIRTHDAY]
-            entrys = .entrys
-            entrys.add(entry)
-            #TODO: 
-            #.entrys.add(entry)
+            .entrys.add(entry)
         file.close()
 
     @print(index):
-        #tmp = .entrys[index]
-        entrys = .entrys
-        tmp = entrys[index]
-        write("[%s] %s", index, tmp.to_string())
+        write("[%s] %s", index, .entrys[index].to_string())
 
     @save():
         if .file_path == null
@@ -52,9 +46,7 @@ AddressBook:
         file.open()
         index = 0
         while index < .entrys.count()
-            #file.write(.entrys[index].to_csv())
-            tmp = .entrys[index]
-            file.write(tmp.to_csv())
+            file.write(.entrys[index].to_csv())
             index = index + 1
         file.close()
 
@@ -96,18 +88,12 @@ AddressBookCUI:
     @load():
         write("> Input file name. >> ")
         file_path = read()
-        #.address_book.load(file_path)
-        book = .address_book
-        book.load(file_path)
+        .address_book.load(file_path)
 
     @print_all():
         index = 0
-        #while index < .address_book.entrys.count()
-        book = .address_book
-        entrys = book.entrys
-        while index < entrys.count()
-            #.address_book.print(index)
-            book.print(index)
+        while index < .address_book.entrys.count()
+            .address_book.print(index)
             index = index + 1
 
     @print():
@@ -143,11 +129,14 @@ AddressBookCUI:
                 .error()
 
  
-#cui = AddressBookCUI()
-#cui.run()
+cui = AddressBookCUI()
+cui.run()
 
-list1 = List()
-list1.add(List())
-#list1.get(0).add(List())
-item = list1.get(0)
-item.add(List())
+#write("Press return key. >>")
+#read()
+#list = List()
+#list.add(List())
+#list.get(0).add(List())
+#list.get(0).get(0).add("hogehoge")
+#write(list.get(0).get(0).get(0) + "\n\n")
+
