@@ -7,6 +7,7 @@
 #include "Tokenizer.h"
 #include "CriaObject.h"
 #include "CriaClass.h"
+#include "CriaVariable.h"
 #include "Runtime.h"
 
 #include "_Reference.h"
@@ -335,7 +336,14 @@ Reference_evaluate(
         definition = ReferenceVariable_evaluate(interpreter, object, parameters, reference->of.variable, parent);
         break;
     case REFERENCE_TYPE_FUNCTION_CALL:
-        definition = ReferenceFunctionCall_evaluate(interpreter, object, parameters, reference->of.function, parent);
+        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, reference->of.function, parent);
+        if (id->type != CRIA_DATA_TYPE_VARIABLE)
+        {
+            Logger_err("Function call result is not variable.");
+            runtime_error(interpreter);
+            goto END;
+        }
+        definition = ((CriaVariable)id)->definition;
         break;
     case REFERENCE_TYPE_CLASS:
         id = ReferenceClass_evaluate(interpreter, object, parameters, reference->of.klass, parent);
@@ -391,13 +399,12 @@ ReferenceFunctionCall_parse(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    Item position = Parser_getPosition(parser);
     Reference reference = NULL;
-    ReferenceFunctionCall functionCall = NULL;
-    ExpressionParameters parameters = NULL;
-    String name = NULL;
+    ExpressionReference expression = NULL;
+    ExpressionFunctionCall function = NULL;
     Token token = NULL;
     
+    /*
     token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
     {
@@ -439,13 +446,22 @@ ReferenceFunctionCall_parse(
         goto END;
     }
     
-    functionCall = Memory_malloc(sizeof(struct ReferenceFunctionCallTag));
+    functionCall = Memory_malloc(sizeof(struct ExpressionFunctionCallTag));
     functionCall->name = String_clone(name);
     functionCall->parameters = parameters;
     Logger_dbg("Created ReferenceFunctionCall");
-
+    */
+    
+    expression = ExpressionFunctionCall_parse(parser);
+    function = (ExpressionFunctionCall)ExpressionReference_getReference(expression);
+    if (function == NULL)
+    {
+        Logger_dbg("Not ExpressionFunctionCall.");
+        goto END;
+    }
+    
     reference = Reference_new(REFERENCE_TYPE_FUNCTION_CALL);
-    reference->of.function = functionCall;
+    reference->of.function = function;
     
     Parser_next(parser);
     token = Parser_getCurrent(parser);
@@ -470,6 +486,31 @@ END:
 }
 
 
+/*
+DefinitionVariable
+ReferenceIndexer_evaluate(
+    Interpreter interpreter,
+    CriaId object,
+    List parameters,
+    ReferenceIndexer indexer,
+    CriaId parent
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    DefinitionVariable variable = NULL;
+    ExpressionFunctionCall function = NULL;
+    
+    
+    //TODO:
+    id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, NULL, parent);
+    
+//END:
+    Logger_trc("[  END  ]%s", __func__);
+    return variable;
+}
+*/
+
 
 Reference
 ReferenceIndexer_parse(
@@ -477,12 +518,16 @@ ReferenceIndexer_parse(
 )
 {
     Logger_trc("[ START ]%s", __func__);
+    Reference reference = NULL;
+    ExpressionReference expref = NULL;
+    ExpressionFunctionCall function = NULL;
+    Token token = NULL;
+    /*
+    Logger_trc("[ START ]%s", __func__);
     Item position = Parser_getPosition(parser);
     ExpressionParameters parameters = NULL;
-    //String name = NULL;
-    Token token = NULL;
     Reference reference = NULL;
-    ReferenceFunctionCall functionCall = NULL;
+    ReferenceIndexer indexer = NULL;
     
     
     token = Parser_getCurrent(parser);
@@ -514,15 +559,19 @@ ReferenceIndexer_parse(
     	Parser_error(token);
         goto END;
     }
+    */
     
-    functionCall = Memory_malloc(sizeof(struct ReferenceFunctionCallTag));
-    functionCall->name = String_new(" indexer reference ");
-    functionCall->parameters = parameters;
-    Logger_dbg("Created ReferenceFunctionCall");
-
+    expref = ExpressionIndexer_parse(parser, FALSE);
+    function = (ExpressionFunctionCall)ExpressionReference_getReference(expref);
+    if (function == NULL)
+    {
+        goto END;
+    }
+    
     reference = Reference_new(REFERENCE_TYPE_FUNCTION_CALL);
-    reference->of.function = functionCall;
+    reference->of.function = function;
     
+    //*
     Parser_next(parser);
     token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_PERIOD)
@@ -533,12 +582,14 @@ ReferenceIndexer_parse(
     }
     
 	Parser_next(parser);
+    token = Parser_getCurrent(parser);
 	reference->next = Reference_parse(parser);
 	if (reference->next == NULL)
 	{
 	    Logger_dbg("Not exist next Reference after '.'");
 		Parser_error(token);
 	}
+    //*/
 	
 END:
     Logger_trc("[  END  ]%s", __func__);

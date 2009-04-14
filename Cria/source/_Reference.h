@@ -18,14 +18,6 @@ struct ReferenceVariableTag
 
 
 
-struct ReferenceFunctionCallTag
-{
-    String                  name;
-    ExpressionParameters    parameters;
-};
-
-
-
 struct ReferenceClassTag
 {
     String  name;
@@ -38,7 +30,7 @@ struct ReferenceTag
     ReferenceType               type;
     union {
         ReferenceVariable       variable;
-        ReferenceFunctionCall   function;
+        ExpressionFunctionCall  function;
         ReferenceClass          klass;
     } of;
     Reference                   next;

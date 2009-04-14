@@ -16,8 +16,6 @@
 #include "_Expression.h"
 
 
-ExpressionReference ExpressionIndexer_parse(Parser  parser);
-ExpressionReference ExpressionFunctionCall_parse(Parser parser);
 ExpressionReference ExpressionVariable_parse(Parser parser);
 ExpressionReference ExpressionGenerate_parse(Parser parser);
 ExpressionReference ExpressionClass_parse(Parser parser);
@@ -559,7 +557,7 @@ ExpressionReference_parse(
         goto END;
     }
     
-    expression = ExpressionIndexer_parse(parser);
+    expression = ExpressionIndexer_parse(parser, TRUE);
     if (expression != NULL)
     {
     	Logger_dbg("Created Expression of Indexer.");
@@ -1296,7 +1294,8 @@ END:
 
 ExpressionReference
 ExpressionIndexer_parse(
-    Parser  parser
+    Parser  parser,
+    Boolean is_variable
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -1337,12 +1336,19 @@ ExpressionIndexer_parse(
     
     
     ExpressionFunctionCall function = Memory_malloc(sizeof(struct ExpressionFunctionCallTag));
-    function->name = String_new(" indexer ");
+    if (is_variable == TRUE)
+        function->name = String_new(" indexer ");
+    else
+        function->name = String_new(" indexer reference ");
     function->parameters = parameters;
     
     expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
     expression->type = REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL;
     expression->of.function = function;
+    
+    
+    if (is_variable == FALSE)
+        goto END;
     
     
     Parser_next(parser);
@@ -1833,5 +1839,40 @@ Expression_parse(
     return expression;
 }
 
+
+void*
+ExpressionReference_getReference(
+    ExpressionReference reference
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    void* expression = NULL;
+    
+    if (reference == NULL)
+        goto END;
+    
+    switch (reference->type)
+    {
+    case REFERENCE_EXPRESSION_TYPE_SELF:
+    case REFERENCE_EXPRESSION_TYPE_VARIABLE:
+        expression = reference->of.variable;
+        break;
+    case REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL:
+        expression = reference->of.function;
+        break;
+    case REFERENCE_EXPRESSION_TYPE_CLASS:
+        expression = reference->of.klass;
+        break;
+    case REFERENCE_EXPRESSION_TYPE_GENERATE:
+        expression = reference->of.generate;
+        break;
+    default:
+        goto END;
+    }
+        
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
+}
 
 

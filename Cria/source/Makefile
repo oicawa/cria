@@ -27,6 +27,7 @@ OBJS =\
 	_CriaBoolean.o\
 	_CriaFile.o\
 	_CriaList.o\
+	_CriaVariable.o\
 
 all:$(OBJS)
 	$(CC) -shared -Wl,-soname,$(TARGET) -o ../../$(TARGET) $(OBJS) $(LDFLAGS)
@@ -61,3 +62,4 @@ _CriaBoolean.o: _CriaBoolean.c _CriaBoolean.h ../include/Memory.h ../include/Log
 _CriaFile.o: _CriaFile.c _CriaFile.h ../include/Memory.h ../include/Logger.h
 _CriaList.o: _CriaList.c _CriaList.h ../include/Memory.h ../include/Logger.h
 _CriaIO.o: _CriaIO.c _CriaIO.h ../include/Memory.h ../include/Logger.h
+_CriaVariable.o: _CriaVariable.c _CriaVariable.h ../include/Memory.h ../include/Logger.h

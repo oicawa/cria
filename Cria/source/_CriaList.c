@@ -9,6 +9,8 @@
 #include "StringBuffer.h"
 #include "CriaObject.h"
 #include "CriaInteger.h"
+#include "Definition.h"
+#include "CriaVariable.h"
 
 #include "_CriaList.h"
 
@@ -261,6 +263,50 @@ END:
 
 
 CriaId
+CriaList_getVariable(
+	Interpreter interpreter,
+	CriaId object,
+    List args
+)	
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    List pointer = NULL;
+    CriaId index = NULL;
+    DefinitionVariable definition = NULL;
+    Item item = NULL;
+
+    
+    pointer = CriaList__core_(interpreter, object);
+    
+    
+    Logger_dbg("Check arguments count.");
+    if (List_count(args) != 1)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+    
+    index = (CriaId)(List_get(args, 0));
+    if (index->type != CRIA_DATA_TYPE_INTEGER)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+    
+    item = List_getItem(pointer, ((CriaInteger)index)->value);
+    definition = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_ITEM, NULL, FALSE, FALSE, item);
+    
+    id = CriaVariable_new(NULL, definition);
+
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
+CriaId
 CriaList_count(
 	Interpreter interpreter,
 	CriaId object,
@@ -329,6 +375,9 @@ CriaList_loadClass(
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     function = DefinitionFunction_new(" indexer ", TRUE, FALSE, NULL, NULL, CriaList_get);
+    Hash_put(i_methods, DefinitionFunction_get_name(function), function);
+
+    function = DefinitionFunction_new(" indexer reference ", TRUE, FALSE, NULL, NULL, CriaList_getVariable);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     function = DefinitionFunction_new("count", TRUE, FALSE, NULL, NULL, CriaList_count);

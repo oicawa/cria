@@ -1,7 +1,11 @@
+#include <string.h>
+#include <ctype.h>
+
 #include "Memory.h"
 #include "Logger.h"
 
 #include "CriaBoolean.h"
+#include "CriaString.h"
 #include "Runtime.h"
 
 #include "_CriaInteger.h"
@@ -88,3 +92,117 @@ CriaInteger_operate(
 
 
 
+int
+CriaInteger__core_(
+	Interpreter interpreter,
+	CriaId object
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    int value = 0;
+
+    
+    Logger_dbg("Check data type.");
+    if (object->type != CRIA_DATA_TYPE_INTEGER)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+
+    if (strcmp(object->name, "Integer") != 0)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+
+    value = ((CriaInteger)object)->value;
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return value;
+}
+
+
+
+CriaId
+CriaInteger_parse(
+	Interpreter interpreter,
+	CriaId object,
+    List args
+)	
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    int value = 0;
+    CriaId arg = NULL;
+    String string = NULL;
+    long length = 0;
+    int index = 0;
+    char c = '\0';
+
+    
+    //value = CriaInteger__core_(interpreter, object);
+    
+    
+    Logger_dbg("Check arguments count.");
+    if (List_count(args) != 1)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+    
+    
+    arg = (CriaId)(List_get(args, 0));
+    if (arg->type != CRIA_DATA_TYPE_STRING)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+    
+    
+    string = ((CriaString)arg)->value;
+    length = strlen(string);
+    for (index = 0; index < length; index++)
+    {
+        c = string[index];
+        if (isdigit(c) == 0)
+        {
+        	runtime_error(interpreter);
+        	goto END;
+        }
+    }
+    
+    
+    value = atoi(string);
+    id = (CriaId)CriaInteger_new(FALSE, value);
+    
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
+DefinitionClass
+CriaInteger_loadClass(
+    String className
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    DefinitionFunction function = NULL;
+    DefinitionClass klass = NULL;
+
+    Hash i_fields = Hash_new(32);
+    Hash s_fields = Hash_new(32);
+    Hash i_methods = Hash_new(32);
+    Hash s_methods = Hash_new(32);
+    
+    function = DefinitionFunction_new("parse", TRUE, TRUE, NULL, NULL, CriaInteger_parse);
+    Hash_put(s_methods, DefinitionFunction_get_name(function), function);
+    
+    klass = DefinitionClass_new(className, TRUE, i_fields, s_fields, i_methods, s_methods, NULL);
+
+    Logger_trc("[  END  ]%s", __func__);
+    return klass;
+}

@@ -9,6 +9,7 @@
 #include "CriaString.h"
 #include "CriaFile.h"
 #include "CriaList.h"
+#include "CriaInteger.h"
 
 #include "_Interpreter.h"
 
@@ -52,6 +53,8 @@ Interpreter_compile(
 	Loader_add_class(interpreter, "String", CriaString_loadClass);
 	Loader_add_class(interpreter, "File", CriaFile_loadClass);
 	Loader_add_class(interpreter, "List", CriaList_loadClass);
+	Loader_add_class(interpreter, "Integer", CriaInteger_loadClass);
+    
 	
 	//Load target script file.
     tokens = Tokenizer_create_tokens(filePath);
