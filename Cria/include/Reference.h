@@ -13,6 +13,7 @@
 typedef struct  ReferenceTag                    *Reference;
 typedef struct  ReferenceVariableTag            *ReferenceVariable;
 typedef struct  ReferenceFunctionCallTag        *ReferenceFunctionCall;
+typedef struct  ReferenceIndexerTag             *ReferenceIndexer;
 typedef struct  ReferenceClassTag               *ReferenceClass;
 
 

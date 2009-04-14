@@ -110,4 +110,12 @@ list_toStringFunction(
 
 
 
+Item
+List_getItem(
+    List list,
+    int index
+);
+
+
+
 #endif

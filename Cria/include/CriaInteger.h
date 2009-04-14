@@ -6,6 +6,7 @@
 #include "Boolean.h"
 #include "Interpreter.h"
 #include "Expression.h"
+#include "Definition.h"
 
 
 
@@ -25,12 +26,20 @@ CriaInteger_new(
 );
 
 
+
 CriaId
 CriaInteger_operate(
     Interpreter     interpreter,
     OperationKind   kind,
     CriaInteger     left,
     CriaInteger     right
+);
+
+
+
+DefinitionClass
+CriaInteger_loadClass(
+    String className
 );
 
 

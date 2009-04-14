@@ -67,6 +67,13 @@ typedef enum
 
 
 
+void*
+ExpressionReference_getReference(
+    ExpressionReference reference
+);
+
+
+
 ExpressionReference
 ExpressionReference_parse(
 	Parser parser
@@ -88,6 +95,21 @@ ExpressionFunctionCall_evaluate(
     List parameterList,
     ExpressionFunctionCall expression,
     CriaId parent
+);
+
+
+
+ExpressionReference
+ExpressionFunctionCall_parse(
+    Parser parser
+);
+
+
+
+ExpressionReference
+ExpressionIndexer_parse(
+    Parser parser,
+    Boolean is_variable
 );
 
 
