@@ -74,15 +74,16 @@ AddressBookCUI:
         write("  3. Print all entries.\n")
         write("  4. Print specified entry.\n")
         write("  5. Delete specified entry.\n")
-        write("  6. Edit specified entry.\n")
-        write("  7. Quit.\n")
+        write("  6. Delete specified entry.\n")
+        write("  7. Edit specified entry.\n")
+        write("  q. Quit.\n")
         write("=========================================\n")
-        write("Select menu number. >> ")
+        write("Select menu. >> ")
         return read()
 
     @error():
         write("<<ERROR>>\n")
-        write("[%s] is illegal number. Select again.\n")
+        write("[%s] is illegal menu. Select again.\n")
         read()
 
     @load():
@@ -95,12 +96,37 @@ AddressBookCUI:
         while index < .address_book.entrys.count()
             .address_book.print(index)
             index = index + 1
+        write("Input any key.")
+        read()
 
     @print():
         write(" Input entry number. >> ")
         number = read()
-        write(" Number = %s\n", number)
+        .address_book.print(Integer.parse(number))
+        write("Input any key.")
+        read()
+
+    @add():
+        write("Create new entry.\n\n")
+        ok = false
+        entry = null
+        while ok == false
+            entry = Entry()
+            write(" - Input name     >> ")
+            entry.name = read()
+            write(" - Input address  >> ")
+            entry.address = read()
+            write(" - Input birthday >> ")
+            entry.address = read()
+            write("----------\nName    : [%s]\nAddress : [%s]\nBirthday: [%s]\n----------\n", entry.name, entry.address, entry.birthday)
+            write("Is it OK?(y/n) >> ")
+            answer = read()
+            if answer == "y"
+                ok = true
         
+            write("\n")
+        .address_book.add(entry)
+
     @quit():
         write(" Good bye.\n\n")
         
@@ -117,12 +143,15 @@ AddressBookCUI:
             elif (number == "4")
                 .print()
             elif (number == "5")
-                .print()
+                .add()
                 #.delete()
             elif (number == "6")
                 .print()
                 #.edit()
             elif (number == "7")
+                .print()
+                #.delete()
+            elif (number == "q")
                 .quit()
                 break
             else
