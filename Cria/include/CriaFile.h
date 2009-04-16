@@ -9,19 +9,6 @@
 
 
 
-typedef struct CriaFileTag *CriaFile;
-
-
-
-struct CriaFileTag
-{
-    struct CriaIdTag    id;
-    String path;
-    FILE* pointer;
-};
-
-
-
 DefinitionClass
 CriaFile_loadClass(
     char* name

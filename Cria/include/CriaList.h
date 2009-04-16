@@ -10,18 +10,6 @@
 
 
 
-typedef struct CriaListTag *CriaList;
-
-
-
-struct CriaListTag
-{
-    struct CriaIdTag id;
-    List pointer;
-};
-
-
-
 DefinitionClass
 CriaList_loadClass(
     char* name
