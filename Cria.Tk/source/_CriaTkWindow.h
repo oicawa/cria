@@ -2,7 +2,7 @@
 #define PRIVATE_CRIA_TK_WINDOW_H_INCLUDED
 
 
-#include "TkWindow.h"
+#include "CriaTkWindow.h"
 
 
 

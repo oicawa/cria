@@ -36,8 +36,8 @@ CriaTkWindow__generator_(
 
 CriaTkWindow
 CriaTkWindow__core_(
-	Interpreter interpreter,
-	CriaId object
+    Interpreter interpreter,
+    CriaId object
 )
 {
     Logger_trc("[ START ]%s", __func__);
