@@ -29,6 +29,14 @@ CriaObject_new(
 
 
 
+CriaObject
+CriaObject_getObject(
+	CriaId id,
+    String class_name
+);
+
+
+
 void
 CriaObject_addField(
 	CriaObject object,

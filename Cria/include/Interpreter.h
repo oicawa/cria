@@ -3,6 +3,7 @@
 
 #include "Boolean.h"
 #include "List.h"
+#include "String.h"
 #include "Hash.h"
 
 
@@ -86,6 +87,22 @@ Interpreter_get_imports(
 void
 Interpreter_dispose(
 	Interpreter interpreter
+);
+
+
+
+Boolean
+Interpreter_has_loaded(
+    Interpreter interpreter,
+    String file_path
+);
+
+
+
+void
+Interpreter_add_loaded_file(
+    Interpreter interpreter,
+    String file_path
 );
 
 

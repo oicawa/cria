@@ -4,8 +4,10 @@
 
 
 #include "Parser.h"
-#include "Expression.h"
 #include "CriaId.h"
+#include "Interpreter.h"
+#include "Definition.h"
+#include "String.h"
 
 
 
@@ -64,6 +66,15 @@ typedef enum
     REFERENCE_EXPRESSION_TYPE_CLASS,
     REFERENCE_EXPRESSION_TYPE_GENERATE,
 } ExpressionReferenceType;
+
+
+
+DefinitionFunction
+ExpressionFunctionCall_searchFromObject(
+	Interpreter interpreter,
+    CriaId object,
+    String functionName
+);
 
 
 
