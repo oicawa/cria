@@ -1,3 +1,5 @@
+#include <string.h>
+
 #include "Memory.h"
 #include "Logger.h"
 
@@ -31,6 +33,36 @@ CriaObject_new(
 
 
 
+CriaObject
+CriaObject_getObject(
+	CriaId id,
+    String class_name
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaObject object = NULL;
+
+    
+    Logger_dbg("Check object data type.");
+    if (id->type != CRIA_DATA_TYPE_CRIA_OBJECT)
+    {
+    	goto END;
+    }
+    
+    if (strcmp(id->name, class_name) != 0)
+    {
+    	goto END;
+    }
+    
+    object = (CriaObject)id;
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return object;
+}
+
+
+
 void
 CriaObject_addField(
 	CriaObject object,
@@ -55,7 +87,7 @@ CriaObject_get(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaId id = NULL;
+    void* value = NULL;
     DefinitionVariable variable = NULL;
     
     
@@ -68,11 +100,11 @@ CriaObject_get(
     }
     
     
-    id = DefinitionVariable_getObject(variable);
+    value = DefinitionVariable_getObject(variable);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
-    return id;
+    return value;
 }
 
 

@@ -10,6 +10,8 @@
 #include "CriaFile.h"
 #include "CriaList.h"
 #include "CriaInteger.h"
+#include "Runtime.h"
+#include "String.h"
 
 #include "_Interpreter.h"
 
@@ -32,6 +34,7 @@ Interpreter_new(
     interpreter->row = 0;
     interpreter->column = 0;
     interpreter->indentLevel = 0;
+    interpreter->loaded_files = Hash_new(16);
     
     return interpreter;
 }
@@ -58,6 +61,11 @@ Interpreter_compile(
 	
 	//Load target script file.
     tokens = Tokenizer_create_tokens(filePath);
+    if (tokens == NULL)
+    {
+        runtime_error(interpreter);
+        goto END;
+    }
     
     if (Parser_create_syntax_tree(tokens, interpreter) == FALSE)
     {
@@ -178,4 +186,41 @@ Interpreter_dispose(
 	}
     
     Logger_trc("[  END  ]%s", __func__);
+}
+
+
+Boolean
+Interpreter_has_loaded(
+    Interpreter interpreter,
+    String file_path
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    
+	Hash hash = interpreter->loaded_files;
+    void* value = Hash_get(hash, file_path);
+    Boolean result = FALSE;
+    
+    if (value != NULL)
+        result = TRUE;
+    
+    Logger_trc("[  END  ]%s", __func__);
+    return result;
+}
+
+
+
+void
+Interpreter_add_loaded_file(
+    Interpreter interpreter,
+    String file_path
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    
+	Hash hash = interpreter->loaded_files;
+    Hash_put(hash, String_clone(file_path), String_clone(file_path));
+    
+    Logger_trc("[  END  ]%s", __func__);
+    return;
 }

@@ -88,6 +88,7 @@ Loader_parse(
 
 	Logger_dbg("Check TOKEN_TYPE_LOAD.");
     token = Parser_getCurrent(parser);
+    Logger_dbg("Get current token. (token : %p / parser : %p)", token, parser);
     if (Token_type(token) != TOKEN_TYPE_LOAD)
     {
         Logger_dbg("Not load token.");
@@ -96,6 +97,7 @@ Loader_parse(
     }
     
     
+	Logger_dbg("Loop start.");
     path = List_new();
     while (TRUE)
     {
@@ -235,7 +237,7 @@ Loader_load_native(
 	//Load package
 	(Package_loader)(interpreter);
 	
-		if (loader == NULL)
+	if (loader == NULL)
 	{
 		Logger_dbg("Not native library.");
 		goto END;
@@ -289,8 +291,22 @@ Loader_load_cria(
 {
     Logger_trc("[ START ]%s", __func__);
 	Boolean result = FALSE;
+    List tokens = NULL;
     
-//END:
+	//Load target script file.
+    tokens = Tokenizer_create_tokens(library_path);
+    if (tokens == NULL)
+    {
+        goto END;
+    }
+    
+    if (Parser_create_syntax_tree(tokens, interpreter) == FALSE)
+    {
+        Logger_err("syntax parse error.");
+        goto END;
+    }
+    
+END:
     Logger_trc("[  END  ]%s", __func__);
     return result;
 }
@@ -314,7 +330,7 @@ Loader_load(
 	strcat(buffer, "/");
 	strcat(buffer, loader->library_name);
 	current_package_base = String_new(buffer);
-    printf("*** current is [%s] ***\n", current_package_base);
+    //printf("*** current is [%s] ***\n", current_package_base);
     
     
     //実行ファイルが存在するパスを取得
@@ -333,58 +349,69 @@ Loader_load(
     
     strcat(buffer, loader->library_name);
 	cria_package_base = String_new(buffer);
-    printf("*** [%s] ***\n", cria_package_base);
+    //printf("*** [%s] ***\n", cria_package_base);
     
     
     memset(buffer, 0x00, MAX_PATH_LENGTH);
     strcat(buffer, cria_package_base);
     strcat(buffer, ".so");
-	result = Loader_load_native(loader, interpreter, buffer);
-	if (result == TRUE)
-	{
-		Logger_dbg("Loaded native package. [%s]", buffer);
-		goto END;
-	}
-
+    if (Interpreter_has_loaded(interpreter, buffer) == FALSE)
+    {
+        Interpreter_add_loaded_file(interpreter, buffer);
+	    result = Loader_load_native(loader, interpreter, buffer);
+	    if (result == TRUE)
+	    {
+		    Logger_dbg("Loaded native package. [%s]", buffer);
+	    }
+    }
 
     memset(buffer, 0x00, MAX_PATH_LENGTH);
     strcat(buffer, cria_package_base);
     strcat(buffer, ".ca");
-	result = Loader_load_cria(loader, interpreter, buffer);
-	if (result == TRUE)
-	{
-		Logger_dbg("Loaded cria package. [%s]", buffer);
-		goto END;
-	}
-
+    if (Interpreter_has_loaded(interpreter, buffer) == FALSE)
+    {
+        Interpreter_add_loaded_file(interpreter, buffer);
+	    result = Loader_load_cria(loader, interpreter, buffer);
+	    if (result == TRUE)
+	    {
+		    Logger_dbg("Loaded cria package. [%s]", buffer);
+		    //goto END;
+	    }
+    }
 
     memset(buffer, 0x00, MAX_PATH_LENGTH);
     strcat(buffer, current_package_base);
     strcat(buffer, ".so");
-	result = Loader_load_native(loader, interpreter, buffer);
-	if (result == TRUE)
-	{
-		Logger_dbg("Loaded native package. [%s]", buffer);
-		goto END;
-	}
-
+    if (Interpreter_has_loaded(interpreter, buffer) == FALSE)
+    {
+        Interpreter_add_loaded_file(interpreter, buffer);
+	    result = Loader_load_native(loader, interpreter, buffer);
+	    if (result == TRUE)
+	    {
+		    Logger_dbg("Loaded native package. [%s]", buffer);
+		    //goto END;
+	    }
+    }
 
     memset(buffer, 0x00, MAX_PATH_LENGTH);
     strcat(buffer, current_package_base);
     strcat(buffer, ".ca");
-	result = Loader_load_cria(loader, interpreter, buffer);
-	if (result == TRUE)
-	{
-		Logger_dbg("Loaded cria package. [%s]", buffer);
-		goto END;
-	}
+    if (Interpreter_has_loaded(interpreter, buffer) == FALSE)
+    {
+        Interpreter_add_loaded_file(interpreter, buffer);
+	    result = Loader_load_cria(loader, interpreter, buffer);
+	    if (result == TRUE)
+	    {
+		    Logger_dbg("Loaded cria package. [%s]", buffer);
+		    //goto END;
+	    }
+    }	
 	
-	
-	Logger_err("Not found library named %s.", loader->library_name);
-	runtime_error(interpreter);
+	//Logger_err("Not found library named %s.", loader->library_name);
+	//runtime_error(interpreter);
 
     
-END:
+//END:
     Logger_trc("[  END  ]%s", __func__);
     return;
 }

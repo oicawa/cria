@@ -13,8 +13,6 @@
 
 
 
-
-
 void
 Parser_errorFunction(
 	Token token,

@@ -110,6 +110,10 @@ Token_type(
 	Token token
 )
 {
+    if (token == NULL)
+    {
+        Logger_err("token is nil.");
+    }
 	return token->type;
 }
 
@@ -193,7 +197,7 @@ Tokenizer_new(
     if (file == NULL)
     {
         Logger_err("File open error. (%s)", filePath);
-        tokenizer_error("File open error.", 0, 0);
+        //tokenizer_error("File open error.", 0, 0);
         goto END;
     }
     
@@ -1191,10 +1195,18 @@ Tokenizer_create_tokens(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    Tokenizer tokenizer = Tokenizer_new(filePath);
+    Tokenizer tokenizer = NULL;
     Token token = NULL;
-    List tokens = List_new();
+    List tokens = NULL;
     
+    tokenizer = Tokenizer_new(filePath);
+    if (tokenizer == NULL)
+    {
+        Logger_err("tokenizer created error.");
+        goto END;
+    }
+    
+    tokens = List_new();
     
     while (Tokenizer_is_eof(tokenizer) == FALSE)
     {
@@ -1234,7 +1246,8 @@ ADD_TOKEN:
     List_add(tokens, token);
     
     Tokenizer_log_all_tokens(tokens);
-    
+
+END:
     Logger_trc("[  END  ]%s", __func__);
     return tokens;
 }
