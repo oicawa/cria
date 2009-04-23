@@ -16,17 +16,13 @@ CFLAGS = -c -g -DDEBUG -Wall
 INCLUDES = -I$(CRIAINC) -I$(GCINC)
 
 
-all:main.o $(CRIALIB)
+all:main.o
 	cd $(CRIADIR)/source;make;
-	cd ../Cria.Core/source;make;
 	$(CC) -Wl,-rpath,'$$ORIGIN' -o ../$(TARGET) main.o -L.. -l$(TARGET) -L$(LIBDIR) -l$(GC)
 
 main.o: main.c
 	$(CC) $(CFLAGS) main.c $(INCLUDES)
 
-$(CRIALIB): 
-	
-	
 clean:
 	rm -f *.o ../$(TARGET)
 
