@@ -1,0 +1,5 @@
+load Cria::Tk
+
+window = Window("休暇届", 500, 300)
+window.show()
+

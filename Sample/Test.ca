@@ -1,2 +1,7 @@
-entry = null
+load Cria::Test
+load Dog
+person = Person("Masamitsu Oikawa", "31")
+person.print()
+rwick = Dog("Rwick", 7, person.name)
+rwick.print()
 
