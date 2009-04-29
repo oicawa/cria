@@ -78,6 +78,15 @@ List_get(
 
 
 
+void
+List_set(
+    List    list,
+    int     index,
+    void* object
+);
+
+
+
 int
 List_count(
     List    list

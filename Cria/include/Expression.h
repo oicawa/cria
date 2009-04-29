@@ -50,6 +50,7 @@ typedef struct  ExpressionOperationTag          *ExpressionOperation;
 typedef struct  ExpressionVariableTag           *ExpressionVariable;
 typedef struct  ExpressionReferenceTag          *ExpressionReference;
 typedef struct  ExpressionFunctionCallTag       *ExpressionFunctionCall;
+typedef struct  ExpressionIndexerTag            *ExpressionIndexer;
 typedef struct  ExpressionGenerateTag           *ExpressionGenerate;
 typedef struct  ExpressionStringLiteralTag      *ExpressionStringLiteral;
 typedef struct  ExpressionIntegerLiteralTag     *ExpressionIntegerLiteral;
@@ -63,6 +64,7 @@ typedef enum
     REFERENCE_EXPRESSION_TYPE_SELF,
     REFERENCE_EXPRESSION_TYPE_VARIABLE,
     REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL,
+    REFERENCE_EXPRESSION_TYPE_INDEXER,
     REFERENCE_EXPRESSION_TYPE_CLASS,
     REFERENCE_EXPRESSION_TYPE_GENERATE,
 } ExpressionReferenceType;
@@ -99,6 +101,14 @@ Expression_parse(
 
 
 
+ExpressionFunctionCall
+ExpressionFunctionCall_new(
+    String name,
+    ExpressionParameters parameters
+);
+
+
+
 CriaId
 ExpressionFunctionCall_evaluate(
     Interpreter interpreter,
@@ -119,8 +129,7 @@ ExpressionFunctionCall_parse(
 
 ExpressionReference
 ExpressionIndexer_parse(
-    Parser parser,
-    Boolean is_variable
+    Parser parser
 );
 
 
@@ -149,6 +158,13 @@ Expression_evaluate(
     CriaId object,
 	List parameters,
     Expression  expression
+);
+
+
+
+List
+ExpressionParameters_get_list(
+	ExpressionParameters parameters
 );
 
 

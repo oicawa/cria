@@ -6,6 +6,7 @@
 typedef struct StatementTag *Statement;
 typedef struct StatementFunctionCallTag *StatementFunctionCall;
 typedef struct StatementSubstituteTag *StatementSubstitute;
+typedef struct StatementReferenceTag *StatementReference;
 typedef struct StatementGotoTag *StatementGoto;
 typedef struct StatementIfTag *StatementIf;
 typedef struct StatementWhileTag *StatementWhile;

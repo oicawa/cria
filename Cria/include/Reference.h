@@ -23,28 +23,31 @@ typedef enum
 	REFERENCE_TYPE_SELF,
     REFERENCE_TYPE_VARIABLE,
     REFERENCE_TYPE_FUNCTION_CALL,
+    REFERENCE_TYPE_INDEXER,
     REFERENCE_TYPE_CLASS,
 } ReferenceType;
 
 
 
-DefinitionVariable
+//DefinitionVariable
+void
 ReferenceVariable_evaluate(
     Interpreter         interpreter,
     CriaId object,
     List parameters,
-    ReferenceVariable   variable,
+    Reference reference,
     CriaId parent
 );
 
 
 
-CriaId
+//CriaId
+void
 ReferenceClass_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
-    ReferenceClass klass,
+    Reference reference,
     CriaId parent
 );
 
@@ -71,7 +74,7 @@ Reference_new(
 
 
 
-DefinitionVariable
+void
 Reference_evaluate(
     Interpreter interpreter,
     CriaId object,
@@ -79,7 +82,6 @@ Reference_evaluate(
     Reference   reference,
     CriaId parent
 );
-
 
 
 #endif
