@@ -39,6 +39,14 @@ struct ExpressionFunctionCallTag
 
 
 
+struct ExpressionIndexerTag
+{
+    String                  name;
+    ExpressionParameters    parameters;
+};
+
+
+
 struct ExpressionGenerateTag
 {
     String                  name;
@@ -95,9 +103,10 @@ struct ExpressionReferenceTag
 {
     ExpressionReferenceType     type;
     union {
-        ExpressionClass      klass;
+        ExpressionClass         klass;
         ExpressionVariable      variable;
         ExpressionFunctionCall  function;
+        ExpressionIndexer       indexer;
         ExpressionGenerate      generate;
     } of;
     ExpressionReference         next;
@@ -111,6 +120,17 @@ ExpressionFunctionCall_evaluate(
     CriaId object,
     List parameterList,
     ExpressionFunctionCall expression,
+    CriaId parent
+);
+
+
+
+CriaId
+ExpressionIndexer_evaluate(
+    Interpreter interpreter,
+    CriaId object,
+    List parameterList,
+    ExpressionIndexer expression,
     CriaId parent
 );
 

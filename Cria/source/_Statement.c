@@ -798,6 +798,7 @@ END:
 //==============================
 //StatementSubstitute
 //==============================
+/*
 void
 StatementSubstitute_execute(
     Interpreter         interpreter,
@@ -821,6 +822,80 @@ StatementSubstitute_execute(
     
     
     Logger_trc("[  END  ]%s", __func__);
+}
+*/
+
+
+void
+StatementReference_execute(
+    Interpreter         interpreter,
+    CriaId object,
+	List parameters,
+    StatementReference statement
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+//    DefinitionVariable definition = NULL;
+//    Reference reference = statement->reference;
+//    CriaId id = NULL;
+    
+    
+    Reference_evaluate(interpreter, object, parameters, statement->reference, NULL);
+    
+    
+    Logger_trc("[  END  ]%s", __func__);
+}
+
+
+
+Statement
+StatementReference_parse(
+    Parser parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Statement statement = NULL;
+    StatementReference statement_ref = NULL;
+    Item position = Parser_getPosition(parser);
+    Token token = NULL;
+    Reference reference = NULL;
+    
+    
+    Logger_dbg("Check reference expression.");
+    reference = Reference_parse(parser);
+    if (reference == NULL)
+    {
+        Logger_dbg("Not reference expression.");
+        Parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    //*
+    token = Parser_getCurrent(parser);
+    if (Token_type(token) != TOKEN_TYPE_NEW_LINE)
+    {
+        Logger_dbg("Not new line token.");
+        Parser_setPosition(parser, position);
+        Parser_error(token);
+        goto END;
+    }
+    
+    Parser_next(parser);
+    //*/
+    
+    
+    Logger_dbg("Create 'StatementReference'");
+    statement_ref = Memory_malloc(sizeof(struct StatementReferenceTag));
+    statement_ref->reference = reference;
+    
+    statement = Statement_new(STATEMENT_KIND_REFERENCE);
+    statement->of._reference_ = statement_ref;
+    statement->line = Token_row(token);
+    
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return statement;
 }
 
 
@@ -921,12 +996,17 @@ Statement_execute(
 
     switch (statement->kind)
     {
+    case STATEMENT_KIND_REFERENCE:
+        StatementReference_execute(interpreter, object, parameters, statement->of._reference_);
+        break;
+    /*
     case STATEMENT_KIND_SUBSTITUTE:
         StatementSubstitute_execute(interpreter, object, parameters, statement->of._substitute_);
         break;
     case STATEMENT_KIND_FUNCTION_CALL:
         StatementFunctionCall_execute(interpreter, object, parameters, statement->of._functionCall_);
         break;
+    */
     case STATEMENT_KIND_IF:
         result = StatementIf_execute(interpreter, object, parameters, statement->of._if_);
         break;
@@ -993,6 +1073,15 @@ Statement_parse(
     Logger_trc("[ START ]%s", __func__);
     Statement statement = NULL;
     
+    
+    statement = StatementReference_parse(parser);
+    if (statement != NULL)
+    {
+        Logger_dbg("Created SubstituteReference.");
+        goto END;
+    }
+    
+    /*
     statement = StatementSubstitute_parse(parser);
     if (statement != NULL)
     {
@@ -1007,7 +1096,7 @@ Statement_parse(
         Logger_dbg("Created FunctionCallStatement.");
         goto END;
     }
-    
+    */
     
     statement = StatementIf_parse(parser);
     if (statement != NULL)

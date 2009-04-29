@@ -12,6 +12,7 @@
 typedef enum
 {
     STATEMENT_KIND_SUBSTITUTE,
+    STATEMENT_KIND_REFERENCE,
     STATEMENT_KIND_FUNCTION_CALL,
     STATEMENT_KIND_IF,
     STATEMENT_KIND_WHILE,
@@ -33,6 +34,7 @@ struct StatementTag
     union {
         StatementFunctionCall   _functionCall_;
         StatementSubstitute     _substitute_;
+        StatementReference      _reference_;
         StatementIf             _if_;
         StatementWhile          _while_;
         StatementGoto           _goto_;
@@ -52,6 +54,13 @@ struct StatementSubstituteTag
 {
     Reference   reference;
     Expression  expression;
+};
+
+
+
+struct StatementReferenceTag
+{
+    Reference   reference;
 };
 
 

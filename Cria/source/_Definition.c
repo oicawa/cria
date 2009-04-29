@@ -470,6 +470,139 @@ END:
 
 
 
+DefinitionFunction
+DefinitionIndexer_parse(
+    Parser parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    DefinitionFunction functionDefinition = NULL;
+    Item restore = Parser_getPosition(parser);
+    Boolean isStatic = TRUE;
+    String name = NULL;
+    char buffer[6];
+    List parameters = NULL;
+    List statements = NULL;
+    Statement statement = NULL;
+    Token token = NULL;
+    Boolean isGetter = FALSE;
+    
+    token = Parser_getCurrent(parser);
+    if (Token_type(token) == TOKEN_TYPE_ATMARK)
+    {
+    	isStatic = FALSE;
+    	Parser_next(parser);
+	    token = Parser_getCurrent(parser);
+    }
+    
+    if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
+    {
+        Logger_dbg("Not identifier.");
+    	goto END;
+    }
+    
+    name = Token_buffer(token);
+    
+    if (strcmp(name, "get") == 0)
+    {
+        isGetter = TRUE;
+    }
+    else if (strcmp(name, "set") == 0)
+    {
+        isGetter = FALSE;
+    }
+    else
+    {
+        Logger_dbg("Not indexer.");
+    	goto END;
+    }
+    
+    if (Parser_eat(parser, TOKEN_TYPE_BRACKET_LEFT, FALSE) == FALSE)
+    {
+        Logger_dbg("Not '['.");
+    	goto END;
+    }
+    
+	parameters = DefinitionFunction_parse_parameters(parser);
+	if (parameters == NULL)
+    {
+        Logger_dbg("Not parameters.");
+    	goto END;
+    }
+	
+	if (Parser_eat(parser, TOKEN_TYPE_BRACKET_RIGHT, FALSE) == FALSE)
+    {
+        Logger_dbg("Not ']'.");
+    	goto END;
+    }
+	
+	if (Parser_eat(parser, TOKEN_TYPE_COLON, FALSE) == FALSE)
+    {
+        Logger_dbg("Not ':'.");
+    	goto END;
+    }
+    
+	if (Parser_eat(parser, TOKEN_TYPE_NEW_LINE, TRUE) == FALSE)
+    {
+        Logger_dbg("Not <<NEW LINE>>.");
+    	goto END;
+    }
+    
+	if (Parser_eat(parser, TOKEN_TYPE_INDENT, TRUE) == FALSE)
+    {
+        Logger_dbg("Not <<INDENT>>.");
+    	goto END;
+    }
+	
+	statements = List_new();
+    while(1)
+    {
+        token = Parser_getCurrent(parser);
+        if (Token_type(token) == TOKEN_TYPE_DEDENT)
+        {
+            Logger_dbg("token type is 'DEDENT'.");
+            break;
+        }
+        
+        statement = Statement_parse(parser);
+        if (statement == NULL)
+        {
+            Logger_err("statement parse error.");
+            Parser_error(token);
+            goto END;
+        }
+        
+        Logger_dbg("Add statement.");
+        List_add(statements, statement);
+    }
+    
+	if (Parser_eat(parser, TOKEN_TYPE_DEDENT, TRUE) == FALSE)
+    {
+        Logger_dbg("Not <<DEDENT>>.");
+    	goto END;
+    }
+	
+    //Edit name
+    memset(buffer, 0x00, sizeof(buffer));
+    strcat(buffer, name);
+    strcat(buffer, "[");
+    strcat(buffer, "]");
+    Parser_next(parser);
+    name = String_new(buffer);
+    
+    Logger_dbg("Create FunctionDefinition. (name=%s, parameter=%p)", name, parameters);
+    functionDefinition = DefinitionFunction_new(name, FALSE, isStatic, parameters, statements, NULL);
+    
+END:
+	if (functionDefinition == NULL)
+		Parser_setPosition(parser, restore);
+	
+    Logger_trc("[  END  ]%s", __func__);
+    return functionDefinition;
+}
+
+
+
 String
 DefinitionFunction_get_name(
 	DefinitionFunction function

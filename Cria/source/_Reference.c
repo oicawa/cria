@@ -14,7 +14,9 @@
 
 
 
-DefinitionVariable ReferenceFunctionCall_evaluate(Interpreter interpreter, CriaId object, List parameters, ReferenceFunctionCall function, CriaId parent);
+//DefinitionVariable ReferenceFunctionCall_evaluate(Interpreter interpreter, CriaId object, List parameters, ReferenceFunctionCall function, CriaId parent);
+void ReferenceFunctionCall_evaluate(Interpreter interpreter, CriaId object, List parameters, Reference reference, CriaId parent);
+void ReferenceIndexer_evaluate(Interpreter interpreter, CriaId object, List parameters, Reference reference, CriaId parent);
 
 
 Reference
@@ -168,6 +170,99 @@ END:
 
 
 
+void
+ReferenceVariable_evaluate(
+    Interpreter         interpreter,
+    CriaId object,
+    List parameters,
+    Reference reference,
+    CriaId parent
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    DefinitionVariable definition = NULL;
+    ReferenceVariable variable = NULL;
+    CriaId id = NULL;
+    
+    
+    variable = reference->of.variable;
+    
+    
+    if (parent != NULL)
+    {
+        if (parent->type == CRIA_DATA_TYPE_CRIA_OBJECT)
+        {
+    		definition = ReferenceVariable_evaluateFromObject(parent, variable->name);
+    		if (definition != NULL)
+    			goto CHECK;
+    		
+    		Logger_err("Field named '%s' is not found.", variable->name);
+    		runtime_error(interpreter);
+    		goto END;
+        }
+        else if (parent->type == CRIA_DATA_TYPE_CRIA_CLASS)
+        {
+    		definition = ReferenceVariable_evaluateFromClass(interpreter, parent, variable->name);
+    		if (definition != NULL)
+    			goto CHECK;
+    		
+    		Logger_err("Field named '%s' is not found.", variable->name);
+    		runtime_error(interpreter);
+    		goto END;
+        }
+        else
+        {
+            runtime_error(interpreter);
+        }
+    }
+    
+    
+	definition = ReferenceVariable_evaluateFromParameters(parameters, variable->name);
+	if (definition != NULL)
+		goto CHECK;
+	
+	
+	definition = ReferenceVariable_evaluateFromInterpreter(interpreter, variable->name);
+	if (definition != NULL)
+		goto CHECK;
+	
+	
+	if (parameters != NULL)
+	{
+		definition = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, variable->name, TRUE, FALSE, NULL);
+		List_add(parameters, definition);
+	}
+    else
+    {
+        definition = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, variable->name, TRUE, FALSE, NULL);
+        Hash_put(Interpreter_variables(interpreter), variable->name, definition);
+    }
+    
+CHECK:
+    if (reference->next != NULL)
+    {
+        id = (CriaId)DefinitionVariable_getObject(definition);
+        Reference_evaluate(interpreter, object, parameters, reference->next, id);
+    }
+    else if (variable->value != NULL)
+    {
+        id = Expression_evaluate(interpreter, object, parameters, variable->value);
+        DefinitionVariable_set(definition, id);
+    }
+    else
+    {
+        runtime_error(interpreter);
+        goto END;
+    }
+    
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return;
+}
+
+
+/*
 DefinitionVariable
 ReferenceVariable_evaluate(
     Interpreter         interpreter,
@@ -237,7 +332,7 @@ END:
     Logger_dbg("definition->name is '%s'", DefinitionVariable_name(definition));
     return definition;
 }
-
+*/
 
 
 Reference
@@ -305,6 +400,15 @@ ReferenceVariable_parse(
         if (reference->next == NULL)
             Parser_error(token);
     }
+    else if (Token_type(token) == TOKEN_TYPE_SUBSTITUTE)
+    {
+        Parser_next(parser);
+        token = Parser_getCurrent(parser);
+        Token_log(token);
+        variable->value = Expression_parse(parser);
+        if (variable->value == NULL)
+            Parser_error(token);
+    }
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -313,6 +417,56 @@ END:
 
 
 
+void
+Reference_evaluate(
+    Interpreter interpreter,
+    CriaId object,
+    List parameters,
+    Reference   reference,
+    CriaId parent
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    
+    if (reference == NULL)
+    {
+        goto END;
+    }
+    
+    switch (reference->type)
+    {
+    case REFERENCE_TYPE_SELF:
+    	reference = reference->next;
+        Reference_evaluate(interpreter, object, parameters, reference, object);
+        break;
+    case REFERENCE_TYPE_VARIABLE:
+        //ReferenceVariable_evaluate(interpreter, object, parameters, reference->of.variable, parent);
+        ReferenceVariable_evaluate(interpreter, object, parameters, reference, parent);
+        break;
+    case REFERENCE_TYPE_INDEXER:
+        //ReferenceIndexer_evaluate(interpreter, object, parameters, reference->of.indexer, parent);
+        ReferenceIndexer_evaluate(interpreter, object, parameters, reference, parent);
+        break;
+    case REFERENCE_TYPE_FUNCTION_CALL:
+        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, reference->of.function, parent);
+        Reference_evaluate(interpreter, object, parameters, reference->next, id);
+        break;
+    case REFERENCE_TYPE_CLASS:
+        //ReferenceClass_evaluate(interpreter, object, parameters, reference->of.klass, parent);
+        ReferenceClass_evaluate(interpreter, object, parameters, reference, parent);
+        break;
+    default:
+        break;
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return;
+}
+
+
+/*
 DefinitionVariable
 Reference_evaluate(
     Interpreter interpreter,
@@ -367,9 +521,33 @@ END:
     Logger_trc("[  END  ]%s", __func__);
     return definition;
 }
+*/
 
 
+void
+ReferenceFunctionCall_evaluate(
+    Interpreter interpreter,
+    CriaId object,
+    List parameters,
+    Reference reference,
+    CriaId parent
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    ExpressionFunctionCall function = NULL;
+    function = reference->of.function;
+    
+    id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, function, parent);
+    
+    Reference_evaluate(interpreter, object, parameters, reference->next, id);
+    
+    Logger_trc("[  END  ]%s", __func__);
+    return;
+}
 
+
+/*
 DefinitionVariable
 ReferenceFunctionCall_evaluate(
     Interpreter interpreter,
@@ -386,11 +564,13 @@ ReferenceFunctionCall_evaluate(
     //TODO:
     id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, NULL, parent);
     
+    
+    
 //END:
     Logger_trc("[  END  ]%s", __func__);
     return variable;
 }
-
+*/
 
 
 Reference
@@ -404,53 +584,6 @@ ReferenceFunctionCall_parse(
     ExpressionFunctionCall function = NULL;
     Token token = NULL;
     
-    /*
-    token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
-    {
-    	Token_log(token);
-	    Logger_dbg("Not identifier.");
-        Parser_setPosition(parser, position);
-        goto END;
-    }
-    
-    name = Token_buffer(token);
-    Logger_dbg("function name is '%s'", name);
-    
-    Parser_next(parser);
-    token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_PARENTHESIS_LEFT)
-    {
-    	Token_log(token);
-	    Logger_dbg("Not '('.");
-        Parser_setPosition(parser, position);
-        goto END;
-    }
-    
-    Parser_next(parser);
-    parameters = ExpressionParameters_parse(parser);
-    if (parameters == NULL)
-    {
-	    Logger_dbg("Not parameters.");
-        Parser_setPosition(parser, position);
-        goto END;
-    }
-    
-    
-    token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT)
-    {
-    	Token_log(token);
-	    Logger_dbg("Not ')'.");
-    	Parser_error(token);
-        goto END;
-    }
-    
-    functionCall = Memory_malloc(sizeof(struct ExpressionFunctionCallTag));
-    functionCall->name = String_clone(name);
-    functionCall->parameters = parameters;
-    Logger_dbg("Created ReferenceFunctionCall");
-    */
     
     expression = ExpressionFunctionCall_parse(parser);
     function = (ExpressionFunctionCall)ExpressionReference_getReference(expression);
@@ -463,7 +596,7 @@ ReferenceFunctionCall_parse(
     reference = Reference_new(REFERENCE_TYPE_FUNCTION_CALL);
     reference->of.function = function;
     
-    Parser_next(parser);
+    //Parser_next(parser);
     token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_PERIOD)
     {
@@ -486,30 +619,49 @@ END:
 }
 
 
-/*
-DefinitionVariable
+
+void
 ReferenceIndexer_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
-    ReferenceIndexer indexer,
+    Reference reference,
     CriaId parent
 )
 {
     Logger_trc("[ START ]%s", __func__);
+    ReferenceIndexer indexer = NULL;
     CriaId id = NULL;
-    DefinitionVariable variable = NULL;
     ExpressionFunctionCall function = NULL;
     
+    indexer = reference->of.indexer;
+
     
-    //TODO:
-    id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, NULL, parent);
+    if (reference->next != NULL)
+    {
+        //Evaluate next reference.
+        function = ExpressionFunctionCall_new("get[]", indexer->parameters);
+        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, function, parent);
+        Reference_evaluate(interpreter, object, parameters, reference->next, id);
+    }
+    else if (indexer != NULL)
+    {
+        //Process function 'set[]' as substitution(?) !!add id to parameters.
+        List_add(ExpressionParameters_get_list(indexer->parameters), indexer->value);
+        function = ExpressionFunctionCall_new("set[]", indexer->parameters);
+        ExpressionFunctionCall_evaluate(interpreter, object, parameters, function, parent);
+    }
+    else
+    {
+        runtime_error(interpreter);
+        goto END;
+    }
     
-//END:
+END:
     Logger_trc("[  END  ]%s", __func__);
-    return variable;
+    return;
 }
-*/
+
 
 
 Reference
@@ -518,78 +670,82 @@ ReferenceIndexer_parse(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    Reference reference = NULL;
-    ExpressionReference expref = NULL;
-    ExpressionFunctionCall function = NULL;
-    Token token = NULL;
-    /*
-    Logger_trc("[ START ]%s", __func__);
     Item position = Parser_getPosition(parser);
     ExpressionParameters parameters = NULL;
     Reference reference = NULL;
     ReferenceIndexer indexer = NULL;
-    
+    Token token = NULL;
     
     token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_BRACKET_LEFT)
     {
     	Token_log(token);
-	    Logger_dbg("Not identifier.");
+		Logger_dbg("First token is not '['.");
         Parser_setPosition(parser, position);
         goto END;
     }
+	Logger_dbg("First token is '['.");
+    
     
     Parser_next(parser);
-    token = Parser_getCurrent(parser);
     parameters = ExpressionParameters_parse(parser);
     if (parameters == NULL)
     {
-	    Logger_dbg("Not parameters.");
+        Logger_dbg("The tokens that before right parenthesis are not parameters.");
         Parser_setPosition(parser, position);
-        Parser_error(token);
         goto END;
     }
+	Logger_dbg("The tokens that before right parenthesis are parameters.");
     
     
     token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_BRACKET_RIGHT)
     {
-    	Token_log(token);
-	    Logger_dbg("Not ']'.");
-    	Parser_error(token);
+        Logger_dbg("Last token is not right parenthesis.");
         goto END;
     }
-    */
-    
-    expref = ExpressionIndexer_parse(parser, FALSE);
-    function = (ExpressionFunctionCall)ExpressionReference_getReference(expref);
-    if (function == NULL)
-    {
-        goto END;
-    }
-    
-    reference = Reference_new(REFERENCE_TYPE_FUNCTION_CALL);
-    reference->of.function = function;
-    
-    //*
+	Logger_dbg("Last token is right parenthesis.");
     Parser_next(parser);
+    
+    
+	indexer = Memory_malloc(sizeof(struct ReferenceIndexerTag));
+    indexer->parameters = parameters;
+
+    
+    reference = Reference_new(REFERENCE_TYPE_INDEXER);
+    reference->of.indexer = indexer;
+    
+    
     token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_PERIOD)
+    if (Token_type(token) == TOKEN_TYPE_PERIOD ||
+        Token_type(token) == TOKEN_TYPE_BRACKET_LEFT)
     {
-    	Token_log(token);
-	    Logger_dbg("Not '.'.");
-    	goto END;
+	    Parser_next(parser);
+        token = Parser_getCurrent(parser);
+	    reference->next = Reference_parse(parser);
+	    if (reference->next == NULL)
+	    {
+	        Logger_dbg("Not exist next Reference after '.'");
+		    Parser_error(token);
+	    }
+    }
+    else if (Token_type(token) == TOKEN_TYPE_SUBSTITUTE)
+    {
+	    Parser_next(parser);
+        token = Parser_getCurrent(parser);
+	    indexer->value = Expression_parse(parser);
+	    if (indexer->value == NULL)
+	    {
+	        Logger_dbg("Not exist expression as value.");
+		    Parser_error(token);
+	    }
+    }
+    else
+    {
+        Logger_dbg("IRegular token.");
+	    Parser_error(token);
     }
     
-	Parser_next(parser);
-    token = Parser_getCurrent(parser);
-	reference->next = Reference_parse(parser);
-	if (reference->next == NULL)
-	{
-	    Logger_dbg("Not exist next Reference after '.'");
-		Parser_error(token);
-	}
-    //*/
 	
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -598,6 +754,63 @@ END:
 
 
 
+void
+ReferenceClass_evaluate(
+    Interpreter interpreter,
+    CriaId object,
+    List parameters,
+    Reference reference,
+    CriaId parent
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    String className = NULL;
+    DefinitionClass definition = NULL;
+    ReferenceClass klass = NULL;
+    Hash classes = NULL;
+
+    klass = reference->of.klass;
+    
+    classes = Interpreter_classes(interpreter);
+    if (strcmp(klass->name, "class") != 0)
+    {
+        definition = (DefinitionClass)Hash_get(classes, klass->name);
+    }
+    else if (object->type == CRIA_DATA_TYPE_CRIA_OBJECT)
+    {
+        definition = (DefinitionClass)Hash_get(classes, object->name);
+    }
+    //else if (object->type == CRIA_DATA_TYPE_CRIA_CLASS)
+    //{
+    //    definition = ((CriaClass)object)->definition;
+    //}
+    else
+    {
+        runtime_error(interpreter);
+    }
+    className = DefinitionClass_getName(definition);
+    Logger_dbg("Real class name = '%s'.", className);
+    
+    
+    if (definition == NULL)
+    {
+        Logger_err("Specified class not found. ('%s')", className);
+        runtime_error(interpreter);
+        goto END;
+    }
+    
+    
+    id = (CriaId)CriaClass_new(definition);
+    Reference_evaluate (interpreter, object, parameters, reference->next, id);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return;
+}
+
+
+/*
 CriaId
 ReferenceClass_evaluate(
     Interpreter interpreter,
@@ -648,7 +861,7 @@ END:
     Logger_trc("[  END  ]%s", __func__);
     return id;
 }
-
+*/
 
 
 Reference
@@ -773,7 +986,6 @@ Reference_parse(
     Logger_trc("[ START ]%s", __func__);
     Item position = Parser_getPosition(parser);
     Reference reference = NULL;
-    
     
     reference = ReferenceSelf_parse(parser);
     if (reference != NULL)

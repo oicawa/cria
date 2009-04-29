@@ -253,6 +253,26 @@ END:
 
 
 
+void
+List_set(
+    List list,
+    int index,
+    void* value
+)
+{
+    Item target = List_getItem(list, index);
+    
+    if (target == NULL)
+        goto END;
+    
+    target->object = value;
+    
+END:
+    return;
+}
+
+
+
 int
 List_count(
 	List list

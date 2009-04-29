@@ -263,7 +263,7 @@ END:
 
 
 CriaId
-CriaList_getVariable(
+CriaList_set(
 	Interpreter interpreter,
 	CriaId object,
     List args
@@ -273,15 +273,14 @@ CriaList_getVariable(
     CriaId id = NULL;
     List pointer = NULL;
     CriaId index = NULL;
-    DefinitionVariable definition = NULL;
-    Item item = NULL;
+    void* value = NULL;
 
     
     pointer = CriaList__core_(interpreter, object);
     
     
     Logger_dbg("Check arguments count.");
-    if (List_count(args) != 1)
+    if (List_count(args) != 2)
     {
     	runtime_error(interpreter);
     	goto END;
@@ -294,10 +293,9 @@ CriaList_getVariable(
     	goto END;
     }
     
-    item = List_getItem(pointer, ((CriaInteger)index)->value);
-    definition = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_ITEM, NULL, FALSE, FALSE, item);
+    value = (List_get(args, 1));
     
-    id = CriaVariable_new(NULL, definition);
+    List_set(pointer, ((CriaInteger)index)->value, value);
 
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -374,10 +372,10 @@ CriaList_loadClass(
     function = DefinitionFunction_new("get", TRUE, FALSE, NULL, NULL, CriaList_get);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
-    function = DefinitionFunction_new(" indexer ", TRUE, FALSE, NULL, NULL, CriaList_get);
+    function = DefinitionFunction_new("get[]", TRUE, FALSE, NULL, NULL, CriaList_get);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
 
-    function = DefinitionFunction_new(" indexer reference ", TRUE, FALSE, NULL, NULL, CriaList_getVariable);
+    function = DefinitionFunction_new("set[]", TRUE, FALSE, NULL, NULL, CriaList_set);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     function = DefinitionFunction_new("count", TRUE, FALSE, NULL, NULL, CriaList_count);

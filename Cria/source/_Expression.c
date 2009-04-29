@@ -329,7 +329,7 @@ ExpressionVariable_evaluate(
 		
         runtime_error(interpreter);
         goto END;
-    }
+  }
     else if (parent->type == CRIA_DATA_TYPE_CRIA_OBJECT)
     {
     	id = ExpressionVariable_evaluateFromObject(interpreter, parent, expression->name);
@@ -490,6 +490,9 @@ ExpressionReference_evaluate(
     	Logger_dbg("parent is %p", parent);
         id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, expression->of.function, parent);
         break;
+    case REFERENCE_EXPRESSION_TYPE_INDEXER:
+        id = ExpressionIndexer_evaluate(interpreter, object, parameters, expression->of.indexer, parent);
+        break;
     case REFERENCE_EXPRESSION_TYPE_CLASS:
     	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_CLASS");
         id = ExpressionClass_evaluate(interpreter, object, parameters, expression->of.klass, parent);
@@ -557,7 +560,7 @@ ExpressionReference_parse(
         goto END;
     }
     
-    expression = ExpressionIndexer_parse(parser, TRUE);
+    expression = ExpressionIndexer_parse(parser);
     if (expression != NULL)
     {
     	Logger_dbg("Created Expression of Indexer.");
@@ -567,6 +570,16 @@ ExpressionReference_parse(
 END:
     Logger_trc("[  END  ]%s", __func__);
     return expression;
+}
+
+
+
+List
+ExpressionParameters_get_list(
+	ExpressionParameters parameters
+)
+{
+    return parameters->list;
 }
 
 
@@ -869,6 +882,20 @@ END:
 
 
 
+ExpressionFunctionCall
+ExpressionFunctionCall_new(
+    String name,
+    ExpressionParameters parameters
+)
+{
+    ExpressionFunctionCall function = NULL;
+    function = Memory_malloc(sizeof(struct ExpressionFunctionCallTag));
+    function->name = String_clone(name);
+    function->parameters = parameters;
+    
+    return function;
+}
+
 CriaId
 ExpressionFunctionCall_evaluate(
     Interpreter interpreter,
@@ -909,7 +936,7 @@ ExpressionFunctionCall_evaluate(
 		runtime_error(interpreter);
 		goto END;
 	}
-	    
+	
     
     //引数の式を実行
     Logger_dbg("expression->name->pointer = %s", expression->name);
@@ -919,6 +946,61 @@ ExpressionFunctionCall_evaluate(
     
     
     Logger_dbg("Call cria function.(%s)", expression->name);
+    tmp = DefinitionFunction_getParameterList(function);
+    id = DefinitionFunction_evaluate(interpreter, current, tmp, function, parameters, parent);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
+CriaId
+ExpressionIndexer_evaluate(
+    Interpreter interpreter,
+    CriaId object,
+    List parameterList,
+    ExpressionIndexer expression,
+    CriaId parent
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    CriaId current = NULL;
+    DefinitionFunction  function = NULL;
+    List tmp = NULL;
+    
+    
+    if (parent == NULL)
+    {
+        runtime_error(interpreter);
+        goto END;
+    }
+    else if (parent->type == CRIA_DATA_TYPE_CRIA_OBJECT ||
+              parent->type == CRIA_DATA_TYPE_STRING)
+    {
+    	current = parent;
+		function = ExpressionFunctionCall_searchFromObject(interpreter, parent, "get[]");
+    }
+    else
+    {
+        runtime_error(interpreter);
+        goto END;
+    }
+    
+
+	if (function == NULL)
+	{
+		Logger_err("Function '%s' is not found.", "get[]");
+		runtime_error(interpreter);
+		goto END;
+	}
+	
+    
+    //引数の式を実行
+    List parameters = ExpressionParameters_evaluate(interpreter, object, parameterList, expression->parameters);
+    
     tmp = DefinitionFunction_getParameterList(function);
     id = DefinitionFunction_evaluate(interpreter, current, tmp, function, parameters, parent);
     
@@ -1294,8 +1376,7 @@ END:
 
 ExpressionReference
 ExpressionIndexer_parse(
-    Parser  parser,
-    Boolean is_variable
+    Parser  parser
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -1335,20 +1416,12 @@ ExpressionIndexer_parse(
 	Logger_dbg("Last token is right parenthesis.");
     
     
-    ExpressionFunctionCall function = Memory_malloc(sizeof(struct ExpressionFunctionCallTag));
-    if (is_variable == TRUE)
-        function->name = String_new(" indexer ");
-    else
-        function->name = String_new(" indexer reference ");
-    function->parameters = parameters;
+    ExpressionIndexer indexer = Memory_malloc(sizeof(struct ExpressionIndexerTag));
+    indexer->parameters = parameters;
     
     expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
-    expression->type = REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL;
-    expression->of.function = function;
-    
-    
-    if (is_variable == FALSE)
-        goto END;
+    expression->type = REFERENCE_EXPRESSION_TYPE_INDEXER;
+    expression->of.indexer = indexer;
     
     
     Parser_next(parser);

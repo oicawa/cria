@@ -14,6 +14,15 @@
 struct ReferenceVariableTag
 {
     String  name;
+    Expression value;
+};
+
+
+
+struct ReferenceIndexerTag
+{
+    ExpressionParameters parameters;
+    Expression value;
 };
 
 
@@ -27,13 +36,14 @@ struct ReferenceClassTag
 
 struct ReferenceTag
 {
-    ReferenceType               type;
+    ReferenceType type;
     union {
-        ReferenceVariable       variable;
-        ExpressionFunctionCall  function;
-        ReferenceClass          klass;
+        ReferenceVariable variable;
+        ExpressionFunctionCall function;
+        ReferenceIndexer indexer;
+        ReferenceClass klass;
     } of;
-    Reference                   next;
+    Reference next;
 };
 
 
