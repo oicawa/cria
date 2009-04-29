@@ -8,6 +8,7 @@
 #include "Logger.h"
 
 #include "CriaBoolean.h"
+#include "List.h"
 #include "Runtime.h"
 #include "String.h"
 #include "StringBuffer.h"
@@ -16,6 +17,9 @@
 #include "CriaInteger.h"
 #include "Definition.h"
 #include "CriaVariable.h"
+#include "Expression.h"
+#include "Definition.h"
+#include "CriaTkCommand.h"
 
 #include "_CriaTkWindow.h"
 
@@ -35,6 +39,7 @@ CriaTkWindow__generator_(
     CriaObject_addField(window, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "caption", FALSE, FALSE, NULL));
     CriaObject_addField(window, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "width", FALSE, FALSE, NULL));
     CriaObject_addField(window, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "height", FALSE, FALSE, NULL));
+    CriaObject_addField(window, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "tk", FALSE, FALSE, NULL));
     
     Logger_trc("[  END  ]%s", __func__);
     return (CriaId)window;
@@ -42,7 +47,7 @@ CriaTkWindow__generator_(
 
 
 
-CriaId
+void*
 CriaTkWindow__get_field_value_(
     Interpreter interpreter,
     CriaId id,
@@ -51,7 +56,7 @@ CriaTkWindow__get_field_value_(
 {
     Logger_trc("[ START ]%s", __func__);
     CriaObject object = NULL;
-    CriaId field = NULL;
+    void* field = NULL;
 
     object = CriaObject_getObject(id, "Window");
     if (object == NULL)
@@ -82,6 +87,7 @@ CriaTkWindow_new(
     String caption = NULL;
     int width = 300;
     int height = 200;
+    Tcl_Interp *interp;           /* Tcl インタプリタ */
     
     
     if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
@@ -129,8 +135,20 @@ CriaTkWindow_new(
     height = ((CriaInteger)tmp)->value;
     
     
+    interp = Tcl_CreateInterp();
+    if(Tcl_Init(interp) == TCL_ERROR ){
+        runtime_error(interpreter);
+        goto END;
+    }
+    if(Tk_Init(interp) == TCL_ERROR ){
+        runtime_error(interpreter);
+        goto END;
+    }
+
+    
     window = (CriaObject)object;
     CriaObject_set(interpreter, window, "controls", List_new());
+    CriaObject_set(interpreter, window, "tk", interp);
     CriaObject_set(interpreter, window, "caption", CriaString_new(FALSE, caption));
     CriaObject_set(interpreter, window, "width", CriaInteger_new(FALSE, width));
     CriaObject_set(interpreter, window, "height", CriaInteger_new(FALSE, height));
@@ -138,6 +156,128 @@ CriaTkWindow_new(
 END:
     Logger_trc("[  END  ]%s", __func__);
     return NULL;
+}
+
+
+
+List
+create_commands(
+    Interpreter interpreter,
+    CriaObject window
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    List controls = NULL;
+    CriaString caption = NULL;
+    CriaInteger width = NULL;
+    CriaInteger height = NULL;
+    char buffer[16];
+    memset(buffer, 0x00, 16);
+    String field = NULL;
+    List fields = NULL;
+    List commands = List_new();
+    TkCommand command = NULL;
+    CreateCommands* function = NULL;
+    
+    controls = (List)CreateObject_get(interpreter, window, "controls");
+    caption = (CriaString)CreateObject_get(interpreter, window, "caption");
+    width = (CriaInteger)CreateObject_get(interpreter, window, "widht");
+    height = (CriaInteger)CreateObject_get(interpreter, window, "height");
+    
+    sprintf(buffer, "%dx%d", width->value, height->value);
+    
+    fields = List_new();
+    List_add(fields, String_new("wm"));
+    List_add(fields, String_new("geometry"));
+    List_add(fields, String_new("."));
+    List_add(fields, String_new(buffer));
+    command = TkCommand_new(TK_COMMAND_TYPE_FIELDS);
+    command->fields = fields;
+    List_add(commands, command);
+    
+    
+    fields = List_new();
+    List_add(fields, String_new("wm"));
+    List_add(fields, String_new("title"));
+    List_add(fields, String_new("."));
+    List_add(fields, String_new(caption->value));
+    command = TkCommand_new(TK_COMMAND_TYPE_FIELDS);
+    command->fields = fields;
+    List_add(commands, command);
+    
+    
+    int i = 0;
+    int count = List_count(controls);
+    void* control = NULL;
+    for (i = 0; i < count; i++)
+    {
+        //Search function named " create commands " and run. Sample is bellow.
+        control = (CriaObject)List_get(controls, i);
+        function_pointer = CriaObject_get(interpreter, controls, " create commands ");
+        command = (*(function_pointer))(interpreter, controls);
+        List_add(commands, command);
+    }
+    
+    
+    
+
+    return List_new();
+}
+
+
+
+void
+evaluate_commands(
+    Interpreter interpreter,
+    Tcl_Interp* interp,
+    List commands
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    int count = NULL;
+    int length = 0;
+    int i = 0;
+    int j = 0;
+    TkCommand command = NULL;
+    
+    
+    count = List_count(commands);
+    
+    
+    for (i = 0; i < count; i++)
+    {
+        command = (TkCommand)List_get(commands, i);
+        if (command->type == TK_COMMAND_TYPE_COMMAND)
+        {
+            evaluate_commands(interpreter, interp, command);
+        }
+        else if (command->type != TK_COMMAND_TYPE_FIELDS)
+        {
+            runtime_error(interpreter);
+            goto END;
+        }
+        
+        length = List_count(command->fields);
+        j = 0;
+        Tcl_Obj** fields = Memory_malloc(length);
+        memset(fields, 0x00, length);
+        for (j = 0; j < length; j++)
+        {
+            String field = (String)List_get(command->fields, j);
+            fields[j] = Tcl_NewStringObj(field, -1);
+        }
+        
+        if(Tcl_EvalObjv(interp, length, fields, 0) == TCL_ERROR)
+        {
+            //fprintf(stderr, "おおっと: %s\n", Tcl_GetStringResult(interp));
+            runtime_error(interpreter);
+            goto END;
+        }
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
 }
 
 
@@ -150,87 +290,16 @@ CriaTkWindow_show(
 )	
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaId id = NULL;
-    CriaObject window = NULL;
+    CriaTkCommand command = NULL;
     
+    commands = CriaTkCommand_create(interpreter, window);
     
-    Logger_dbg("Check arguments count.");
-    if (List_count(args) != 0)
-    {
-    	runtime_error(interpreter);
-    	goto END;
-    }
+    CriaTkCommand_evaluate(interpreter, interp, commands);
     
-    
-    window = (CriaObject)CriaObject_getObject(object, "Window");
-    if (window == NULL)
-    {
-    	runtime_error(interpreter);
-    	goto END;
-    }
-    
-    
-    CriaString caption = (CriaString)CriaObject_get(interpreter, window, "caption");
-    CriaInteger width = (CriaInteger)CriaObject_get(interpreter, window, "width");
-    CriaInteger height = (CriaInteger)CriaObject_get(interpreter, window, "height");
-    
-    printf("\n----------\nCaption : [%s]\nWidth   : [%d]\nHeight  : [%d]\n\n", caption->value, width->value, height->value);
-    
-    
-
-
-    
-    
-    
-    Tcl_Interp *interp;           /* Tcl インタプリタ */
-    char *file = "./myprog.tcl";  /* 自分のスクリプト */
-
-    interp = Tcl_CreateInterp();  /* インタプリタを作成する */
-
-    /* 初期化 */
-    if( Tcl_Init( interp ) == TCL_ERROR ){
-        fprintf( stderr, "%s\n", interp->result );
-        runtime_error(interpreter);
-        goto END;
-    }
-    if( Tk_Init( interp ) == TCL_ERROR ){
-        fprintf( stderr, "Tk_Init failed:%s\n", interp->result );
-        runtime_error(interpreter);
-        goto END;
-    }
-
-    /* これは自分のコマンドの初期化である */
-    /*
-    if( MyCommand_Init( interp ) == TCL_ERROR ){
-        fprintf( stderr, "Dith_Init failed:%s\n", interp->result );
-        runtime_error(interpreter);
-        goto END;
-    }
-    */
-
-    /* 引数を適当に解釈する */
-    parse_arg( argc, argv, interp );
-
-    /* インタプリタで自分のスクリプトを実行する */
-    if( Tcl_EvalFile( interp, file ) == TCL_ERROR ){
-        fprintf( stderr, "%s TCL error\n", file );
-        fprintf( stderr, "%s\n", interp->result );
-        runtime_error(interpreter);
-        goto END;
-    }
-
-    /* メインループに入り、イベントの生成を待つ */
     Tk_MainLoop();
-    //return( 0 );
     
-    
-    
-    
-    
-    
-END:
     Logger_trc("[  END  ]%s", __func__);
-    return id;
+    return NULL;
 }
 
 
