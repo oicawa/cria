@@ -4,7 +4,7 @@ CC=gcc
 
 OBJS =\
 	Package.o\
-	_CriaTkWindow.o\
+	_CriaTk.o\
 
 
 all:$(OBJS)
@@ -18,5 +18,5 @@ clean:
 	rm -f *.o ../../$(TARGET)
 
 Package.o: Package.c
-_CriaTkWindow.o: _CriaTkWindow.c ../include/CriaTkWindow.h
+_CriaTk.o: _CriaTk.c ../include/CriaTk.h
 
