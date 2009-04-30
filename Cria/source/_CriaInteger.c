@@ -184,6 +184,43 @@ END:
 
 
 
+CriaId
+CriaInteger_to_string(
+	Interpreter interpreter,
+	CriaId object,
+    List args
+)	
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    int value = 0;
+    char buffer[64];
+    String string = NULL;
+
+    
+    Logger_dbg("Check arguments count.");
+    if (List_count(args) != 0)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+    
+    
+    value = CriaInteger__core_(interpreter, object);
+    memset(buffer, 0x00, sizeof(buffer));
+    sprintf(buffer, "%d", value);
+    
+    string = String_new(buffer);
+    
+    id = (CriaId)CriaString_new(FALSE, string);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
 DefinitionClass
 CriaInteger_loadClass(
     String className
@@ -200,6 +237,9 @@ CriaInteger_loadClass(
     
     function = DefinitionFunction_new("parse", TRUE, TRUE, NULL, NULL, CriaInteger_parse);
     Hash_put(s_methods, DefinitionFunction_get_name(function), function);
+    
+    function = DefinitionFunction_new("to_string", TRUE, FALSE, NULL, NULL, CriaInteger_to_string);
+    Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     klass = DefinitionClass_new(className, TRUE, i_fields, s_fields, i_methods, s_methods, NULL);
 
