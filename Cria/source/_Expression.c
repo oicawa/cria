@@ -329,7 +329,7 @@ ExpressionVariable_evaluate(
 		
         runtime_error(interpreter);
         goto END;
-  }
+    }
     else if (parent->type == CRIA_DATA_TYPE_CRIA_OBJECT)
     {
     	id = ExpressionVariable_evaluateFromObject(interpreter, parent, expression->name);
@@ -918,7 +918,8 @@ ExpressionFunctionCall_evaluate(
 		function = ExpressionFunctionCall_searchFromInterpreter(interpreter, expression->name);
     }
     else if (parent->type == CRIA_DATA_TYPE_CRIA_OBJECT ||
-              parent->type == CRIA_DATA_TYPE_STRING)
+              parent->type == CRIA_DATA_TYPE_STRING ||
+              parent->type == CRIA_DATA_TYPE_INTEGER)
     {
     	current = parent;
 		function = ExpressionFunctionCall_searchFromObject(interpreter, parent, expression->name);
