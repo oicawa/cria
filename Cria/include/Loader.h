@@ -2,6 +2,7 @@
 #define PUBLIC_LOADER_H_INCLUDED
 
 
+#include "Definition.h"
 #include "Parser.h"
 #include "List.h"
 
