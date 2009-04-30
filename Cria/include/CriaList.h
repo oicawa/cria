@@ -26,4 +26,12 @@ CriaList__generator_(
 
 
 
+List
+CriaList__core_(
+	Interpreter interpreter,
+	CriaId object
+);
+
+
+
 #endif
