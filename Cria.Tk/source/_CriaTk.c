@@ -150,7 +150,7 @@ CriaTk_loop(
     	goto END;
     }
     
-    commands = (List)CriaObject_getObject(object, "commands");
+    commands = (List)CriaObject_get(interpreter, (CriaObject)object, "commands");
     if (commands == NULL)
     {
     	runtime_error(interpreter);
