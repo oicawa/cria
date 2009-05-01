@@ -1,5 +1,8 @@
-load Cria::Tk
+load Cria::Tk::Window
+load Cria::Tk::Button
 
-window = Window("休暇届", 500, 300)
+button = Button("ボタン")
+window = Window("テストアプリですよ♪", 500, 350)
+window[0].put(button)
 window.show()
 
