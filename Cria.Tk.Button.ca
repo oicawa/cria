@@ -1,0 +1,17 @@
+Button:
+    @caption
+    
+    new(caption):
+        .caption = caption
+
+    @create_commands():
+        commands = List()
+        command = List()
+        command.add("button")
+        command.add(".button1")
+        command.add("-text")
+        command.add(.caption)
+        commands.add(command)
+
+        return commands
+

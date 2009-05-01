@@ -1,0 +1,48 @@
+load Cria::Tk
+
+Window:
+    @caption
+    @width
+    @height
+    @cells
+
+    new(caption, width, height):
+        .caption = caption
+        .width = width
+        .height = height
+        .cells = List()
+    
+    @show():
+        commands = .create_commands()
+        tk = Tk(commands)
+        tk.loop()
+
+    @get[row]:
+        while .cells[row] == null
+            .cells.add(Cell())
+        return .cells[row]
+    
+    @create_commands():
+        commands = List()
+
+        command = List()
+        command.add("wm")
+        command.add("geometry")
+        command.add(".")
+        command.add(.width.to_string() + "x" + .height.to_string())
+        commands.add(command)
+
+        command = List()
+        command.add("wm")
+        command.add("title")
+        command.add(".")
+        command.add(.caption)
+        commands.add(command)
+
+        return commands
+
+Cell:
+    @control
+    @put(control):
+        .control = control
+    
