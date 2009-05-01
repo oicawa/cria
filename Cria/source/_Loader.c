@@ -108,7 +108,7 @@ Loader_parse(
         {
             Logger_dbg("Not load token.");
             Parser_setPosition(parser, position);
-            Parser_error(token);
+            Parser_error(parser, token);
             goto END;
         }
         
@@ -127,7 +127,7 @@ Loader_parse(
         {
             Logger_dbg("Not colon token.");
             Parser_setPosition(parser, position);
-            Parser_error(token);
+            Parser_error(parser, token);
             goto END;
         }
         
@@ -139,7 +139,7 @@ Loader_parse(
         {
             Logger_dbg("Not colon token.");
             Parser_setPosition(parser, position);
-            Parser_error(token);
+            Parser_error(parser, token);
             goto END;
         }
     }
@@ -300,7 +300,7 @@ Loader_load_cria(
         goto END;
     }
     
-    if (Parser_create_syntax_tree(tokens, interpreter) == FALSE)
+    if (Parser_create_syntax_tree(tokens, interpreter, library_path) == FALSE)
     {
         Logger_err("syntax parse error.");
         goto END;

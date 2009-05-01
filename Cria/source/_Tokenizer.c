@@ -202,6 +202,7 @@ Tokenizer_new(
     }
     
     tokenizer = Memory_malloc(sizeof(struct TokenizerTag));
+    tokenizer->path = String_new(filePath);
     tokenizer->file = file;
     tokenizer->row = 1;
     tokenizer->column = 0;

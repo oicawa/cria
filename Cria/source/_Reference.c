@@ -390,7 +390,7 @@ ReferenceVariable_parse(
         Token_log(token);
         reference->next = Reference_parse(parser);
         if (reference->next == NULL)
-            Parser_error(token);
+            Parser_error(parser, token);
     }
     else if (Token_type(token) == TOKEN_TYPE_BRACKET_LEFT)
     {
@@ -398,7 +398,7 @@ ReferenceVariable_parse(
     	Logger_dbg("Next Reference parse.");
         reference->next = Reference_parse(parser);
         if (reference->next == NULL)
-            Parser_error(token);
+            Parser_error(parser, token);
     }
     else if (Token_type(token) == TOKEN_TYPE_SUBSTITUTE)
     {
@@ -407,7 +407,7 @@ ReferenceVariable_parse(
         Token_log(token);
         variable->value = Expression_parse(parser);
         if (variable->value == NULL)
-            Parser_error(token);
+            Parser_error(parser, token);
     }
     
 END:
@@ -610,7 +610,7 @@ ReferenceFunctionCall_parse(
 	if (reference->next == NULL)
 	{
 	    Logger_dbg("Not exist next Reference after '.'");
-		Parser_error(token);
+		Parser_error(parser, token);
 	}
 	
 END:
@@ -726,7 +726,7 @@ ReferenceIndexer_parse(
 	    if (reference->next == NULL)
 	    {
 	        Logger_dbg("Not exist next Reference after '.'");
-		    Parser_error(token);
+		    Parser_error(parser,    token);
 	    }
     }
     else if (Token_type(token) == TOKEN_TYPE_SUBSTITUTE)
@@ -737,13 +737,13 @@ ReferenceIndexer_parse(
 	    if (indexer->value == NULL)
 	    {
 	        Logger_dbg("Not exist expression as value.");
-		    Parser_error(token);
+		    Parser_error(parser, token);
 	    }
     }
     else
     {
         Logger_dbg("IRegular token.");
-	    Parser_error(token);
+	    Parser_error(parser, token);
     }
     
 	
@@ -904,7 +904,7 @@ ReferenceClass_parse(
     {
     	Token_log(token);
     	Logger_err("Not '.'");
-        Parser_error(token);
+        Parser_error(parser, token);
         goto END;
     }
     
@@ -925,7 +925,7 @@ ReferenceClass_parse(
     Token_log(token);
     reference->next = Reference_parse(parser);
     if (reference->next == NULL)
-        Parser_error(token);
+        Parser_error(parser, token);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -969,7 +969,7 @@ ReferenceSelf_parse(
     Token_log(token);
     reference->next = Reference_parse(parser);
     if (reference->next == NULL)
-        Parser_error(token);
+        Parser_error(parser, token);
     
 END:
     Logger_trc("[  END  ]%s", __func__);

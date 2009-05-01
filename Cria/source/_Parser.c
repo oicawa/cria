@@ -15,13 +15,14 @@
 
 void
 Parser_errorFunction(
+    Parser parser,
 	Token token,
 	char* file,
 	int line
 )
 {
-	Logger_err("Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", Token_buffer(token), Token_row(token), Token_column(token), file, line);
-	fprintf(stderr, "Syntax error near '%s'. (line:%d, column:%d) [%s, %d]\n", Token_buffer(token), Token_row(token), Token_column(token), file, line);
+    Logger_err("Syntax error near '%s'. (file:%s, line:%d, column:%d) [%s, %d]\n", Token_buffer(token), parser->path, Token_row(token), Token_column(token), file, line);
+    fprintf(stderr, "Syntax error near '%s'. (file:%s, line:%d, column:%d) [%s, %d]\n", Token_buffer(token), parser->path, Token_row(token), Token_column(token), file, line);
 	exit(1);
 }
 
@@ -29,7 +30,8 @@ Parser_errorFunction(
 Parser
 Parser_new(
     Interpreter interpreter,
-    List list
+    List list,
+    String path
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -40,6 +42,7 @@ Parser_new(
     parser->current = NULL;
     parser->next = List_startItem(list);
     parser->mark = NULL;
+    parser->path = String_new(path);
     
     Logger_trc("[  END  ]%s", __func__);
     return parser;
@@ -178,7 +181,7 @@ Parser_eat(
 
 UNMATCH:
 	if (isNessesally == TRUE)
-		Parser_error(token);
+		Parser_error(parser, token);
 	
 END:
 	return result;
@@ -224,11 +227,12 @@ END:
 Boolean
 Parser_create_syntax_tree(
     List tokens,
-    Interpreter interpreter
+    Interpreter interpreter,
+    String path
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    Parser parser = Parser_new(interpreter, tokens);
+    Parser parser = Parser_new(interpreter, tokens, path);
     Boolean result = FALSE;
     Statement statement = NULL;
     DefinitionFunction functionDefinition = NULL;
@@ -285,7 +289,7 @@ Parser_create_syntax_tree(
             break;
         
         errorToken = Parser_getCurrent(parser);
-        Parser_error(errorToken);
+        Parser_error(parser, errorToken);
         goto END;
     }
     

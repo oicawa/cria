@@ -119,7 +119,7 @@ StatementWhile_parse(
     {
         Logger_dbg("condition expression is NULL.");
         Parser_setPosition(parser, position);
-        Parser_error(token);
+        Parser_error(parser, token);
         goto END;
     }
     
@@ -130,7 +130,7 @@ StatementWhile_parse(
     {
         Logger_err("token type is not 'NEW LINE'.");
         Parser_setPosition(parser, position);
-        Parser_error(token);
+        Parser_error(parser, token);
         goto END;
     }
     Parser_next(parser);
@@ -142,7 +142,7 @@ StatementWhile_parse(
     {
         Logger_err("token type is not 'INDENT'.");
         Parser_setPosition(parser, position);
-        Parser_error(token);
+        Parser_error(parser, token);
         goto END;
     }
     Parser_next(parser);
@@ -163,7 +163,7 @@ StatementWhile_parse(
         {
             Logger_err("statement parse error.");
             Parser_setPosition(parser, position);
-            Parser_error(token);
+            Parser_error(parser, token);
             goto END;
         }
         
@@ -296,7 +296,7 @@ StatementGoto_parse(
     if (Token_type(token) != TOKEN_TYPE_NEW_LINE)
     {
     	Parser_setPosition(parser, position);
-    	Parser_error(token);
+    	Parser_error(parser, token);
     	goto END;
     }
 	Parser_next(parser);
@@ -478,7 +478,7 @@ StatementIf_parseElseBlock(
     {
         Logger_err("token type is not 'ELSE'.");
         Parser_setPosition(parser, position);
-        Parser_error(token);
+        Parser_error(parser, token);
         goto END;
     }
     Parser_next(parser);
@@ -490,7 +490,7 @@ StatementIf_parseElseBlock(
     {
         Logger_err("token type is not 'NEW LINE'.");
         Parser_setPosition(parser, position);
-        Parser_error(token);
+        Parser_error(parser, token);
         goto END;
     }
     Parser_next(parser);
@@ -502,7 +502,7 @@ StatementIf_parseElseBlock(
     {
         Logger_err("token type is not 'INDENT'.");
         Parser_setPosition(parser, position);
-        Parser_error(token);
+        Parser_error(parser, token);
         goto END;
     }
     Parser_next(parser);
@@ -523,7 +523,7 @@ StatementIf_parseElseBlock(
         {
             Logger_err("statement parse error.");
             Parser_setPosition(parser, position);
-            Parser_error(token);
+            Parser_error(parser, token);
             goto END;
         }
         
@@ -563,7 +563,7 @@ StatementIf_parseElifBlock(
     {
         Logger_err("token type is not 'ELIF'.");
         Parser_setPosition(parser, position);
-        Parser_error(token);
+        Parser_error(parser, token);
         goto END;
     }
     Parser_next(parser);
@@ -574,7 +574,7 @@ StatementIf_parseElifBlock(
     {
         Logger_err("condition expression is NULL.");
         Parser_setPosition(parser, position);
-        Parser_error(token);
+        Parser_error(parser, token);
         goto END;
     }
     
@@ -585,7 +585,7 @@ StatementIf_parseElifBlock(
     {
         Logger_err("token type is not 'NEW LINE'.");
         Parser_setPosition(parser, position);
-        Parser_error(token);
+        Parser_error(parser, token);
         goto END;
     }
     Parser_next(parser);
@@ -597,7 +597,7 @@ StatementIf_parseElifBlock(
     {
         Logger_err("token type is not 'INDENT'.");
         Parser_setPosition(parser, position);
-        Parser_error(token);
+        Parser_error(parser, token);
         goto END;
     }
     Parser_next(parser);
@@ -618,7 +618,7 @@ StatementIf_parseElifBlock(
         {
             Logger_err("statement parse error.");
             Parser_setPosition(parser, position);
-            Parser_error(token);
+            Parser_error(parser, token);
             goto END;
         }
         
@@ -685,7 +685,7 @@ StatementIf_parseIfBlock(
     {
         Logger_dbg("condition expression is NULL.");
         Parser_setPosition(parser, position);
-        Parser_error(token);
+        Parser_error(parser, token);
         goto END;
     }
     
@@ -696,7 +696,7 @@ StatementIf_parseIfBlock(
     {
         Logger_err("token type is not 'NEW LINE'.");
         Parser_setPosition(parser, position);
-        Parser_error(token);
+        Parser_error(parser, token);
         goto END;
     }
     Parser_next(parser);
@@ -708,7 +708,7 @@ StatementIf_parseIfBlock(
     {
         Logger_err("token type is not 'INDENT'.");
         Parser_setPosition(parser, position);
-        Parser_error(token);
+        Parser_error(parser, token);
         goto END;
     }
     Parser_next(parser);
@@ -729,7 +729,7 @@ StatementIf_parseIfBlock(
         {
             Logger_err("statement parse error.");
             Parser_setPosition(parser, position);
-            Parser_error(token);
+            Parser_error(parser, token);
             goto END;
         }
         
@@ -876,7 +876,7 @@ StatementReference_parse(
     {
         Logger_dbg("Not new line token.");
         Parser_setPosition(parser, position);
-        Parser_error(token);
+        Parser_error(parser, token);
         goto END;
     }
     
@@ -948,7 +948,7 @@ StatementSubstitute_parse(
     {
         Logger_dbg("Not new line token.");
         Parser_setPosition(parser, position);
-        Parser_error(token);
+        Parser_error(parser, token);
         goto END;
     }
     

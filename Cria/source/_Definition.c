@@ -224,7 +224,7 @@ DefinitionVariable_parse(
     else
     {
     	Logger_err("Not field variable.");
-        Parser_error(token);
+        Parser_error(parser, token);
 		goto END;
     }
     
@@ -232,7 +232,7 @@ DefinitionVariable_parse(
     if (isStatic == FALSE && isConstant == TRUE)
     {
     	Logger_err("A constant literal can not be a instance variable.");
-        Parser_error(token);
+        Parser_error(parser, token);
 		goto END;
     }
         
@@ -259,7 +259,7 @@ DefinitionVariable_parse(
     if (expression == NULL)
 	{
     	Logger_err("No expression.");
-        Parser_error(token);
+        Parser_error(parser, token);
 		goto END;
 	}
     
@@ -334,8 +334,11 @@ DefinitionFunction_parse_parameters(
 		token = Parser_getCurrent(parser);
 		if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
 	    {
-	        Logger_dbg("Not identifier");
-			break;
+            if (Token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT)
+                parameters = NULL;
+            
+            Logger_dbg("Not identifier");
+		    goto END;
 	    }
 	    
 	    variable = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, Token_buffer(token), TRUE, FALSE, NULL);
@@ -354,6 +357,9 @@ DefinitionFunction_parse_parameters(
 	}
 	
     Logger_dbg("parameters count = %d", List_count(parameters));
+    
+    
+END:
     Logger_trc("[  END  ]%s", __func__);
 	return parameters;
 }
@@ -374,6 +380,8 @@ DefinitionFunction_parse(
     List statements = NULL;
     Statement statement = NULL;
     Token token = NULL;
+    Boolean isBracket = FALSE;
+    char buffer[6];
     
     token = Parser_getCurrent(parser);
     if (Token_type(token) == TOKEN_TYPE_ATMARK)
@@ -392,10 +400,18 @@ DefinitionFunction_parse(
     name = Token_buffer(token);
     Parser_next(parser);
     
-    if (Parser_eat(parser, TOKEN_TYPE_PARENTHESIS_LEFT, FALSE) == FALSE)
+    if (Parser_eat(parser, TOKEN_TYPE_PARENTHESIS_LEFT, FALSE) == TRUE)
     {
-        Logger_dbg("Not '('.");
-    	goto END;
+        isBracket = FALSE;
+    }
+    else if (Parser_eat(parser, TOKEN_TYPE_BRACKET_LEFT, FALSE) == TRUE)
+    {
+        isBracket = TRUE;
+    }
+    else
+    {
+        Logger_dbg("Not '(' or '['.");
+        goto END;
     }
     
 	parameters = DefinitionFunction_parse_parameters(parser);
@@ -405,10 +421,34 @@ DefinitionFunction_parse(
     	goto END;
     }
 	
-	if (Parser_eat(parser, TOKEN_TYPE_PARENTHESIS_RIGHT, FALSE) == FALSE)
+	if (isBracket == FALSE)
     {
-        Logger_dbg("Not ')'.");
-    	goto END;
+        Parser_eat(parser, TOKEN_TYPE_PARENTHESIS_RIGHT, TRUE);
+    }
+    else if (isBracket == TRUE)
+    {
+        Parser_eat(parser, TOKEN_TYPE_BRACKET_RIGHT, TRUE);
+    }
+    else
+    {
+        Logger_dbg("Not ')' or ']'.");
+        goto END;
+    }
+    
+    if (isBracket == TRUE)
+    {
+        if (strcmp(name, "get") == 0 || strcmp(name, "set") == 0)
+        {
+            memset(buffer, 0x00, sizeof(buffer));
+            strcat(buffer, name);
+            strcat(buffer, "[]");
+            name = String_new(buffer);
+        }
+        else
+        {
+            Logger_dbg("Illegal function name as indexer. [%s]", name);
+            goto END;
+        }
     }
 	
 	if (Parser_eat(parser, TOKEN_TYPE_COLON, FALSE) == FALSE)
@@ -443,7 +483,7 @@ DefinitionFunction_parse(
         if (statement == NULL)
         {
             Logger_err("statement parse error.");
-            Parser_error(token);
+            Parser_error(parser, token);
             goto END;
         }
         
@@ -568,7 +608,7 @@ DefinitionIndexer_parse(
         if (statement == NULL)
         {
             Logger_err("statement parse error.");
-            Parser_error(token);
+            Parser_error(parser, token);
             goto END;
         }
         

@@ -16,6 +16,7 @@ struct ParserTag
     Item current;
     Item next;
     Item mark;
+    String path;
 };
 
 

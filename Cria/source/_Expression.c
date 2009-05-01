@@ -42,6 +42,55 @@ Expression_new(
 //ExpressionOperation
 //==============================
 CriaId
+ExpressionOperation_evaluate_of_null(
+    Interpreter interpreter,
+    OperationKind operation,
+    CriaId left,
+    CriaId right
+)
+{
+    CriaId id = NULL;
+    
+    if (left == NULL && right != NULL)
+        id = right;
+    else if (left != NULL && right == NULL)
+        id = left;
+    else if (left == NULL && right == NULL)
+        id = NULL;
+    else
+        runtime_error(interpreter);
+    
+    
+    switch (operation)
+    {
+    case OPERATION_KIND_EQUAL:
+        if (id == NULL)
+            id = (CriaId)CriaBoolean_new(FALSE, TRUE);
+        else
+            id = (CriaId)CriaBoolean_new(FALSE, FALSE);
+        break;
+    case OPERATION_KIND_PLUS:
+        break;
+    case OPERATION_KIND_MINUS:
+    case OPERATION_KIND_MULTIPLY:
+    case OPERATION_KIND_DIVIDE:
+    case OPERATION_KIND_MODULO:
+    case OPERATION_KIND_LESS_THAN:
+    case OPERATION_KIND_LESS_EQUAL:
+    case OPERATION_KIND_NOT_EQUAL:
+    case OPERATION_KIND_OR:
+    case OPERATION_KIND_AND:
+    default:
+        runtime_error(interpreter);
+        break;
+    }
+    
+    return id;
+}
+
+
+
+CriaId
 ExpressionOperation_evaluate(
     Interpreter         interpreter,
     CriaId object,
@@ -61,8 +110,17 @@ ExpressionOperation_evaluate(
     CriaId right = Expression_evaluate(interpreter, object, parameters, expression->right);
     Logger_dbg("Evaluated right expression.");
     
+    
+    if (left == NULL || right == NULL)
+    {
+        id = ExpressionOperation_evaluate_of_null(interpreter, expression->kind, left, right);
+        goto END;
+    }
+    
+    /*
     if (left == NULL && right == NULL)
     {
+        
         goto END;
     }
     else if (left == NULL && right != NULL)
@@ -75,16 +133,19 @@ ExpressionOperation_evaluate(
         id = left;
         goto END;
     }
+    */
     
     Logger_dbg("Check data type.");
     Logger_dbg("Data type = %d. (INTEGER is %d)", left->type, CRIA_DATA_TYPE_INTEGER);
     Logger_dbg("Checked data type.");
     
+    //*
     //式の左辺右辺の型チェック
     if (left->type != right->type)
     {
         runtime_error(interpreter);
     }
+    //*/
     
     //演算可能・不可能のチェック
     if (left->type == CRIA_DATA_TYPE_FUNCTION
@@ -100,7 +161,6 @@ ExpressionOperation_evaluate(
         id = CriaBoolean_operate(interpreter, expression->kind, (CriaBoolean)left, (CriaBoolean)right);
         break;
     case CRIA_DATA_TYPE_INTEGER:
-        Logger_dbg("Operate of integer.");
         id = CriaInteger_operate(interpreter, expression->kind, (CriaInteger)left, (CriaInteger)right);
         break;
     case CRIA_DATA_TYPE_STRING:
@@ -712,7 +772,7 @@ ExpressionParameters_parse(
         {
             Logger_dbg("expression is NULL.");
             Parser_setPosition(parser, position);
-            Parser_error(token);
+            Parser_error(parser, token);
             goto END;
         }
         
@@ -730,7 +790,7 @@ ExpressionParameters_parse(
             if (Parser_next(parser) == FALSE)
             {
                 Parser_setPosition(parser, position);
-                Parser_error(token);
+                Parser_error(parser, token);
                 goto END;
             }
             token = Parser_getCurrent(parser);
@@ -744,7 +804,7 @@ ExpressionParameters_parse(
         {
             Token_log(token);
             Parser_setPosition(parser, position);
-            Parser_error(token);
+            Parser_error(parser, token);
             goto END;
         }
     }
@@ -1604,7 +1664,7 @@ ExpressionFactor_parse(
         token = Parser_getCurrent(parser);
         if (Token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT)
         {
-            Parser_error(token);
+            Parser_error(parser, token);
         }
         Parser_next(parser);
         goto END;

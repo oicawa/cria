@@ -67,7 +67,7 @@ Interpreter_compile(
         goto END;
     }
     
-    if (Parser_create_syntax_tree(tokens, interpreter) == FALSE)
+    if (Parser_create_syntax_tree(tokens, interpreter, filePath) == FALSE)
     {
         Logger_err("syntax parse error.");
         goto END;

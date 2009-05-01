@@ -19,6 +19,7 @@ struct TokenTag
 
 struct TokenizerTag
 {
+    String          path;
     FILE            *file;
     int             row;
     int             column;
