@@ -60,19 +60,21 @@ Parser_eat(
 Boolean
 Parser_create_syntax_tree(
     List tokens,
-    Interpreter interpreter
+    Interpreter interpreter,
+    String path
 );
 
 
 
 void
 Parser_errorFunction(
+    Parser parser,
 	Token token,
 	char* file,
 	int line
 );
-#define Parser_error(token) \
-    Parser_errorFunction(token, __FILE__, __LINE__)
+#define Parser_error(parser, token) \
+    Parser_errorFunction(parser, token, __FILE__, __LINE__)
 
 
 
