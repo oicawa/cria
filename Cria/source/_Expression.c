@@ -67,7 +67,7 @@ ExpressionOperation_evaluate_of_null(
         if (id == NULL)
             id = (CriaId)CriaBoolean_new(FALSE, TRUE);
         else
-            id = (CriaId)CriaBoolean_new(FALSE, FALSE);
+            id = (CriaId)   CriaBoolean_new(FALSE, FALSE);
         break;
     case OPERATION_KIND_PLUS:
         break;

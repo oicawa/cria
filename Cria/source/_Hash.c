@@ -151,6 +151,7 @@ Hash_put(
 		cursor = cursor->next;
 	
 	cursor->next = entry;
+    List_add(hash->keys, key);
 
 END:
 	entry->object = object;
