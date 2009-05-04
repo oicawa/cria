@@ -1,17 +1,19 @@
 Button:
     @caption
+    @name
+    index = 0
     
     new(caption):
         .caption = caption
+        .name = ".button" + class.index.to_string()
+        class.index = class.index + 1
 
-    @create_commands():
-        commands = List()
+    
+    @assigne_commands(commands):
         command = List()
         command.add("button")
-        command.add(".button1")
+        command.add("." + .name)
         command.add("-text")
         command.add(.caption)
         commands.add(command)
-
-        return commands
 

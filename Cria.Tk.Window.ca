@@ -19,7 +19,7 @@ Window:
 
     @get[row]:
         while .cells[row] == null
-            .cells.add(Cell())
+            .cells.add(Cell(row))
         return .cells[row]
     
     @create_commands():
@@ -38,11 +38,38 @@ Window:
         command.add(".")
         command.add(.caption)
         commands.add(command)
+        
+        index = 0
+        while index < .cells.count()
+            .cells[index].assigne_commands(commands)
+            command = List()
+            command.add("grid")
+            command.add(.cells[index].get_control_name())
+            command.add("-column")
+            command.add(index.to_string())
+            command.add("-row")
+            command.add("0")
+            command.add("-sticky")
+            command.add("w")
+            commands.add(command)
+            index = index + 1
 
         return commands
 
+
 Cell:
     @control
+    @row
+    
+    new(row):
+        .row = row
+
+    @get_control_name():
+        return .control.name
     @put(control):
         .control = control
-    
+
+    @assigne_commands(commands):
+        .control.assigne_commands(commands)
+
+
