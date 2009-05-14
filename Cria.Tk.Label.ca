@@ -1,0 +1,19 @@
+Label:
+    @caption
+    @name
+    index = 0
+    
+    new(caption):
+        .caption = caption
+        .name = ".label" + class.index.to_string()
+        class.index = class.index + 1
+
+    
+    @assigne_commands(commands):
+        command = List()
+        command.add("label")
+        command.add("." + .name)
+        command.add("-text")
+        command.add(.caption)
+        commands.add(command)
+
