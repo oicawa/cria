@@ -67,7 +67,13 @@ ExpressionOperation_evaluate_of_null(
         if (id == NULL)
             id = (CriaId)CriaBoolean_new(FALSE, TRUE);
         else
-            id = (CriaId)   CriaBoolean_new(FALSE, FALSE);
+            id = (CriaId)CriaBoolean_new(FALSE, FALSE);
+        break;
+    case OPERATION_KIND_NOT_EQUAL:
+        if (id == NULL)
+            id = (CriaId)CriaBoolean_new(FALSE, FALSE);
+        else
+            id = (CriaId)CriaBoolean_new(FALSE, TRUE);
         break;
     case OPERATION_KIND_PLUS:
         break;
@@ -77,7 +83,6 @@ ExpressionOperation_evaluate_of_null(
     case OPERATION_KIND_MODULO:
     case OPERATION_KIND_LESS_THAN:
     case OPERATION_KIND_LESS_EQUAL:
-    case OPERATION_KIND_NOT_EQUAL:
     case OPERATION_KIND_OR:
     case OPERATION_KIND_AND:
     default:
