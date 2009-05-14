@@ -1,8 +1,23 @@
 load Cria::Tk::Window
 load Cria::Tk::Button
+load Cria::Tk::Label
+load Cria::Tk::Text
 
-button = Button("ボタン")
+button1 = Button("ボタン1")
+#button1.click = block(event):
+    #ここにイベント処理を記述する。
+    #Rubyのイテレータのような記述ができるとうれしい。
+    #イテレータはかなり使えるからなぁ。
+    #まぁこのあたりの実装より先に、
+    #C言語で定義したマンドをTclインタプリタに登録して実行させることだろうなぁ。
+
+label1 = Label("ラベル1")
+text1 = Text()
+button2 = Button("ボタン2")
 window = Window("テストアプリですよ♪", 500, 350)
-window[0].put(button)
+window[0, 0].put(button1)
+window[0, 1].put(text1)
+window[1, 1].put(label1)
+window[2, 2].put(button2)
 window.show()
 

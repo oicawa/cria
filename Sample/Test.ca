@@ -1,13 +1,8 @@
-load Cria::Tk::Window
+Test:
+    @hoge
+    @fuga
+    new(value1, value2):
+        .hoge = value1
+        .fuga = value2
 
-#person = Person("Masamitsu Oikawa", "31")
-#person.print()
-#rwick = Dog("Rwick", 7, person.name)
-#rwick.print()
-
-cell = Cell(0)
-write("cell's name is [%s].\n", cell.name)
-cell.put("hoge")
-write("cell's control is [%s].\n", cell.control)
-#cell.hoge = "H-O-G-E"
-#write("cell's hoge is [%s].\n", cell.hoge)
+test = Test(0, 0)
