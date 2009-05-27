@@ -1,22 +1,21 @@
 load Cria::Tk
 
 Window:
+    @control
     @caption
     @width
     @height
-    @cells
     @rows
 
     new(caption, width, height):
+        .control = TkControl()
         .caption = caption
         .width = width
         .height = height
-        .cells = List()
         .rows = List()
     
     @show():
-        commands = .create_commands()
-        tk = Tk(commands)
+        tk = Tk(.control)
         tk.loop()
 
     @get[row, column]:
@@ -27,48 +26,13 @@ Window:
             line.add(Cell(row, column))
         return line[column]
     
-    @create_commands():
-        commands = List()
-
-        command = List()
-        command.add("wm")
-        command.add("geometry")
-        command.add(".")
-        command.add(.width.to_string() + "x" + .height.to_string())
-        commands.add(command)
-
-        command = List()
-        command.add("wm")
-        command.add("title")
-        command.add(".")
-        command.add(.caption)
-        commands.add(command)
+    @create_controls():
+        geometry = .width.to_string() + "x" + .height.to_string()
+        .control.add("wm", "geometry", ".", geometry)
+        .control.add("wm", "title", ".", .caption)
+        .control.name = "."
         
-        i = 0
-        while i < .rows.count()
-            j = 0
-            row = .rows[i]
-            while j < row.count()
-                cell = row[j]
-                if cell.control == null
-                    j = j + 1
-                    continue
-                
-                cell.assigne_commands(commands)
-                command = List()
-                command.add("grid")
-                command.add(cell.control.name)
-                command.add("-row")
-                command.add(i.to_string())
-                command.add("-column")
-                command.add(j.to_string())
-                command.add("-sticky")
-                command.add("w")
-                commands.add(command)
-                j = j + 1
-            i = i + 1
-
-        return commands
+        return .control
 
 
 Cell:

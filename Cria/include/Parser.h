@@ -78,4 +78,12 @@ Parser_errorFunction(
 
 
 
+void
+Parser_insert(
+    Parser parser,
+    TokenType type
+);
+
+
+
 #endif

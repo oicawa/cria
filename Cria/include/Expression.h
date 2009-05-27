@@ -23,6 +23,7 @@ typedef enum
     EXPRESSION_KIND_VARIABLE,
     EXPRESSION_KIND_OPERATION,
     EXPRESSION_KIND_REFERENCE,
+    EXPRESSION_KIND_BLOCK,
 } ExpressionKind;
 
 
@@ -56,6 +57,7 @@ typedef struct  ExpressionStringLiteralTag      *ExpressionStringLiteral;
 typedef struct  ExpressionIntegerLiteralTag     *ExpressionIntegerLiteral;
 typedef struct  ExpressionBooleanLiteralTag     *ExpressionBooleanLiteral;
 typedef struct  ExpressionParametersTag         *ExpressionParameters;
+typedef struct  ExpressionBlockTag              *ExpressionBlock;
 
 
 

@@ -12,6 +12,7 @@
 #include "CriaClass.h"
 #include "Definition.h"
 #include "Hash.h"
+#include "Statement.h"
 
 #include "_Expression.h"
 
@@ -1362,6 +1363,10 @@ Expression_evaluate(
         id = ExpressionOperation_evaluate(interpreter, object, parameters, expression->of._operation_);
         Logger_dbg("Done operation expression");
         break;
+    case EXPRESSION_KIND_BLOCK:
+        //TODO: Herre, I must implement binding environmental variables to block.
+        
+        break;
     default:
         runtime_error(interpreter);
         break;
@@ -1586,10 +1591,101 @@ ExpressionFunctionCall_parse(
         expression->next = ExpressionReference_parse(parser);
 		Logger_dbg("Created next expression.");
     }
-    
+
+    /*
+    if (Token_type(token) == TOKEN_TYPE_)
+    {
+        Parser_next(parser);
+        token = Parser_getCurrent(parser);
+        expression->next = ExpressionReference_parse(parser);
+		Logger_dbg("Created next expression.");
+    }
+    */
 END:
     Logger_trc("[  END  ]%s", __func__);
     return expression;
+}
+
+
+
+ExpressionBlock
+ExpressionBlock_parse(
+    Parser parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    ExpressionBlock block = NULL;
+    DefinitionFunction functionDefinition = NULL;
+    Item restore = Parser_getPosition(parser);
+    Boolean isStatic = FALSE;
+    List parameters = NULL;
+    List statements = NULL;
+    Statement statement = NULL;
+    Token token = NULL;
+    
+    token = Parser_getCurrent(parser);
+    if (Token_type(token) != TOKEN_TYPE_BLOCK)
+    {
+        Logger_dbg("Not block.");
+    	goto END;
+    }
+    
+    Parser_next(parser);
+    
+    Parser_eat(parser, TOKEN_TYPE_PARENTHESIS_LEFT, TRUE);
+    
+	parameters = DefinitionFunction_parse_parameters(parser);
+	if (parameters == NULL)
+    {
+        Logger_dbg("Not parameters.");
+    	goto END;
+    }
+	
+    Parser_eat(parser, TOKEN_TYPE_PARENTHESIS_RIGHT, TRUE);
+    Parser_eat(parser, TOKEN_TYPE_COLON, TRUE);
+    Parser_eat(parser, TOKEN_TYPE_NEW_LINE, TRUE);
+    Parser_eat(parser, TOKEN_TYPE_INDENT, TRUE);
+	
+	statements = List_new();
+    while(1)
+    {
+        token = Parser_getCurrent(parser);
+        if (Token_type(token) == TOKEN_TYPE_DEDENT)
+        {
+            Logger_dbg("token type is 'DEDENT'.");
+            break;
+        }
+        
+        statement = Statement_parse(parser);
+        if (statement == NULL)
+        {
+            Logger_err("statement parse error.");
+            Parser_error(parser, token);
+            goto END;
+        }
+        
+        Logger_dbg("Add statement.");
+        List_add(statements, statement);
+    }
+    
+	if (Parser_eat(parser, TOKEN_TYPE_DEDENT, TRUE) == FALSE)
+    {
+        Logger_dbg("Not <<DEDENT>>.");
+    	goto END;
+    }
+	
+    functionDefinition = DefinitionFunction_new(NULL, FALSE, isStatic, parameters, statements, NULL);
+    
+    block = Memory_malloc(sizeof(struct ExpressionBlockTag));
+    block->function = functionDefinition;
+    
+END:
+	if (block == NULL)
+		Parser_setPosition(parser, restore);
+	else
+        Parser_insert(parser, TOKEN_TYPE_NEW_LINE);
+    Logger_trc("[  END  ]%s", __func__);
+    return block;
 }
 
 
@@ -1673,6 +1769,20 @@ ExpressionFactor_parse(
         }
         Parser_next(parser);
         goto END;
+    }
+    
+    
+    Logger_dbg("Check block expression.");
+    if (Token_type(token) == TOKEN_TYPE_BLOCK)
+    {
+        Logger_dbg("This is a block token.");
+        ExpressionBlock block = ExpressionBlock_parse(parser);
+        if (block != NULL)
+        {
+            expression = Expression_new(EXPRESSION_KIND_BLOCK);
+            expression->of._block_ = block;
+            goto END;
+        }
     }
     
     

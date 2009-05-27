@@ -11,6 +11,7 @@ Label:
     
     @assigne_commands(commands):
         command = List()
+        command.add("." + .name)
         command.add("label")
         command.add("." + .name)
         command.add("-text")

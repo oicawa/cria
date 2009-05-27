@@ -96,6 +96,13 @@ DefinitionFunction_new(
 
 
 
+List
+DefinitionFunction_parse_parameters(
+	Parser parser
+);
+
+
+
 DefinitionFunction
 DefinitionFunction_parse(
     Parser parser

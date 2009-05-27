@@ -18,7 +18,7 @@ pack .user_frame.name_label -side left
 entry .user_frame.name -width 10 -background white -selectbackground blue
 pack .user_frame.name -side left
 
-button .user_frame.user_search -text "一覧"
+button .user_frame.user_search -text "一覧" -command { .user_frame.user_search configure -text "いちらん" }
 pack .user_frame.user_search -side left
 
 

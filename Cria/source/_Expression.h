@@ -17,6 +17,7 @@ struct ExpressionTag
         ExpressionGenerate          _generate_;
         ExpressionVariable          _variable_;
         ExpressionReference         _reference_;
+        ExpressionBlock             _block_;
     } of;
 };
 
@@ -110,6 +111,13 @@ struct ExpressionReferenceTag
         ExpressionGenerate      generate;
     } of;
     ExpressionReference         next;
+};
+
+
+
+struct ExpressionBlockTag
+{
+    DefinitionFunction function;
 };
 
 

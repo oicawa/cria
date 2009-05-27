@@ -75,6 +75,7 @@
 #define TOKEN_LITERAL_CLASS                 "class"
 #define TOKEN_LITERAL_BREAK                 "break"
 #define TOKEN_LITERAL_CATCH                 "catch"
+#define TOKEN_LITERAL_BLOCK                 "block"
 #define TOKEN_LITERAL_RETURN                "return"
 #define TOKEN_LITERAL_FINALLY               "finally"
 #define TOKEN_LITERAL_CONTINUE              "continue"
@@ -284,6 +285,13 @@ Tokenizer_reserved(
     {
         Logger_dbg("create TOKEN_TYPE_BREAK");
         token = Token_new(TOKEN_TYPE_BREAK, row, column, value);
+        goto END;
+    }
+    
+    if (strcmp(value, TOKEN_LITERAL_BLOCK) == 0)
+    {
+        Logger_dbg("create TOKEN_TYPE_BLOCK");
+        token = Token_new(TOKEN_TYPE_BLOCK, row, column, value);
         goto END;
     }
     

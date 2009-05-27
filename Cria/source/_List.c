@@ -8,10 +8,8 @@
 
 
 Item
-Item_newFunction(
-    void    *object,
-    char    *fileName,
-    int     line
+Item_new(
+    void    *object
 )
 {
     Item item = Memory_malloc(sizeof(struct ItemTag));
@@ -91,7 +89,7 @@ List_addFunction(
     Logger_cor("list [%p]", list);
     if (list->item == NULL)
     {
-        list->item = Item_newFunction(object, fileName, line);
+        list->item = Item_new(object);
         list->last = list->item;
         list->count++;
         goto END;
@@ -99,7 +97,7 @@ List_addFunction(
     
     
     Item last = list->last;
-    Item newItem = Item_newFunction(object, fileName, line);
+    Item newItem = Item_new(object);
     newItem->prev = last;
     last->next = newItem;
     list->last = newItem;
@@ -185,20 +183,17 @@ END:
 
 
 Boolean
-List_insert(
+List_insert_item(
     List list,
-    int index,
-    void* object
+    Item target,
+    Item newItem
 )
 {
     Logger_cor("[ START ]%s", __func__);
     Logger_cor("list [%p]", list);
-    Item target = NULL;
     Item prev = NULL;
-    Item newItem = NULL;
     Boolean result = FALSE;
     
-    target = List_getItem(list, index);
     if (target == NULL)
     {
         result = FALSE;
@@ -206,7 +201,6 @@ List_insert(
     }
     
     prev = target->prev;
-    newItem = Item_newFunction(object, __FILE__, __LINE__);
     
     target->prev = newItem;
     newItem->next = target;
@@ -227,6 +221,30 @@ List_insert(
     result = TRUE;
     
 END:
+    Logger_cor("[ START ]%s", __func__);
+    return result;
+}
+
+
+
+Boolean
+List_insert(
+    List list,
+    int index,
+    void* object
+)
+{
+    Logger_cor("[ START ]%s", __func__);
+    Logger_cor("list [%p]", list);
+    Item target = NULL;
+    Item newItem = NULL;
+    Boolean result = FALSE;
+    
+    target = List_getItem(list, index);
+    newItem = Item_new(object);
+    
+    result = List_insert_item(list, target, newItem);
+    
     Logger_cor("[ START ]%s", __func__);
     return result;
 }

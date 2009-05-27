@@ -9,6 +9,13 @@ typedef struct ListTag *List;
 
 
 
+Item
+Item_new(
+    void* object
+);
+
+
+
 void*
 Item_getObject(
 	Item item
@@ -57,6 +64,15 @@ Boolean
 List_delete(
     List list,
     int index
+);
+
+
+
+Boolean
+List_insert_item(
+    List list,
+    Item target,
+    Item newItem
 );
 
 

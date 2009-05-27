@@ -11,6 +11,7 @@ typedef enum
     TOKEN_TYPE_AND,
     TOKEN_TYPE_ATMARK,
     TOKEN_TYPE_BOOLEAN_LITERAL,
+    TOKEN_TYPE_BLOCK,
     TOKEN_TYPE_BRACE_LEFT,
     TOKEN_TYPE_BRACE_RIGHT,
     TOKEN_TYPE_BRACKET_LEFT,
@@ -79,6 +80,16 @@ typedef struct  TokenizerTag *Tokenizer;
 List
 Tokenizer_create_tokens(
     char*   filePath
+);
+
+
+
+Token
+Token_new(
+    TokenType type,
+    int row,
+    int column,
+    char* buffer
 );
 
 

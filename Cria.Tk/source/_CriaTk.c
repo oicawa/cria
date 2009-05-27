@@ -17,6 +17,7 @@
 #include "CriaList.h"
 #include "Definition.h"
 #include "CriaVariable.h"
+#include "CriaTkControl.h"
 
 #include "_CriaTk.h"
 
@@ -32,45 +33,12 @@ CriaTk__generator_(
     Logger_trc("[ START ]%s", __func__);
     
     CriaObject tk = CriaObject_new("Tk");
-//    CriaObject_addField(tk, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "pointer", FALSE, FALSE, NULL));
-    CriaObject_addField(tk, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "commands", FALSE, FALSE, NULL));
+    CriaObject_addField(tk, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "pointer", FALSE, FALSE, NULL));
     
     Logger_trc("[  END  ]%s", __func__);
     return (CriaId)tk;
 }
 
-
-/*
-Tcl_Interp*
-CriaTk__core_(
-	Interpreter interpreter,
-	CriaId object
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    Tcl_Interp* interp = NULL;
-
-    
-    Logger_dbg("Check object data type.");
-    if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
-    {
-    	runtime_error(interpreter);
-    	goto END;
-    }
-
-    if (strcmp(object->name, "Tk") != 0)
-    {
-    	runtime_error(interpreter);
-    	goto END;
-    }
-
-    interp = (Tcl_Interp*)CriaObject_get(interpreter, (CriaObject)object, "pointer");
-    
-END:
-    Logger_trc("[  END  ]%s", __func__);
-    return list;
-}
-*/
 
 
 CriaId
@@ -81,8 +49,7 @@ CriaTk_new(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaId arg = NULL;
-    List commands = NULL;
+    Tcl_Interp *interp;           /* Tcl インタプリタ */
     
     
     if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
@@ -93,30 +60,29 @@ CriaTk_new(
     }
     
     
-    if (List_count(args) != 1)
+    if (List_count(args) != 0)
     {
     	runtime_error(interpreter);
     	goto END;
     }
     
-    arg = (CriaId)List_get(args, 0);
-    if (arg->type != CRIA_DATA_TYPE_CRIA_OBJECT)
+    
+    interp = Tcl_CreateInterp();
+    if(Tcl_Init(interp) == TCL_ERROR )
     {
-    	Logger_err("1st argument is not 'CRIA_DATA_TYPE_CRIA_OBJECT'.");
-    	runtime_error(interpreter);
-    	goto END;
+        runtime_error(interpreter);
+        goto END;
     }
     
-    if (strcmp(arg->name, "List") != 0)
+    
+    if(Tk_Init(interp) == TCL_ERROR )
     {
-    	Logger_err("1st argument is not List object.");
-    	runtime_error(interpreter);
-    	goto END;
+        runtime_error(interpreter);
+        goto END;
     }
     
-
-    commands = CriaList__core_(interpreter, arg);
-    CriaObject_set(interpreter, (CriaObject)object, "commands", commands);
+    
+    CriaObject_set(interpreter, (CriaObject)object, "pointer", interp);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -125,8 +91,35 @@ END:
 
 
 
+Tcl_Interp*
+CriaTk__core_(
+    Interpreter interpreter,
+	CriaId object
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Tcl_Interp *interp;           /* Tcl インタプリタ */
+    
+    
+    if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
+    {
+    	Logger_err("Object is not 'CRIA_DATA_TYPE_CRIA_OBJECT'.");
+    	runtime_error(interpreter);
+    	goto END;
+    }
+    
+    
+    interp = CriaObject_get(interpreter, (CriaObject)object, "pointer");
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return interp;
+}
+
+
+
 CriaId
-CriaTk_loop(
+CriaTk_add(
 	Interpreter interpreter,
 	CriaId object,
     List args
@@ -134,14 +127,63 @@ CriaTk_loop(
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
-    List commands = NULL;
-    List command = NULL;
-    int command_count = 0;
-    int index = 0;
+    int args_count = 0;
     Tcl_Interp *interp;           /* Tcl インタプリタ */
     char size[16];
-    Tcl_Obj** cmd = NULL;
+    int i = 0;
+    Tcl_Obj** command = NULL;
     memset(size, 0x00, 16);
+    
+    Logger_dbg("Check arguments count.");
+    args_count = List_count(args);
+    if (args_count <= 0)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+    
+    
+    interp = CriaTk__core_(interpreter, object);
+    
+    
+    command = Memory_malloc(args_count);
+    for (i = 0; i < args_count; i++)
+    {
+        CriaId arg = (CriaId)List_get(args, i);
+        if (arg->type != CRIA_DATA_TYPE_STRING)
+        {
+        	runtime_error(interpreter);
+        	goto END;
+        }
+        CriaString string = (CriaString)arg;
+        command[i] = Tcl_NewStringObj(string->value, -1);
+    }
+    
+
+    if (Tcl_EvalObjv(interp, args_count, command, 0) == TCL_ERROR)
+    {
+        runtime_error(interpreter);
+        goto END;
+    }
+    
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
+CriaId
+CriaTk_main_loop(
+	Interpreter interpreter,
+	CriaId object,
+    List args
+)	
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+
     
     Logger_dbg("Check arguments count.");
     if (List_count(args) != 0)
@@ -150,46 +192,6 @@ CriaTk_loop(
     	goto END;
     }
     
-    commands = (List)CriaObject_get(interpreter, (CriaObject)object, "commands");
-    if (commands == NULL)
-    {
-    	runtime_error(interpreter);
-    	goto END;
-    }
-    
-    interp = Tcl_CreateInterp();
-
-    if(Tcl_Init(interp) == TCL_ERROR )
-    {
-        runtime_error(interpreter);
-        goto END;
-    }
-    
-    if(Tk_Init(interp) == TCL_ERROR )
-    {
-        runtime_error(interpreter);
-        goto END;
-    }
-    
-    command_count = List_count(commands);
-    int length = 0;
-    int j = 0;
-    for (index = 0; index < command_count; index++)
-    {
-        command = CriaList__core_(interpreter, (CriaId)List_get(commands, index));
-        length = List_count(command);
-        cmd = Memory_malloc(length);
-        for (j = 0; j < length; j++)
-        {
-            CriaString field = (CriaString)List_get(command, j);
-            cmd[j] = Tcl_NewStringObj(field->value, -1);
-        }
-        if (Tcl_EvalObjv(interp, length, cmd, 0) == TCL_ERROR)
-        {
-            runtime_error(interpreter);
-            goto END;
-        }
-    }
 
     Tk_MainLoop();
     
@@ -206,7 +208,6 @@ CriaTk_loadClass(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    DefinitionVariable variable = NULL;
     DefinitionFunction function = NULL;
     DefinitionClass klass = NULL;
 
@@ -215,16 +216,16 @@ CriaTk_loadClass(
     Hash i_methods = Hash_new(32);
     Hash s_methods = Hash_new(32);
     
-    variable = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "commands", FALSE, FALSE, NULL);
-    Hash_put(i_fields, DefinitionVariable_name(variable), variable);
-    
     function = DefinitionFunction_new(" generator ", TRUE, TRUE, NULL, NULL, CriaTk__generator_);
     Hash_put(s_methods, DefinitionFunction_get_name(function), function);
     
     function = DefinitionFunction_new("new", TRUE, TRUE, NULL, NULL, CriaTk_new);
     Hash_put(s_methods, DefinitionFunction_get_name(function), function);
+
+    function = DefinitionFunction_new("add", TRUE, FALSE, NULL, NULL, CriaTk_add);
+    Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
-    function = DefinitionFunction_new("loop", TRUE, FALSE, NULL, NULL, CriaTk_loop);
+    function = DefinitionFunction_new("main_loop", TRUE, FALSE, NULL, NULL, CriaTk_main_loop);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     klass = DefinitionClass_new(className, TRUE, i_fields, s_fields, i_methods, s_methods, NULL);

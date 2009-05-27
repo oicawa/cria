@@ -2,17 +2,22 @@ Text:
     @text
     @multi
     @name
+    @bg
     index = 0
     
     new():
         .name = ".text" + class.index.to_string()
         .multi = false
+        .bg = "white"
         class.index = class.index + 1
 
     
     @assigne_commands(commands):
         command = List()
+        command.add("." + .name)
         command.add("entry")
         command.add("." + .name)
+        command.add("-bg")
+        command.add(.bg)
         commands.add(command)
 

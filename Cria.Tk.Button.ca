@@ -1,6 +1,7 @@
 Button:
     @caption
     @name
+    @command
     index = 0
     
     new(caption):
@@ -11,9 +12,12 @@ Button:
     
     @assigne_commands(commands):
         command = List()
+        command.add("." + .name)
         command.add("button")
         command.add("." + .name)
         command.add("-text")
         command.add(.caption)
+        command.add("-command")
+        command.add(.command)
         commands.add(command)
 

@@ -223,6 +223,26 @@ END:
 }
 
 
+void
+Parser_insert(
+    Parser parser,
+    TokenType type
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Token current = Parser_getCurrent (parser);
+    Token token = Token_new(type, Token_row(current), Token_column(current), "<<NEW_LINE>>(dummy for block)");
+    
+    Item new_line = Item_new(token);
+    List_insert_item(parser->tokens, parser->current, new_line);
+    parser->next = parser->current;
+    parser->current = new_line;
+    
+    Logger_trc("[  END  ]%s", __func__);
+}
+
+
+
 
 Boolean
 Parser_create_syntax_tree(

@@ -5,6 +5,7 @@ CC=gcc
 OBJS =\
 	Package.o\
 	_CriaTk.o\
+	_CriaTkControl.o\
 
 
 all:$(OBJS)
@@ -19,4 +20,5 @@ clean:
 
 Package.o: Package.c
 _CriaTk.o: _CriaTk.c ../include/CriaTk.h
+_CriaTkControl.o: _CriaTkControl.c ../include/CriaTkControl.h
 
