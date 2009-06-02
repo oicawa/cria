@@ -169,6 +169,8 @@ CriaTk_add(
     }
     
     
+    id = (CriaId)CriaString_new(FALSE, (String)Tcl_GetStringResult(interp));
+    
 END:
     Logger_trc("[  END  ]%s", __func__);
     return id;

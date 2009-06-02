@@ -6,11 +6,14 @@ tk.add("wm", "title", ".", "Test Application!")
 
 tk.add("label", ".label1", "-text", "Test Label")
 tk.add("button", ".button1", "-text", "Test Button", "-command", ".button1_command")
+tk.add("entry", ".entry1", "-bg", "white")
 
 tk.add("grid", ".label1", "-column", "0", "-row", "0", "-sticky", "ew")
+tk.add("grid", ".entry1", "-column", "0", "-row", "1", "-sticky", "ew")
 tk.add("grid", ".button1", "-column", "1", "-row", "1", "-sticky", "ew")
 
 tk[".button1_command"] = block():
-    tk.add(".label1", "configure", "-text", "Change!")
+    value = tk.add(".entry1", "get")
+    tk.add(".label1", "configure", "-text", value)
 
 tk.main_loop()
