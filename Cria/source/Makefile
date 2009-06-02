@@ -20,6 +20,7 @@ OBJS =\
 	_Loader.o\
 	_CriaId.o\
 	_CriaObject.o\
+	_CriaBlock.o\
 	_CriaClass.o\
 	_CriaIO.o\
 	_CriaString.o\
@@ -47,6 +48,7 @@ _StringBuffer.o: _StringBuffer.c _StringBuffer.h ../include/Memory.h ../include/
 _Interpreter.o: _Interpreter.c _Interpreter.h ../include/Memory.h ../include/Logger.h
 _CriaId.o: _CriaId.c _CriaId.h ../include/Memory.h ../include/Logger.h
 _CriaObject.o: _CriaObject.c _CriaObject.h ../include/Memory.h ../include/Logger.h
+_CriaBlock.o: _CriaBlock.c _CriaBlock.h ../include/Memory.h ../include/Logger.h
 _CriaClass.o: _CriaClass.c _CriaClass.h ../include/Memory.h ../include/Logger.h
 _Definition.o: _Definition.c _Definition.h ../include/Memory.h ../include/Logger.h
 _Tokenizer.o: _Tokenizer.c _Tokenizer.h ../include/Memory.h ../include/Logger.h

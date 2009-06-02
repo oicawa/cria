@@ -10,6 +10,7 @@
 #include "CriaString.h"
 #include "CriaObject.h"
 #include "CriaClass.h"
+#include "CriaBlock.h"
 #include "Definition.h"
 #include "Hash.h"
 #include "Statement.h"
@@ -21,6 +22,7 @@ ExpressionReference ExpressionVariable_parse(Parser parser);
 ExpressionReference ExpressionGenerate_parse(Parser parser);
 ExpressionReference ExpressionClass_parse(Parser parser);
 ExpressionParameters ExpressionParameters_parse(Parser parser);
+CriaId ExpressionBlock_evaluate(Interpreter interpreter, CriaId object, List parameterList, ExpressionBlock expression, CriaId parent);
 
 
 
@@ -723,6 +725,10 @@ ExpressionParameters_evaluate(
             List_add(list, id);
             Logger_dbg("Add 'Cria Id'");
             break;
+        case EXPRESSION_KIND_BLOCK:
+            id = ExpressionBlock_evaluate(interpreter, object, parameterList, expression->of._block_, NULL);
+            List_add(list, id);
+            break;
         case EXPRESSION_KIND_REFERENCE:
             Logger_dbg("Do reference expression");
             id = ExpressionReference_evaluate(interpreter, object, parameterList, expression->of._reference_, NULL);
@@ -749,6 +755,38 @@ ExpressionParameters_evaluate(
     
     Logger_trc("[  END  ]%s", __func__);
     return list;
+}
+
+
+
+CriaId
+ExpressionBlock_evaluate(
+    Interpreter interpreter,
+    CriaId object,
+    List parameterList,
+    ExpressionBlock expression,
+    CriaId parent
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaBlock block = NULL;
+    DefinitionFunction  function = NULL;
+    
+    
+    function = expression->function;
+	if (function == NULL)
+	{
+		Logger_err("Function in the block is NULL.");
+		runtime_error(interpreter);
+		goto END;
+	}
+    
+	
+    block = CriaBlock_new(interpreter, object, parameterList, List_new(), function, parent);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return (CriaId)block;
 }
 
 
@@ -1365,7 +1403,7 @@ Expression_evaluate(
         break;
     case EXPRESSION_KIND_BLOCK:
         //TODO: Herre, I must implement binding environmental variables to block.
-        
+        id = ExpressionBlock_evaluate(interpreter, object, parameters, expression->of._block_, NULL);
         break;
     default:
         runtime_error(interpreter);
@@ -1678,6 +1716,7 @@ ExpressionBlock_parse(
     
     block = Memory_malloc(sizeof(struct ExpressionBlockTag));
     block->function = functionDefinition;
+    block->parameters = ExpressionParameters_new(List_new());
     
 END:
 	if (block == NULL)

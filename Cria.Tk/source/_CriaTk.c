@@ -15,6 +15,7 @@
 #include "CriaString.h"
 #include "CriaInteger.h"
 #include "CriaList.h"
+#include "CriaBlock.h"
 #include "Definition.h"
 #include "CriaVariable.h"
 #include "CriaTkControl.h"
@@ -134,6 +135,7 @@ CriaTk_add(
     Tcl_Obj** command = NULL;
     memset(size, 0x00, 16);
     
+    
     Logger_dbg("Check arguments count.");
     args_count = List_count(args);
     if (args_count <= 0)
@@ -142,11 +144,8 @@ CriaTk_add(
     	goto END;
     }
     
-    
-    interp = CriaTk__core_(interpreter, object);
-    
-    
-    command = Memory_malloc(args_count);
+
+    command = Memory_malloc(sizeof(Tcl_Obj*) * args_count);
     for (i = 0; i < args_count; i++)
     {
         CriaId arg = (CriaId)List_get(args, i);
@@ -159,12 +158,87 @@ CriaTk_add(
         command[i] = Tcl_NewStringObj(string->value, -1);
     }
     
-
+    
+    interp = CriaTk__core_(interpreter, object);
+    
+    
     if (Tcl_EvalObjv(interp, args_count, command, 0) == TCL_ERROR)
     {
         runtime_error(interpreter);
         goto END;
     }
+    
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+int
+CriaTk_handle_proc(
+    ClientData data,
+    Tcl_Interp* interp,
+    int argc,
+    char* argv[]
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaBlock block = (CriaBlock)data;
+    
+    CriaBlock_evaluate(block);
+    
+    Logger_trc("[  END  ]%s", __func__);
+    return 0;
+}
+
+
+CriaId
+CriaTk_bind(
+	Interpreter interpreter,
+	CriaId object,
+    List args
+)	
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    CriaString string = NULL;
+    CriaBlock block = NULL;
+    Tcl_Interp *interp;
+    int args_count = 0;
+    
+    
+    args_count = List_count(args);
+    if (args_count != 2)
+    {
+    	runtime_error(interpreter);
+    	goto END;
+    }
+    
+    
+    id = (CriaId)List_get(args, 0);
+    if (id->type != CRIA_DATA_TYPE_STRING)
+    {
+        runtime_error(interpreter);
+        goto END;
+    }
+    string = (CriaString)id;
+    
+    
+    id = (CriaId)List_get(args, 1);
+    if (id->type != CRIA_DATA_TYPE_BLOCK)
+    {
+        runtime_error(interpreter);
+        goto END;
+    }
+    block = (CriaBlock)id;
+    
+    
+    interp = CriaTk__core_(interpreter, object);
+    
+    
+    Tcl_CreateCommand(interp, string->value, (Tcl_CmdProc*)CriaTk_handle_proc, (ClientData)block, NULL);
+    
     
     
 END:
@@ -208,6 +282,7 @@ CriaTk_loadClass(
 )
 {
     Logger_trc("[ START ]%s", __func__);
+    //DefinitionVariable variable = NULL;
     DefinitionFunction function = NULL;
     DefinitionClass klass = NULL;
 
@@ -216,6 +291,9 @@ CriaTk_loadClass(
     Hash i_methods = Hash_new(32);
     Hash s_methods = Hash_new(32);
     
+    //variable = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "command", FALSE, FALSE, NULL);
+    //Hash_put(i_fields, DefinitionVariable_name(variable), variable);
+    
     function = DefinitionFunction_new(" generator ", TRUE, TRUE, NULL, NULL, CriaTk__generator_);
     Hash_put(s_methods, DefinitionFunction_get_name(function), function);
     
@@ -223,6 +301,9 @@ CriaTk_loadClass(
     Hash_put(s_methods, DefinitionFunction_get_name(function), function);
 
     function = DefinitionFunction_new("add", TRUE, FALSE, NULL, NULL, CriaTk_add);
+    Hash_put(i_methods, DefinitionFunction_get_name(function), function);
+    
+    function = DefinitionFunction_new("set[]", TRUE, FALSE, NULL, NULL, CriaTk_bind);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     function = DefinitionFunction_new("main_loop", TRUE, FALSE, NULL, NULL, CriaTk_main_loop);

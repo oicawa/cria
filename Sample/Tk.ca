@@ -5,11 +5,12 @@ tk.add("wm", "geometry", ".", "500x400")
 tk.add("wm", "title", ".", "Test Application!")
 
 tk.add("label", ".label1", "-text", "Test Label")
-tk.add("button", ".button1", "-text", "Test Button")
+tk.add("button", ".button1", "-text", "Test Button", "-command", ".button1_command")
 
-#tk.add("grid", ".label1", "-column", "0", "-row", "0", "-sticky", "ew")
-#tk.all("grid", ".button1", "-column", "1", "-row", "0", "-sticky", "ew")
-tk.add("pack", ".label1")
-tk.add("pack", ".button1")
+tk.add("grid", ".label1", "-column", "0", "-row", "0", "-sticky", "ew")
+tk.add("grid", ".button1", "-column", "1", "-row", "1", "-sticky", "ew")
+
+tk[".button1_command"] = block():
+    tk.add(".label1", "configure", "-text", "Change!")
 
 tk.main_loop()

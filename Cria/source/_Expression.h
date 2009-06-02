@@ -117,6 +117,7 @@ struct ExpressionReferenceTag
 
 struct ExpressionBlockTag
 {
+    ExpressionParameters parameters;
     DefinitionFunction function;
 };
 
