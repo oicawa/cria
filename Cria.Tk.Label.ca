@@ -1,20 +1,20 @@
 Label:
-    @caption
+    @text
     @name
+    @parent_name
+    @tk
     index = 0
     
-    new(caption):
-        .caption = caption
-        .name = ".label" + class.index.to_string()
+    new(text):
+        .text = text
+        .name = "label" + class.index.to_string()
         class.index = class.index + 1
 
+    @get_name():
+        return .parent_name + .name
     
-    @assigne_commands(commands):
-        command = List()
-        command.add("." + .name)
-        command.add("label")
-        command.add("." + .name)
-        command.add("-text")
-        command.add(.caption)
-        commands.add(command)
-
+    @do():
+        if .tk == null
+            return
+        
+        .tk.do("label", .get_name(), "-text", .text)

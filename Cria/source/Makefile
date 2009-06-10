@@ -16,6 +16,7 @@ OBJS =\
 	_Statement.o\
 	_Expression.o\
 	_Reference.o\
+	_Runtime.o\
 	_Hash.o\
 	_Loader.o\
 	_CriaId.o\
@@ -56,6 +57,7 @@ _Parser.o: _Parser.c _Parser.h ../include/Memory.h ../include/Logger.h
 _Statement.o: _Statement.c _Statement.h ../include/Memory.h ../include/Logger.h
 _Expression.o: _Expression.c _Expression.h ../include/Memory.h ../include/Logger.h
 _Reference.o: _Reference.c _Reference.h ../include/Memory.h ../include/Logger.h
+_Runtime.o: _Runtime.c _Runtime.h ../include/Memory.h ../include/Logger.h
 _Hash.o: _Hash.c _Hash.h ../include/Hash.h
 _Loader.o: _Loader.c _Loader.h ../include/Memory.h ../include/Logger.h
 _CriaString.o: _CriaString.c _CriaString.h ../include/Memory.h ../include/Logger.h

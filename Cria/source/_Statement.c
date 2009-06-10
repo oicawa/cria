@@ -59,7 +59,7 @@ StatementWhile_execute(
 		if (id->type != CRIA_DATA_TYPE_BOOLEAN)
 		{
 			Logger_dbg("statement->condition was not CRIA_DATA_TYPE_BOOLEAN.");
-			runtime_error(interpreter);
+			Runtime_error(interpreter, "The condition of if statement was not Boolean.");
 			goto END;
 		}
 		
@@ -208,7 +208,7 @@ StatementGoto_execute(
     if (statement == NULL)
     {
         Logger_dbg("statement is NULL.");
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "The goto statement is null.");
         goto END;
     }
     
@@ -233,7 +233,7 @@ StatementGoto_execute(
 		}
 		break;
 	default:
-		runtime_error(interpreter);
+		Runtime_error(interpreter, "Illegal goto type.");
 		break;
     }
     
@@ -427,7 +427,7 @@ StatementIf_execute(
         if (id->type != CRIA_DATA_TYPE_BOOLEAN)
         {
             Logger_dbg("statement->condition was not CRIA_DATA_TYPE_BOOLEAN.");
-            runtime_error(interpreter);
+            Runtime_error(interpreter, "The condition of if statement is not Boolean.");
             goto END;
         }
     }
@@ -1018,7 +1018,7 @@ Statement_execute(
         break;
     default:
         Logger_err("Not supported statement.");
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Not supported statement.");
     }
 
     Logger_trc("[  END  ]%s", __func__);

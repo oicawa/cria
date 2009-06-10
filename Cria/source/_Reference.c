@@ -197,7 +197,7 @@ ReferenceVariable_evaluate(
     			goto CHECK;
     		
     		Logger_err("Field named '%s' is not found.", variable->name);
-    		runtime_error(interpreter);
+    		Runtime_error(interpreter, "Field named '%s' is not found.", variable->name);
     		goto END;
         }
         else if (parent->type == CRIA_DATA_TYPE_CRIA_CLASS)
@@ -207,12 +207,12 @@ ReferenceVariable_evaluate(
     			goto CHECK;
     		
     		Logger_err("Field named '%s' is not found.", variable->name);
-    		runtime_error(interpreter);
+    		Runtime_error(interpreter, "Field named '%s' is not found.", variable->name);
     		goto END;
         }
         else
         {
-            runtime_error(interpreter);
+            Runtime_error(interpreter, "Data type of parent object is not Object or Class.");
         }
     }
     
@@ -251,7 +251,7 @@ CHECK:
     }
     else
     {
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "The value of last variable is NULL.");
         goto END;
     }
     
@@ -653,7 +653,7 @@ ReferenceIndexer_evaluate(
     }
     else
     {
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "No next reference element, and no indexer reference.");
         goto END;
     }
     
@@ -787,7 +787,7 @@ ReferenceClass_evaluate(
     //}
     else
     {
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Scope object type is not 'class' or CriaObject.");
     }
     className = DefinitionClass_getName(definition);
     Logger_dbg("Real class name = '%s'.", className);
@@ -796,7 +796,7 @@ ReferenceClass_evaluate(
     if (definition == NULL)
     {
         Logger_err("Specified class not found. ('%s')", className);
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Specified class not found. ('%s')", className);
         goto END;
     }
     

@@ -83,7 +83,7 @@ CriaInteger_operate(
         id = (CriaId)CriaBoolean_new(FALSE, result);
         break;
     default:
-        runtime_error(interpreter);
+    	Runtime_error(interpreter, "Not supported operation.");
         break;
     }
     
@@ -105,13 +105,13 @@ CriaInteger__core_(
     Logger_dbg("Check data type.");
     if (object->type != CRIA_DATA_TYPE_INTEGER)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Scoped object data type is not Integer.");
     	goto END;
     }
 
     if (strcmp(object->name, "Integer") != 0)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Scoped object data type name is not Integer.");
     	goto END;
     }
 
@@ -147,7 +147,7 @@ CriaInteger_parse(
     Logger_dbg("Check arguments count.");
     if (List_count(args) != 1)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal argument count.");
     	goto END;
     }
     
@@ -155,7 +155,7 @@ CriaInteger_parse(
     arg = (CriaId)(List_get(args, 0));
     if (arg->type != CRIA_DATA_TYPE_STRING)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "1st data type is not String.");
     	goto END;
     }
     
@@ -167,7 +167,7 @@ CriaInteger_parse(
         c = string[index];
         if (isdigit(c) == 0)
         {
-        	runtime_error(interpreter);
+        	Runtime_error(interpreter, "Illegal charactor '%c' in target string.", c);
         	goto END;
         }
     }
@@ -201,7 +201,7 @@ CriaInteger_to_string(
     Logger_dbg("Check arguments count.");
     if (List_count(args) != 0)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal argument count.");
     	goto END;
     }
     

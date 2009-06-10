@@ -47,7 +47,7 @@ CriaClass_get(
     if (variable == NULL)
     {
     	Logger_err("Not found variable named '%s'", variableName);
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Not found variable named '%s'", variableName);
     	goto END;
     }
     
@@ -76,7 +76,7 @@ CriaClass_getVariable(
     if (variable == NULL)
     {
     	Logger_err("Not found variable named '%s'", variableName);
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Not found variable named '%s'", variableName);
     	goto END;
     }
 

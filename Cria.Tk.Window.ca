@@ -1,55 +1,59 @@
 load Cria::Tk
 
 Window:
-    @control
+    @name
     @caption
     @width
     @height
     @rows
+    @tk
 
     new(caption, width, height):
-        .control = TkControl()
+        .tk = Tk()
+        .name = "."
         .caption = caption
         .width = width
         .height = height
         .rows = List()
+        .do()
     
     @show():
-        tk = Tk(.control)
-        tk.loop()
+        .tk.main_loop()
 
     @get[row, column]:
         while .rows[row] == null
             .rows.add(List())
         line = .rows[row]
         while line[column] == null
-            line.add(Cell(row, column))
+            line.add(Cell(.tk, .name, row, column))
         return line[column]
     
-    @create_controls():
+    @do():
         geometry = .width.to_string() + "x" + .height.to_string()
-        .control.add("wm", "geometry", ".", geometry)
-        .control.add("wm", "title", ".", .caption)
-        .control.name = "."
-        
-        return .control
+        .tk.do("wm", "geometry", .name, geometry)
+        .tk.do("wm", "title", .name, .caption)
 
 
 Cell:
     @control
     @row
     @column
+    @parent_name
+    @tk
     
-    new(row, column):
+    new(tk, parent_name, row, column):
+        .parent_name = parent_name
+        .tk = tk
         .row = row
         .column = column
 
     @put(control):
         .control = control
+        .control.tk = .tk
+        .control.parent_name = .parent_name
+        .control.do()
+        
+        .tk.do("grid", .control.get_name(), "-column", .column.to_string(), "-row", .row.to_string(), "-sticky", "ew")
 
-    @assigne_commands(commands):
-        if .control == null
-            return
-        .control.assigne_commands(commands)
 
 

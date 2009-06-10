@@ -1,23 +1,32 @@
 Text:
     @text
-    @multi
     @name
-    @bg
+    @parent_name
+    @tk
     index = 0
     
     new():
-        .name = ".text" + class.index.to_string()
-        .multi = false
-        .bg = "white"
+        .name = "entry" + class.index.to_string()
         class.index = class.index + 1
 
+    @get_name():
+        return .parent_name + .name
     
-    @assigne_commands(commands):
-        command = List()
-        command.add("." + .name)
-        command.add("entry")
-        command.add("." + .name)
-        command.add("-bg")
-        command.add(.bg)
-        commands.add(command)
-
+    @get_text():
+        if .tk == null
+            return .text
+        
+        return .tk.do(.get_name(), "get")
+    
+    @set_text(text):
+        .text = text
+        if .tk != null
+            .tk.do(.get_name(), "configure", "-textvariable", .text)
+    
+    @do():
+        if .tk == null
+            return
+        
+        .tk.do("entry", .get_name(), "-bg", "white")
+        if .text != null
+            .tk.do(.get_name(), "configure", "-textvariable", .text)

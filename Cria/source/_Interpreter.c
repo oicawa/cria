@@ -63,7 +63,7 @@ Interpreter_compile(
     tokens = Tokenizer_create_tokens(filePath);
     if (tokens == NULL)
     {
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Creating tokens failured. [%s]", filePath);
         goto END;
     }
     

@@ -46,13 +46,13 @@ CriaList__core_(
     Logger_dbg("Check object data type.");
     if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Data type of scoped object is illegal.");
     	goto END;
     }
 
     if (strcmp(object->name, "List") != 0)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Data type name of scoped object is not 'List'.");
     	goto END;
     }
 
@@ -79,14 +79,14 @@ CriaList_new(
     if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
     {
     	Logger_err("Object is not 'CRIA_DATA_TYPE_CRIA_OBJECT'.");
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Data type of scoped object is illegal.");
     	goto END;
     }
     
     
     if (List_count(args) != 0)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal arguments count.");
     	goto END;
     }
     
@@ -120,7 +120,7 @@ CriaList_add(
     Logger_dbg("Check arguments count.");
     if (List_count(args) != 1)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal arguments count.");
     	goto END;
     }
     
@@ -156,7 +156,7 @@ CriaList_delete(
     Logger_dbg("Check arguments count.");
     if (List_count(args) != 1)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal arguments count.");
     	goto END;
     }
     
@@ -164,7 +164,7 @@ CriaList_delete(
     arg = (CriaId)(List_get(args, 0));
     if (arg->type != CRIA_DATA_TYPE_INTEGER)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Data type of 1st argument is not Integer.");
     	goto END;
     }
     
@@ -198,7 +198,7 @@ CriaList_insert(
     Logger_dbg("Check arguments count.");
     if (List_count(args) != 2)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal arguments count.");
     	goto END;
     }
     
@@ -206,7 +206,7 @@ CriaList_insert(
     index = (CriaId)(List_get(args, 0));
     if (index->type != CRIA_DATA_TYPE_INTEGER)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Data type of 1st argument is not Integer.");
     	goto END;
     }
     
@@ -240,7 +240,7 @@ CriaList_get(
     Logger_dbg("Check arguments count.");
     if (List_count(args) != 1)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal arguments count.");
     	goto END;
     }
     
@@ -248,7 +248,7 @@ CriaList_get(
     index = (CriaId)(List_get(args, 0));
     if (index->type != CRIA_DATA_TYPE_INTEGER)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Data type of 1st argument is not Integer.");
     	goto END;
     }
     
@@ -282,14 +282,14 @@ CriaList_set(
     Logger_dbg("Check arguments count.");
     if (List_count(args) != 2)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal arguments count.");
     	goto END;
     }
     
     index = (CriaId)(List_get(args, 0));
     if (index->type != CRIA_DATA_TYPE_INTEGER)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Data type of 1st argument is not Integer.");
     	goto END;
     }
     
@@ -322,7 +322,7 @@ CriaList_count(
     Logger_dbg("Check arguments count.");
     if (List_count(args) != 0)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal arguments count.");
     	goto END;
     }
     

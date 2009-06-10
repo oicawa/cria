@@ -1,19 +1,24 @@
 load Cria::Tk
 
 tk = Tk()
-tk.add("wm", "geometry", ".", "500x400")
-tk.add("wm", "title", ".", "Test Application!")
+tk.do("wm", "geometry", ".", "500x400")
+tk.do("wm", "title", ".", "Test Application!")
 
-tk.add("label", ".label1", "-text", "Test Label")
-tk.add("button", ".button1", "-text", "Test Button", "-command", ".button1_command")
-tk.add("entry", ".entry1", "-bg", "white")
+tk.do("label", ".label1", "-text", "Test Label")
+tk.do("button", ".button1", "-text", "Test Button", "-command", ".button1_command")
+tk.do("button", ".button2", "-text", "Test Button2", "-command", ".button2_command")
+tk.do("entry", ".entry1", "-bg", "white")
 
-tk.add("grid", ".label1", "-column", "0", "-row", "0", "-sticky", "ew")
-tk.add("grid", ".entry1", "-column", "0", "-row", "1", "-sticky", "ew")
-tk.add("grid", ".button1", "-column", "1", "-row", "1", "-sticky", "ew")
+tk.do("grid", ".label1", "-column", "0", "-row", "0", "-sticky", "ew")
+tk.do("grid", ".entry1", "-column", "0", "-row", "1", "-sticky", "ew")
+tk.do("grid", ".button1", "-column", "1", "-row", "0", "-sticky", "ew")
+tk.do("grid", ".button2", "-column", "1", "-row", "1", "-sticky", "ew")
 
 tk[".button1_command"] = block():
-    value = tk.add(".entry1", "get")
-    tk.add(".label1", "configure", "-text", value)
+    value = tk.do(".entry1", "get")
+    tk.do(".label1", "configure", "-text", value)
+
+tk[".button2_command"] = block():
+    tk.do(".entry1", "configure", "-text", "クリック！")
 
 tk.main_loop()

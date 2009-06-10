@@ -39,7 +39,7 @@ CriaId
 CriaFile_new(
 	Interpreter interpreter,
 	CriaId object,
-    List        args
+    List args
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -51,21 +51,21 @@ CriaFile_new(
     if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
     {
     	Logger_err("Object is not 'CRIA_DATA_TYPE_CRIA_OBJECT'.");
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Data type of target object is illegal.");
     	goto END;
     }
     
     
     if (List_count(args) != 1)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal arguments count.");
     	goto END;
     }
     
     arg = (CriaId)(List_get(args, 0));
     if (arg->type != CRIA_DATA_TYPE_STRING)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "1st argument is not String.");
     	goto END;
     }
     
@@ -103,7 +103,7 @@ CriaFile_open(
     Logger_dbg("Check object data type.");
     if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Data type of scoped object is illegal.");
     	goto END;
     }
     Logger_dbg("Cast object from CriaId.");
@@ -117,7 +117,7 @@ CriaFile_open(
     Logger_dbg("Check arguments count.");
     if (List_count(args) != 1)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal arguments count.");
     	goto END;
     }
     
@@ -125,7 +125,7 @@ CriaFile_open(
     arg = (CriaId)(List_get(args, 0));
     if (arg->type != CRIA_DATA_TYPE_STRING)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "1st argument is not string.");
     	goto END;
     }
     mode = ((CriaString)arg)->value;
@@ -136,7 +136,7 @@ CriaFile_open(
     pointer = fopen(path->value, mode);
     if (pointer == NULL)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "File open error. (%s)", path->value);
     	goto END;
     }
     Logger_inf("File opened. (%s)", path->value);
@@ -164,13 +164,13 @@ CriaFile_close(
     
     if (List_count(args) != 0)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal arguments count.");
     	goto END;
     }
     
     if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Data type of scoped object is illegal.");
     	goto END;
     }
     
@@ -204,14 +204,14 @@ CriaFile_read(
     if (List_count(args) != 0)
     {
     	Logger_dbg("args count != 0");
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal arguments count.");
     	goto END;
     }
     
     if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
     {
     	Logger_dbg("object->type != CRIA_DATA_TYPE_CRIA_OBJECT");
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Data type of scoped object is illegal.");
     	goto END;
     }
     
@@ -273,7 +273,7 @@ CriaFile_write(
     
     if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Data type of scoped object is illegal.");
     	goto END;
     }
     file = (CriaObject)object;
@@ -283,7 +283,7 @@ CriaFile_write(
     count = List_count(args);
     if (count == 0)
     {
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Illegal arguments count.");
     }
     
     id = (CriaId)List_get(args, 0);
@@ -307,7 +307,7 @@ CriaFile_write(
     
     if (id->type != CRIA_DATA_TYPE_STRING)
     {
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Data type of 1st argument is not Integer, Boolean, and String.")    ;
     }
     
     
@@ -324,7 +324,7 @@ CriaFile_write(
 		
 		if (count < index)
 		{
-			runtime_error(interpreter);
+			Runtime_error(interpreter, "Argument index is over parameters count.");
 		}
 		
 		index += 1;
@@ -357,7 +357,7 @@ CriaFile_write(
 		}
 		
 		Logger_err("id->type = %d", id->type);
-		runtime_error(interpreter);
+        Runtime_error(interpreter, "Data type of argument %d is not Integer, Boolean, and String.", index + 1);
 	}
 	Logger_dbg("[print]%s", start);
 	fprintf(pointer, start);
@@ -384,13 +384,13 @@ CriaFile_isEnd(
     
     if (List_count(args) != 0)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal arguments count.");
     	goto END;
     }
     
     if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Data type of scoped object is illegal.");
     	goto END;
     }
     

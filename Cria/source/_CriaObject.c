@@ -125,7 +125,7 @@ CriaObject_set(
     Logger_dbg("fields = '%p'", object->fields);
     if (variable == NULL)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Variable is NULL.");
     	goto END;
     }
     

@@ -842,7 +842,7 @@ DefinitionClass_evaluate(
     if (function == NULL)
     {
     	Logger_err("Method is not found. (%s)/%d", name, Hash_get_count(klass->i_methods));
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Method is not found. (%s)/%d", name, Hash_get_count(klass->i_methods));
     }
     
     Logger_dbg("parameters->count = %d", List_count(parameters));

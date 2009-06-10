@@ -1,8 +1,8 @@
 #include "Memory.h"
 #include "Logger.h"
 
-#include "Runtime.h"
 #include "CriaString.h"
+#include "Runtime.h"
 
 #include "_CriaBoolean.h"
 
@@ -55,7 +55,7 @@ CriaBoolean_operate(
         id = (CriaId)CriaBoolean_new(FALSE, result);
         break;
     default:
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Not supported operation.");
         break;
     }
     
@@ -78,7 +78,7 @@ CriaBoolean_toString(
     else if (boolean->value == FALSE)
         value = String_new("false");
     else
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Illegal data format as boolean.");
     
     string = CriaString_new(FALSE, value);
     

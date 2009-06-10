@@ -68,7 +68,7 @@ CriaString_operate(
         id = (CriaId)CriaBoolean_new(FALSE, result);
         break;
     default:
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Not supported operation.");
         break;
     }
     
@@ -89,7 +89,7 @@ CriaString__core_(
     
     if (object->type != CRIA_DATA_TYPE_STRING)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Data type is not String.");
     	goto END;
     }
     
@@ -122,7 +122,7 @@ CriaString_sub(
     
     if (count < 1 || 2 < count)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal argument count.");
     	goto END;
     }
     
@@ -134,7 +134,7 @@ CriaString_sub(
     tmp = (CriaId)(List_get(args, 0));
     if (tmp->type != CRIA_DATA_TYPE_INTEGER)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "1st argument data type is not Integer.");
     	goto END;
     }
     start = ((CriaInteger)tmp)->value;
@@ -144,7 +144,7 @@ CriaString_sub(
         tmp = (CriaId)(List_get(args, 1));
         if (tmp->type != CRIA_DATA_TYPE_INTEGER)
         {
-        	runtime_error(interpreter);
+           	Runtime_error(interpreter, "2st argument data type is not Integer.");
         	goto END;
         }
         length = ((CriaInteger)tmp)->value;
@@ -186,7 +186,7 @@ CriaString_find(
     
     if (count < 1 || 2 < count)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal argument count.");
     	goto END;
     }
     
@@ -197,7 +197,7 @@ CriaString_find(
     tmp = (CriaId)(List_get(args, 0));
     if (tmp->type != CRIA_DATA_TYPE_STRING)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "1st argument data type is not String.");
     	goto END;
     }
     string = ((CriaString)tmp)->value;
@@ -207,7 +207,7 @@ CriaString_find(
         tmp = (CriaId)(List_get(args, 1));
         if (tmp->type != CRIA_DATA_TYPE_INTEGER)
         {
-        	runtime_error(interpreter);
+            Runtime_error(interpreter, "2st argument data type is not Integer.");
         	goto END;
         }
         offset = ((CriaInteger)tmp)->value;
@@ -252,7 +252,7 @@ CriaString_split(
     
     if (count != 1)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal argument count.");
     	goto END;
     }
     
@@ -263,7 +263,7 @@ CriaString_split(
     tmp = (CriaId)(List_get(args, 0));
     if (tmp->type != CRIA_DATA_TYPE_STRING)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "1st argument data type is not String.");
     	goto END;
     }
     separator = ((CriaString)tmp)->value;

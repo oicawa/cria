@@ -3,11 +3,11 @@
 #include "Memory.h"
 #include "Logger.h"
 
-#include "Runtime.h"
 #include "CriaInteger.h"
 #include "CriaString.h"
 #include "CriaBoolean.h"
 #include "StringBuffer.h"
+#include "Runtime.h"
 
 #include "_CriaIO.h"
 
@@ -36,7 +36,7 @@ CriaIO_write(
     
     if (count == 0)
     {
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Argument count error.");
     }
     
     id = (CriaId)List_get(args, 0);
@@ -73,7 +73,7 @@ CriaIO_write(
             
             if (count < index)
             {
-                runtime_error(interpreter);
+                Runtime_error(interpreter, "Index is parameter count over.");
             }
             
             index += 1;
@@ -97,7 +97,8 @@ CriaIO_write(
                 printf("%d", ((CriaInteger)id)->value);
                 continue;
             }
-            
+                        Runtime_error(interpreter, "Data type is not String, Integer, Boolean.");
+
             if (id->type == CRIA_DATA_TYPE_BOOLEAN)
             {
                 CriaString string = (CriaString)CriaBoolean_toString(interpreter, (CriaBoolean)id);
@@ -106,14 +107,14 @@ CriaIO_write(
             }
             
         	Logger_err("id->type = %d", id->type);
-            runtime_error(interpreter);
+            Runtime_error(interpreter, "Data type is not String, Integer, Boolean.");
         }
         Logger_dbg("[print]%s", start);
         printf(start);
     }
     else
     {
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Data type is not String, Integer, Boolean.");
     }
     
 END:
@@ -139,7 +140,7 @@ CriaIO_read(
     if (List_count(args) != 0)
     {
         Logger_err("Runtime error. (Argument count is not 0.)");
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Argument count is not 0.");
         goto END;
     }
     

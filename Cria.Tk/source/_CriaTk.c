@@ -120,7 +120,7 @@ END:
 
 
 CriaId
-CriaTk_add(
+CriaTk_do(
 	Interpreter interpreter,
 	CriaId object,
     List args
@@ -302,7 +302,7 @@ CriaTk_loadClass(
     function = DefinitionFunction_new("new", TRUE, TRUE, NULL, NULL, CriaTk_new);
     Hash_put(s_methods, DefinitionFunction_get_name(function), function);
 
-    function = DefinitionFunction_new("add", TRUE, FALSE, NULL, NULL, CriaTk_add);
+    function = DefinitionFunction_new("do", TRUE, FALSE, NULL, NULL, CriaTk_do);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     function = DefinitionFunction_new("set[]", TRUE, FALSE, NULL, NULL, CriaTk_bind);

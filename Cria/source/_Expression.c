@@ -4,7 +4,6 @@
 #include "Logger.h"
 
 #include "StringBuffer.h"
-#include "Runtime.h"
 #include "CriaBoolean.h"
 #include "CriaInteger.h"
 #include "CriaString.h"
@@ -14,6 +13,7 @@
 #include "Definition.h"
 #include "Hash.h"
 #include "Statement.h"
+#include "Runtime.h"
 
 #include "_Expression.h"
 
@@ -61,7 +61,7 @@ ExpressionOperation_evaluate_of_null(
     else if (left == NULL && right == NULL)
         id = NULL;
     else
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Both left & right expression are not 'null'.");
     
     
     switch (operation)
@@ -89,7 +89,7 @@ ExpressionOperation_evaluate_of_null(
     case OPERATION_KIND_OR:
     case OPERATION_KIND_AND:
     default:
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Illegal operation kind.");
         break;
     }
     
@@ -147,20 +147,18 @@ ExpressionOperation_evaluate(
     Logger_dbg("Data type = %d. (INTEGER is %d)", left->type, CRIA_DATA_TYPE_INTEGER);
     Logger_dbg("Checked data type.");
     
-    //*
     //式の左辺右辺の型チェック
     if (left->type != right->type)
     {
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "left & right expression type is not same.");
     }
-    //*/
     
     //演算可能・不可能のチェック
     if (left->type == CRIA_DATA_TYPE_FUNCTION
         || left->type == CRIA_DATA_TYPE_CRIA_OBJECT
         || left->type == CRIA_DATA_TYPE_CRIA_FUNCTION)
     {
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Not operatable.");
     }
     
     switch (left->type)
@@ -181,7 +179,7 @@ ExpressionOperation_evaluate(
     case CRIA_DATA_TYPE_CRIA_OBJECT:
     case CRIA_DATA_TYPE_CRIA_FUNCTION:
     default:
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Not supported operation.");
         break;
     }
     
@@ -395,7 +393,7 @@ ExpressionVariable_evaluate(
 		if (id != NULL)
 			goto END;
 		
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "The variable '%s' is not found in parameter variables or global variables.", expression->name);
         goto END;
     }
     else if (parent->type == CRIA_DATA_TYPE_CRIA_OBJECT)
@@ -460,7 +458,7 @@ ExpressionClass_evaluate(
     if (definition == NULL)
     {
         Logger_err("Specified class not found. ('%s')", className);
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Specified class '%s' is not found.", className);
         goto END;
     }
     
@@ -777,7 +775,7 @@ ExpressionBlock_evaluate(
 	if (function == NULL)
 	{
 		Logger_err("Function in the block is NULL.");
-		runtime_error(interpreter);
+		Runtime_error(interpreter, "Function in the block is NULL.");
 		goto END;
 	}
     
@@ -1038,7 +1036,7 @@ ExpressionFunctionCall_evaluate(
 	if (function == NULL)
 	{
 		Logger_err("Function '%s' is not found.", expression->name);
-		runtime_error(interpreter);
+		Runtime_error(interpreter, "Function '%s' is not found.", expression->name);
 		goto END;
 	}
 	
@@ -1079,7 +1077,7 @@ ExpressionIndexer_evaluate(
     
     if (parent == NULL)
     {
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Parent object of indexer is NULL.");
         goto END;
     }
     else if (parent->type == CRIA_DATA_TYPE_CRIA_OBJECT ||
@@ -1090,7 +1088,7 @@ ExpressionIndexer_evaluate(
     }
     else
     {
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Data type of arent object is not CriaObject or String.");
         goto END;
     }
     
@@ -1098,7 +1096,7 @@ ExpressionIndexer_evaluate(
 	if (function == NULL)
 	{
 		Logger_err("Function '%s' is not found.", "get[]");
-		runtime_error(interpreter);
+		Runtime_error(interpreter, "Function 'get[]' is not found.");
 		goto END;
 	}
 	
@@ -1157,7 +1155,7 @@ ExpressionGenerate_evaluate(
     if (klass == NULL)
     {
         Logger_dbg("Class is not found.");
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Class '%s' is not found.", expression->name);
         goto END;
     }
     Logger_dbg("Class matched.");
@@ -1406,7 +1404,7 @@ Expression_evaluate(
         id = ExpressionBlock_evaluate(interpreter, object, parameters, expression->of._block_, NULL);
         break;
     default:
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Illegal expression.");
         break;
     }
 
