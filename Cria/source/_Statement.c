@@ -1081,22 +1081,6 @@ Statement_parse(
         goto END;
     }
     
-    /*
-    statement = StatementSubstitute_parse(parser);
-    if (statement != NULL)
-    {
-        Logger_dbg("Created SubstituteStatement.");
-        goto END;
-    }
-    
-    
-    statement = StatementFunctionCall_parse(parser);
-    if (statement != NULL)
-    {
-        Logger_dbg("Created FunctionCallStatement.");
-        goto END;
-    }
-    */
     
     statement = StatementIf_parse(parser);
     if (statement != NULL)

@@ -1044,6 +1044,8 @@ ExpressionFunctionCall_evaluate(
     //引数の式を実行
     Logger_dbg("expression->name->pointer = %s", expression->name);
     Logger_dbg("expression->parameters->list->count = %d", List_count(expression->parameters->list));
+    if (strcmp(expression->name, "set[]") == 0)
+        Logger_dbg("Stop for Debug!");
     List parameters = ExpressionParameters_evaluate(interpreter, object, parameterList, expression->parameters);
     Logger_dbg("execute parameters count is '%d'", List_count(parameters));
     

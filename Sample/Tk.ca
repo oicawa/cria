@@ -1,24 +1,30 @@
 load Cria::Tk
 
-tk = Tk()
-tk.do("wm", "geometry", ".", "500x400")
-tk.do("wm", "title", ".", "Test Application!")
+#tk = Tk()
+#tk.do("wm", "geometry", ".", "500x400")
+#tk.do("wm", "geometry", ".", "500x400")
+window = Window("てすとあぷり♪", 500, 400)
 
-tk.do("label", ".label1", "-text", "Test Label")
-tk.do("button", ".button1", "-text", "Test Button", "-command", ".button1_command")
-tk.do("button", ".button2", "-text", "Test Button2", "-command", ".button2_command")
-tk.do("entry", ".entry1", "-bg", "white")
+#tk.do("label", ".label1", "-text", "Test Label")
+#tk.do("button", ".button1", "-text", "Test Button", "-command", ".button1_command")
+#tk.do("button", ".button2", "-text", "Test Button2", "-command", ".button2_command")
+#tk.do("entry", ".entry1", "-bg", "white")
+window.tk.do("button", ".button1", "-text", "Test Button1", "-command", ".button1_command")
+window.tk.do("button", ".button2", "-text", "Test Button2", "-command", ".button2_command")
 
-tk.do("grid", ".label1", "-column", "0", "-row", "0", "-sticky", "ew")
-tk.do("grid", ".entry1", "-column", "0", "-row", "1", "-sticky", "ew")
-tk.do("grid", ".button1", "-column", "1", "-row", "0", "-sticky", "ew")
-tk.do("grid", ".button2", "-column", "1", "-row", "1", "-sticky", "ew")
+#tk.do("grid", ".label1", "-column", "0", "-row", "0", "-sticky", "ew")
+#tk.do("grid", ".entry1", "-column", "0", "-row", "1", "-sticky", "ew")
+#tk.do("grid", ".button1", "-column", "1", "-row", "0", "-sticky", "ew")
+#tk.do("grid", ".button2", "-column", "1", "-row", "1", "-sticky", "ew")
 
 tk[".button1_command"] = block():
+    write("ボタン１のクリックテスト。\n")
     value = tk.do(".entry1", "get")
     tk.do(".label1", "configure", "-text", value)
 
 tk[".button2_command"] = block():
-    tk.do(".entry1", "configure", "-text", "クリック！")
+    write("ボタン２のクリックテスト。\n")
+    tk.do(".entry1", "delete", "0")
+    tk.do(".entry1", "insert", "0", "クリック♪")
 
 tk.main_loop()

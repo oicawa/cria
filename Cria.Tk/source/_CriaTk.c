@@ -56,14 +56,14 @@ CriaTk_new(
     if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
     {
     	Logger_err("Object is not 'CRIA_DATA_TYPE_CRIA_OBJECT'.");
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Data type is illegal.");
     	goto END;
     }
     
     
     if (List_count(args) != 0)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal argument count.");
     	goto END;
     }
     
@@ -71,14 +71,14 @@ CriaTk_new(
     interp = Tcl_CreateInterp();
     if(Tcl_Init(interp) == TCL_ERROR )
     {
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Creating Tcl/Tk interpreter is failure.");
         goto END;
     }
     
     
     if(Tk_Init(interp) == TCL_ERROR )
     {
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Initializing Tcl/Tk interpreter is failure.");
         goto END;
     }
     
@@ -105,7 +105,7 @@ CriaTk__core_(
     if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
     {
     	Logger_err("Object is not 'CRIA_DATA_TYPE_CRIA_OBJECT'.");
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Data type of scoped object is illegal.");
     	goto END;
     }
     
@@ -140,7 +140,7 @@ CriaTk_do(
     args_count = List_count(args);
     if (args_count <= 0)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal arguments count.");
     	goto END;
     }
     
@@ -151,7 +151,7 @@ CriaTk_do(
         CriaId arg = (CriaId)List_get(args, i);
         if (arg->type != CRIA_DATA_TYPE_STRING)
         {
-        	runtime_error(interpreter);
+        	Runtime_error(interpreter, "Data type of argument '%d' is illegal.", i);
         	goto END;
         }
         CriaString string = (CriaString)arg;
@@ -164,7 +164,7 @@ CriaTk_do(
     
     if (Tcl_EvalObjv(interp, args_count, command, 0) == TCL_ERROR)
     {
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Evaluating Tcl/Tk script is failure.");
         goto END;
     }
     
@@ -211,17 +211,17 @@ CriaTk_bind(
     
     
     args_count = List_count(args);
-    if (args_count != 2)
-    {
-    	runtime_error(interpreter);
-    	goto END;
-    }
+    //if (args_count != 2)
+    //{
+    //	Runtime_error(interpreter, "Illegal arguments count.");
+    //	goto END;
+    //}
     
     
     id = (CriaId)List_get(args, 0);
     if (id->type != CRIA_DATA_TYPE_STRING)
     {
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Data type of 1st argument is illegal.");
         goto END;
     }
     string = (CriaString)id;
@@ -230,11 +230,12 @@ CriaTk_bind(
     id = (CriaId)List_get(args, 1);
     if (id->type != CRIA_DATA_TYPE_BLOCK)
     {
-        runtime_error(interpreter);
+        Runtime_error(interpreter, "Data type of 2nd argument is illegal.");
         goto END;
     }
     block = (CriaBlock)id;
     
+    id = (CriaId)List_get(args, 2);
     
     interp = CriaTk__core_(interpreter, object);
     
@@ -264,7 +265,7 @@ CriaTk_main_loop(
     Logger_dbg("Check arguments count.");
     if (List_count(args) != 0)
     {
-    	runtime_error(interpreter);
+    	Runtime_error(interpreter, "Illegal arguments count.");
     	goto END;
     }
     

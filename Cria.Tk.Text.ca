@@ -18,10 +18,16 @@ Text:
         
         return .tk.do(.get_name(), "get")
     
+    @clear():
+        .text = ""
+        if .tk != null
+            .tk.do(.get_name(), "delete", "0", "end")
+    
     @set_text(text):
+        .clear()
         .text = text
         if .tk != null
-            .tk.do(.get_name(), "configure", "-textvariable", .text)
+            .tk.do(.get_name(), "insert", "0", .text)
     
     @do():
         if .tk == null
@@ -29,4 +35,4 @@ Text:
         
         .tk.do("entry", .get_name(), "-bg", "white")
         if .text != null
-            .tk.do(.get_name(), "configure", "-textvariable", .text)
+            .set_text(.text)

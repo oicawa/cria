@@ -1,23 +1,30 @@
 Button:
-    @caption
+    @text
     @name
+    @parent_name
     @command
+    @tk
     index = 0
     
-    new(caption):
-        .caption = caption
-        .name = ".button" + class.index.to_string()
+    new(text):
+        .text = text
+        .name = "button" + class.index.to_string()
         class.index = class.index + 1
 
+    @get_name():
+        return .parent_name + .name
     
-    @assigne_commands(commands):
-        command = List()
-        command.add("." + .name)
-        command.add("button")
-        command.add("." + .name)
-        command.add("-text")
-        command.add(.caption)
-        command.add("-command")
-        command.add(.command)
-        commands.add(command)
+    @set_command():
+        if .tk == null
+            return
+        if .command == null
+            return
+        
+        .tk[.get_name() + "_command"] = .command
 
+    @do():
+        if .tk == null
+            return
+        
+        .tk.do("button", .get_name(), "-text", .text, "-command", .get_name() + "_command")
+        .set_command()

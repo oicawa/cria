@@ -53,7 +53,7 @@ Cell:
         .control.parent_name = .parent_name
         .control.do()
         
-        .tk.do("grid", .control.get_name(), "-column", .column.to_string(), "-row", .row.to_string(), "-sticky", "ew")
+        .tk.do("grid", .control.get_name(), "-column", .column.to_string(), "-row", .row.to_string(), "-sticky", "w")
 
 
 

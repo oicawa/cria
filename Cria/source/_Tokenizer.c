@@ -149,6 +149,16 @@ Token_buffer(
 }
 
 
+void
+Token_set_module(
+    Token token,
+    String file_path
+)
+{
+	token->file_path = file_path;
+}
+
+
 
 Boolean
 Tokenizer_read(
@@ -490,7 +500,7 @@ Tokenizer_class_or_constant(
     if (strlen(value) < 2)
     {
         Logger_err("String length is less than 2.");
-        tokenizer_error(tmp, tokenizer->row, tokenizer->column);
+        Tokenizer_error(tmp, tokenizer->row, tokenizer->column, tokenizer->path);
         goto END;
     }
     
@@ -498,7 +508,7 @@ Tokenizer_class_or_constant(
     if (isupper(*value) == 0)
     {
         Logger_dbg("First charactor is not upper alphabet. ('%c')", *value);
-        tokenizer_error(tmp, tokenizer->row, tokenizer->column);
+        Tokenizer_error(tmp, tokenizer->row, tokenizer->column, tokenizer->path);
         goto END;
     }
 
@@ -514,7 +524,7 @@ Tokenizer_class_or_constant(
     else
     {
         Logger_err("It is not a Class literal or Constant.");
-        tokenizer_error(tmp, tokenizer->row, tokenizer->column);
+        Tokenizer_error(tmp, tokenizer->row, tokenizer->column, tokenizer->path);
         goto END;
     }
     
@@ -534,7 +544,7 @@ Tokenizer_class_or_constant(
     	}
     	
 		Logger_dbg("Not alphabet or underbar. (%c)", *value);
-		tokenizer_error(tmp, tokenizer->row, tokenizer->column);
+		Tokenizer_error(tmp, tokenizer->row, tokenizer->column, tokenizer->path);
 		goto END;
     }
 
@@ -587,7 +597,7 @@ Tokenizer_word(
     	goto END;
 
 	String tmp = StringBuffer_toString(buffer);
-	tokenizer_error(tmp, tokenizer->row, tokenizer->column);
+	Tokenizer_error(tmp, tokenizer->row, tokenizer->column, tokenizer->path);
 	
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -620,7 +630,7 @@ Tokenizer_dummy(
     if (hasNewLine == TRUE)
         token = Token_new(TOKEN_TYPE_DUMMY, 0, 0, NULL);
     else
-        tokenizer_error(" _...", tokenizer->row, tokenizer->column);
+        Tokenizer_error(" _...", tokenizer->row, tokenizer->column, tokenizer->path);
     
     Logger_trc("[  END  ]%s", __func__);
     return token;
@@ -672,7 +682,7 @@ Tokenizer_space(
     if (Tokenizer_read(tokenizer) == FALSE)
     {
         Logger_dbg("No 3rd charactor.");
-        tokenizer_error(value, row, column);
+        Tokenizer_error(value, row, column, tokenizer->path);
         goto END;
     }
     Logger_dbg("3rd charactor = '%c'", tokenizer->next);
@@ -744,7 +754,7 @@ Tokenizer_space(
     if (Tokenizer_read(tokenizer) == FALSE)
     {
         Logger_dbg("No 4th charactor.");
-        tokenizer_error(value, row, column);
+        Tokenizer_error(value, row, column, tokenizer->path);
         goto END;
     }
     StringBuffer_appendChar(buffer, tokenizer->next);
@@ -821,7 +831,7 @@ Tokenizer_space(
         goto END;
     }
     
-    tokenizer_error(value, row, column);
+    Tokenizer_error(value, row, column, tokenizer->path);
     
 END:
     if (token != NULL)
@@ -880,7 +890,7 @@ Tokenizer_string(
     
     if (isEnd == FALSE)
     {
-        tokenizer_error(tmp, row, column);
+        Tokenizer_error(tmp, row, column, tokenizer->path);
         goto END;
     }
     
@@ -935,7 +945,7 @@ Tokenizer_indent_or_dedent(
     if (length % 4 != 0)
     {
         Logger_err("Indent is not 4 times spaces. (modulo = %d)", length % 4);
-        tokenizer_error("<<Indent/Dedent>>", tokenizer->row, tokenizer->column);
+        Tokenizer_error("<<Indent/Dedent>>", tokenizer->row, tokenizer->column, tokenizer->path);
         goto END;
     }
     
@@ -969,7 +979,7 @@ Tokenizer_indent_or_dedent(
     {
         //一度に複数のインデントは発生してはいけない。
         Logger_err("Multi indent is not permited.");
-        tokenizer_error("<<Indent/DEDENT>>", tokenizer->row, tokenizer->column);
+        Tokenizer_error("<<Indent/DEDENT>>", tokenizer->row, tokenizer->column, tokenizer->path);
     }
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -1135,7 +1145,7 @@ Tokenizer_other(
         Logger_trc("Try comma literal.");
         if (Tokenizer_read(tokenizer) == FALSE)
         {
-            tokenizer_error(value, row, column);
+            Tokenizer_error(value, row, column, tokenizer->path);
             goto END;
         }
         
@@ -1145,7 +1155,7 @@ Tokenizer_other(
         
         if (tokenizer->next != ' ')
         {
-            tokenizer_error(value, row, column);
+            Tokenizer_error(value, row, column, tokenizer->path);
             goto END;
         }
         
@@ -1155,7 +1165,7 @@ Tokenizer_other(
     }
     
     
-    tokenizer_error(value, row, column);
+    Tokenizer_error(value, row, column, tokenizer->path);
     
     
 END:
@@ -1239,13 +1249,14 @@ Tokenizer_create_tokens(
             goto ADD_TOKEN;
         
         Logger_err("Not supported token.");
-        tokenizer_error("???", tokenizer->row, tokenizer->column);
+        Tokenizer_error("???", tokenizer->row, tokenizer->column, filePath);
         break;
         
 ADD_TOKEN:
 		if (Token_type(token) == TOKEN_TYPE_DUMMY)
 			continue;
 		
+        Token_set_module(token, filePath);
         List_add(tokens, token);
         continue;        
     }

@@ -693,7 +693,7 @@ ReferenceIndexer_parse(
     {
         Logger_dbg("The tokens that before right parenthesis are not parameters.");
         Parser_setPosition(parser, position);
-        goto END;
+        goto END;   
     }
 	Logger_dbg("The tokens that before right parenthesis are parameters.");
     

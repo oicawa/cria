@@ -9,10 +9,11 @@
 
 struct TokenTag
 {
-    TokenType   type;
-    int         row;
-    int         column;
-    String      buffer;
+    TokenType type;
+    int row;
+    int column;
+    String buffer;
+    String file_path;
 };
 
 
@@ -29,10 +30,10 @@ struct TokenizerTag
 
 
 
-#define tokenizer_error(buffer, row, column) \
+#define Tokenizer_error(buffer, row, column, path) \
     do { \
-        fprintf(stderr, "Syntax error near '%s'. [%s, %d]\n", buffer, __FILE__, __LINE__); \
-        Logger_err("Token error near '%s'. (line:%d, column:%d) [%s, %d]\n", buffer, row, column, __FILE__, __LINE__); \
+        fprintf(stderr, "Syntax error near '%s' (file:[%s], line:%d, column:%d). [%s, %d]\n", buffer, path, row, column, __FILE__, __LINE__); \
+        Logger_err("Token error near '%s' in file '%s'. (line:%d, column:%d) [%s, %d]\n", buffer, path, row, column, __FILE__, __LINE__); \
         exit(1); \
     } while(0) \
 
