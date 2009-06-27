@@ -12,6 +12,28 @@ typedef struct InterpreterTag *Interpreter;
 
 
 
+List
+Interpreter_stack(
+    Interpreter interpreter
+);
+
+
+
+void
+Interpreter_stack_add(
+    Interpreter interpreter,
+    void* expression
+);
+
+
+
+void
+Interpreter_stack_pop(
+    Interpreter interpreter
+);
+
+
+
 Interpreter
 Interpreter_new(
     void

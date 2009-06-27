@@ -180,7 +180,6 @@ StatementWhile_parse(
     
     statement = Statement_new(STATEMENT_KIND_WHILE);
     statement->of._while_ = whileStatement;
-    statement->line = Token_row(token) ;
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -310,7 +309,6 @@ StatementGoto_parse(
     
     statement = Statement_new(STATEMENT_KIND_GOTO);
     statement->of._goto_ = gotoStatement;
-    statement->line = Token_row(token);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -382,7 +380,6 @@ StatementFunctionCall_parse(
     
     statement = Statement_new(STATEMENT_KIND_FUNCTION_CALL);
     statement->of._functionCall_ = function;
-    statement->line = Token_row(token);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -773,7 +770,6 @@ StatementIf_parse(
     Statement statement = NULL;
     StatementIf ifStatement = NULL;
     Item position = Parser_getPosition(parser);
-    Token token = Parser_getCurrent(parser);
     
     
     ifStatement = StatementIf_parseIfBlock(parser);
@@ -786,44 +782,12 @@ StatementIf_parse(
     
     statement = Statement_new(STATEMENT_KIND_IF);
     statement->of._if_ = ifStatement;
-    statement->line = Token_row(token);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
     return statement;
 }
 
-
-
-//==============================
-//StatementSubstitute
-//==============================
-/*
-void
-StatementSubstitute_execute(
-    Interpreter         interpreter,
-    CriaId object,
-	List parameters,
-    StatementSubstitute statement
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    DefinitionVariable definition = NULL;
-    Reference reference = statement->reference;
-    CriaId id = NULL;
-    
-    id = Expression_evaluate(interpreter, object, parameters, statement->expression);
-    
-    
-    definition = Reference_evaluate(interpreter, object, parameters, reference, NULL);
-    
-    
-    DefinitionVariable_set(definition, id);
-    
-    
-    Logger_trc("[  END  ]%s", __func__);
-}
-*/
 
 
 void
@@ -835,9 +799,6 @@ StatementReference_execute(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-//    DefinitionVariable definition = NULL;
-//    Reference reference = statement->reference;
-//    CriaId id = NULL;
     
     
     Reference_evaluate(interpreter, object, parameters, statement->reference, NULL);
@@ -854,10 +815,11 @@ StatementReference_parse(
 )
 {
     Logger_trc("[ START ]%s", __func__);
+    Token token = NULL;
+    //int line = 0;
     Statement statement = NULL;
     StatementReference statement_ref = NULL;
     Item position = Parser_getPosition(parser);
-    Token token = NULL;
     Reference reference = NULL;
     
     
@@ -870,7 +832,7 @@ StatementReference_parse(
         goto END;
     }
     
-    //*
+    
     token = Parser_getCurrent(parser);
     if (Token_type(token) != TOKEN_TYPE_NEW_LINE)
     {
@@ -880,8 +842,8 @@ StatementReference_parse(
         goto END;
     }
     
+    
     Parser_next(parser);
-    //*/
     
     
     Logger_dbg("Create 'StatementReference'");
@@ -890,80 +852,6 @@ StatementReference_parse(
     
     statement = Statement_new(STATEMENT_KIND_REFERENCE);
     statement->of._reference_ = statement_ref;
-    statement->line = Token_row(token);
-    
-    
-END:
-    Logger_trc("[  END  ]%s", __func__);
-    return statement;
-}
-
-
-
-Statement
-StatementSubstitute_parse(
-    Parser parser
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    Statement statement = NULL;
-    StatementSubstitute substitute = NULL;
-    Item position = Parser_getPosition(parser);
-    Token token = NULL;
-    Reference reference = NULL;
-    Expression expression = NULL;
-    
-    
-    Logger_dbg("Check reference expression.");
-    reference = Reference_parse(parser);
-    if (reference == NULL)
-    {
-        Logger_dbg("Not reference expression.");
-        Parser_setPosition(parser, position);
-        goto END;
-    }
-    
-    
-    token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_SUBSTITUTE)
-    {
-        Logger_dbg("Not substitution token.");
-        Parser_setPosition(parser, position);
-        goto END;
-    }
-    
-    
-    Logger_dbg("Check 'Expression'");
-    Parser_next(parser);
-    expression = Expression_parse(parser);
-    if (expression == NULL)
-    {
-        Logger_dbg("Not expression.");
-        Parser_setPosition(parser, position);
-        goto END;
-    }
-    
-    token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_NEW_LINE)
-    {
-        Logger_dbg("Not new line token.");
-        Parser_setPosition(parser, position);
-        Parser_error(parser, token);
-        goto END;
-    }
-    
-    
-    Parser_next(parser);
-    
-    
-    Logger_dbg("Create 'SubstituteStatement'");
-    substitute = Memory_malloc(sizeof(struct StatementSubstituteTag));
-    substitute->reference = reference;
-    substitute->expression = expression;
-    
-    statement = Statement_new(STATEMENT_KIND_SUBSTITUTE);
-    statement->of._substitute_ = substitute;
-    statement->line = Token_row(token);
     
     
 END:
@@ -991,22 +879,12 @@ Statement_execute(
     Logger_dbg("result.type = %d", result.type);
     
     Logger_dbg("statement pointer = [%p]", statement);
-    Interpreter_setRow(interpreter, statement->line);
-    Logger_dbg("statement->line = %d", statement->line);
 
     switch (statement->kind)
     {
     case STATEMENT_KIND_REFERENCE:
         StatementReference_execute(interpreter, object, parameters, statement->of._reference_);
         break;
-    /*
-    case STATEMENT_KIND_SUBSTITUTE:
-        StatementSubstitute_execute(interpreter, object, parameters, statement->of._substitute_);
-        break;
-    case STATEMENT_KIND_FUNCTION_CALL:
-        StatementFunctionCall_execute(interpreter, object, parameters, statement->of._functionCall_);
-        break;
-    */
     case STATEMENT_KIND_IF:
         result = StatementIf_execute(interpreter, object, parameters, statement->of._if_);
         break;
@@ -1040,13 +918,10 @@ Statement_executeList(
     
     int count = List_count(statements);
     int index = 0;
-    int dummy = 0;
     
     for (index = 0; index < count; index++)
     {
         Statement statement = (Statement)(List_get(statements, index));
-        if (statement->line == 24)
-            dummy++;
         result = Statement_execute(interpreter, object, parameters, statement);
         if (result.type != STATEMENT_RESULT_NORMAL)
         	break;
@@ -1107,7 +982,6 @@ Statement_parse(
     
     
     Logger_dbg("No Statement.");
-    
     
 END:
     Logger_trc("[  END  ]%s", __func__);

@@ -29,6 +29,27 @@ typedef enum
 
 
 
+String
+Reference_file_path(
+    Reference reference
+);
+
+
+
+int
+Reference_line(
+    Reference reference
+);
+
+
+
+int
+Reference_column(
+    Reference reference
+);
+
+
+
 //DefinitionVariable
 void
 ReferenceVariable_evaluate(

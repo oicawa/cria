@@ -21,8 +21,13 @@ Parser_errorFunction(
 	int line
 )
 {
-    Logger_err("Syntax error near '%s'. (file:%s, line:%d, column:%d) [%s, %d]\n", Token_buffer(token), parser->path, Token_row(token), Token_column(token), file, line);
-    fprintf(stderr, "Syntax error near '%s'. (file:%s, line:%d, column:%d) [%s, %d]\n", Token_buffer(token), parser->path, Token_row(token), Token_column(token), file, line);
+    String buffer = Token_buffer(token);
+    String file_path = parser->path;
+    int row = Token_row(token);
+    int column = Token_column(token);
+    
+    Logger_err("Syntax error near '%s'. (file:%s, line:%d, column:%d) [%s, %d]\n", buffer, file_path, row, column, file, line);
+    fprintf(stderr, "Syntax error near '%s'. (file:%s, line:%d, column:%d) [%s, %d]\n", buffer, file_path, row, column, file, line);
 	exit(1);
 }
 

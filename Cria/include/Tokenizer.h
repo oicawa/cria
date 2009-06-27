@@ -122,6 +122,13 @@ Token_column(
 
 
 
+String
+Token_get_file_path(
+    Token token
+);
+
+
+
 #define Token_log(__token__) \
 	do { \
 		Logger_dbg("token is [%p]", __token__); \

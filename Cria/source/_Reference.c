@@ -19,6 +19,37 @@ void ReferenceFunctionCall_evaluate(Interpreter interpreter, CriaId object, List
 void ReferenceIndexer_evaluate(Interpreter interpreter, CriaId object, List parameters, Reference reference, CriaId parent);
 
 
+
+String
+Reference_file_path(
+    Reference reference
+)
+{
+    return reference->file_path;
+}
+
+
+
+int
+Reference_line(
+    Reference reference
+)
+{
+    return reference->line;
+}
+
+
+
+int
+Reference_column(
+    Reference reference
+)
+{
+    return reference->column;
+}
+
+
+
 Reference
 Reference_new(
     ReferenceType   type
@@ -434,6 +465,8 @@ Reference_evaluate(
         goto END;
     }
     
+    Interpreter_stack_add(interpreter, reference);
+    
     switch (reference->type)
     {
     case REFERENCE_TYPE_SELF:
@@ -459,6 +492,8 @@ Reference_evaluate(
     default:
         break;
     }
+    
+    Interpreter_stack_pop(interpreter);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -986,28 +1021,40 @@ Reference_parse(
     Logger_trc("[ START ]%s", __func__);
     Item position = Parser_getPosition(parser);
     Reference reference = NULL;
+    Token token = Parser_getCurrent(parser);
+    int line = Token_row(token);
+    int column = Token_column(token);
+    String file_path = Token_get_file_path(token);
+    
     
     reference = ReferenceSelf_parse(parser);
     if (reference != NULL)
-        goto END;
+        goto STACK;
     
     reference = ReferenceVariable_parse(parser);
     if (reference != NULL)
-        goto END;
+        goto STACK;
     
     reference = ReferenceFunctionCall_parse(parser);
     if (reference != NULL)
-        goto END;
+        goto STACK;
     
     reference = ReferenceClass_parse(parser);
     if (reference != NULL)
-        goto END;
+        goto STACK;
         
     reference = ReferenceIndexer_parse(parser);
     if (reference != NULL)
-        goto END;
-    
+        goto STACK;
+
     Parser_setPosition(parser, position);
+    goto END;
+    
+    
+STACK:
+    reference->line = line;
+    reference->column = column;
+    reference->file_path = file_path;
     
 END:
     Logger_trc("[  END  ]%s", __func__);

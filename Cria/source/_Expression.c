@@ -1350,7 +1350,6 @@ Expression_evaluate(
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
     
-    
     switch (expression->kind)
     {
     case EXPRESSION_KIND_STRING_LITERAL:
@@ -1370,17 +1369,12 @@ Expression_evaluate(
         break;
     case EXPRESSION_KIND_NULL:
         Logger_dbg("Do 'Null expression'");
-        //id = CriaId_new("Null", CRIA_DATA_TYPE_NULL);
         id = NULL;
         Logger_dbg("Done 'Generate  expression'");
         break;
     case EXPRESSION_KIND_BOOLEAN_LITERAL:
         id = ExpressionBooleanLiteral_evaluate(interpreter, object, parameters, expression->of._booleanLiteral_);
         break;
-    /*
-    case EXPRESSION_KIND_NULL_LITERAL:
-        break;
-    //*/
     case EXPRESSION_KIND_FUNCTION_CALL:
         Logger_dbg("Do 'Function call expression'");
         id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, expression->of._functionCall_, NULL);
@@ -1410,8 +1404,6 @@ Expression_evaluate(
         break;
     }
 
-    
-    
     Logger_trc("[  END  ]%s", __func__);
     return id;
 }

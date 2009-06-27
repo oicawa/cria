@@ -19,6 +19,7 @@ struct InterpreterTag
     int column;
     int indentLevel;
     Hash loaded_files;
+    List stack;
 };
 
 

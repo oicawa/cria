@@ -5,9 +5,9 @@
 
 #include "Parser.h"
 #include "CriaId.h"
-#include "Interpreter.h"
 #include "Definition.h"
 #include "String.h"
+#include "Interpreter.h"
 
 
 

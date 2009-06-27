@@ -150,12 +150,22 @@ Token_buffer(
 
 
 void
-Token_set_module(
+Token_set_file_path(
     Token token,
     String file_path
 )
 {
 	token->file_path = file_path;
+}
+
+
+
+String
+Token_get_file_path(
+    Token token
+)
+{
+	return token->file_path;
 }
 
 
@@ -1217,6 +1227,7 @@ Tokenizer_create_tokens(
     Tokenizer tokenizer = NULL;
     Token token = NULL;
     List tokens = NULL;
+    String file_path = String_clone(filePath);
     
     tokenizer = Tokenizer_new(filePath);
     if (tokenizer == NULL)
@@ -1256,7 +1267,7 @@ ADD_TOKEN:
 		if (Token_type(token) == TOKEN_TYPE_DUMMY)
 			continue;
 		
-        Token_set_module(token, filePath);
+        Token_set_file_path(token, file_path);
         List_add(tokens, token);
         continue;        
     }

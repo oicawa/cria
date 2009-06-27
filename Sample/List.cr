@@ -40,8 +40,3 @@ list[2] = "Indexer reference test, SUCCESSED!"
 print_list_contents_by_indexer(list)
 print_list_contents(list)
 
-
-list.each()(item):
-    write(item)
-
-

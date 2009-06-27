@@ -37,6 +37,9 @@ struct ReferenceClassTag
 struct ReferenceTag
 {
     ReferenceType type;
+    int line;
+    int column;
+    String file_path;
     union {
         ReferenceVariable variable;
         ExpressionFunctionCall function;

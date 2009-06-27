@@ -17,6 +17,37 @@
 
 
 
+List
+Interpreter_stack(
+    Interpreter interpreter
+)
+{
+    return interpreter->stack;
+}
+
+
+
+void
+Interpreter_stack_add(
+    Interpreter interpreter,
+    void* expression
+)
+{
+    List_add(interpreter->stack, expression);
+}
+
+
+
+void
+Interpreter_stack_pop(
+    Interpreter interpreter
+)
+{
+    int count = List_count(interpreter->stack);
+    List_delete(interpreter->stack, count - 1);
+}
+
+
 Interpreter
 Interpreter_new(
     void
@@ -35,6 +66,7 @@ Interpreter_new(
     interpreter->column = 0;
     interpreter->indentLevel = 0;
     interpreter->loaded_files = Hash_new(16);
+    interpreter->stack = List_new();
     
     return interpreter;
 }
@@ -224,3 +256,5 @@ Interpreter_add_loaded_file(
     Logger_trc("[  END  ]%s", __func__);
     return;
 }
+
+

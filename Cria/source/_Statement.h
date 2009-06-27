@@ -29,8 +29,7 @@ typedef enum
 
 struct StatementTag
 {
-    StatementKind   kind;
-    int             line;
+    StatementKind kind;
     union {
         StatementFunctionCall   _functionCall_;
         StatementSubstitute     _substitute_;
