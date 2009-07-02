@@ -1,16 +1,16 @@
 Text:
     @text
     @name
-    @parent_name
+    @parent
     @tk
     index = 0
     
     new():
-        .name = "entry" + class.index.to_string()
+        .name = ".entry" + class.index.to_string()
         class.index = class.index + 1
 
     @get_name():
-        return .parent_name + .name
+        return .parent.name + .name
     
     @get_text():
         if .tk == null
@@ -29,10 +29,10 @@ Text:
         if .tk != null
             .tk.do(.get_name(), "insert", "0", .text)
     
-    @do():
+    @do(tk):
         if .tk == null
-            return
-        
+            .tk = tk
+
         .tk.do("entry", .get_name(), "-bg", "white")
         if .text != null
             .set_text(.text)

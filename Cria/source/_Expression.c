@@ -1012,12 +1012,14 @@ ExpressionFunctionCall_evaluate(
     CriaId current = NULL;
     DefinitionFunction  function = NULL;
     List tmp = NULL;
+    String target = NULL;
     
     
     if (parent == NULL)
     {
 		current = object;
 		function = ExpressionFunctionCall_searchFromInterpreter(interpreter, expression->name);
+        target = "Interpreter";
     }
     else if (parent->type == CRIA_DATA_TYPE_CRIA_OBJECT ||
               parent->type == CRIA_DATA_TYPE_STRING ||
@@ -1025,18 +1027,20 @@ ExpressionFunctionCall_evaluate(
     {
     	current = parent;
 		function = ExpressionFunctionCall_searchFromObject(interpreter, parent, expression->name);
+        target = parent->name;
     }
     else if (parent->type == CRIA_DATA_TYPE_CRIA_CLASS)
     {
     	current = parent;
 		function = ExpressionFunctionCall_searchFromClass(interpreter, parent, expression->name);
+        target = parent->name;
     }
     
 
 	if (function == NULL)
 	{
 		Logger_err("Function '%s' is not found.", expression->name);
-		Runtime_error(interpreter, "Function '%s' is not found.", expression->name);
+		Runtime_error(interpreter, "Function '%s' is not found in '%s'.", expression->name, target);
 		goto END;
 	}
 	

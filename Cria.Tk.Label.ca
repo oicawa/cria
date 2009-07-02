@@ -1,20 +1,16 @@
 Label:
     @text
     @name
-    @parent_name
-    @tk
+    @parent
     index = 0
     
     new(text):
         .text = text
-        .name = "label" + class.index.to_string()
+        .name = ".label" + class.index.to_string()
         class.index = class.index + 1
 
     @get_name():
-        return .parent_name + .name
+        return .parent.name + .name
     
-    @do():
-        if .tk == null
-            return
-        
-        .tk.do("label", .get_name(), "-text", .text)
+    @do(tk):
+        tk.do("label", .get_name(), "-text", .text)
