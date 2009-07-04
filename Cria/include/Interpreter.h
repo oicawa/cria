@@ -11,7 +11,7 @@
 typedef struct InterpreterTag *Interpreter;
 
 
-
+/*
 List
 Interpreter_stack(
     Interpreter interpreter
@@ -31,7 +31,7 @@ void
 Interpreter_stack_pop(
     Interpreter interpreter
 );
-
+*/
 
 
 Interpreter
@@ -40,22 +40,25 @@ Interpreter_new(
 );
 
 
-
+/*
 Boolean
 Interpreter_compile(
     Interpreter interpreter,
     char*       filePath
 );
-
+*/
 
 
 void
 Interpreter_run(
-    Interpreter interpreter
+    Interpreter interpreter,
+    String file_path,
+    int line,
+    char* buffer
 );
 
 
-
+/*
 int
 Interpreter_row(
     Interpreter interpreter
@@ -103,7 +106,7 @@ Hash
 Interpreter_get_imports(
     Interpreter interpreter
 );
-
+*/
 
 
 void
@@ -112,7 +115,7 @@ Interpreter_dispose(
 );
 
 
-
+/*
 Boolean
 Interpreter_has_loaded(
     Interpreter interpreter,
@@ -126,7 +129,7 @@ Interpreter_add_loaded_file(
     Interpreter interpreter,
     String file_path
 );
-
+*/
 
 
 #endif

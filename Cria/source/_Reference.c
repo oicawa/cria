@@ -13,7 +13,7 @@
 #include "_Reference.h"
 
 
-
+/*
 //DefinitionVariable ReferenceFunctionCall_evaluate(Interpreter interpreter, CriaId object, List parameters, ReferenceFunctionCall function, CriaId parent);
 void ReferenceFunctionCall_evaluate(Interpreter interpreter, CriaId object, List parameters, Reference reference, CriaId parent);
 void ReferenceIndexer_evaluate(Interpreter interpreter, CriaId object, List parameters, Reference reference, CriaId parent);
@@ -293,79 +293,6 @@ END:
 }
 
 
-/*
-DefinitionVariable
-ReferenceVariable_evaluate(
-    Interpreter         interpreter,
-    CriaId object,
-    List parameters,
-    ReferenceVariable   variable,
-    CriaId parent
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    DefinitionVariable definition = NULL;
-    
-    
-    if (parent != NULL)
-    {
-        if (parent->type == CRIA_DATA_TYPE_CRIA_OBJECT)
-        {
-    		definition = ReferenceVariable_evaluateFromObject(parent, variable->name);
-    		if (definition != NULL)
-    			goto END;
-    		
-    		Logger_err("Field named '%s' is not found.", variable->name);
-    		runtime_error(interpreter);
-    		goto END;
-        }
-        else if (parent->type == CRIA_DATA_TYPE_CRIA_CLASS)
-        {
-    		definition = ReferenceVariable_evaluateFromClass(interpreter, parent, variable->name);
-    		if (definition != NULL)
-    			goto END;
-    		
-    		Logger_err("Field named '%s' is not found.", variable->name);
-    		runtime_error(interpreter);
-    		goto END;
-        }
-        else
-        {
-            runtime_error(interpreter);
-        }
-    }
-    
-    
-	definition = ReferenceVariable_evaluateFromParameters(parameters, variable->name);
-	if (definition != NULL)
-		goto END;
-	
-	
-	definition = ReferenceVariable_evaluateFromInterpreter(interpreter, variable->name);
-	if (definition != NULL)
-		goto END;
-	
-	
-	if (parameters != NULL)
-	{
-		definition = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, variable->name, TRUE, FALSE, NULL);
-		List_add(parameters, definition);
-		Logger_dbg("Add field named '%s' to parameters.", DefinitionVariable_name(definition));
-		goto END;
-	}
-    
-    definition = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, variable->name, TRUE, FALSE, NULL);
-    Hash_put(Interpreter_variables(interpreter), variable->name, definition);
-	Logger_dbg("Add field named '%s' to interpreter as global.", DefinitionVariable_name(definition));
-    
-END:
-    Logger_trc("[  END  ]%s", __func__);
-    Logger_dbg("definition->name is '%s'", DefinitionVariable_name(definition));
-    return definition;
-}
-*/
-
-
 Reference
 ReferenceVariable_parse(
     Parser  parser
@@ -501,64 +428,6 @@ END:
 }
 
 
-/*
-DefinitionVariable
-Reference_evaluate(
-    Interpreter interpreter,
-    CriaId object,
-    List parameters,
-    Reference   reference,
-    CriaId parent
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    DefinitionVariable definition = NULL;
-    CriaId id = NULL;
-    
-    switch (reference->type)
-    {
-    case REFERENCE_TYPE_SELF:
-    	reference = reference->next;
-        definition = Reference_evaluate(interpreter, object, parameters, reference, object);
-        break;
-    case REFERENCE_TYPE_VARIABLE:
-        definition = ReferenceVariable_evaluate(interpreter, object, parameters, reference->of.variable, parent);
-        break;
-    case REFERENCE_TYPE_FUNCTION_CALL:
-        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, reference->of.function, parent);
-        if (id->type != CRIA_DATA_TYPE_VARIABLE)
-        {
-            Logger_err("Function call result is not variable.");
-            runtime_error(interpreter);
-            goto END;
-        }
-        definition = ((CriaVariable)id)->definition;
-        break;
-    case REFERENCE_TYPE_CLASS:
-        id = ReferenceClass_evaluate(interpreter, object, parameters, reference->of.klass, parent);
-    	reference = reference->next;
-        definition = Reference_evaluate(interpreter, object, parameters, reference, id);
-        break;
-    default:
-        break;
-    }
-    
-    //★DefinitionVariableの階層を遡っていく処理を実行。
-    if (reference->next == NULL)
-    	goto END;
-    	
-    id = (CriaId)DefinitionVariable_getObject(definition);
-    
-    definition = Reference_evaluate(interpreter, object, parameters, reference->next, id);
-
-END:
-	
-    Logger_trc("[  END  ]%s", __func__);
-    return definition;
-}
-*/
-
-
 void
 ReferenceFunctionCall_evaluate(
     Interpreter interpreter,
@@ -580,32 +449,6 @@ ReferenceFunctionCall_evaluate(
     Logger_trc("[  END  ]%s", __func__);
     return;
 }
-
-
-/*
-DefinitionVariable
-ReferenceFunctionCall_evaluate(
-    Interpreter interpreter,
-    CriaId object,
-    List parameters,
-    ReferenceFunctionCall function,
-    CriaId parent
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    CriaId id = NULL;
-    DefinitionVariable variable = NULL;
-    
-    //TODO:
-    id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, NULL, parent);
-    
-    
-    
-//END:
-    Logger_trc("[  END  ]%s", __func__);
-    return variable;
-}
-*/
 
 
 Reference
@@ -845,60 +688,6 @@ END:
 }
 
 
-/*
-CriaId
-ReferenceClass_evaluate(
-    Interpreter interpreter,
-    CriaId object,
-    List parameters,
-    ReferenceClass klass,
-    CriaId parent
-)
-{
-    Logger_trc("[ START ]%s (class name = '%s')", __func__, klass->name);
-    CriaId id = NULL;
-    String className = NULL;
-    DefinitionClass definition = NULL;
-    Hash classes = NULL;
-
-    
-    classes = Interpreter_classes(interpreter);
-    if (strcmp(klass->name, "class") != 0)
-    {
-        definition = (DefinitionClass)Hash_get(classes, klass->name);
-    }
-    else if (object->type == CRIA_DATA_TYPE_CRIA_OBJECT)
-    {
-        definition = (DefinitionClass)Hash_get(classes, object->name);
-    }
-    //else if (object->type == CRIA_DATA_TYPE_CRIA_CLASS)
-    //{
-    //    definition = ((CriaClass)object)->definition;
-    //}
-    else
-    {
-        runtime_error(interpreter);
-    }
-    className = DefinitionClass_getName(definition);
-    Logger_dbg("Real class name = '%s'.", className);
-    
-    
-    if (definition == NULL)
-    {
-        Logger_err("Specified class not found. ('%s')", className);
-        runtime_error(interpreter);
-        goto END;
-    }
-    
-    id = (CriaId)CriaClass_new(definition);
-    
-END:
-    Logger_trc("[  END  ]%s", __func__);
-    return id;
-}
-*/
-
-
 Reference
 ReferenceClass_parse(
     Parser  parser
@@ -1060,6 +849,6 @@ END:
     Logger_trc("[  END  ]%s", __func__);
     return reference;
 }
-
+*/
 
 

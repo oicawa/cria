@@ -18,7 +18,7 @@
 #include "_Definition.h"
 
 
-
+/*
 //==============================
 //DefinitionVariable
 //==============================
@@ -1058,3 +1058,4 @@ END:
     Logger_trc("[  END  ]%s", __func__);
     return klass;
 }
+*/

@@ -12,7 +12,7 @@
 #include "_Parser.h"
 
 
-
+/*
 void
 Parser_errorFunction(
     Parser parser,
@@ -328,5 +328,5 @@ END:
     Logger_trc("[  END  ]%s", __func__);
     return result;
 }
-
+*/
 

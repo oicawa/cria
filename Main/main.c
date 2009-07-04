@@ -1,31 +1,38 @@
 #include <stdio.h>
+#include <memory.h>
 
 #include "Interpreter.h"
-#include "Logger.h"
 
-
+#define BUFFER_SIZE 80
 
 //========================================
 //Main
 //========================================
 int
 main(
-    int     argc,
-    char**  argv
+    int argc,
+    char** argv
 )
 {
     int endCode = 0;
-    
-    //Logger_set(LOG_LEVEL_DEBUG, "Loader_parse");
-    //Logger_set(LOG_LEVEL_TRACE, NULL);
-
     Interpreter interpreter = NULL;
-    int result = 0;
+    FILE* file = NULL;
+    Boolean is_stdout = TRUE;
+    char buffer[BUFFER_SIZE + 1]; 
+    char* lf = NULL;
+    int line = 0;
+    String file_path = NULL;
     
     if (argv[1] == NULL)
     {
-        printf("Input cria script file path.\n");
-        goto END;
+        file = stdin;
+        file_path = String_new("<<stdin>>");
+    }
+    else
+    {
+        file = fopen(argv[1], "r");
+        file_path = String_new(argv[1]);
+        is_stdout = FALSE;
     }
     
     
@@ -36,14 +43,28 @@ main(
         goto END;
     }
     
-    result = Interpreter_compile(interpreter, argv[1]);
-    if (result == FALSE)
-    {
-        printf("Cria interpreter compile error.\n");
-        goto END;
-    }
     
-    Interpreter_run(interpreter);
+    while (feof(file) == 0)
+    {
+        memset(buffer, 0x00, sizeof(buffer));
+        lf = NULL;
+        
+        fgets(buffer, sizeof(buffer) - sizeof(char), file);
+        lf = strchr(buffer, '\n'); 
+        if (lf != NULL)
+        {
+            *lf = '\0';
+        }
+        else if (feof(file) == FALSE)
+        {
+            fprintf(stderr, "[%s] line %3d : Too long sentence. Please get the line under %d columns.", argv[1], line, BUFFER_SIZE);
+            goto END;
+        }
+        line++;
+        
+        //TODO: I have to implement logic for that 1 line is over buffer size.
+        Interpreter_run(interpreter, file_path, line, buffer);
+    }
     
 	
     Interpreter_dispose(interpreter);
@@ -53,6 +74,8 @@ main(
     
 END:
     interpreter = NULL;
+    if (is_stdout == TRUE)
+        fclose(file);
     
     return endCode;
 }

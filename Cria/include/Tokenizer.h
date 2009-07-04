@@ -4,6 +4,7 @@
 
 #include "List.h"
 #include "String.h"
+#include "Interpreter.h"
 
 
 typedef enum
@@ -45,6 +46,7 @@ typedef enum
     TOKEN_TYPE_INCREMENT,
     TOKEN_TYPE_INDENT,
     TOKEN_TYPE_INTEGER_LITERAL,
+    TOKEN_TYPE_JOIN,
     TOKEN_TYPE_LESS_THAN,
     TOKEN_TYPE_LESS_EQUAL,
     TOKEN_TYPE_LOAD,
@@ -72,28 +74,43 @@ typedef enum
 
 
 
+struct TokenTag
+{
+    TokenType type;
+    String value;
+};
+
+
+
 typedef struct  TokenTag *Token;
 typedef struct  TokenizerTag *Tokenizer;
 
 
 
 List
+Tokenizer_split(
+    Interpreter interpreter,
+    String file_path,
+    int line,
+    String target
+);
+
+/*
+List
 Tokenizer_create_tokens(
     char*   filePath
 );
-
+*/
 
 
 Token
 Token_new(
     TokenType type,
-    int row,
-    int column,
-    char* buffer
+    String value
 );
 
 
-
+/*
 TokenType
 Token_type(
 	Token token
@@ -141,6 +158,6 @@ Token_get_file_path(
 			Logger_dbg("Token type=%2d(%3d, %2d) [%s]", Token_type(__token__), Token_row(__token__), Token_column(__token__), __buffer__); \
 		} \
 	} while(0) \
-
+*/
 
 #endif

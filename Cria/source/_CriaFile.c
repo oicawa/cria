@@ -15,7 +15,7 @@
 #include "_CriaFile.h"
 
 
-
+/*
 CriaId
 CriaFile__generator_(
 	Interpreter interpreter,
@@ -473,6 +473,6 @@ CriaFile_loadClass(
     Logger_trc("[  END  ]%s", __func__);
     return klass;
 }
-
+*/
 
 

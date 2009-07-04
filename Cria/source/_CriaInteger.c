@@ -11,7 +11,7 @@
 #include "_CriaInteger.h"
 
 
-
+/*
 CriaInteger
 CriaInteger_new(
     Boolean isLiteral,
@@ -246,3 +246,4 @@ CriaInteger_loadClass(
     Logger_trc("[  END  ]%s", __func__);
     return klass;
 }
+*/

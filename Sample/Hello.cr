@@ -2,7 +2,7 @@ say_welcome():
     write("Welcome to cria world.\n" + "What's your name? >> ")
     
 say_nice_to_meet_you(your_name):
-    write("Well, Nice to meet you, %s\n", your_name)
+    write("Well, Nice to meet you, {0}\n", your_name)
 
 create_name(your_name, is_male, has_married):
     if is_male == true
@@ -22,7 +22,7 @@ answer = read()
 
 if answer == "yes"
 
-    write("Nice to meet you, %s\n\n", create_name(name, true, true))
+    write("Nice to meet you, {0}\n\n", create_name(name, true, true))
     write("Is your wife cute? >> ")
     is_beautiful = read()
     
@@ -37,14 +37,14 @@ elif answer == "no"
     answer = read()
     
     if answer == "yes"
-        write("Nice to meet you, %s\n\n", create_name(name, false, true))
+        write("Nice to meet you, {0}\n\n", create_name(name, false, true))
         
         is_first = true
         while true
             write("Is your husband gentle? >> ")
             answer = read()
             if answer == "yes"
-                write("Oh, you are lucky beggar, Mrs.%s!!\n", name)
+                write("Oh, you are lucky beggar, Mrs.{0}!!\n", name)
                 break
             else
                 write("Sorry, I can't hear you.\n")
@@ -52,9 +52,9 @@ elif answer == "no"
             write("\n<<continue test>>\n")
             
     elif answer == "no"
-        write("Nice to meet you, %s\n\n", create_name(name, false, false))
+        write("Nice to meet you, {0}\n\n", create_name(name, false, false))
     else
-        write("... OK, Nice to meet you, Miss,%s\n\n", name)
+        write("... OK, Nice to meet you, Miss,{0}\n\n", name)
 
 else
     say_nice_to_meet_you(name)

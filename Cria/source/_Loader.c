@@ -16,7 +16,7 @@
 #include "_Loader.h"
 
 
-
+/*
 String
 Loader_create_path(
 	List path,
@@ -425,3 +425,4 @@ Loader_unload(
 {
 	Loader_unload_native(loader);
 }
+*/

@@ -9,7 +9,7 @@
 #include "_CriaBlock.h"
 
 
-
+/*
 CriaBlock
 CriaBlock_new(
     Interpreter interpreter,
@@ -55,3 +55,4 @@ CriaBlock_evaluate(
     
     return id;
 }
+*/

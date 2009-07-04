@@ -7,16 +7,20 @@
 
 #include "Tokenizer.h"
 
-struct TokenTag
+/*
+struct ReservedWordTag
 {
     TokenType type;
-    int row;
-    int column;
-    String buffer;
-    String file_path;
+    String value;
+}
+
+
+static struct ReservedWordTag RESERVED_WORDS[] =
+{
+    { "null", TOKEN_TYPE_NULL },
+    { "block", TOKEN_TYPE_BLOCK }
 };
-
-
+*/
 
 struct TokenizerTag
 {
@@ -27,15 +31,6 @@ struct TokenizerTag
     char            next;
     int             indentLevel;
 };
-
-
-
-#define Tokenizer_error(buffer, row, column, path) \
-    do { \
-        fprintf(stderr, "Syntax error near '%s' (file:[%s], line:%d, column:%d). [%s, %d]\n", buffer, path, row, column, __FILE__, __LINE__); \
-        Logger_err("Token error near '%s' in file '%s'. (line:%d, column:%d) [%s, %d]\n", buffer, path, row, column, __FILE__, __LINE__); \
-        exit(1); \
-    } while(0) \
 
 
 

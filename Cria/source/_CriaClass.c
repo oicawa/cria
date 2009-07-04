@@ -10,7 +10,7 @@
 #include "_CriaClass.h"
 
 
-
+/*
 CriaClass
 CriaClass_new(
 	DefinitionClass definition
@@ -84,3 +84,4 @@ END:
     Logger_trc("[  END  ]%s", __func__);
     return variable;
 }
+*/

@@ -17,7 +17,7 @@
 
 #include "_Expression.h"
 
-
+/*
 ExpressionReference ExpressionVariable_parse(Parser parser);
 ExpressionReference ExpressionGenerate_parse(Parser parser);
 ExpressionReference ExpressionClass_parse(Parser parser);
@@ -124,24 +124,6 @@ ExpressionOperation_evaluate(
         id = ExpressionOperation_evaluate_of_null(interpreter, expression->kind, left, right);
         goto END;
     }
-    
-    /*
-    if (left == NULL && right == NULL)
-    {
-        
-        goto END;
-    }
-    else if (left == NULL && right != NULL)
-    {
-        id = right;
-        goto END;
-    }
-    else if (left != NULL && right == NULL)
-    {
-        id = left;
-        goto END;
-    }
-    */
     
     Logger_dbg("Check data type.");
     Logger_dbg("Data type = %d. (INTEGER is %d)", left->type, CRIA_DATA_TYPE_INTEGER);
@@ -708,14 +690,6 @@ ExpressionParameters_evaluate(
             List_add(list, id);
             Logger_dbg("Add 'Cria Id'");
             break;
-        /*
-        case EXPRESSION_KIND_REAL_LITERAL:
-            break;
-        case EXPRESSION_KIND_NULL_LITERAL:
-            break;
-        case EXPRESSION_KIND_GENERATE:
-            break;
-        //*/
         case EXPRESSION_KIND_FUNCTION_CALL:
             Logger_dbg("Do 'Function call expression'");
             id = ExpressionFunctionCall_evaluate(interpreter, object, parameterList, expression->of._functionCall_, NULL);
@@ -734,10 +708,6 @@ ExpressionParameters_evaluate(
             List_add(list, id);
             Logger_dbg("Add 'Cria Id'");
             break;
-        /*
-        case EXPRESSION_KIND_VARIABLE:
-            break;
-        //*/
         case EXPRESSION_KIND_OPERATION:
             Logger_dbg("Do operation expression");
             id = ExpressionOperation_evaluate(interpreter, object, parameterList, expression->of._operation_);
@@ -1626,15 +1596,6 @@ ExpressionFunctionCall_parse(
 		Logger_dbg("Created next expression.");
     }
 
-    /*
-    if (Token_type(token) == TOKEN_TYPE_)
-    {
-        Parser_next(parser);
-        token = Parser_getCurrent(parser);
-        expression->next = ExpressionReference_parse(parser);
-		Logger_dbg("Created next expression.");
-    }
-    */
 END:
     Logger_trc("[  END  ]%s", __func__);
     return expression;
@@ -2158,5 +2119,4 @@ END:
     Logger_trc("[  END  ]%s", __func__);
     return expression;
 }
-
-
+*/

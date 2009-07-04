@@ -14,7 +14,7 @@
 
 #include "_CriaList.h"
 
-
+/*
 CriaId
 CriaList__generator_(
 	Interpreter interpreter,
@@ -387,6 +387,6 @@ CriaList_loadClass(
     Logger_trc("[  END  ]%s", __func__);
     return klass;
 }
-
+*/
 
 
