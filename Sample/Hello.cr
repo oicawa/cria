@@ -1,5 +1,6 @@
 say_welcome():
     write("Welcome to cria world.\n" + "What's your name? >> ")
+    return
     
 say_nice_to_meet_you(your_name):
     write("Well, Nice to meet you, {0}\n", your_name)

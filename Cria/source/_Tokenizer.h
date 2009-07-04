@@ -7,20 +7,6 @@
 
 #include "Tokenizer.h"
 
-/*
-struct ReservedWordTag
-{
-    TokenType type;
-    String value;
-}
-
-
-static struct ReservedWordTag RESERVED_WORDS[] =
-{
-    { "null", TOKEN_TYPE_NULL },
-    { "block", TOKEN_TYPE_BLOCK }
-};
-*/
 
 struct TokenizerTag
 {

@@ -10,22 +10,6 @@
 #include "_Tokenizer.h"
 
 
-#define TOKEN_LITERAL_PARENTHESIS_LEFT      "("
-#define TOKEN_LITERAL_PARENTHESIS_RIGHT     ")"
-#define TOKEN_LITERAL_BRACKET_LEFT          "["
-#define TOKEN_LITERAL_BRACKET_RIGHT         "]"
-#define TOKEN_LITERAL_BRACE_LEFT            "{"
-#define TOKEN_LITERAL_BRACE_RIGHT           "}"
-#define TOKEN_LITERAL_GENERICS_LEFT         "<"
-#define TOKEN_LITERAL_GENERICS_RIGHT        ">"
-#define TOKEN_LITERAL_COLON                 ":"
-#define TOKEN_LITERAL_ATMARK                "@"
-#define TOKEN_LITERAL_PERIOD                "."
-#define TOKEN_LITERAL_NEW_LINE              "\n"
-#define TOKEN_LITERAL_COMMA                 ", "
-#define TOKEN_LITERAL_MONADIC_MINUS         "-"
-#define TOKEN_LITERAL_UNDER                 "_"
-#define TOKEN_LITERAL_COMMENT               "#"
 
 
 #define TOKEN_LITERAL_UNDER_WITH_SPACE      " _"
@@ -59,14 +43,14 @@
 #define TOKEN_LITERAL_INDENT                "    "
 
 
+#define TOKEN_LITERAL_COMMA                 ", "
+
+
 #define TOKEN_LITERAL_IF                    "if "
-#define TOKEN_LITERAL_FOR                   "for "
 #define TOKEN_LITERAL_ELIF                  "elif "
 #define TOKEN_LITERAL_GOTO                  "goto "
 #define TOKEN_LITERAL_LOAD                  "load "
-#define TOKEN_LITERAL_THROW                 "throw "
 #define TOKEN_LITERAL_WHILE                 "while "
-#define TOKEN_LITERAL_RETURN_VALUE          "return "
 
 #define TOKEN_LITERAL_NULL                  "null"
 #define TOKEN_LITERAL_ELSE                  "else"
@@ -80,6 +64,143 @@
 #define TOKEN_LITERAL_FINALLY               "finally"
 #define TOKEN_LITERAL_CONTINUE              "continue"
 
+static struct TokenTag TOKEN_TABLE_1[13] =
+{
+    { TOKEN_TYPE_PARENTHESIS_LEFT,  "(" },
+    { TOKEN_TYPE_PARENTHESIS_RIGHT, ")" },
+    { TOKEN_TYPE_BRACKET_LEFT,      "[" },
+    { TOKEN_TYPE_BRACKET_RIGHT,     "]" },
+    { TOKEN_TYPE_BRACE_LEFT,        "{" },
+    { TOKEN_TYPE_BRACE_RIGHT,       "}" },
+    { TOKEN_TYPE_GENERICS_LEFT,     "<" },
+    { TOKEN_TYPE_GENERICS_RIGHT,    ">" },
+    { TOKEN_TYPE_COLON,             ":" },
+    { TOKEN_TYPE_ATMARK,            "@" },
+    { TOKEN_TYPE_PERIOD,            "." },
+    { TOKEN_TYPE_MONADIC_MINUS,     "-" },
+    { TOKEN_TYPE_JOIN,              "_" }
+};
+
+
+static struct TokenTag TOKEN_TABLE_2[1] =
+{
+    { TOKEN_TYPE_COMMA,             ", " }
+};
+
+static struct TokenTag TOKENS_RESERVED_1[7] =
+{
+    { TOKEN_TYPE_NULL, "null" },
+    { TOKEN_TYPE_BREAK, "break" },
+    { TOKEN_TYPE_ELSE, "else" },
+    { TOKEN_TYPE_BOOLEAN_LITERAL_TRUE, "true" },
+    { TOKEN_TYPE_BOOLEAN_LITERAL_FALSE, "false" },
+    { TOKEN_TYPE_CLASS, "class" },
+    { TOKEN_TYPE_CONTINUE, "continue" },
+};
+
+/*
+static struct ReservedWordTag RESERVED2[] =
+{
+    
+    { TOKEN_TYPE_AND, " && " },
+    { TOKEN_TYPE_CLASS_LITERAL, NULL },
+    { TOKEN_TYPE_CONSTANT, NULL },
+    { TOKEN_TYPE_DECREMENT, " -= " },
+    { TOKEN_TYPE_DEVIDE, " / " },
+    { TOKEN_TYPE_DUMMY, NULL },
+    { TOKEN_TYPE_ELIF, "elif " },
+    { TOKEN_TYPE_EQUAL, " == " },
+    { TOKEN_TYPE_EXTENDS, " -> " },
+    { TOKEN_TYPE_FOR, "for " },
+    { TOKEN_TYPE_GOTO, "goto " },
+    { TOKEN_TYPE_GREATER_EQUAL, " >= " },
+    { TOKEN_TYPE_GREATER_THAN, " > " },
+    { TOKEN_TYPE_IDENTIFIER, NULL },
+    { TOKEN_TYPE_IF, "if " },
+    { TOKEN_TYPE_INCREMENT, " += " },
+    { TOKEN_TYPE_INDENT, "    " },
+    { TOKEN_TYPE_INTEGER_LITERAL, NULL },
+    { TOKEN_TYPE_JOIN, " _" },
+    { TOKEN_TYPE_LESS_THAN, " < " },
+    { TOKEN_TYPE_LESS_EQUAL, " <= " },
+    { TOKEN_TYPE_LOAD, "load " },
+    { TOKEN_TYPE_MINUS, " - " },
+    { TOKEN_TYPE_MODULO, " % " },
+    { TOKEN_TYPE_MULTIPLY, " * " },
+    { TOKEN_TYPE_NOT_EQUAL, " != " },
+    { TOKEN_TYPE_OR, " || " },
+    { TOKEN_TYPE_PACKAGE, NULL },
+    { TOKEN_TYPE_PLUS, " + " },
+    { TOKEN_TYPE_RETURN, "return" },
+    { TOKEN_TYPE_RETURN_VALUE, "return " },
+    { TOKEN_TYPE_STRING_LITERAL, NULL },
+    { TOKEN_TYPE_SUBSTITUTE, " = " },
+    { TOKEN_TYPE_WHILE, "while " },
+    { TOKEN_COUNT, NULL },
+};
+//*/
+/*
+static struct ReservedWordTag RESERVED2[] =
+{
+    { TOKEN_TYPE_AND, " && " },
+    { TOKEN_TYPE_ATMARK, "@" },
+    { TOKEN_TYPE_BOOLEAN_LITERAL_TRUE, "true" },
+    { TOKEN_TYPE_BOOLEAN_LITERAL_TRUE, "false" },
+    { TOKEN_TYPE_BLOCK, "block" },
+    { TOKEN_TYPE_BRACE_LEFT, "{" },
+    { TOKEN_TYPE_BRACE_RIGHT, "}" },
+    { TOKEN_TYPE_BRACKET_LEFT, "[" },
+    { TOKEN_TYPE_BRACKET_RIGHT, "]" },
+    { TOKEN_TYPE_BREAK, "break" },
+    { TOKEN_TYPE_COLON, ":" },
+    { TOKEN_TYPE_COMMA, ", " },
+    { TOKEN_TYPE_CLASS, "class" },
+    { TOKEN_TYPE_CLASS_LITERAL, NULL },
+    { TOKEN_TYPE_CONSTANT, NULL },
+    { TOKEN_TYPE_CONTINUE, "continue" },
+    { TOKEN_TYPE_DECREMENT, " -= " },
+    { TOKEN_TYPE_DEVIDE, " / " },
+    { TOKEN_TYPE_DUMMY, NULL },
+    { TOKEN_TYPE_ELIF, "elif " },
+    { TOKEN_TYPE_ELSE, "else" },
+    { TOKEN_TYPE_EQUAL, " == " },
+    { TOKEN_TYPE_EXTENDS, " -> " },
+    { TOKEN_TYPE_FOR, "for " },
+    { TOKEN_TYPE_GENERICS_LEFT, "<" },
+    { TOKEN_TYPE_GENERICS_RIGHT, ">" },
+    { TOKEN_TYPE_GOTO, "goto " },
+    { TOKEN_TYPE_GREATER_EQUAL, " >= " },
+    { TOKEN_TYPE_GREATER_THAN, " > " },
+    { TOKEN_TYPE_IDENTIFIER, NULL },
+    { TOKEN_TYPE_IF, "if " },
+    { TOKEN_TYPE_INCREMENT, " += " },
+    { TOKEN_TYPE_INDENT, "    " },
+    { TOKEN_TYPE_INTEGER_LITERAL, NULL },
+    { TOKEN_TYPE_JOIN, " _" },
+    { TOKEN_TYPE_LESS_THAN, " < " },
+    { TOKEN_TYPE_LESS_EQUAL, " <= " },
+    { TOKEN_TYPE_LOAD, "load " },
+    { TOKEN_TYPE_MINUS, " - " },
+    { TOKEN_TYPE_MODULO, " % " },
+    { TOKEN_TYPE_MONADIC_MINUS, "-" },
+    { TOKEN_TYPE_MULTIPLY, " * " },
+    { TOKEN_TYPE_NOT_EQUAL, " != " },
+    { TOKEN_TYPE_NULL, "null" },
+    { TOKEN_TYPE_OR, " || " },
+    { TOKEN_TYPE_PACKAGE, NULL },
+    { TOKEN_TYPE_PARENTHESIS_LEFT, "(" },
+    { TOKEN_TYPE_PARENTHESIS_RIGHT, ")" },
+    { TOKEN_TYPE_PERIOD, "." },
+    { TOKEN_TYPE_PLUS, " + " },
+    { TOKEN_TYPE_RETURN, "return" },
+    { TOKEN_TYPE_RETURN_VALUE, "return " },
+    { TOKEN_TYPE_STRING_LITERAL, NULL },
+    { TOKEN_TYPE_SUBSTITUTE, " = " },
+    { TOKEN_TYPE_WHILE, "while " },
+    { TOKEN_TYPE_UNDER, "_" },
+    { TOKEN_COUNT, NULL },
+};
+*/
 
 
 Token
@@ -93,6 +214,33 @@ Token_new(
     token->value = value;
     return token;
 }
+
+
+Token
+Token_parse(
+    char* start,
+    long length,
+    struct TokenTag *table,
+    int count
+)
+{
+    Token token = NULL;
+    int i = 0;
+    struct TokenTag *item = NULL;
+    
+    for (i = 0; i < count; i++)
+    {
+        item = &(table[i]);
+        if (strncmp(start, item->value, length) != 0)
+            continue;
+
+        token = Token_new(item->type, item->value);
+        break;
+    }
+
+    return token;
+}
+
 
 
 Token
@@ -150,59 +298,21 @@ Tokenizer_reserved(
     if (c != ' ' && c != '\0')
         goto END;
     
-    if (strncmp(start, TOKEN_LITERAL_NULL, size) == 0)
-    {
-        type = TOKEN_TYPE_NULL;
-        goto END;
-    }
     
-    if (strncmp(start, TOKEN_LITERAL_BREAK, size) == 0)
-    {
-        type = TOKEN_TYPE_BREAK;
+    token = Token_parse(start, size, TOKENS_RESERVED_1, 7);
+    if (token != NULL)
         goto END;
-    }
     
-    if (strncmp(start, TOKEN_LITERAL_BLOCK, size) == 0)
-    {
-        type = TOKEN_TYPE_BLOCK;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_ELSE, size) == 0)
-    {
-        type = TOKEN_TYPE_ELSE;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_TRUE, size) == 0)
-    {
-        type = TOKEN_TYPE_BOOLEAN_LITERAL;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_FALSE, size) == 0)
-    {
-        type = TOKEN_TYPE_BOOLEAN_LITERAL;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_CLASS, size) == 0)
-    {
-        type = TOKEN_TYPE_CLASS;
-        goto END;
-    }
     
     if (strncmp(start, TOKEN_LITERAL_RETURN, size) == 0)
     {
+        if (c == ' ')
+            size++;
+        
         type = TOKEN_TYPE_RETURN;
         goto END;
     }
     
-    if (strncmp(start, TOKEN_LITERAL_CONTINUE, size) == 0)
-    {
-        type = TOKEN_TYPE_CONTINUE;
-        goto END;
-    }
     
     
     size++;
@@ -573,7 +683,6 @@ END:
 }
 
 
-
 Token
 Tokenizer_other(
     char* start
@@ -584,92 +693,15 @@ Tokenizer_other(
     long length = 0;
     
     //Check 1 charactor
-    length = 1;
-    if (strncmp(start, TOKEN_LITERAL_PARENTHESIS_LEFT, length) == 0)
-    {
-        type = TOKEN_TYPE_PARENTHESIS_LEFT;
+    token = Token_parse(start, 1, TOKEN_TABLE_1, 13);
+    if (token != NULL)
         goto END;
-    }
     
-    if (strncmp(start, TOKEN_LITERAL_PARENTHESIS_RIGHT, length) == 0)
-    {
-        type = TOKEN_TYPE_PARENTHESIS_RIGHT;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_BRACKET_LEFT, length) == 0)
-    {
-        type = TOKEN_TYPE_BRACKET_LEFT;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_BRACKET_RIGHT, length) == 0)
-    {
-        type = TOKEN_TYPE_BRACKET_RIGHT;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_BRACE_LEFT, length) == 0)
-    {
-        type = TOKEN_TYPE_BRACE_LEFT;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_BRACE_RIGHT, length) == 0)
-    {
-        type = TOKEN_TYPE_BRACE_RIGHT;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_GENERICS_LEFT, length) == 0)
-    {
-        type = TOKEN_TYPE_GENERICS_LEFT;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_GENERICS_RIGHT, length) == 0)
-    {
-        type = TOKEN_TYPE_GENERICS_RIGHT;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_COLON, length) == 0)
-    {
-        type = TOKEN_TYPE_COLON;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_ATMARK, length) == 0)
-    {
-        type = TOKEN_TYPE_ATMARK;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_PERIOD, length) == 0)
-    {
-        type = TOKEN_TYPE_PERIOD;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_MONADIC_MINUS, length) == 0)
-    {
-        type = TOKEN_TYPE_MONADIC_MINUS;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_UNDER, length) == 0)
-    {
-        type = TOKEN_TYPE_JOIN;
-        goto END;
-    }
     
     //Check 2 charactor
-    length = 2;
-    if (strncmp(start, TOKEN_LITERAL_COMMA, length) == 0)
-    {
-        type = TOKEN_TYPE_COMMA;
+    token = Token_parse(start, 2, TOKEN_TABLE_2, 1);
+    if (token != NULL)
         goto END;
-    }
     
 END:
     if (type != TOKEN_TYPE_DUMMY)
