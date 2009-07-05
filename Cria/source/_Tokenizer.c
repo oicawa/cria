@@ -89,118 +89,46 @@ static struct TokenTag TOKEN_TABLE_2[1] =
 
 static struct TokenTag TOKENS_RESERVED_1[7] =
 {
-    { TOKEN_TYPE_NULL, "null" },
-    { TOKEN_TYPE_BREAK, "break" },
-    { TOKEN_TYPE_ELSE, "else" },
-    { TOKEN_TYPE_BOOLEAN_LITERAL_TRUE, "true" },
+    { TOKEN_TYPE_NULL,                  "null" },
+    { TOKEN_TYPE_BREAK,                 "break" },
+    { TOKEN_TYPE_ELSE,                  "else" },
+    { TOKEN_TYPE_BOOLEAN_LITERAL_TRUE,  "true" },
     { TOKEN_TYPE_BOOLEAN_LITERAL_FALSE, "false" },
-    { TOKEN_TYPE_CLASS, "class" },
-    { TOKEN_TYPE_CONTINUE, "continue" },
+    { TOKEN_TYPE_CLASS,                 "class" },
+    { TOKEN_TYPE_CONTINUE,              "continue" },
 };
 
-/*
-static struct ReservedWordTag RESERVED2[] =
+static struct TokenTag TOKENS_RESERVED_2[4] =
 {
-    
-    { TOKEN_TYPE_AND, " && " },
-    { TOKEN_TYPE_CLASS_LITERAL, NULL },
-    { TOKEN_TYPE_CONSTANT, NULL },
-    { TOKEN_TYPE_DECREMENT, " -= " },
-    { TOKEN_TYPE_DEVIDE, " / " },
-    { TOKEN_TYPE_DUMMY, NULL },
-    { TOKEN_TYPE_ELIF, "elif " },
-    { TOKEN_TYPE_EQUAL, " == " },
-    { TOKEN_TYPE_EXTENDS, " -> " },
-    { TOKEN_TYPE_FOR, "for " },
-    { TOKEN_TYPE_GOTO, "goto " },
-    { TOKEN_TYPE_GREATER_EQUAL, " >= " },
-    { TOKEN_TYPE_GREATER_THAN, " > " },
-    { TOKEN_TYPE_IDENTIFIER, NULL },
-    { TOKEN_TYPE_IF, "if " },
-    { TOKEN_TYPE_INCREMENT, " += " },
-    { TOKEN_TYPE_INDENT, "    " },
-    { TOKEN_TYPE_INTEGER_LITERAL, NULL },
-    { TOKEN_TYPE_JOIN, " _" },
-    { TOKEN_TYPE_LESS_THAN, " < " },
-    { TOKEN_TYPE_LESS_EQUAL, " <= " },
-    { TOKEN_TYPE_LOAD, "load " },
-    { TOKEN_TYPE_MINUS, " - " },
-    { TOKEN_TYPE_MODULO, " % " },
-    { TOKEN_TYPE_MULTIPLY, " * " },
-    { TOKEN_TYPE_NOT_EQUAL, " != " },
-    { TOKEN_TYPE_OR, " || " },
-    { TOKEN_TYPE_PACKAGE, NULL },
-    { TOKEN_TYPE_PLUS, " + " },
-    { TOKEN_TYPE_RETURN, "return" },
-    { TOKEN_TYPE_RETURN_VALUE, "return " },
-    { TOKEN_TYPE_STRING_LITERAL, NULL },
-    { TOKEN_TYPE_SUBSTITUTE, " = " },
+    { TOKEN_TYPE_IF,    "if " },
+    { TOKEN_TYPE_ELIF,  "elif " },
     { TOKEN_TYPE_WHILE, "while " },
-    { TOKEN_COUNT, NULL },
+    { TOKEN_TYPE_LOAD,  "load " },
 };
-//*/
-/*
-static struct ReservedWordTag RESERVED2[] =
+
+static struct TokenTag TOKENS_START_WITH_SPACE[19] =
 {
-    { TOKEN_TYPE_AND, " && " },
-    { TOKEN_TYPE_ATMARK, "@" },
-    { TOKEN_TYPE_BOOLEAN_LITERAL_TRUE, "true" },
-    { TOKEN_TYPE_BOOLEAN_LITERAL_TRUE, "false" },
-    { TOKEN_TYPE_BLOCK, "block" },
-    { TOKEN_TYPE_BRACE_LEFT, "{" },
-    { TOKEN_TYPE_BRACE_RIGHT, "}" },
-    { TOKEN_TYPE_BRACKET_LEFT, "[" },
-    { TOKEN_TYPE_BRACKET_RIGHT, "]" },
-    { TOKEN_TYPE_BREAK, "break" },
-    { TOKEN_TYPE_COLON, ":" },
-    { TOKEN_TYPE_COMMA, ", " },
-    { TOKEN_TYPE_CLASS, "class" },
-    { TOKEN_TYPE_CLASS_LITERAL, NULL },
-    { TOKEN_TYPE_CONSTANT, NULL },
-    { TOKEN_TYPE_CONTINUE, "continue" },
-    { TOKEN_TYPE_DECREMENT, " -= " },
-    { TOKEN_TYPE_DEVIDE, " / " },
-    { TOKEN_TYPE_DUMMY, NULL },
-    { TOKEN_TYPE_ELIF, "elif " },
-    { TOKEN_TYPE_ELSE, "else" },
-    { TOKEN_TYPE_EQUAL, " == " },
-    { TOKEN_TYPE_EXTENDS, " -> " },
-    { TOKEN_TYPE_FOR, "for " },
-    { TOKEN_TYPE_GENERICS_LEFT, "<" },
-    { TOKEN_TYPE_GENERICS_RIGHT, ">" },
-    { TOKEN_TYPE_GOTO, "goto " },
+    { TOKEN_TYPE_AND,           " && " },
+    { TOKEN_TYPE_DECREMENT,     " -= " },
+    { TOKEN_TYPE_DEVIDE,        " / " },
+    { TOKEN_TYPE_EQUAL,         " == " },
+    { TOKEN_TYPE_EXTENDS,       " -> " },
     { TOKEN_TYPE_GREATER_EQUAL, " >= " },
-    { TOKEN_TYPE_GREATER_THAN, " > " },
-    { TOKEN_TYPE_IDENTIFIER, NULL },
-    { TOKEN_TYPE_IF, "if " },
-    { TOKEN_TYPE_INCREMENT, " += " },
-    { TOKEN_TYPE_INDENT, "    " },
-    { TOKEN_TYPE_INTEGER_LITERAL, NULL },
-    { TOKEN_TYPE_JOIN, " _" },
-    { TOKEN_TYPE_LESS_THAN, " < " },
-    { TOKEN_TYPE_LESS_EQUAL, " <= " },
-    { TOKEN_TYPE_LOAD, "load " },
-    { TOKEN_TYPE_MINUS, " - " },
-    { TOKEN_TYPE_MODULO, " % " },
-    { TOKEN_TYPE_MONADIC_MINUS, "-" },
-    { TOKEN_TYPE_MULTIPLY, " * " },
-    { TOKEN_TYPE_NOT_EQUAL, " != " },
-    { TOKEN_TYPE_NULL, "null" },
-    { TOKEN_TYPE_OR, " || " },
-    { TOKEN_TYPE_PACKAGE, NULL },
-    { TOKEN_TYPE_PARENTHESIS_LEFT, "(" },
-    { TOKEN_TYPE_PARENTHESIS_RIGHT, ")" },
-    { TOKEN_TYPE_PERIOD, "." },
-    { TOKEN_TYPE_PLUS, " + " },
-    { TOKEN_TYPE_RETURN, "return" },
-    { TOKEN_TYPE_RETURN_VALUE, "return " },
-    { TOKEN_TYPE_STRING_LITERAL, NULL },
-    { TOKEN_TYPE_SUBSTITUTE, " = " },
-    { TOKEN_TYPE_WHILE, "while " },
-    { TOKEN_TYPE_UNDER, "_" },
-    { TOKEN_COUNT, NULL },
+    { TOKEN_TYPE_GREATER_THAN,  " > " },
+    { TOKEN_TYPE_INCREMENT,     " += " },
+    { TOKEN_TYPE_INDENT,        "    " },
+    { TOKEN_TYPE_JOIN,          " _" },
+    { TOKEN_TYPE_LESS_THAN,     " < " },
+    { TOKEN_TYPE_LESS_EQUAL,    " <= " },
+    { TOKEN_TYPE_MINUS,         " - " },
+    { TOKEN_TYPE_MODULO,        " % " },
+    { TOKEN_TYPE_MULTIPLY,      " * " },
+    { TOKEN_TYPE_NOT_EQUAL,     " != " },
+    { TOKEN_TYPE_OR,            " || " },
+    { TOKEN_TYPE_PLUS,          " + " },
+    { TOKEN_TYPE_SUBSTITUTE,    " = " },
 };
-*/
+
 
 
 Token
@@ -292,7 +220,6 @@ Tokenizer_reserved(
 {
     Token token = NULL;
     long size = length;
-    TokenType type = TOKEN_TYPE_DUMMY;
     
     char c = start[length];
     if (c != ' ' && c != '\0')
@@ -304,50 +231,12 @@ Tokenizer_reserved(
         goto END;
     
     
-    if (strncmp(start, TOKEN_LITERAL_RETURN, size) == 0)
-    {
-        if (c == ' ')
-            size++;
-        
-        type = TOKEN_TYPE_RETURN;
-        goto END;
-    }
-    
-    
-    
     size++;
-    
-    if (strncmp(start, TOKEN_LITERAL_IF, size) == 0)
-    {
-        type = TOKEN_TYPE_IF;
+    token = Token_parse(start, size, TOKENS_RESERVED_2, 4);
+    if (token != NULL)
         goto END;
-    }
     
-    if (strncmp(start, TOKEN_LITERAL_ELIF, size) == 0)
-    {
-        type = TOKEN_TYPE_ELIF;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_WHILE, size) == 0)
-    {
-        type = TOKEN_TYPE_WHILE;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_LOAD, size) == 0)
-    {
-        type = TOKEN_TYPE_LOAD;
-        goto END;
-    }
-    
-	goto END;
-	
 END:
-    if (type != TOKEN_TYPE_DUMMY)
-    {
-        token = Token_new(type, String_sub(start, 0, size));
-    }
     return token;
     
 }
@@ -504,7 +393,6 @@ Tokenizer_space(
 {
     Token token = NULL;
     long length = 0;
-    TokenType type = TOKEN_TYPE_DUMMY;
     
 
     //Check 1 charactor.
@@ -512,130 +400,12 @@ Tokenizer_space(
         goto END;
     
     //Check 2 charactor.
-    length = 2;
-    if (strncmp(start, TOKEN_LITERAL_UNDER_WITH_SPACE, length) == 0)
-    {
-        type = TOKEN_TYPE_JOIN;
+    token = Token_parse(start, TOKENS_START_WITH_SPACE, 19);
+    if (token != NULL)
         goto END;
-    }
     
-    //Check 3 charactor.
-    length = 3;
-    if (strncmp(start, TOKEN_LITERAL_SUBSTITUTE, length) == 0)
-    {
-        type = TOKEN_TYPE_SUBSTITUTE;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_PLUS, length) == 0)
-    {
-        type = TOKEN_TYPE_PLUS;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_MINUS, length) == 0)
-    {
-        type = TOKEN_TYPE_MINUS;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_MULTIPLY, length) == 0)
-    {
-        type = TOKEN_TYPE_MULTIPLY;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_DEVIDE, length) == 0)
-    {
-        type = TOKEN_TYPE_DEVIDE;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_MODULO, length) == 0)
-    {
-        type = TOKEN_TYPE_MODULO;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_LESS_THAN, length) == 0)
-    {
-        type = TOKEN_TYPE_LESS_THAN;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_GREATER_THAN, length) == 0)
-    {
-        type = TOKEN_TYPE_GREATER_THAN;
-        goto END;
-    }
-    
-    //Check 4 charactor.
-    length = 4;
-    if (strncmp(start, TOKEN_LITERAL_EQUAL, length) == 0)
-    {
-        type = TOKEN_TYPE_EQUAL;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_INCREMENT, length) == 0)
-    {
-        type = TOKEN_TYPE_INCREMENT;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_DECREMENT, length) == 0)
-    {
-        type = TOKEN_TYPE_DECREMENT;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_LESS_EQUAL, length) == 0)
-    {
-        type = TOKEN_TYPE_LESS_EQUAL;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_NOT_EQUAL, length) == 0)
-    {
-        type = TOKEN_TYPE_NOT_EQUAL;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_OR, length) == 0)
-    {
-        type = TOKEN_TYPE_OR;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_AND, length) == 0)
-    {
-        type = TOKEN_TYPE_AND;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_GREATER_EQUAL, length) == 0)
-    {
-        type = TOKEN_TYPE_GREATER_EQUAL;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_EXTENDS, length) == 0)
-    {
-        type = TOKEN_TYPE_EXTENDS;
-        goto END;
-    }
-    
-    if (strncmp(start, TOKEN_LITERAL_INDENT, length) == 0)
-    {
-        type = TOKEN_TYPE_INDENT;
-        goto END;
-    }
     
 END:
-    if (type != TOKEN_TYPE_DUMMY)
-    {
-        token = Token_new(type, String_sub(start, 0, length));
-    }
     return token;
 }
 
@@ -727,7 +497,7 @@ Tokenizer_split(
     char* cursor = &target[0];
     
     
-    while (cursor != NULL)
+    while (*cursor != '\0')
     {
         token = Tokenizer_number(cursor);
         if (token != NULL)
