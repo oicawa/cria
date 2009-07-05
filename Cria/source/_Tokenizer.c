@@ -64,69 +64,69 @@
 #define TOKEN_LITERAL_FINALLY               "finally"
 #define TOKEN_LITERAL_CONTINUE              "continue"
 
-static struct TokenTag TOKEN_TABLE_1[13] =
+static struct TokenCheckerTag TOKEN_TABLE_1[13] =
 {
-    { TOKEN_TYPE_PARENTHESIS_LEFT,  "(" },
-    { TOKEN_TYPE_PARENTHESIS_RIGHT, ")" },
-    { TOKEN_TYPE_BRACKET_LEFT,      "[" },
-    { TOKEN_TYPE_BRACKET_RIGHT,     "]" },
-    { TOKEN_TYPE_BRACE_LEFT,        "{" },
-    { TOKEN_TYPE_BRACE_RIGHT,       "}" },
-    { TOKEN_TYPE_GENERICS_LEFT,     "<" },
-    { TOKEN_TYPE_GENERICS_RIGHT,    ">" },
-    { TOKEN_TYPE_COLON,             ":" },
-    { TOKEN_TYPE_ATMARK,            "@" },
-    { TOKEN_TYPE_PERIOD,            "." },
-    { TOKEN_TYPE_MONADIC_MINUS,     "-" },
-    { TOKEN_TYPE_JOIN,              "_" }
+    { TOKEN_TYPE_PARENTHESIS_LEFT,  "(", FALSE },
+    { TOKEN_TYPE_PARENTHESIS_RIGHT, ")", FALSE },
+    { TOKEN_TYPE_BRACKET_LEFT,      "[", FALSE },
+    { TOKEN_TYPE_BRACKET_RIGHT,     "]", FALSE },
+    { TOKEN_TYPE_BRACE_LEFT,        "{", FALSE },
+    { TOKEN_TYPE_BRACE_RIGHT,       "}", FALSE },
+    { TOKEN_TYPE_GENERICS_LEFT,     "<", FALSE },
+    { TOKEN_TYPE_GENERICS_RIGHT,    ">", FALSE },
+    { TOKEN_TYPE_COLON,             ":", FALSE },
+    { TOKEN_TYPE_ATMARK,            "@", FALSE },
+    { TOKEN_TYPE_PERIOD,            ".", FALSE },
+    { TOKEN_TYPE_MONADIC_MINUS,     "-", FALSE },
+    { TOKEN_TYPE_JOIN,              "_", FALSE }
 };
 
 
-static struct TokenTag TOKEN_TABLE_2[1] =
+static struct TokenCheckerTag TOKEN_TABLE_2[1] =
 {
-    { TOKEN_TYPE_COMMA,             ", " }
+    { TOKEN_TYPE_COMMA,             ", ", FALSE }
 };
 
-static struct TokenTag TOKENS_RESERVED_1[7] =
+static struct TokenCheckerTag TOKENS_RESERVED_1[7] =
 {
-    { TOKEN_TYPE_NULL,                  "null" },
-    { TOKEN_TYPE_BREAK,                 "break" },
-    { TOKEN_TYPE_ELSE,                  "else" },
-    { TOKEN_TYPE_BOOLEAN_LITERAL_TRUE,  "true" },
-    { TOKEN_TYPE_BOOLEAN_LITERAL_FALSE, "false" },
-    { TOKEN_TYPE_CLASS,                 "class" },
-    { TOKEN_TYPE_CONTINUE,              "continue" },
+    { TOKEN_TYPE_NULL,                  "null",     TRUE },
+    { TOKEN_TYPE_BREAK,                 "break",    TRUE },
+    { TOKEN_TYPE_ELSE,                  "else",     TRUE },
+    { TOKEN_TYPE_BOOLEAN_LITERAL_TRUE,  "true",     TRUE },
+    { TOKEN_TYPE_BOOLEAN_LITERAL_FALSE, "false",    TRUE },
+    { TOKEN_TYPE_CLASS,                 "class",    TRUE },
+    { TOKEN_TYPE_CONTINUE,              "continue", TRUE },
 };
 
-static struct TokenTag TOKENS_RESERVED_2[4] =
+static struct TokenCheckerTag TOKENS_RESERVED_2[4] =
 {
-    { TOKEN_TYPE_IF,    "if " },
-    { TOKEN_TYPE_ELIF,  "elif " },
-    { TOKEN_TYPE_WHILE, "while " },
-    { TOKEN_TYPE_LOAD,  "load " },
+    { TOKEN_TYPE_IF,    "if ",    FALSE },
+    { TOKEN_TYPE_ELIF,  "elif ",  FALSE },
+    { TOKEN_TYPE_WHILE, "while ", FALSE },
+    { TOKEN_TYPE_LOAD,  "load ",  FALSE },
 };
 
-static struct TokenTag TOKENS_START_WITH_SPACE[19] =
+static struct TokenCheckerTag TOKENS_START_WITH_SPACE[19] =
 {
-    { TOKEN_TYPE_AND,           " && " },
-    { TOKEN_TYPE_DECREMENT,     " -= " },
-    { TOKEN_TYPE_DEVIDE,        " / " },
-    { TOKEN_TYPE_EQUAL,         " == " },
-    { TOKEN_TYPE_EXTENDS,       " -> " },
-    { TOKEN_TYPE_GREATER_EQUAL, " >= " },
-    { TOKEN_TYPE_GREATER_THAN,  " > " },
-    { TOKEN_TYPE_INCREMENT,     " += " },
-    { TOKEN_TYPE_INDENT,        "    " },
-    { TOKEN_TYPE_JOIN,          " _" },
-    { TOKEN_TYPE_LESS_THAN,     " < " },
-    { TOKEN_TYPE_LESS_EQUAL,    " <= " },
-    { TOKEN_TYPE_MINUS,         " - " },
-    { TOKEN_TYPE_MODULO,        " % " },
-    { TOKEN_TYPE_MULTIPLY,      " * " },
-    { TOKEN_TYPE_NOT_EQUAL,     " != " },
-    { TOKEN_TYPE_OR,            " || " },
-    { TOKEN_TYPE_PLUS,          " + " },
-    { TOKEN_TYPE_SUBSTITUTE,    " = " },
+    { TOKEN_TYPE_AND,           " && ", FALSE },
+    { TOKEN_TYPE_DECREMENT,     " -= ", FALSE },
+    { TOKEN_TYPE_DEVIDE,        " / ",  FALSE },
+    { TOKEN_TYPE_EQUAL,         " == ", FALSE },
+    { TOKEN_TYPE_EXTENDS,       " -> ", FALSE },
+    { TOKEN_TYPE_GREATER_EQUAL, " >= ", FALSE },
+    { TOKEN_TYPE_GREATER_THAN,  " > ",  FALSE },
+    { TOKEN_TYPE_INCREMENT,     " += ", FALSE },
+    { TOKEN_TYPE_INDENT,        "    ", FALSE },
+    { TOKEN_TYPE_JOIN,          " _",   TRUE },
+    { TOKEN_TYPE_LESS_THAN,     " < ",  FALSE },
+    { TOKEN_TYPE_LESS_EQUAL,    " <= ", FALSE },
+    { TOKEN_TYPE_MINUS,         " - ", FALSE },
+    { TOKEN_TYPE_MODULO,        " % ", FALSE },
+    { TOKEN_TYPE_MULTIPLY,      " * ", FALSE },
+    { TOKEN_TYPE_NOT_EQUAL,     " != ", FALSE },
+    { TOKEN_TYPE_OR,            " || ", FALSE },
+    { TOKEN_TYPE_PLUS,          " + ", FALSE },
+    { TOKEN_TYPE_SUBSTITUTE,    " = ", FALSE },
 };
 
 
@@ -147,22 +147,21 @@ Token_new(
 Token
 Token_parse(
     char* start,
-    long length,
-    struct TokenTag *table,
-    int count
+    struct TokenCheckerTag *table
 )
 {
     Token token = NULL;
+    struct TokenCheckerTag *checker = NULL;
     int i = 0;
-    struct TokenTag *item = NULL;
-    
-    for (i = 0; i < count; i++)
+    while (TRUE)
     {
-        item = &(table[i]);
-        if (strncmp(start, item->value, length) != 0)
+        checker = &(table[i]);
+        if (strncmp(start, checker->value, strlen(checker->value)) != 0)
+        {
+            i++;
             continue;
-
-        token = Token_new(item->type, item->value);
+        }
+        token = Token_new(checker->type, checker->value);
         break;
     }
 
@@ -226,13 +225,13 @@ Tokenizer_reserved(
         goto END;
     
     
-    token = Token_parse(start, size, TOKENS_RESERVED_1, 7);
+    token = Token_parse(start, TOKENS_RESERVED_1);
     if (token != NULL)
         goto END;
     
     
     size++;
-    token = Token_parse(start, size, TOKENS_RESERVED_2, 4);
+    token = Token_parse(start, TOKENS_RESERVED_2);
     if (token != NULL)
         goto END;
     
@@ -392,7 +391,6 @@ Tokenizer_space(
 )
 {
     Token token = NULL;
-    long length = 0;
     
 
     //Check 1 charactor.
@@ -400,7 +398,7 @@ Tokenizer_space(
         goto END;
     
     //Check 2 charactor.
-    token = Token_parse(start, TOKENS_START_WITH_SPACE, 19);
+    token = Token_parse(start, TOKENS_START_WITH_SPACE);
     if (token != NULL)
         goto END;
     
@@ -463,13 +461,13 @@ Tokenizer_other(
     long length = 0;
     
     //Check 1 charactor
-    token = Token_parse(start, 1, TOKEN_TABLE_1, 13);
+    token = Token_parse(start, TOKEN_TABLE_1);
     if (token != NULL)
         goto END;
     
     
     //Check 2 charactor
-    token = Token_parse(start, 2, TOKEN_TABLE_2, 1);
+    token = Token_parse(start, TOKEN_TABLE_2);
     if (token != NULL)
         goto END;
     

@@ -82,7 +82,12 @@ struct TokenTag
     String value;
 };
 
-
+struct TokenCheckerTag
+{
+    TokenType type;
+    String value;
+    Boolean terminate;
+};
 
 typedef struct  TokenTag *Token;
 typedef struct  TokenizerTag *Tokenizer;
