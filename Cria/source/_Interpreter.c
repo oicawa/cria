@@ -131,6 +131,7 @@ Interpreter_run(
     
     int count = List_count(tokens);
     int i = 0;
+    //printf("%3d: ", line);
     for (i = 0; i < count; i++)
     {
         Token token = List_get(tokens, i);

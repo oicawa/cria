@@ -20,7 +20,7 @@ main(
     Boolean is_stdout = TRUE;
     char buffer[BUFFER_SIZE + 1]; 
     char* lf = NULL;
-    int line = 0;
+    int line = 1;
     String file_path = NULL;
     
     if (argv[1] == NULL)
@@ -35,6 +35,12 @@ main(
         is_stdout = FALSE;
     }
     
+    if (file == NULL)
+    {
+        fprintf(stderr, "File open error. ('%s')\n", file_path);
+        goto END;
+    }
+    
     
     interpreter = Interpreter_new();
     if (interpreter == NULL)
@@ -42,7 +48,6 @@ main(
         printf("Cria interpreter create error.\n");
         goto END;
     }
-    
     
     while (feof(file) == 0)
     {
@@ -57,13 +62,14 @@ main(
         }
         else if (feof(file) == FALSE)
         {
-            fprintf(stderr, "[%s] line %3d : Too long sentence. Please get the line under %d columns.", argv[1], line, BUFFER_SIZE);
+            fprintf(stderr, "[%s] line %3d : Too long sentence. Please get the line under %d columns.\n\n", argv[1], line, BUFFER_SIZE);
             goto END;
         }
-        line++;
         
         //TODO: I have to implement logic for that 1 line is over buffer size.
         Interpreter_run(interpreter, file_path, line, buffer);
+        
+        line++;
     }
     
 	

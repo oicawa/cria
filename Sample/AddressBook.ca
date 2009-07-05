@@ -4,7 +4,9 @@ Entry:
     @birthday
 
     @to_string():
-        return "----------\nName    : " + .name + "\nAddress : " + .address + "\nBirthday: " + .birthday + "\n"
+        return "----------\nName    : " + .name + _
+               "\nAddress : " + .address + _
+               "\nBirthday: " + .birthday + "\n"
 
     @to_csv():
         return .name + "," + .address + "," + .birthday + "\n"
@@ -34,7 +36,7 @@ AddressBook:
         file.close()
 
     @print(index):
-        write("[%s] %s", index, .entrys[index].to_string())
+        write("[{0}] {1}", index, .entrys[index].to_string())
 
     @save():
         if .file_path == null
@@ -83,7 +85,7 @@ AddressBookCUI:
 
     @error():
         write("<<ERROR>>\n")
-        write("[%s] is illegal menu. Select again.\n")
+        write("Illegal menu. Select again.\n")
         read()
 
     @load():
@@ -118,7 +120,10 @@ AddressBookCUI:
             entry.address = read()
             write(" - Input birthday >> ")
             entry.address = read()
-            write("----------\nName    : [%s]\nAddress : [%s]\nBirthday: [%s]\n----------\n", entry.name, entry.address, entry.birthday)
+            write("----------\nName    : [{0}]\n" + _
+                              "Address : [{1}]\n" + _
+                              "Birthday: [{2}]\n----------\n", _
+                  entry.name, entry.address, entry.birthday)
             write("Is it OK?(y/n) >> ")
             answer = read()
             if answer == "y"

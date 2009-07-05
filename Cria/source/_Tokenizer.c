@@ -11,83 +11,32 @@
 
 
 
-
-#define TOKEN_LITERAL_UNDER_WITH_SPACE      " _"
-
-#define TOKEN_LITERAL_SUBSTITUTE            " = "
-#define TOKEN_LITERAL_EQUAL                 " == "
-#define TOKEN_LITERAL_NOT_EQUAL             " != "
-
-#define TOKEN_LITERAL_PLUS                  " + "
-#define TOKEN_LITERAL_INCREMENT             " += "
-
-#define TOKEN_LITERAL_MINUS                 " - "
-#define TOKEN_LITERAL_DECREMENT             " -= "
-#define TOKEN_LITERAL_EXTENDS               " -> "
-
-#define TOKEN_LITERAL_OR                    " || "
-#define TOKEN_LITERAL_AND                   " && "
-
-#define TOKEN_LITERAL_MULTIPLY              " * "
-#define TOKEN_LITERAL_DEVIDE                " / "
-#define TOKEN_LITERAL_MODULO                " % "
-
-#define TOKEN_LITERAL_LESS_THAN             " < "
-#define TOKEN_LITERAL_LESS_EQUAL            " <= "
-
-#define TOKEN_LITERAL_NOT_EQUAL             " != "
-#define TOKEN_LITERAL_GREATER_THAN          " > "
-#define TOKEN_LITERAL_GREATER_EQUAL         " >= "
-#define TOKEN_LITERAL_IN                    " in "
-
-#define TOKEN_LITERAL_INDENT                "    "
-
-
-#define TOKEN_LITERAL_COMMA                 ", "
-
-
-#define TOKEN_LITERAL_IF                    "if "
-#define TOKEN_LITERAL_ELIF                  "elif "
-#define TOKEN_LITERAL_GOTO                  "goto "
-#define TOKEN_LITERAL_LOAD                  "load "
-#define TOKEN_LITERAL_WHILE                 "while "
-
-#define TOKEN_LITERAL_NULL                  "null"
-#define TOKEN_LITERAL_ELSE                  "else"
-#define TOKEN_LITERAL_TRUE                  "true"
-#define TOKEN_LITERAL_FALSE                 "false"
-#define TOKEN_LITERAL_CLASS                 "class"
-#define TOKEN_LITERAL_BREAK                 "break"
-#define TOKEN_LITERAL_CATCH                 "catch"
-#define TOKEN_LITERAL_BLOCK                 "block"
-#define TOKEN_LITERAL_RETURN                "return"
-#define TOKEN_LITERAL_FINALLY               "finally"
-#define TOKEN_LITERAL_CONTINUE              "continue"
-
-static struct TokenCheckerTag TOKEN_TABLE_1[13] =
+static struct TokenCheckerTag TOKEN_TABLE_1[] =
 {
-    { TOKEN_TYPE_PARENTHESIS_LEFT,  "(", FALSE },
-    { TOKEN_TYPE_PARENTHESIS_RIGHT, ")", FALSE },
-    { TOKEN_TYPE_BRACKET_LEFT,      "[", FALSE },
-    { TOKEN_TYPE_BRACKET_RIGHT,     "]", FALSE },
-    { TOKEN_TYPE_BRACE_LEFT,        "{", FALSE },
-    { TOKEN_TYPE_BRACE_RIGHT,       "}", FALSE },
-    { TOKEN_TYPE_GENERICS_LEFT,     "<", FALSE },
-    { TOKEN_TYPE_GENERICS_RIGHT,    ">", FALSE },
-    { TOKEN_TYPE_COLON,             ":", FALSE },
-    { TOKEN_TYPE_ATMARK,            "@", FALSE },
-    { TOKEN_TYPE_PERIOD,            ".", FALSE },
-    { TOKEN_TYPE_MONADIC_MINUS,     "-", FALSE },
-    { TOKEN_TYPE_JOIN,              "_", FALSE }
+    { TOKEN_TYPE_PARENTHESIS_LEFT,  "(",  FALSE },
+    { TOKEN_TYPE_PARENTHESIS_RIGHT, ")",  FALSE },
+    { TOKEN_TYPE_BRACKET_LEFT,      "[",  FALSE },
+    { TOKEN_TYPE_BRACKET_RIGHT,     "]",  FALSE },
+    { TOKEN_TYPE_BRACE_LEFT,        "{",  FALSE },
+    { TOKEN_TYPE_BRACE_RIGHT,       "}",  FALSE },
+    { TOKEN_TYPE_GENERICS_LEFT,     "<",  FALSE },
+    { TOKEN_TYPE_GENERICS_RIGHT,    ">",  FALSE },
+    { TOKEN_TYPE_COLON,             ":",  FALSE },
+    { TOKEN_TYPE_ATMARK,            "@",  FALSE },
+    { TOKEN_TYPE_PERIOD,            ".",  FALSE },
+    { TOKEN_TYPE_MONADIC_MINUS,     "-",  FALSE },
+    { TOKEN_TYPE_JOIN,              "_",  FALSE },
+    { TOKEN_TYPE_DUMMY,             NULL, FALSE }
 };
 
 
-static struct TokenCheckerTag TOKEN_TABLE_2[1] =
+static struct TokenCheckerTag TOKEN_TABLE_2[] =
 {
-    { TOKEN_TYPE_COMMA,             ", ", FALSE }
+    { TOKEN_TYPE_COMMA,             ", ", FALSE },
+    { TOKEN_TYPE_DUMMY,             NULL, FALSE }
 };
 
-static struct TokenCheckerTag TOKENS_RESERVED_1[7] =
+static struct TokenCheckerTag TOKENS_RESERVED_1[] =
 {
     { TOKEN_TYPE_NULL,                  "null",     TRUE },
     { TOKEN_TYPE_BREAK,                 "break",    TRUE },
@@ -95,18 +44,22 @@ static struct TokenCheckerTag TOKENS_RESERVED_1[7] =
     { TOKEN_TYPE_BOOLEAN_LITERAL_TRUE,  "true",     TRUE },
     { TOKEN_TYPE_BOOLEAN_LITERAL_FALSE, "false",    TRUE },
     { TOKEN_TYPE_CLASS,                 "class",    TRUE },
+    { TOKEN_TYPE_RETURN,                "return",   TRUE },
     { TOKEN_TYPE_CONTINUE,              "continue", TRUE },
+    { TOKEN_TYPE_DUMMY,                 NULL,       FALSE }
 };
 
-static struct TokenCheckerTag TOKENS_RESERVED_2[4] =
+static struct TokenCheckerTag TOKENS_RESERVED_2[] =
 {
-    { TOKEN_TYPE_IF,    "if ",    FALSE },
-    { TOKEN_TYPE_ELIF,  "elif ",  FALSE },
-    { TOKEN_TYPE_WHILE, "while ", FALSE },
-    { TOKEN_TYPE_LOAD,  "load ",  FALSE },
+    { TOKEN_TYPE_IF,           "if ",     FALSE },
+    { TOKEN_TYPE_ELIF,         "elif ",   FALSE },
+    { TOKEN_TYPE_WHILE,        "while ",  FALSE },
+    { TOKEN_TYPE_LOAD,         "load ",   FALSE },
+    { TOKEN_TYPE_RETURN_VALUE, "return ", FALSE },
+    { TOKEN_TYPE_DUMMY,        NULL,      FALSE }
 };
 
-static struct TokenCheckerTag TOKENS_START_WITH_SPACE[19] =
+static struct TokenCheckerTag TOKENS_START_WITH_SPACE[] =
 {
     { TOKEN_TYPE_AND,           " && ", FALSE },
     { TOKEN_TYPE_DECREMENT,     " -= ", FALSE },
@@ -127,6 +80,7 @@ static struct TokenCheckerTag TOKENS_START_WITH_SPACE[19] =
     { TOKEN_TYPE_OR,            " || ", FALSE },
     { TOKEN_TYPE_PLUS,          " + ", FALSE },
     { TOKEN_TYPE_SUBSTITUTE,    " = ", FALSE },
+    { TOKEN_TYPE_DUMMY,         NULL,  FALSE }
 };
 
 
@@ -152,17 +106,34 @@ Token_parse(
 {
     Token token = NULL;
     struct TokenCheckerTag *checker = NULL;
-    int i = 0;
-    while (TRUE)
+    char c = '0';
+    
+    while (table != NULL)
     {
-        checker = &(table[i]);
+        checker = table;
+        if (checker->type == TOKEN_TYPE_DUMMY)
+            break;
+        
         if (strncmp(start, checker->value, strlen(checker->value)) != 0)
         {
-            i++;
+            table++;
             continue;
         }
-        token = Token_new(checker->type, checker->value);
-        break;
+        
+        if (checker->terminate == FALSE)
+        {
+            token = Token_new(checker->type, checker->value);
+            break;
+        }
+        
+        c = start[strlen(checker->value)];
+        if (isalnum(c) != 0)
+        {
+            token = Token_new(checker->type, checker->value);
+            break;
+        }
+        
+        table++;
     }
 
     return token;
@@ -218,20 +189,16 @@ Tokenizer_reserved(
 )
 {
     Token token = NULL;
-    long size = length;
     
     char c = start[length];
     if (c != ' ' && c != '\0')
         goto END;
     
-    
-    token = Token_parse(start, TOKENS_RESERVED_1);
+    token = Token_parse(start, TOKENS_RESERVED_2);
     if (token != NULL)
         goto END;
     
-    
-    size++;
-    token = Token_parse(start, TOKENS_RESERVED_2);
+    token = Token_parse(start, TOKENS_RESERVED_1);
     if (token != NULL)
         goto END;
     
