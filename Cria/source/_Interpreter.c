@@ -16,7 +16,7 @@
 #include "_Interpreter.h"
 
 
-/*
+
 List
 Interpreter_stack(
     Interpreter interpreter
@@ -46,7 +46,7 @@ Interpreter_stack_pop(
     int count = List_count(interpreter->stack);
     List_delete(interpreter->stack, count - 1);
 }
-*/
+
 
 Interpreter
 Interpreter_new(
@@ -57,7 +57,6 @@ Interpreter_new(
     
     interpreter = Memory_malloc(sizeof(struct InterpreterTag));
     interpreter->statements = List_new();
-    Logger_dbg("interpreter->statements is [%p]", interpreter->statements);
     interpreter->libraries = Hash_new(16);
     interpreter->variables = Hash_new(32);
     interpreter->functions = Hash_new(64);
@@ -72,7 +71,7 @@ Interpreter_new(
 }
 
 
-/*
+
 Boolean
 Interpreter_compile(
     Interpreter interpreter,
@@ -111,43 +110,23 @@ END:
     Logger_trc("[  END  ]%s", __func__);
     return result;
 }
-*/
+
 
 
 void
 Interpreter_run(
-    Interpreter interpreter,
-    String file_path,
-    int line,
-    char* buffer
+    Interpreter interpreter
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    String target = String_new(buffer);
-    List tokens = NULL;
-    //Command command = NULL;
     
-    tokens = Tokenizer_split(interpreter, file_path, line, target);
-    
-    int count = List_count(tokens);
-    int i = 0;
-    //printf("%3d: ", line);
-    for (i = 0; i < count; i++)
-    {
-        Token token = List_get(tokens, i);
-        printf(token->value);
-    }
-    printf("\n");
-    
-    //command = Parser_analysis(interpreter, tokens);
-    
-    //Interpreter_do(interpreter, command);
+    Statement_executeList(interpreter, NULL, NULL, interpreter->statements);
     
     Logger_trc("[  END  ]%s", __func__);
 }
 
 
-/*
+
 int
 Interpreter_row(
 	Interpreter interpreter
@@ -216,7 +195,7 @@ Interpreter_get_libraries(
 {
     return interpreter->libraries;
 }
-*/
+
 
 void
 Interpreter_dispose(
@@ -229,19 +208,18 @@ Interpreter_dispose(
     List list = Hash_get_keys(hash);
 	int count = List_count(list);
 	int index = 0;
-    Loader loader = NULL;
 	
 	for (index = 0; index < count; index++)
 	{
 		String key = (String)List_get(list, index);
-		loader = (Loader)Hash_get(hash, key);
-		//Loader_unload(loader);
+		Loader loader = (Loader)Hash_get(hash, key);
+		Loader_unload(loader);
 	}
     
     Logger_trc("[  END  ]%s", __func__);
 }
 
-/*
+
 Boolean
 Interpreter_has_loaded(
     Interpreter interpreter,
@@ -277,5 +255,5 @@ Interpreter_add_loaded_file(
     Logger_trc("[  END  ]%s", __func__);
     return;
 }
-*/
+
 
