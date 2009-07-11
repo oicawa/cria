@@ -93,7 +93,7 @@ typedef struct  TokenTag *Token;
 typedef struct  TokenizerTag *Tokenizer;
 
 
-
+/*
 List
 Tokenizer_split(
     Interpreter interpreter,
@@ -101,21 +101,20 @@ Tokenizer_split(
     int line,
     String target
 );
+*/
 
-/*
 List
 Tokenizer_create_tokens(
     char*   filePath
 );
-*/
 
-
+/*
 Token
 Token_new(
     TokenType type,
     String value
 );
-
+*/
 
 /*
 TokenType

@@ -51,10 +51,7 @@ Interpreter_compile(
 
 void
 Interpreter_run(
-    Interpreter interpreter,
-    String file_path,
-    int line,
-    char* buffer
+    Interpreter interpreter
 );
 
 

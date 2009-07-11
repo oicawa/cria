@@ -271,6 +271,32 @@ END:
 
 
 
+void*
+List_get_last(
+    List    list
+)
+{
+    return list->last->object;
+}
+
+
+
+void
+List_cat(
+    List list1,
+    List list2
+)
+{
+    int i = 0;
+    
+    for (i = 0; i < List_count(list2) - 1; i++)
+    {
+        List_add(list1, List_get(list2, i));
+    }
+}
+
+
+
 void
 List_set(
     List list,

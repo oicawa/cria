@@ -18,7 +18,7 @@ struct ItemTag {
 struct ListTag {
     Item item;
     Item last;
-    int         count;
+    int count;
 };
 
 

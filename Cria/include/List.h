@@ -95,6 +95,21 @@ List_get(
 
 
 void
+List_cat(
+    List list1,
+    List list2
+);
+
+
+
+void*
+List_get_last(
+    List    list
+);
+
+
+
+void
 List_set(
     List    list,
     int     index,
