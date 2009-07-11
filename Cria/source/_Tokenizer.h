@@ -7,6 +7,16 @@
 
 #include "Tokenizer.h"
 
+struct TokenTag
+{
+    TokenType type;
+    int row;
+    int column;
+    String buffer;
+    String file_path;
+};
+
+
 
 struct TokenizerTag
 {
