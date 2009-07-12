@@ -668,15 +668,17 @@ Tokenizer_create_tokens(
     
     file = fopen(filePath, "r");
     if (file == NULL)
-        goto END;
-    
+    {
+        fprintf(stderr, "File open error. [%s]\n\n", filePath);
+        exit(0);
+    }
     
     tokens = List_new();
     
     
     while (feof(file) == 0)
     {
-        if (Tokenizer_read_line(file, buffer, size))
+        if (!Tokenizer_read_line(file, buffer, size))
         {
             fprintf(stderr, "[%s] line %3d : Too long sentence. Please get the line under %d columns.\n\n", filePath, line, size);
             goto END;
