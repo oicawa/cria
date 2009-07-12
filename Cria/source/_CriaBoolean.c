@@ -7,7 +7,7 @@
 #include "_CriaBoolean.h"
 
 
-/*
+
 CriaBoolean
 CriaBoolean_new(
     Boolean isLiteral,
@@ -84,6 +84,6 @@ CriaBoolean_toString(
     
     return (CriaId)string;
 }
-*/
+
 
 

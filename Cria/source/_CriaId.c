@@ -3,7 +3,7 @@
 
 #include "_CriaId.h"
 
-/*
+
 CriaId
 CriaId_new(
     String          name,
@@ -17,5 +17,5 @@ CriaId_new(
     Logger_trc("[  END  ]%s", __func__);
     return id;
 }
-*/
+
 

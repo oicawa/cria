@@ -12,7 +12,7 @@
 
 #include "_Statement.h"
 
-/*
+
 //==============================
 //Statement
 //==============================
@@ -104,8 +104,7 @@ StatementWhile_parse(
     Token token = NULL;
     
     token = Parser_getCurrent(parser);
-    Token_log(token);
-    if (Token_type(token) != TOKEN_TYPE_WHILE)
+    if (token->type != TOKEN_TYPE_WHILE)
     {
         Logger_dbg("token type is not 'WHILE'.");
         Parser_setPosition(parser, position);
@@ -125,8 +124,7 @@ StatementWhile_parse(
     
     
     token = Parser_getCurrent(parser);
-    Token_log(token);
-    if (Token_type(token) != TOKEN_TYPE_NEW_LINE)
+    if (token->type != TOKEN_TYPE_NEW_LINE)
     {
         Logger_err("token type is not 'NEW LINE'.");
         Parser_setPosition(parser, position);
@@ -137,8 +135,7 @@ StatementWhile_parse(
     
     
     token = Parser_getCurrent(parser);
-    Token_log(token);
-    if (Token_type(token)  != TOKEN_TYPE_INDENT)
+    if (token->type  != TOKEN_TYPE_INDENT)
     {
         Logger_err("token type is not 'INDENT'.");
         Parser_setPosition(parser, position);
@@ -151,8 +148,7 @@ StatementWhile_parse(
     while(1)
     {
         token = Parser_getCurrent(parser);
-        Token_log(token);
-        if (Token_type(token)  == TOKEN_TYPE_DEDENT)
+        if (token->type  == TOKEN_TYPE_DEDENT)
         {
             Logger_dbg("token type is 'DEDENT'.");
             break;
@@ -258,7 +254,7 @@ StatementGoto_parse(
     Token token = NULL;
     
     token = Parser_getCurrent(parser);
-    switch (Token_type(token))
+    switch (token->type)
     {
     case TOKEN_TYPE_BREAK:
     	type = GOTO_TYPE_BREAK;
@@ -273,7 +269,7 @@ StatementGoto_parse(
     	type = GOTO_TYPE_LABEL;
 	    Parser_next(parser);
 	    token = Parser_getCurrent(parser);
-	    label = Token_buffer(token);
+	    label = token->value;
         break;
     case TOKEN_TYPE_RETURN:
     	Logger_dbg("Token 'return'");
@@ -292,7 +288,7 @@ StatementGoto_parse(
     }
     
     token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_NEW_LINE)
+    if (token->type != TOKEN_TYPE_NEW_LINE)
     {
     	Parser_setPosition(parser, position);
     	Parser_error(parser, token);
@@ -359,10 +355,9 @@ StatementFunctionCall_parse(
     
     
     token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_NEW_LINE)
+    if (token->type != TOKEN_TYPE_NEW_LINE)
     {
         Logger_dbg("Not new line token.");
-        Token_log(token);
         Parser_setPosition(parser, position);
         //Why parser error?
         //This statement is not 'function call', but may be another statement.
@@ -470,8 +465,7 @@ StatementIf_parseElseBlock(
     Token token = NULL;
     
     token = Parser_getCurrent(parser);
-    Token_log(token);
-    if (Token_type(token) != TOKEN_TYPE_ELSE)
+    if (token->type != TOKEN_TYPE_ELSE)
     {
         Logger_err("token type is not 'ELSE'.");
         Parser_setPosition(parser, position);
@@ -482,8 +476,7 @@ StatementIf_parseElseBlock(
     
     
     token = Parser_getCurrent(parser);
-    Token_log(token);
-    if (Token_type(token) != TOKEN_TYPE_NEW_LINE)
+    if (token->type != TOKEN_TYPE_NEW_LINE)
     {
         Logger_err("token type is not 'NEW LINE'.");
         Parser_setPosition(parser, position);
@@ -494,8 +487,7 @@ StatementIf_parseElseBlock(
     
     
     token = Parser_getCurrent(parser);
-    Token_log(token);
-    if (Token_type(token) != TOKEN_TYPE_INDENT)
+    if (token->type != TOKEN_TYPE_INDENT)
     {
         Logger_err("token type is not 'INDENT'.");
         Parser_setPosition(parser, position);
@@ -508,8 +500,7 @@ StatementIf_parseElseBlock(
     while(1)
     {
         token = Parser_getCurrent(parser);
-        Token_log(token);
-        if (Token_type(token) == TOKEN_TYPE_DEDENT)
+        if (token->type == TOKEN_TYPE_DEDENT)
         {
             Logger_dbg("token type is not 'DEDENT'.");
             break;
@@ -555,8 +546,7 @@ StatementIf_parseElifBlock(
     Token token = NULL;
     
     token = Parser_getCurrent(parser);
-    Token_log(token);
-    if (Token_type(token) != TOKEN_TYPE_ELIF)
+    if (token->type != TOKEN_TYPE_ELIF)
     {
         Logger_err("token type is not 'ELIF'.");
         Parser_setPosition(parser, position);
@@ -577,8 +567,7 @@ StatementIf_parseElifBlock(
     
     
     token = Parser_getCurrent(parser);
-    Token_log(token);
-    if (Token_type(token) != TOKEN_TYPE_NEW_LINE)
+    if (token->type != TOKEN_TYPE_NEW_LINE)
     {
         Logger_err("token type is not 'NEW LINE'.");
         Parser_setPosition(parser, position);
@@ -589,8 +578,7 @@ StatementIf_parseElifBlock(
     
     
     token = Parser_getCurrent(parser);
-    Token_log(token);
-    if (Token_type(token) != TOKEN_TYPE_INDENT)
+    if (token->type != TOKEN_TYPE_INDENT)
     {
         Logger_err("token type is not 'INDENT'.");
         Parser_setPosition(parser, position);
@@ -603,8 +591,7 @@ StatementIf_parseElifBlock(
     while(1)
     {
         token = Parser_getCurrent(parser);
-        Token_log(token);
-        if (Token_type(token) == TOKEN_TYPE_DEDENT)
+        if (token->type == TOKEN_TYPE_DEDENT)
         {
             Logger_dbg("token type is not 'DEDENT'.");
             break;
@@ -632,14 +619,14 @@ StatementIf_parseElifBlock(
     
     
     token = Parser_getCurrent(parser);
-    if (Token_type(token) == TOKEN_TYPE_ELIF)
+    if (token->type == TOKEN_TYPE_ELIF)
     {
         Logger_dbg("token type is 'ELIF'.");
         ifStatement->_if_ = StatementIf_parseElifBlock(parser);
         goto END;
     }
     
-    if (Token_type(token) == TOKEN_TYPE_ELSE)
+    if (token->type == TOKEN_TYPE_ELSE)
     {
         Logger_dbg("token type is 'ELSE'.");
         ifStatement->_if_ = StatementIf_parseElseBlock(parser);
@@ -667,8 +654,7 @@ StatementIf_parseIfBlock(
     Token token = NULL;
     
     token = Parser_getCurrent(parser);
-    Token_log(token);
-    if (Token_type(token) != TOKEN_TYPE_IF)
+    if (token->type != TOKEN_TYPE_IF)
     {
         Logger_dbg("token type is not 'IF'.");
         Parser_setPosition(parser, position);
@@ -688,8 +674,7 @@ StatementIf_parseIfBlock(
     
     
     token = Parser_getCurrent(parser);
-    Token_log(token);
-    if (Token_type(token) != TOKEN_TYPE_NEW_LINE)
+    if (token->type != TOKEN_TYPE_NEW_LINE)
     {
         Logger_err("token type is not 'NEW LINE'.");
         Parser_setPosition(parser, position);
@@ -700,8 +685,7 @@ StatementIf_parseIfBlock(
     
     
     token = Parser_getCurrent(parser);
-    Token_log(token);
-    if (Token_type(token) != TOKEN_TYPE_INDENT)
+    if (token->type != TOKEN_TYPE_INDENT)
     {
         Logger_err("token type is not 'INDENT'.");
         Parser_setPosition(parser, position);
@@ -714,8 +698,7 @@ StatementIf_parseIfBlock(
     while(1)
     {
         token = Parser_getCurrent(parser);
-        Token_log(token);
-        if (Token_type(token) == TOKEN_TYPE_DEDENT)
+        if (token->type == TOKEN_TYPE_DEDENT)
         {
             Logger_dbg("token type is 'DEDENT'.");
             break;
@@ -743,12 +726,12 @@ StatementIf_parseIfBlock(
     
     
     token = Parser_getCurrent(parser);
-    if (Token_type(token) == TOKEN_TYPE_ELIF)
+    if (token->type == TOKEN_TYPE_ELIF)
     {
         Logger_dbg("token type is 'ELIF'.");
         ifStatement->_if_ = StatementIf_parseElifBlock(parser);
     }
-    else if (Token_type(token) == TOKEN_TYPE_ELSE)
+    else if (token->type == TOKEN_TYPE_ELSE)
     {
         Logger_dbg("token type is 'ELSE'.");
         ifStatement->_if_ = StatementIf_parseElseBlock(parser);
@@ -834,7 +817,7 @@ StatementReference_parse(
     
     
     token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_NEW_LINE)
+    if (token->type != TOKEN_TYPE_NEW_LINE)
     {
         Logger_dbg("Not new line token.");
         Parser_setPosition(parser, position);
@@ -990,4 +973,4 @@ END:
 
 
 
-*/
+

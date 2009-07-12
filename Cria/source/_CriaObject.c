@@ -13,7 +13,7 @@
 #include "_CriaObject.h"
 
 
-/*
+
 CriaObject
 CriaObject_new(
 	String className
@@ -138,4 +138,4 @@ END:
 
 
 
-*/
+

@@ -16,7 +16,7 @@
 #include "_Loader.h"
 
 
-/*
+
 String
 Loader_create_path(
 	List path,
@@ -89,7 +89,7 @@ Loader_parse(
 	Logger_dbg("Check TOKEN_TYPE_LOAD.");
     token = Parser_getCurrent(parser);
     Logger_dbg("Get current token. (token : %p / parser : %p)", token, parser);
-    if (Token_type(token) != TOKEN_TYPE_LOAD)
+    if (token->type != TOKEN_TYPE_LOAD)
     {
         Logger_dbg("Not load token.");
         Parser_setPosition(parser, position);
@@ -104,7 +104,7 @@ Loader_parse(
         Logger_dbg("Check package field");
         Parser_next(parser);
         token = Parser_getCurrent(parser);
-        if (Token_type(token) != TOKEN_TYPE_CLASS_LITERAL)
+        if (token->type != TOKEN_TYPE_CLASS_LITERAL)
         {
             Logger_dbg("Not load token.");
             Parser_setPosition(parser, position);
@@ -113,17 +113,17 @@ Loader_parse(
         }
         
         
-        List_add(path, Token_buffer(token));
+        List_add(path, token->value);
         
         
         Logger_dbg("Check colon or NEW_LINE");
         Parser_next(parser);
         token = Parser_getCurrent(parser);
-        if (Token_type(token) == TOKEN_TYPE_NEW_LINE)
+        if (token->type == TOKEN_TYPE_NEW_LINE)
         {
             break;
         }
-        else if (Token_type(token) != TOKEN_TYPE_COLON)
+        else if (token->type != TOKEN_TYPE_COLON)
         {
             Logger_dbg("Not colon token.");
             Parser_setPosition(parser, position);
@@ -135,7 +135,7 @@ Loader_parse(
         Logger_dbg("Check second colon");
         Parser_next(parser);
         token = Parser_getCurrent(parser);
-        if (Token_type(token) != TOKEN_TYPE_COLON)
+        if (token->type != TOKEN_TYPE_COLON)
         {
             Logger_dbg("Not colon token.");
             Parser_setPosition(parser, position);
@@ -425,4 +425,4 @@ Loader_unload(
 {
 	Loader_unload_native(loader);
 }
-*/
+

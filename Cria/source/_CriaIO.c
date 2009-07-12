@@ -14,7 +14,7 @@
 
 #define BUFFER_SIZE 5
 
-/*
+
 CriaId
 CriaIO_write(
     Interpreter interpreter,
@@ -167,7 +167,7 @@ END:
     Logger_trc("[  END  ]%s", __func__);
     return (CriaId)returnString;
 }
-*/
+
 
 
 

@@ -14,7 +14,7 @@
 
 #include "_CriaString.h"
 
-/*
+
 CriaString
 CriaString_new(
     Boolean         isLiteral,
@@ -323,4 +323,4 @@ CriaString_loadClass(
     Logger_trc("[  END  ]%s", __func__);
     return klass;
 }
-*/
+

@@ -13,8 +13,7 @@
 #include "_Reference.h"
 
 
-/*
-//DefinitionVariable ReferenceFunctionCall_evaluate(Interpreter interpreter, CriaId object, List parameters, ReferenceFunctionCall function, CriaId parent);
+
 void ReferenceFunctionCall_evaluate(Interpreter interpreter, CriaId object, List parameters, Reference reference, CriaId parent);
 void ReferenceIndexer_evaluate(Interpreter interpreter, CriaId object, List parameters, Reference reference, CriaId parent);
 
@@ -306,24 +305,22 @@ ReferenceVariable_parse(
     Token token = NULL;
     
     token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
+    if (token->type != TOKEN_TYPE_IDENTIFIER)
     {
-    	Token_log(token);
     	Logger_dbg("Not identifier.");
         Parser_setPosition(parser, position);
         goto END;
     }
     
-    name = Token_buffer(token);
+    name = token->value;
 	Logger_dbg("Variable name is '%s'", name);
     
     Parser_next(parser);
     token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_PERIOD &&
-        Token_type(token) != TOKEN_TYPE_BRACKET_LEFT &&
-        Token_type(token) != TOKEN_TYPE_SUBSTITUTE)
+    if (token->type != TOKEN_TYPE_PERIOD &&
+        token->type != TOKEN_TYPE_BRACKET_LEFT &&
+        token->type != TOKEN_TYPE_SUBSTITUTE)
     {
-    	Token_log(token);
     	Logger_dbg("Not '.' and ' = '");
         Parser_setPosition(parser, position);
         goto END;
@@ -341,16 +338,15 @@ ReferenceVariable_parse(
     reference->of.variable = variable;
     
     
-    if (Token_type(token) == TOKEN_TYPE_PERIOD)
+    if (token->type == TOKEN_TYPE_PERIOD)
     {
         Parser_next(parser);
         token = Parser_getCurrent(parser);
-        Token_log(token);
         reference->next = Reference_parse(parser);
         if (reference->next == NULL)
             Parser_error(parser, token);
     }
-    else if (Token_type(token) == TOKEN_TYPE_BRACKET_LEFT)
+    else if (token->type == TOKEN_TYPE_BRACKET_LEFT)
     {
         //Parser_next(parser);
     	Logger_dbg("Next Reference parse.");
@@ -358,11 +354,10 @@ ReferenceVariable_parse(
         if (reference->next == NULL)
             Parser_error(parser, token);
     }
-    else if (Token_type(token) == TOKEN_TYPE_SUBSTITUTE)
+    else if (token->type == TOKEN_TYPE_SUBSTITUTE)
     {
         Parser_next(parser);
         token = Parser_getCurrent(parser);
-        Token_log(token);
         variable->value = Expression_parse(parser);
         if (variable->value == NULL)
             Parser_error(parser, token);
@@ -476,9 +471,8 @@ ReferenceFunctionCall_parse(
     
     //Parser_next(parser);
     token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_PERIOD)
+    if (token->type != TOKEN_TYPE_PERIOD)
     {
-    	Token_log(token);
 	    Logger_dbg("Not '.'.");
     	goto END;
     }
@@ -555,9 +549,8 @@ ReferenceIndexer_parse(
     Token token = NULL;
     
     token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_BRACKET_LEFT)
+    if (token->type != TOKEN_TYPE_BRACKET_LEFT)
     {
-    	Token_log(token);
 		Logger_dbg("First token is not '['.");
         Parser_setPosition(parser, position);
         goto END;
@@ -577,7 +570,7 @@ ReferenceIndexer_parse(
     
     
     token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_BRACKET_RIGHT)
+    if (token->type != TOKEN_TYPE_BRACKET_RIGHT)
     {
         Logger_dbg("Last token is not right parenthesis.");
         goto END;
@@ -595,8 +588,8 @@ ReferenceIndexer_parse(
     
     
     token = Parser_getCurrent(parser);
-    if (Token_type(token) == TOKEN_TYPE_PERIOD ||
-        Token_type(token) == TOKEN_TYPE_BRACKET_LEFT)
+    if (token->type == TOKEN_TYPE_PERIOD ||
+        token->type == TOKEN_TYPE_BRACKET_LEFT)
     {
 	    Parser_next(parser);
         token = Parser_getCurrent(parser);
@@ -607,7 +600,7 @@ ReferenceIndexer_parse(
 		    Parser_error(parser,    token);
 	    }
     }
-    else if (Token_type(token) == TOKEN_TYPE_SUBSTITUTE)
+    else if (token->type == TOKEN_TYPE_SUBSTITUTE)
     {
 	    Parser_next(parser);
         token = Parser_getCurrent(parser);
@@ -701,32 +694,30 @@ ReferenceClass_parse(
     Token token = NULL;
     
     token = Parser_getCurrent(parser);
-    if (Token_type(token) == TOKEN_TYPE_CLASS)
+    if (token->type == TOKEN_TYPE_CLASS)
     {
-        name = Token_buffer(token);
+        name = token->value;
     	Logger_dbg("Class name is '%s'", name);
     }
-    else if (Token_type(token) == TOKEN_TYPE_CLASS_LITERAL)
+    else if (token->type == TOKEN_TYPE_CLASS_LITERAL)
     {
-        name = Token_buffer(token);
+        name = token->value;
     	Logger_dbg("Class name is '%s'", name);
     }
     else
     {
-    	Token_log(token);
     	Logger_dbg("Not class or class literal.");
         Parser_setPosition(parser, position);
         goto END;
     }
     
-    name = Token_buffer(token);
+    name = token->value;
 	Logger_dbg("Class name is '%s'", name);
     
     Parser_next(parser);
     token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_PERIOD)
+    if (token->type != TOKEN_TYPE_PERIOD)
     {
-    	Token_log(token);
     	Logger_err("Not '.'");
         Parser_error(parser, token);
         goto END;
@@ -746,7 +737,6 @@ ReferenceClass_parse(
     
     Parser_next(parser);
     token = Parser_getCurrent(parser);
-    Token_log(token);
     reference->next = Reference_parse(parser);
     if (reference->next == NULL)
         Parser_error(parser, token);
@@ -770,7 +760,7 @@ ReferenceSelf_parse(
     Token token = NULL;
     
     token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_PERIOD)
+    if (token->type != TOKEN_TYPE_PERIOD)
     {
     	Logger_dbg("Not self object.");
     	Parser_setPosition(parser, position);
@@ -790,7 +780,6 @@ ReferenceSelf_parse(
     
     Parser_next(parser);
     token = Parser_getCurrent(parser);
-    Token_log(token);
     reference->next = Reference_parse(parser);
     if (reference->next == NULL)
         Parser_error(parser, token);
@@ -811,9 +800,9 @@ Reference_parse(
     Item position = Parser_getPosition(parser);
     Reference reference = NULL;
     Token token = Parser_getCurrent(parser);
-    int line = Token_row(token);
-    int column = Token_column(token);
-    String file_path = Token_get_file_path(token);
+    int line = token->row;
+    int column = token->column;
+    String file_path = token->file_path;
     
     
     reference = ReferenceSelf_parse(parser);
@@ -849,6 +838,6 @@ END:
     Logger_trc("[  END  ]%s", __func__);
     return reference;
 }
-*/
+
 
 

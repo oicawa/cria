@@ -11,7 +11,7 @@
 #include "Reference.h"
 
 #include "_Runtime.h"
-/*
+
 void
 Runtime_error_write(
     Interpreter interpreter,
@@ -46,4 +46,4 @@ Runtime_error_write(
     
     exit(1);
 }
-*/
+

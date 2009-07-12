@@ -80,6 +80,9 @@ struct TokenTag
 {
     TokenType type;
     String value;
+    int row;
+    int column;
+    String file_path;
 };
 
 struct TokenCheckerTag
@@ -93,28 +96,18 @@ typedef struct  TokenTag *Token;
 typedef struct  TokenizerTag *Tokenizer;
 
 
-/*
-List
-Tokenizer_split(
-    Interpreter interpreter,
-    String file_path,
-    int line,
-    String target
-);
-*/
-
 List
 Tokenizer_create_tokens(
     char*   filePath
 );
 
-/*
+
 Token
 Token_new(
     TokenType type,
     String value
 );
-*/
+
 
 /*
 TokenType

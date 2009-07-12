@@ -12,7 +12,7 @@
 #include "_Parser.h"
 
 
-/*
+
 void
 Parser_errorFunction(
     Parser parser,
@@ -21,10 +21,10 @@ Parser_errorFunction(
 	int line
 )
 {
-    String buffer = Token_buffer(token);
+    String buffer = token->value;
     String file_path = parser->path;
-    int row = Token_row(token);
-    int column = Token_column(token);
+    int row = token->row;
+    int column = token->column;
     
     Logger_err("Syntax error near '%s'. (file:%s, line:%d, column:%d) [%s, %d]\n", buffer, file_path, row, column, file, line);
     fprintf(stderr, "Syntax error near '%s'. (file:%s, line:%d, column:%d) [%s, %d]\n", buffer, file_path, row, column, file, line);
@@ -118,8 +118,6 @@ Parser_next(
     
     
     Item current = parser->next;
-    Token token = (Token)Item_getObject(current);
-    Token_log(token);
     parser->current = current;
     parser->next = Item_getNext(current);
     
@@ -177,7 +175,7 @@ Parser_eat(
 	if (token == NULL)
 		goto UNMATCH;
 	
-	if (Token_type(token) != type)
+	if (token->type != type)
 		goto UNMATCH;
 	
 	result = TRUE;
@@ -206,14 +204,13 @@ Parser_is_end(
     while (TRUE)
     {
         token = Parser_getCurrent(parser);
-        Token_log(token);
         if (token == NULL)
         {
             result = TRUE;
             goto END;
         }
         
-        if (Token_type(token) != TOKEN_TYPE_NEW_LINE)
+        if (token->type != TOKEN_TYPE_NEW_LINE)
             goto END;
         
         if (Parser_next(parser) == FALSE)
@@ -235,8 +232,7 @@ Parser_insert(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    Token current = Parser_getCurrent (parser);
-    Token token = Token_new(type, Token_row(current), Token_column(current), "<<NEW_LINE>>(dummy for block)");
+    Token token = Token_new(type, "<<NEW_LINE>>(dummy for block)");
     
     Item new_line = Item_new(token);
     List_insert_item(parser->tokens, parser->current, new_line);
@@ -328,5 +324,5 @@ END:
     Logger_trc("[  END  ]%s", __func__);
     return result;
 }
-*/
+
 

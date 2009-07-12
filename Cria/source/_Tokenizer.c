@@ -663,7 +663,6 @@ Tokenizer_create_tokens(
     int size = sizeof(buffer);
     List tmp = NULL;
     Boolean skip = FALSE;
-    Token token = NULL;
     int indent_current = 0;
     
     

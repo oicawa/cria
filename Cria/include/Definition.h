@@ -29,7 +29,7 @@ typedef struct DefinitionClassTag *DefinitionClass;
 typedef DefinitionClass CriaNativeClassLoader(char* name);
 
 
-/*
+
 //==============================
 //DefinitionVariable
 //==============================
@@ -217,7 +217,7 @@ DefinitionClass_generateInstance(
     DefinitionClass klass,
     List parameters
 );
-*/
+
 
 
 #endif

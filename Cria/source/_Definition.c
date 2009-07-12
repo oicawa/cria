@@ -18,7 +18,7 @@
 #include "_Definition.h"
 
 
-/*
+
 //==============================
 //DefinitionVariable
 //==============================
@@ -204,7 +204,7 @@ DefinitionVariable_parse(
     CriaId value = NULL;
     
     token = Parser_getCurrent(parser);
-    if (Token_type(token) == TOKEN_TYPE_ATMARK)
+    if (token->type == TOKEN_TYPE_ATMARK)
     {
     	Logger_dbg("Static FALSE");
     	isStatic = FALSE;
@@ -213,11 +213,11 @@ DefinitionVariable_parse(
     }
     
 	
-	if (Token_type(token) == TOKEN_TYPE_CONSTANT)
+	if (token->type == TOKEN_TYPE_CONSTANT)
     {
         isConstant = TRUE;
     }
-    else if (Token_type(token) == TOKEN_TYPE_IDENTIFIER)
+    else if (token->type == TOKEN_TYPE_IDENTIFIER)
 	{
         isConstant = FALSE;
 	}
@@ -237,16 +237,16 @@ DefinitionVariable_parse(
     }
         
 	
-	name = Token_buffer(token);
+	name = token->value;
 	
     
 	Parser_next(parser);
 	token = Parser_getCurrent(parser);
-	if (Token_type(token) == TOKEN_TYPE_NEW_LINE)
+	if (token->type == TOKEN_TYPE_NEW_LINE)
 		goto CREATE;
 	
     
-	if (Token_type(token) != TOKEN_TYPE_SUBSTITUTE)
+	if (token->type != TOKEN_TYPE_SUBSTITUTE)
     {
     	Logger_dbg("It may be a method.");
 		goto END;
@@ -332,22 +332,22 @@ DefinitionFunction_parse_parameters(
 	while (TRUE)
 	{
 		token = Parser_getCurrent(parser);
-		if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
+		if (token->type != TOKEN_TYPE_IDENTIFIER)
 	    {
-            if (Token_type(token) != TOKEN_TYPE_PARENTHESIS_RIGHT)
+            if (token->type != TOKEN_TYPE_PARENTHESIS_RIGHT)
                 parameters = NULL;
             
             Logger_dbg("Not identifier");
 		    goto END;
 	    }
 	    
-	    variable = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, Token_buffer(token), TRUE, FALSE, NULL);
+	    variable = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, token->value, TRUE, FALSE, NULL);
 		List_add(parameters, variable);
 	    Logger_dbg("Add parameter.(%s)", DefinitionVariable_name(variable));
 		
 		Parser_next(parser);
 		token = Parser_getCurrent(parser);
-		if (Token_type(token) != TOKEN_TYPE_COMMA)
+		if (token->type != TOKEN_TYPE_COMMA)
 	    {
 	        Logger_dbg("Not ', '");
 			break;
@@ -384,20 +384,20 @@ DefinitionFunction_parse(
     char buffer[6];
     
     token = Parser_getCurrent(parser);
-    if (Token_type(token) == TOKEN_TYPE_ATMARK)
+    if (token->type == TOKEN_TYPE_ATMARK)
     {
     	isStatic = FALSE;
     	Parser_next(parser);
 	    token = Parser_getCurrent(parser);
     }
     
-    if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
+    if (token->type != TOKEN_TYPE_IDENTIFIER)
     {
         Logger_dbg("Not identifier.");
     	goto END;
     }
     
-    name = Token_buffer(token);
+    name = token->value;
     Parser_next(parser);
     
     if (Parser_eat(parser, TOKEN_TYPE_PARENTHESIS_LEFT, FALSE) == TRUE)
@@ -473,7 +473,7 @@ DefinitionFunction_parse(
     while(1)
     {
         token = Parser_getCurrent(parser);
-        if (Token_type(token) == TOKEN_TYPE_DEDENT)
+        if (token->type == TOKEN_TYPE_DEDENT)
         {
             Logger_dbg("token type is 'DEDENT'.");
             break;
@@ -528,20 +528,20 @@ DefinitionIndexer_parse(
     Boolean isGetter = FALSE;
     
     token = Parser_getCurrent(parser);
-    if (Token_type(token) == TOKEN_TYPE_ATMARK)
+    if (token->type == TOKEN_TYPE_ATMARK)
     {
     	isStatic = FALSE;
     	Parser_next(parser);
 	    token = Parser_getCurrent(parser);
     }
     
-    if (Token_type(token) != TOKEN_TYPE_IDENTIFIER)
+    if (token->type != TOKEN_TYPE_IDENTIFIER)
     {
         Logger_dbg("Not identifier.");
     	goto END;
     }
     
-    name = Token_buffer(token);
+    name = token->value;
     
     if (strcmp(name, "get") == 0)
     {
@@ -598,7 +598,7 @@ DefinitionIndexer_parse(
     while(1)
     {
         token = Parser_getCurrent(parser);
-        if (Token_type(token) == TOKEN_TYPE_DEDENT)
+        if (token->type == TOKEN_TYPE_DEDENT)
         {
             Logger_dbg("token type is 'DEDENT'.");
             break;
@@ -970,13 +970,13 @@ DefinitionClass_parse(
     Token token = NULL;
     
     token = Parser_getCurrent(parser);
-    if (Token_type(token) != TOKEN_TYPE_CLASS_LITERAL)
+    if (token->type != TOKEN_TYPE_CLASS_LITERAL)
     {
         Logger_dbg("Not identifier.");
     	goto END;
     }
     
-    name = Token_buffer(token);
+    name = token->value;
     Parser_next(parser);
     
     if (Parser_eat(parser, TOKEN_TYPE_COLON, FALSE) == FALSE)
@@ -1044,7 +1044,6 @@ DefinitionClass_parse(
     if (Parser_eat(parser, TOKEN_TYPE_DEDENT, FALSE) == FALSE)
     {
         Logger_dbg("Not <<DEDENT>>.");
-        Token_log(token);
     	goto END;
     }
     
@@ -1058,4 +1057,4 @@ END:
     Logger_trc("[  END  ]%s", __func__);
     return klass;
 }
-*/
+
