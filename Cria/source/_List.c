@@ -289,7 +289,7 @@ List_cat(
 {
     int i = 0;
     
-    for (i = 0; i < List_count(list2) - 1; i++)
+    for (i = 0; i < List_count(list2); i++)
     {
         List_add(list1, List_get(list2, i));
     }

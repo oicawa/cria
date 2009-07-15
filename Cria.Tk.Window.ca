@@ -74,7 +74,6 @@ Frame:
                 cell.do(tk)
                 column = column + 1
             row = row + 1
-        
 
 Cell:
     @control
@@ -92,9 +91,15 @@ Cell:
         .control.parent = .parent
         
     @do(tk):
+        #tk.do("grid", .control.get_name(), _
+        #      "-column", .column.to_string(), _
+        #      "-row", .row.to_string(), "-sticky", "w")
         if .control == null
             return
         .control.do(tk)
-        tk.do("grid", .control.get_name(), "-column", .column.to_string(), "-row", .row.to_string(), "-sticky", "w")
+        n = .control.get_name()
+        c = .column.to_string()
+        r = .row.to_string()
+        tk.do("grid", n, "-column", c, "-row", r, "-sticky", "w")
 
 

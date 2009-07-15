@@ -294,7 +294,7 @@ Loader_load_cria(
     List tokens = NULL;
     
 	//Load target script file.
-    tokens = Tokenizer_create_tokens(library_path);
+    tokens = Tokenizer_create_tokens(library_path, FALSE);
     if (tokens == NULL)
     {
         goto END;

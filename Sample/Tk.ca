@@ -5,8 +5,10 @@ tk.do("wm", "geometry", ".", "500x400")
 tk.do("wm", "title", ".", "Test Application!")
 
 tk.do("label", ".label1", "-text", "Test Label")
-tk.do("button", ".button1", "-text", "Test Button", "-command", ".button1_command")
-tk.do("button", ".button2", "-text", "Test Button2", "-command", ".button2_command")
+tk.do("button", ".button1", "-text", "Test Button", _
+      "-command", ".button1_command")
+tk.do("button", ".button2", "-text", "Test Button2", _
+      "-command", ".button2_command")
 tk.do("entry", ".entry1", "-bg", "white")
 
 tk.do("grid", ".label1", "-column", "0", "-row", "0", "-sticky", "ew")

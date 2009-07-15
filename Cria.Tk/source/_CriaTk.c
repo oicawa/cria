@@ -18,7 +18,6 @@
 #include "CriaBlock.h"
 #include "Definition.h"
 #include "CriaVariable.h"
-#include "CriaTkControl.h"
 
 #include "_CriaTk.h"
 

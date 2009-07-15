@@ -11,9 +11,6 @@
 
 
 
-
-
-
 static struct TokenCheckerTag TOKEN_TABLE_1[] =
 {
     { TOKEN_TYPE_PARENTHESIS_LEFT,  "(",  FALSE },
@@ -39,13 +36,19 @@ static struct TokenCheckerTag TOKEN_TABLE_2[] =
     { TOKEN_TYPE_DUMMY,             NULL, FALSE }
 };
 
-static struct TokenCheckerTag TOKENS_RESERVED_1[] =
+static struct TokenCheckerTag TOKENS_RESERVED_0[] =
 {
     { TOKEN_TYPE_NULL,                  "null",     TRUE },
-    { TOKEN_TYPE_BREAK,                 "break",    TRUE },
-    { TOKEN_TYPE_ELSE,                  "else",     TRUE },
     { TOKEN_TYPE_BOOLEAN_LITERAL_TRUE,  "true",     TRUE },
     { TOKEN_TYPE_BOOLEAN_LITERAL_FALSE, "false",    TRUE },
+    { TOKEN_TYPE_BLOCK,                 "block",    TRUE },
+    { TOKEN_TYPE_DUMMY,                 NULL,       FALSE }
+};
+
+static struct TokenCheckerTag TOKENS_RESERVED_1[] =
+{
+    { TOKEN_TYPE_BREAK,                 "break",    TRUE },
+    { TOKEN_TYPE_ELSE,                  "else",     TRUE },
     { TOKEN_TYPE_CLASS,                 "class",    TRUE },
     { TOKEN_TYPE_RETURN,                "return",   TRUE },
     { TOKEN_TYPE_CONTINUE,              "continue", TRUE },
@@ -191,6 +194,11 @@ Tokenizer_reserved(
 )
 {
     Token token = NULL;
+
+    
+    token = Token_parse(start, TOKENS_RESERVED_0);
+    if (token != NULL)
+        goto END;
     
     char c = start[length];
     if (c != ' ' && c != '\0')
@@ -540,6 +548,8 @@ Tokenizer_split(
         break;
         
 ADD_TOKEN:
+        token->row = line;
+        token->column = cursor - &target[0];
         List_add(tokens, token);
         cursor += strlen(token->value);
     }
@@ -574,15 +584,16 @@ END:
 
 
 int
-Tokenizer_get_indent(List tokens, int indent_current)
+Tokenizer_get_indent(List tokens, int indent_current, int line)
 {
     int indent_new = -1;
     int count = 0;
+    int total = List_count(tokens);
     int indent = 0;
     Token token = NULL;
     
     
-    for (count = 0; count < List_count(tokens) - 1; count++)
+    for (count = 0; count < total - 1; count++)
     {
         token = List_get(tokens, 0);
         if (token->type != TOKEN_TYPE_INDENT)
@@ -607,7 +618,10 @@ Tokenizer_get_indent(List tokens, int indent_current)
     
     if (indent == 1)
     {
-        List_insert(tokens, 0, Token_new(TOKEN_TYPE_INDENT, "<<INDENT>>"));
+        token = Token_new(TOKEN_TYPE_INDENT, "<<INDENT>>");
+        token->row = line;
+        token->column = indent_new * 4;
+        List_insert(tokens, 0, token);
         goto END;
     }
     
@@ -619,8 +633,11 @@ Tokenizer_get_indent(List tokens, int indent_current)
     //  indent < 0
     while (indent < 0)
     {
-        List_insert(tokens, 0, Token_new(TOKEN_TYPE_DEDENT, "<<DEDENT>>"));
-        goto END;
+        token = Token_new(TOKEN_TYPE_DEDENT, "<<DEDENT>>");
+        token->row = line;
+        token->column = indent_new * 4;
+        List_insert(tokens, 0, token);
+        indent++;
     }
     
 END:
@@ -629,46 +646,103 @@ END:
 
 
 Boolean
-Tokenizer_check_join(List tokens)
+Tokenizer_check_join(List tokens, int line, int column)
 {
     Token token = NULL;
     Boolean skip = FALSE;
     int count = 0;
     
-    token = List_get_last(tokens);
+    count = List_count(tokens);
+    token = List_get(tokens, count - 1);
     if (token->type == TOKEN_TYPE_JOIN)
     {
-        count = List_count(tokens);
-        List_delete(tokens, count);
+        List_delete(tokens, count - 1);
         skip = TRUE;
     }
-    
-    List_add(tokens, Token_new(TOKEN_TYPE_NEW_LINE, "<<NEW_LINE>>"));
+    else
+    {
+        token = Token_new(TOKEN_TYPE_NEW_LINE, "<<NEW_LINE>>");
+        token->row = line;
+        token->column = column;
+        List_add(tokens, token);
+    }
     
     return skip;
 }
 
 
+
+Boolean
+Tokenizer_is_blank_line(char* buffer)
+{
+    Boolean result = TRUE;
+    char* cursor = buffer;
+    
+    while (*cursor == ' ')
+        cursor++;
+    
+    if (*cursor == '\0')
+        goto END;
+    
+    if (*cursor == '#')
+        goto END;
+    
+    result = FALSE;
+    
+END:
+    return result;
+}
+
+
+
+int
+Tokenizer_terminate(List tokens, int indent_current, int line)
+{
+    Token token = NULL;
+    
+    while (0 < indent_current)
+    {
+        token = Token_new(TOKEN_TYPE_DEDENT, "<<DEDENT>>");
+        token->row = line;
+        token->column = indent_current * 4;
+        List_add(tokens, token);
+        indent_current--;
+    }
+    
+    token = Token_new(TOKEN_TYPE_TERMINATE, "<<TERMINATE>>");
+    token->row = line;
+    token->column = 0;
+    List_add(tokens, token);
+    
+    return indent_current;
+}
+
+
+
 #define BUFFER_SIZE 80
 List
 Tokenizer_create_tokens(
-    char*   filePath
+    char*   filePath,
+    Boolean is_main
 )
 {
     FILE* file = NULL;
     int line = 1;
+    int indent_current = 0;
     List tokens = NULL;
     
     char buffer[BUFFER_SIZE + 1];
     int size = sizeof(buffer);
     List tmp = NULL;
     Boolean skip = FALSE;
-    int indent_current = 0;
     
     
     file = fopen(filePath, "r");
     if (file == NULL)
     {
+        if (!is_main)
+            goto END;
+
         fprintf(stderr, "File open error. [%s]\n\n", filePath);
         exit(0);
     }
@@ -685,12 +759,19 @@ Tokenizer_create_tokens(
         }
         
         
+        if (Tokenizer_is_blank_line(buffer))
+        {
+            line++;
+            continue;
+        }
+        
+        
         tmp = Tokenizer_split(buffer, skip, filePath, line);
         
         
         if (skip == FALSE)
         {
-            indent_current = Tokenizer_get_indent(tmp, indent_current);
+            indent_current = Tokenizer_get_indent(tmp, indent_current, line);
             if (indent_current < 0)
             {
                 fprintf(stderr, "[%s] line %3d : Indent level error.\n\n", filePath, line);
@@ -698,7 +779,7 @@ Tokenizer_create_tokens(
             }
         }
         
-        skip = Tokenizer_check_join(tmp);
+        skip = Tokenizer_check_join(tmp, line, strlen(buffer));
         
         
         List_cat(tokens, tmp);
@@ -706,8 +787,25 @@ Tokenizer_create_tokens(
         
         line++;
     }
+    
+    Tokenizer_terminate(tokens, indent_current, line);
 
+    int c = List_count(tokens);
+    int i = 0;
+    Token token = NULL;
+    for (i = 0; i < c; i++)
+    {
+        token = List_get(tokens, i);
+        if (token == NULL)
+            printf("(!!null!!)\n");
+        else
+            printf("[%s]%3d : %s\n", filePath, token->row, token->value);
+    }
 END:
+    if (file != NULL)
+        fclose(file);
+    
+        
     return tokens;
 }
 

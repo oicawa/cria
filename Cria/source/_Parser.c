@@ -103,10 +103,22 @@ Parser_next(
     Parser  parser
 )
 {
+    Token token = NULL;
+    
     if (parser == NULL)
     {
         Logger_dbg("Parser is NULL.");
         return FALSE;
+    }
+    
+
+    if (parser->current != NULL)
+    {
+        token = Item_getObject(parser->current);
+        if (token->type == TOKEN_TYPE_TERMINATE)
+        {
+            return FALSE;
+        }
     }
     
     
@@ -116,10 +128,11 @@ Parser_next(
         return FALSE;
     }
     
-    
     Item current = parser->next;
     parser->current = current;
     parser->next = Item_getNext(current);
+    
+    
     
     return TRUE;
 }
@@ -210,7 +223,7 @@ Parser_is_end(
             goto END;
         }
         
-        if (token->type != TOKEN_TYPE_NEW_LINE)
+        if (token->type != TOKEN_TYPE_TERMINATE)
             goto END;
         
         if (Parser_next(parser) == FALSE)

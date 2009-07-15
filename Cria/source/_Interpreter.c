@@ -91,7 +91,7 @@ Interpreter_compile(
     
 	
 	//Load target script file.
-    tokens = Tokenizer_create_tokens(filePath);
+    tokens = Tokenizer_create_tokens(filePath, TRUE);
     if (tokens == NULL)
     {
         Runtime_error(interpreter, "Creating tokens failured. [%s]", filePath);

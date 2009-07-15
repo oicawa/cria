@@ -4,6 +4,7 @@
 
 #include "List.h"
 #include "String.h"
+#include "Boolean.h"
 #include "Interpreter.h"
 
 
@@ -69,6 +70,7 @@ typedef enum
     TOKEN_TYPE_STRING_LITERAL,
     TOKEN_TYPE_SUBSTITUTE,
     TOKEN_TYPE_THROW,
+    TOKEN_TYPE_TERMINATE,
     TOKEN_TYPE_WHILE,
     TOKEN_TYPE_UNDER,
     TOKEN_COUNT,
@@ -98,7 +100,8 @@ typedef struct  TokenizerTag *Tokenizer;
 
 List
 Tokenizer_create_tokens(
-    char*   filePath
+    char* filePath,
+    Boolean is_main
 );
 
 
