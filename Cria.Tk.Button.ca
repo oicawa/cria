@@ -19,4 +19,6 @@ Button:
         
         tk[.get_name() + "_command"] = .command
         
-        tk.do("button", .get_name(), "-text", .text, "-command", .get_name() + "_command")
+        tk.do("button", .get_name(), _
+              "-text", .text, _
+              "-command", .get_name() + "_command")

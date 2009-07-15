@@ -42,6 +42,7 @@ static struct TokenCheckerTag TOKENS_RESERVED_0[] =
     { TOKEN_TYPE_BOOLEAN_LITERAL_TRUE,  "true",     TRUE },
     { TOKEN_TYPE_BOOLEAN_LITERAL_FALSE, "false",    TRUE },
     { TOKEN_TYPE_BLOCK,                 "block",    TRUE },
+    { TOKEN_TYPE_CLASS,                 "class",    TRUE },
     { TOKEN_TYPE_DUMMY,                 NULL,       FALSE }
 };
 
@@ -49,7 +50,6 @@ static struct TokenCheckerTag TOKENS_RESERVED_1[] =
 {
     { TOKEN_TYPE_BREAK,                 "break",    TRUE },
     { TOKEN_TYPE_ELSE,                  "else",     TRUE },
-    { TOKEN_TYPE_CLASS,                 "class",    TRUE },
     { TOKEN_TYPE_RETURN,                "return",   TRUE },
     { TOKEN_TYPE_CONTINUE,              "continue", TRUE },
     { TOKEN_TYPE_DUMMY,                 NULL,       FALSE }
@@ -718,6 +718,24 @@ Tokenizer_terminate(List tokens, int indent_current, int line)
 }
 
 
+void
+Tokenizer_print_all_tokens(
+    List tokens,
+    char* filePath
+)
+{
+    int c = List_count(tokens);
+    int i = 0;
+    Token token = NULL;
+    for (i = 0; i < c; i++)
+    {
+        token = List_get(tokens, i);
+        if (token == NULL)
+            printf("(!!null!!)\n");
+        else
+            printf("[%s]%3d : %s\n", filePath, token->row, token->value);
+    }
+}
 
 #define BUFFER_SIZE 80
 List
@@ -790,17 +808,6 @@ Tokenizer_create_tokens(
     
     Tokenizer_terminate(tokens, indent_current, line);
 
-    int c = List_count(tokens);
-    int i = 0;
-    Token token = NULL;
-    for (i = 0; i < c; i++)
-    {
-        token = List_get(tokens, i);
-        if (token == NULL)
-            printf("(!!null!!)\n");
-        else
-            printf("[%s]%3d : %s\n", filePath, token->row, token->value);
-    }
 END:
     if (file != NULL)
         fclose(file);
