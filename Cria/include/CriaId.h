@@ -2,6 +2,7 @@
 #define PUBLIC_CRIAID_H_INCLUDED
 
 
+#include "Cria.h"
 #include "String.h"
 
 

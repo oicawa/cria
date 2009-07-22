@@ -1,5 +1,6 @@
 #include <string.h>
 
+#include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
 
@@ -14,7 +15,7 @@
 
 
 
-void ReferenceFunctionCall_evaluate(Interpreter interpreter, CriaId object, List parameters, Reference reference, CriaId parent);
+void ReferenceFunctionCall_evaluate(Interpreter interpreter, CriaId object, List parameters, ExpressionBlock block, Reference reference, CriaId parent);
 void ReferenceIndexer_evaluate(Interpreter interpreter, CriaId object, List parameters, Reference reference, CriaId parent);
 
 
@@ -205,6 +206,7 @@ ReferenceVariable_evaluate(
     Interpreter         interpreter,
     CriaId object,
     List parameters,
+    ExpressionBlock block,
     Reference reference,
     CriaId parent
 )
@@ -272,11 +274,11 @@ CHECK:
     if (reference->next != NULL)
     {
         id = (CriaId)DefinitionVariable_getObject(definition);
-        Reference_evaluate(interpreter, object, parameters, reference->next, id);
+        Reference_evaluate(interpreter, object, parameters, block, reference->next, id);
     }
     else if (variable->value != NULL)
     {
-        id = Expression_evaluate(interpreter, object, parameters, variable->value);
+        id = Expression_evaluate(interpreter, object, parameters, block, variable->value);
         DefinitionVariable_set(definition, id);
     }
     else
@@ -375,6 +377,7 @@ Reference_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
+    ExpressionBlock block,
     Reference   reference,
     CriaId parent
 )
@@ -393,20 +396,20 @@ Reference_evaluate(
     {
     case REFERENCE_TYPE_SELF:
     	reference = reference->next;
-        Reference_evaluate(interpreter, object, parameters, reference, object);
+        Reference_evaluate(interpreter, object, parameters, block, reference, object);
         break;
     case REFERENCE_TYPE_VARIABLE:
-        ReferenceVariable_evaluate(interpreter, object, parameters, reference, parent);
+        ReferenceVariable_evaluate(interpreter, object, parameters, block, reference, parent);
         break;
     case REFERENCE_TYPE_INDEXER:
         ReferenceIndexer_evaluate(interpreter, object, parameters, reference, parent);
         break;
     case REFERENCE_TYPE_FUNCTION_CALL:
-        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, reference->of.function->block, reference->of.function, parent);
-        Reference_evaluate(interpreter, object, parameters, reference->next, id);
+        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, block, reference->of.function, parent);
+        Reference_evaluate(interpreter, object, parameters, block, reference->next, id);
         break;
     case REFERENCE_TYPE_CLASS:
-        ReferenceClass_evaluate(interpreter, object, parameters, reference, parent);
+        ReferenceClass_evaluate(interpreter, object, parameters, block, reference, parent);
         break;
     default:
         break;
@@ -425,6 +428,7 @@ ReferenceFunctionCall_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
+    ExpressionBlock block,
     Reference reference,
     CriaId parent
 )
@@ -434,9 +438,9 @@ ReferenceFunctionCall_evaluate(
     ExpressionFunctionCall function = NULL;
     function = reference->of.function;
     
-    id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, function->block, function, parent);
+    id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, block, function, parent);
     
-    Reference_evaluate(interpreter, object, parameters, reference->next, id);
+    Reference_evaluate(interpreter, object, parameters, block, reference->next, id);
     
     Logger_trc("[  END  ]%s", __func__);
     return;
@@ -510,15 +514,15 @@ ReferenceIndexer_evaluate(
     {
         //Evaluate next reference.
         function = ExpressionFunctionCall_new("get[]", indexer->parameters);
-        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, function->block, function, parent);
-        Reference_evaluate(interpreter, object, parameters, reference->next, id);
+        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, NULL, function, parent);
+        Reference_evaluate(interpreter, object, parameters, NULL, reference->next, id);
     }
     else if (indexer != NULL)
     {
         //Process function 'set[]' as substitution(?) !!add id to parameters.
         List_add(ExpressionParameters_get_list(indexer->parameters), indexer->value);
         function = ExpressionFunctionCall_new("set[]", indexer->parameters);
-        ExpressionFunctionCall_evaluate(interpreter, object, parameters, function->block, function, parent);
+        ExpressionFunctionCall_evaluate(interpreter, object, parameters, NULL, function, parent);
     }
     else
     {
@@ -627,6 +631,7 @@ ReferenceClass_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
+    ExpressionBlock block,
     Reference reference,
     CriaId parent
 )
@@ -670,7 +675,7 @@ ReferenceClass_evaluate(
     
     
     id = (CriaId)CriaClass_new(definition);
-    Reference_evaluate (interpreter, object, parameters, reference->next, id);
+    Reference_evaluate (interpreter, object, parameters, block, reference->next, id);
     
 END:
     Logger_trc("[  END  ]%s", __func__);

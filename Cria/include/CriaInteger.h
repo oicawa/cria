@@ -2,6 +2,7 @@
 #define PUBLIC_CRIAINTEGER_H_INCLUDED
 
 
+#include "Cria.h"
 #include "CriaId.h"
 #include "Boolean.h"
 #include "Interpreter.h"

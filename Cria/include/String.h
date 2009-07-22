@@ -1,6 +1,7 @@
 #ifndef PUBLIC_STRING_H_INCLUDED
 #define PUBLIC_STRING_H_INCLUDED
 
+#include "Cria.h"
 #include "Boolean.h"
 
 

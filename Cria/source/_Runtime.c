@@ -5,6 +5,7 @@
 #include <assert.h>
 #include <stdarg.h>
 
+#include "Cria.h"
 #include "Interpreter.h"
 #include "Logger.h"
 #include "List.h"

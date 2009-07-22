@@ -2,6 +2,7 @@
 #define PRIVATE_HASH_H_INCLUDED
 
 
+#include "Cria.h"
 #include "Hash.h"
 
 

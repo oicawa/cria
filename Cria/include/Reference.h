@@ -3,6 +3,7 @@
 
 
 
+#include "Cria.h"
 #include "String.h"
 #include "Parser.h"
 #include "Expression.h"
@@ -53,9 +54,10 @@ Reference_column(
 //DefinitionVariable
 void
 ReferenceVariable_evaluate(
-    Interpreter         interpreter,
+    Interpreter interpreter,
     CriaId object,
     List parameters,
+    ExpressionBlock block,
     Reference reference,
     CriaId parent
 );
@@ -68,6 +70,7 @@ ReferenceClass_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
+    ExpressionBlock block,
     Reference reference,
     CriaId parent
 );
@@ -100,6 +103,7 @@ Reference_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
+    ExpressionBlock block,
     Reference   reference,
     CriaId parent
 );

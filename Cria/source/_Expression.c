@@ -1,5 +1,6 @@
 #include <string.h>
 
+#include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
 
@@ -104,6 +105,7 @@ ExpressionOperation_evaluate(
     Interpreter         interpreter,
     CriaId object,
     List parameters,
+    ExpressionBlock block,
     ExpressionOperation expression
 )
 {
@@ -114,9 +116,9 @@ ExpressionOperation_evaluate(
     {
         Logger_dbg("expression->left is NULL!");
     }
-    CriaId left = Expression_evaluate(interpreter, object, parameters, expression->left);
+    CriaId left = Expression_evaluate(interpreter, object, parameters, block, expression->left);
     Logger_dbg("Evaluated left expression.");
-    CriaId right = Expression_evaluate(interpreter, object, parameters, expression->right);
+    CriaId right = Expression_evaluate(interpreter, object, parameters, block, expression->right);
     Logger_dbg("Evaluated right expression.");
     
     
@@ -357,6 +359,7 @@ ExpressionVariable_evaluate(
     Interpreter         interpreter,
     CriaId object,
     List parameterList,
+    ExpressionBlock block,
     ExpressionVariable  expression,
     CriaId parent
 )
@@ -410,6 +413,7 @@ ExpressionClass_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
+    ExpressionBlock block,
     ExpressionClass klass,
     CriaId parent
 )
@@ -513,6 +517,7 @@ ExpressionReference_evaluate(
     Interpreter         interpreter,
     CriaId object,
     List parameters,
+    ExpressionBlock block,
     ExpressionReference expression,
     CriaId parent
 )
@@ -526,19 +531,19 @@ ExpressionReference_evaluate(
         id = object;
         break;
     case REFERENCE_EXPRESSION_TYPE_VARIABLE:
-        id = ExpressionVariable_evaluate(interpreter, object, parameters, expression->of.variable, parent);
+        id = ExpressionVariable_evaluate(interpreter, object, parameters, block, expression->of.variable, parent);
         break;
     case REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL:
-        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, expression->of.function->block, expression->of.function, parent);
+        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, block, expression->of.function, parent);
         break;
     case REFERENCE_EXPRESSION_TYPE_INDEXER:
         id = ExpressionIndexer_evaluate(interpreter, object, parameters, expression->of.indexer, parent);
         break;
     case REFERENCE_EXPRESSION_TYPE_CLASS:
-        id = ExpressionClass_evaluate(interpreter, object, parameters, expression->of.klass, parent);
+        id = ExpressionClass_evaluate(interpreter, object, parameters, block, expression->of.klass, parent);
         break;
     case REFERENCE_EXPRESSION_TYPE_GENERATE:
-        id = ExpressionGenerate_evaluate(interpreter, object, parameters, expression->of.generate);
+        id = ExpressionGenerate_evaluate(interpreter, object, parameters, block, expression->of.generate);
         break;
     default:
         break;
@@ -547,7 +552,7 @@ ExpressionReference_evaluate(
     if (expression->next != NULL)
     {
 		Logger_dbg("Evaluate next ReferenceExpression.");
-		id = ExpressionReference_evaluate(interpreter, object, parameters, expression->next, id);
+		id = ExpressionReference_evaluate(interpreter, object, parameters, block, expression->next, id);
     }
     
     Logger_trc("[  END  ]%s", __func__);
@@ -640,10 +645,11 @@ ExpressionParameters_new(
 
 List
 ExpressionParameters_evaluate(
-    Interpreter             interpreter,
+    Interpreter interpreter,
     CriaId object,
     List parameterList,
-    ExpressionParameters    parametersExpression
+    ExpressionBlock block,
+    ExpressionParameters parametersExpression
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -683,7 +689,7 @@ ExpressionParameters_evaluate(
             break;
         case EXPRESSION_KIND_FUNCTION_CALL:
             Logger_dbg("Do 'Function call expression'");
-            id = ExpressionFunctionCall_evaluate(interpreter, object, parameterList, expression->of._functionCall_->block, expression->of._functionCall_, NULL);
+            id = ExpressionFunctionCall_evaluate(interpreter, object, parameterList, block, expression->of._functionCall_, NULL);
             Logger_dbg("Done 'Function call expression'");
             List_add(list, id);
             Logger_dbg("Add 'Cria Id'");
@@ -694,14 +700,14 @@ ExpressionParameters_evaluate(
             break;
         case EXPRESSION_KIND_REFERENCE:
             Logger_dbg("Do reference expression");
-            id = ExpressionReference_evaluate(interpreter, object, parameterList, expression->of._reference_, NULL);
+            id = ExpressionReference_evaluate(interpreter, object, parameterList, block, expression->of._reference_, NULL);
             Logger_dbg("Done reference expression");
             List_add(list, id);
             Logger_dbg("Add 'Cria Id'");
             break;
         case EXPRESSION_KIND_OPERATION:
             Logger_dbg("Do operation expression");
-            id = ExpressionOperation_evaluate(interpreter, object, parameterList, expression->of._operation_);
+            id = ExpressionOperation_evaluate(interpreter, object, parameterList, block, expression->of._operation_);
             Logger_dbg("Done operation expression");
             List_add(list, id);
             Logger_dbg("Add 'Cria Id'");
@@ -728,7 +734,7 @@ ExpressionBlock_evaluate(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    CriaBlock block = NULL;
+    CriaBlock id = NULL;
     DefinitionFunction  function = NULL;
     
     
@@ -741,11 +747,11 @@ ExpressionBlock_evaluate(
 	}
     
 	
-    block = CriaBlock_new(interpreter, object, parameterList, List_new(), function, parent);
+    id = CriaBlock_new(interpreter, object, parameterList, List_new(), function, parent);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
-    return (CriaId)block;
+    return (CriaId)id;
 }
 
 
@@ -1084,11 +1090,11 @@ ExpressionFunctionCall_evaluate(
 	
     
     //引数の式を実行
-    parameters = ExpressionParameters_evaluate(interpreter, object, parameterList, expression->parameters);
+    parameters = ExpressionParameters_evaluate(interpreter, object, parameterList, block, expression->parameters);
     
     
     tmp = DefinitionFunction_getParameterList(function);
-    id = DefinitionFunction_evaluate(interpreter, current, tmp, function, parameters, parent);
+    id = DefinitionFunction_evaluate(interpreter, current, tmp, block, function, parameters, parent);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -1140,10 +1146,10 @@ ExpressionIndexer_evaluate(
 	
     
     //引数の式を実行
-    List parameters = ExpressionParameters_evaluate(interpreter, object, parameterList, expression->parameters);
+    List parameters = ExpressionParameters_evaluate(interpreter, object, parameterList, NULL, expression->parameters);
     
     tmp = DefinitionFunction_getParameterList(function);
-    id = DefinitionFunction_evaluate(interpreter, current, tmp, function, parameters, parent);
+    id = DefinitionFunction_evaluate(interpreter, current, tmp, NULL, function, parameters, parent);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -1180,6 +1186,7 @@ ExpressionGenerate_evaluate(
     Interpreter             interpreter,
     CriaId object,
     List parameterList,
+    ExpressionBlock block,
     ExpressionGenerate  expression
 )
 {
@@ -1200,10 +1207,10 @@ ExpressionGenerate_evaluate(
     
     
     //引数の式を実行
-    List parameters = ExpressionParameters_evaluate(interpreter, object, parameterList, expression->parameters);
+    List parameters = ExpressionParameters_evaluate(interpreter, object, parameterList, block, expression->parameters);
     
     
-	id = DefinitionClass_generateInstance(interpreter, klass, parameters);
+	id = DefinitionClass_generateInstance(interpreter, klass, parameters, block);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -1377,6 +1384,7 @@ Expression_evaluate(
     Interpreter interpreter,
     CriaId object,
 	List parameters,
+    ExpressionBlock block,
     Expression  expression
 )
 {
@@ -1397,7 +1405,7 @@ Expression_evaluate(
         break;
     case EXPRESSION_KIND_GENERATE:
         Logger_dbg("Do 'Generate expression'");
-        id = ExpressionGenerate_evaluate(interpreter, object, parameters, expression->of._generate_);
+        id = ExpressionGenerate_evaluate(interpreter, object, parameters, block, expression->of._generate_);
         Logger_dbg("Done 'Generate  expression'");
         break;
     case EXPRESSION_KIND_NULL:
@@ -1415,17 +1423,17 @@ Expression_evaluate(
         break;
     case EXPRESSION_KIND_REFERENCE:
         Logger_dbg("Do reference expression");
-        id = ExpressionReference_evaluate(interpreter, object, parameters, expression->of._reference_, NULL);
+        id = ExpressionReference_evaluate(interpreter, object, parameters, block, expression->of._reference_, NULL);
         Logger_dbg("Done reference expression");
         break;
     case EXPRESSION_KIND_VARIABLE:
         Logger_dbg("Do variable expression");
-        id = ExpressionVariable_evaluate(interpreter, object, parameters, expression->of._variable_, NULL);
+        id = ExpressionVariable_evaluate(interpreter, object, parameters, block, expression->of._variable_, NULL);
         Logger_dbg("Done variable expression");
         break;
     case EXPRESSION_KIND_OPERATION:
         Logger_dbg("Do operation expression");
-        id = ExpressionOperation_evaluate(interpreter, object, parameters, expression->of._operation_);
+        id = ExpressionOperation_evaluate(interpreter, object, parameters, block, expression->of._operation_);
         Logger_dbg("Done operation expression");
         break;
     case EXPRESSION_KIND_BLOCK:

@@ -1,5 +1,6 @@
 #include <string.h>
 
+#include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
 
@@ -263,7 +264,7 @@ DefinitionVariable_parse(
 		goto END;
 	}
     
-    value = Expression_evaluate(Parser_getInterpreter(parser), NULL, NULL, expression);
+    value = Expression_evaluate(Parser_getInterpreter(parser), NULL, NULL, NULL, expression);
 	
 CREATE:
 	Parser_next(parser);
@@ -683,6 +684,7 @@ DefinitionFunction_evaluate(
 	Interpreter interpreter,
     CriaId object,
 	List parameterList,
+    ExpressionBlock block,
 	DefinitionFunction function,
 	List parameters,
     CriaId parent
@@ -720,7 +722,7 @@ DefinitionFunction_evaluate(
     if (parent != NULL)
     	object = parent;
     Logger_dbg("object is %p", object);
-	result = Statement_executeList(interpreter, object, parameterList, function->of.cria.statementList);
+	result = Statement_executeList(interpreter, object, parameterList, block, function->of.cria.statementList);
     id = result.returns.id;
     
 END:
@@ -815,6 +817,7 @@ DefinitionClass_evaluate(
     Interpreter interpreter,
     CriaId  id,
     List parameterList,
+    ExpressionBlock block,
     char*   name,
     Boolean isStatic,
     DefinitionClass klass,
@@ -846,7 +849,7 @@ DefinitionClass_evaluate(
     }
     
     Logger_dbg("parameters->count = %d", List_count(parameters));
-    value = DefinitionFunction_evaluate(interpreter, id, parameterList, function, parameters, NULL);
+    value = DefinitionFunction_evaluate(interpreter, id, parameterList, block, function, parameters, NULL);
     
     
     Logger_trc("[  END  ]%s", __func__);
@@ -883,7 +886,8 @@ CriaId
 DefinitionClass_generateInstance(
     Interpreter interpreter,
     DefinitionClass klass,
-    List parameters
+    List parameters,
+    ExpressionBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -901,7 +905,7 @@ DefinitionClass_generateInstance(
     if (klass->isNative == TRUE)
     {
     	Logger_dbg("Create object from native class.(%s)", klass->name);
-    	id = DefinitionClass_evaluate(interpreter, NULL, NULL, " generator ", TRUE, klass, parameters);
+    	id = DefinitionClass_evaluate(interpreter, NULL, NULL, block, " generator ", TRUE, klass, parameters);
     }
     else
     {
@@ -929,7 +933,7 @@ DefinitionClass_generateInstance(
     if (constractor != NULL)
     {
     	Logger_dbg("Exist constractor.");
-		DefinitionFunction_evaluate(interpreter, id, DefinitionFunction_getParameterList(constractor), constractor, parameters, id);
+		DefinitionFunction_evaluate(interpreter, id, DefinitionFunction_getParameterList(constractor), block, constractor, parameters, id);
     }
     
 

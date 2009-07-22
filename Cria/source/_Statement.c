@@ -1,3 +1,4 @@
+#include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
 
@@ -225,7 +226,7 @@ StatementGoto_execute(
 		result.type = STATEMENT_RESULT_RETURN;
 		if (statement->of.expression != NULL)
 		{
-    		result.returns.id = Expression_evaluate(interpreter, object, parameters, statement->of.expression);
+    		result.returns.id = Expression_evaluate(interpreter, object, parameters, block, statement->of.expression);
     		Logger_dbg("result.returns.id->type = %d", result.returns.id->type);
 		}
 		break;
@@ -711,13 +712,14 @@ StatementReference_execute(
     Interpreter         interpreter,
     CriaId object,
 	List parameters,
+    ExpressionBlock block,
     StatementReference statement
 )
 {
     Logger_trc("[ START ]%s", __func__);
     
     
-    Reference_evaluate(interpreter, object, parameters, statement->reference, NULL);
+    Reference_evaluate(interpreter, object, parameters, block, statement->reference, NULL);
     
     
     Logger_trc("[  END  ]%s", __func__);

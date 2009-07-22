@@ -1,6 +1,7 @@
 #ifndef PRIVATE_LOADER_H_INCLUDED
 #define PRIVATE_LOADER_H_INCLUDED
 
+#include "Cria.h"
 #include "List.h"
 #include "Hash.h"
 

@@ -4,6 +4,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "Cria.h"
+
 #define LOG_LEVEL_ERROR         0
 #define LOG_LEVEL_WARNING       1
 #define LOG_LEVEL_INFORMATION   2

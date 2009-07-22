@@ -2,6 +2,7 @@
 #define PRIVATE_STRING_H_INCLUDED
 
 
+#include "Cria.h"
 #include "String.h"
 
 

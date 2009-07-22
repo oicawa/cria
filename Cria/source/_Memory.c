@@ -6,6 +6,7 @@
 #include <memory.h>
 
 #include "gc.h"
+#include "Cria.h"
 #include "_Memory.h"
 
 

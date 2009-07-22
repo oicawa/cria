@@ -1,6 +1,7 @@
 #include <string.h>
 #include <ctype.h>
 
+#include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
 

@@ -2,6 +2,7 @@
 #define PUBLIC_STRINGBUFFER_H_INCLUDED
 
 
+#include "Cria.h"
 #include "List.h"
 #include "String.h"
 

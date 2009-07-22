@@ -1,3 +1,4 @@
+#include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
 
@@ -51,7 +52,7 @@ CriaBlock_evaluate(
     DefinitionFunction function = block->function;
     CriaId parent = block->parent;
     
-    id = DefinitionFunction_evaluate(interpreter, object, parameterList, function, parameters, parent);
+    id = DefinitionFunction_evaluate(interpreter, object, parameterList, NULL, function, parameters, parent);
     
     return id;
 }

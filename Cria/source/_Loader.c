@@ -2,6 +2,7 @@
 #include <memory.h>
 #include <dlfcn.h>
 
+#include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
 #include "String.h"

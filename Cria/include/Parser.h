@@ -2,6 +2,7 @@
 #define PUBLIC_PARSER_H_INCLUDED
 
 
+#include "Cria.h"
 #include "Boolean.h"
 #include "List.h"
 #include "Tokenizer.h"

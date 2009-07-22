@@ -2,6 +2,7 @@
 #define PRIVATE_CRIABOOLEAN_H_INCLUDED
 
 
+#include "Cria.h"
 #include "CriaBoolean.h"
 
 

@@ -1,6 +1,7 @@
 #ifndef PUBLIC_STATEMENT_H_INCLUDED
 #define PUBLIC_STATEMENT_H_INCLUDED
 
+#include "Cria.h"
 #include "Parser.h"
 #include "Expression.h"
 

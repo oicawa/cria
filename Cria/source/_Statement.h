@@ -2,6 +2,7 @@
 #define PRIVATE_STATEMENT_H_INCLUDED
 
 
+#include "Cria.h"
 #include "String.h"
 #include "CriaId.h"
 

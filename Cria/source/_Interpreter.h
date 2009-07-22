@@ -3,6 +3,7 @@
 
 
 
+#include "Cria.h"
 #include "List.h"
 #include "Hash.h"
 

@@ -2,6 +2,7 @@
 #define PUBLIC_LIST_H_INCLUDED
 
 
+#include "Cria.h"
 #include "Boolean.h"
 
 typedef struct ItemTag *Item;

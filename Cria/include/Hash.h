@@ -2,6 +2,7 @@
 #define PUBLIC_HASH_H_INCLUDED
 
 
+#include "Cria.h"
 #include "List.h"
 
 

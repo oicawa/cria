@@ -1,6 +1,7 @@
 #include "Memory.h"
 #include "Logger.h"
 
+#include "Cria.h"
 #include "_CriaId.h"
 
 

@@ -1,12 +1,7 @@
 #ifndef PRIVATE_DEFINITION_H_INCLUDED
 #define PRIVATE_DEFINITION_H_INCLUDED
 
-
-#include "Interpreter.h"
-#include "List.h"
-#include "CriaId.h"
-#include "Boolean.h"
-#include "String.h"
+#include "Cria.h"
 #include "Definition.h"
 
 

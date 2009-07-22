@@ -2,13 +2,14 @@
 #define PUBLIC_DEFINITION_H_INCLUDED
 
 
+#include "Cria.h"
+#include "Expression.h"
 #include "Interpreter.h"
 #include "List.h"
 #include "CriaId.h"
 #include "Parser.h"
 #include "String.h"
 #include "Boolean.h"
-
 
 
 typedef enum 
@@ -23,7 +24,6 @@ typedef struct DefinitionVariableTag *DefinitionVariable;
 typedef struct DefinitionVariableNormalTag *DefinitionVariableNormal;
 
 typedef CriaId CriaNativeFunction(Interpreter interpreter, CriaId object, List args);
-typedef struct DefinitionFunctionTag *DefinitionFunction;
 
 typedef struct DefinitionClassTag *DefinitionClass;
 typedef DefinitionClass CriaNativeClassLoader(char* name);
@@ -130,6 +130,7 @@ DefinitionFunction_evaluate(
 	Interpreter interpreter,
     CriaId id,
 	List parameterList,
+    ExpressionBlock block,
 	DefinitionFunction function,
 	List parameters,
 	CriaId parent
@@ -180,6 +181,7 @@ DefinitionClass_evaluate(
     Interpreter interpreter,
     CriaId  id,
     List parameterList,
+    ExpressionBlock block,
     char*   name,
     Boolean isStatic,
     DefinitionClass klass,
@@ -215,7 +217,8 @@ CriaId
 DefinitionClass_generateInstance(
     Interpreter interpreter,
     DefinitionClass klass,
-    List parameters
+    List parameters,
+    ExpressionBlock block
 );
 
 

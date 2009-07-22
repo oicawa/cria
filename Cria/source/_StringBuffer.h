@@ -2,6 +2,7 @@
 #define PRIVATE_STRINGBUFFER_H_INCLUDED
 
 
+#include "Cria.h"
 #include "StringBuffer.h"
 
 

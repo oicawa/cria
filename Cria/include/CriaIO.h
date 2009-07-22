@@ -2,6 +2,7 @@
 #define PUBLIC_CRIAIO_H_INCLUDED
 
 
+#include "Cria.h"
 #include "CriaId.h"
 #include "List.h"
 #include "Interpreter.h"

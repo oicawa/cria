@@ -2,6 +2,7 @@
 #define PRIVATE_CRIAID_H_INCLUDED
 
 
+#include "Cria.h"
 #include "CriaId.h"
 
 

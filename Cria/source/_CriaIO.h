@@ -2,6 +2,7 @@
 #define PRIVATE_CRIAIO_H_INCLUDED
 
 
+#include "Cria.h"
 #include "CriaIO.h"
 
 
