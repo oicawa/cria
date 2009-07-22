@@ -1,0 +1,20 @@
+for(ini, max, skip):
+    write("ini = %s, max = %s\n", ini, max)
+    i = ini
+    while i < max
+        write("%s-1\n", i)
+        block(i)
+        write("%s-2\n", i)
+        i = i + 1
+
+list = List()
+list.add("0!")
+list.add("1st!")
+list.add("2nd!")
+list.add("3rd!")
+list.add("4th!")
+
+write("Start 'for' function.\n")
+for(0, list.count(), 1)(i):
+    item = list.get(i)
+    write("[%s : %s]\n", i, item)
