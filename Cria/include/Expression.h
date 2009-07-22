@@ -45,6 +45,18 @@ typedef enum
 
 
 
+typedef enum
+{
+    REFERENCE_EXPRESSION_TYPE_SELF,
+    REFERENCE_EXPRESSION_TYPE_VARIABLE,
+    REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL,
+    REFERENCE_EXPRESSION_TYPE_INDEXER,
+    REFERENCE_EXPRESSION_TYPE_CLASS,
+    REFERENCE_EXPRESSION_TYPE_GENERATE,
+} ExpressionReferenceType;
+
+
+
 typedef struct  ExpressionTag                   *Expression;
 typedef struct  ExpressionClassTag              *ExpressionClass;
 typedef struct  ExpressionOperationTag          *ExpressionOperation;
@@ -61,15 +73,122 @@ typedef struct  ExpressionBlockTag              *ExpressionBlock;
 
 
 
-typedef enum
+struct ExpressionTag
 {
-    REFERENCE_EXPRESSION_TYPE_SELF,
-    REFERENCE_EXPRESSION_TYPE_VARIABLE,
-    REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL,
-    REFERENCE_EXPRESSION_TYPE_INDEXER,
-    REFERENCE_EXPRESSION_TYPE_CLASS,
-    REFERENCE_EXPRESSION_TYPE_GENERATE,
-} ExpressionReferenceType;
+    ExpressionKind  kind;
+    union {
+        ExpressionFunctionCall      _functionCall_;
+        ExpressionStringLiteral     _stringLiteral_;
+        ExpressionIntegerLiteral    _integerLiteral_;
+        ExpressionBooleanLiteral    _booleanLiteral_;
+        ExpressionOperation         _operation_;
+        ExpressionGenerate          _generate_;
+        ExpressionVariable          _variable_;
+        ExpressionReference         _reference_;
+        ExpressionBlock             _block_;
+    } of;
+};
+
+
+
+struct ExpressionOperationTag
+{
+    OperationKind   kind;
+    Expression      left;
+    Expression      right;
+};
+
+
+
+struct ExpressionFunctionCallTag
+{
+    String name;
+    ExpressionParameters parameters;
+    ExpressionBlock block;
+};
+
+
+
+struct ExpressionIndexerTag
+{
+    String                  name;
+    ExpressionParameters    parameters;
+};
+
+
+
+struct ExpressionGenerateTag
+{
+    String                  name;
+    ExpressionParameters    parameters;
+};
+
+
+
+struct ExpressionParametersTag
+{
+    List    list;
+};
+
+
+
+struct ExpressionStringLiteralTag
+{
+    String  value;
+};
+
+
+
+struct ExpressionIntegerLiteralTag
+{
+    int     value;
+};
+
+
+
+struct ExpressionBooleanLiteralTag
+{
+    Boolean value;
+};
+
+
+
+struct ExpressionVariableTag
+{
+    String  name;
+    Boolean isStatic;
+    Boolean isConstant;
+};
+
+
+
+struct ExpressionClassTag
+{
+    String  name;
+};
+
+
+
+struct ExpressionReferenceTag
+{
+    ExpressionReferenceType     type;
+    union {
+        ExpressionClass         klass;
+        ExpressionVariable      variable;
+        ExpressionFunctionCall  function;
+        ExpressionIndexer       indexer;
+        ExpressionGenerate      generate;
+    } of;
+    ExpressionReference         next;
+};
+
+
+
+struct ExpressionBlockTag
+{
+    ExpressionParameters parameters;
+    DefinitionFunction function;
+};
 
 
 
@@ -116,6 +235,7 @@ ExpressionFunctionCall_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameterList,
+    ExpressionBlock block,
     ExpressionFunctionCall expression,
     CriaId parent
 );

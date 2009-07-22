@@ -120,7 +120,7 @@ Interpreter_run(
 {
     Logger_trc("[ START ]%s", __func__);
     
-    Statement_executeList(interpreter, NULL, NULL, interpreter->statements);
+    Statement_executeList(interpreter, NULL, NULL, NULL, interpreter->statements);
     
     Logger_trc("[  END  ]%s", __func__);
 }

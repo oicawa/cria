@@ -15,7 +15,8 @@ Person:
         .family_name = family_name
     
     get_all_honorific(message):
-        return class.MR + "/" + class.MRS + "/" + Person.MISS + "(" + message + ")"
+        return class.MR + "/" + class.MRS + "/" + _
+               Person.MISS + "(" + message + ")"
     
     #is_male(person):
     #    return person.sex

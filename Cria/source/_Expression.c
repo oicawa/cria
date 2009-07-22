@@ -23,6 +23,7 @@ ExpressionReference ExpressionGenerate_parse(Parser parser);
 ExpressionReference ExpressionClass_parse(Parser parser);
 ExpressionParameters ExpressionParameters_parse(Parser parser);
 CriaId ExpressionBlock_evaluate(Interpreter interpreter, CriaId object, List parameterList, ExpressionBlock expression, CriaId parent);
+ExpressionBlock ExpressionBlock_parse(Parser parser, Boolean start_with_reserved);
 
 
 
@@ -522,31 +523,21 @@ ExpressionReference_evaluate(
     switch (expression->type)
     {
     case REFERENCE_EXPRESSION_TYPE_SELF:
-    	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_SELF, variable->name = %s", expression->of.variable->name);
-    	Logger_dbg("object as parent is %p", object);
-    	//expression = expression->next;
-        //id = ExpressionReference_evaluate(interpreter, object, parameters, expression, object);
         id = object;
         break;
     case REFERENCE_EXPRESSION_TYPE_VARIABLE:
-    	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_VARIABLE, variable->name = %s", expression->of.variable->name);
-    	Logger_dbg("parent is %p", parent);
         id = ExpressionVariable_evaluate(interpreter, object, parameters, expression->of.variable, parent);
         break;
     case REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL:
-    	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL");
-    	Logger_dbg("parent is %p", parent);
-        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, expression->of.function, parent);
+        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, expression->of.function->block, expression->of.function, parent);
         break;
     case REFERENCE_EXPRESSION_TYPE_INDEXER:
         id = ExpressionIndexer_evaluate(interpreter, object, parameters, expression->of.indexer, parent);
         break;
     case REFERENCE_EXPRESSION_TYPE_CLASS:
-    	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_CLASS");
         id = ExpressionClass_evaluate(interpreter, object, parameters, expression->of.klass, parent);
         break;
     case REFERENCE_EXPRESSION_TYPE_GENERATE:
-    	Logger_dbg("expression->type = REFERENCE_EXPRESSION_TYPE_GENERATE");
         id = ExpressionGenerate_evaluate(interpreter, object, parameters, expression->of.generate);
         break;
     default:
@@ -692,7 +683,7 @@ ExpressionParameters_evaluate(
             break;
         case EXPRESSION_KIND_FUNCTION_CALL:
             Logger_dbg("Do 'Function call expression'");
-            id = ExpressionFunctionCall_evaluate(interpreter, object, parameterList, expression->of._functionCall_, NULL);
+            id = ExpressionFunctionCall_evaluate(interpreter, object, parameterList, expression->of._functionCall_->block, expression->of._functionCall_, NULL);
             Logger_dbg("Done 'Function call expression'");
             List_add(list, id);
             Logger_dbg("Add 'Cria Id'");
@@ -961,10 +952,14 @@ ExpressionFunctionCall_new(
     function = Memory_malloc(sizeof(struct ExpressionFunctionCallTag));
     function->name = String_clone(name);
     function->parameters = parameters;
+    function->block = NULL;
     
     return function;
 }
 
+
+
+/*
 CriaId
 ExpressionFunctionCall_evaluate(
     Interpreter interpreter,
@@ -1022,6 +1017,76 @@ ExpressionFunctionCall_evaluate(
     
     
     Logger_dbg("Call cria function.(%s)", expression->name);
+    tmp = DefinitionFunction_getParameterList(function);
+    id = DefinitionFunction_evaluate(interpreter, current, tmp, function, parameters, parent);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+*/
+CriaId
+ExpressionFunctionCall_evaluate(
+    Interpreter interpreter,
+    CriaId object,
+    List parameterList,
+    ExpressionBlock block,
+    ExpressionFunctionCall expression,
+    CriaId parent
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    CriaId current = NULL;
+    DefinitionFunction  function = NULL;
+    List tmp = NULL;
+    String target = NULL;
+    List parameters = NULL;
+    
+    
+    if (parent == NULL)
+    {
+        if (strcmp(expression->name, "<<block>>") == 0)
+        {
+            //TODO: block expression have to be a argument in this function.
+            function = block->function;
+            target = "<<block>>";
+        }
+        else
+        {
+		    current = object;
+		    function = ExpressionFunctionCall_searchFromInterpreter(interpreter, expression->name);
+            target = "Interpreter";
+        }
+    }
+    else if (parent->type == CRIA_DATA_TYPE_CRIA_OBJECT ||
+              parent->type == CRIA_DATA_TYPE_STRING ||
+              parent->type == CRIA_DATA_TYPE_INTEGER)
+    {
+    	current = parent;
+		function = ExpressionFunctionCall_searchFromObject(interpreter, parent, expression->name);
+        target = parent->name;
+    }
+    else if (parent->type == CRIA_DATA_TYPE_CRIA_CLASS)
+    {
+    	current = parent;
+		function = ExpressionFunctionCall_searchFromClass(interpreter, parent, expression->name);
+        target = parent->name;
+    }
+    
+
+	if (function == NULL)
+	{
+		Logger_err("Function '%s' is not found.", expression->name);
+		Runtime_error(interpreter, "Function '%s' is not found in '%s'.", expression->name, target);
+		goto END;
+	}
+	
+    
+    //引数の式を実行
+    parameters = ExpressionParameters_evaluate(interpreter, object, parameterList, expression->parameters);
+    
+    
     tmp = DefinitionFunction_getParameterList(function);
     id = DefinitionFunction_evaluate(interpreter, current, tmp, function, parameters, parent);
     
@@ -1345,7 +1410,7 @@ Expression_evaluate(
         break;
     case EXPRESSION_KIND_FUNCTION_CALL:
         Logger_dbg("Do 'Function call expression'");
-        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, expression->of._functionCall_, NULL);
+        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, expression->of._functionCall_->block, expression->of._functionCall_, NULL);
         Logger_dbg("Done 'Function call expression'");
         break;
     case EXPRESSION_KIND_REFERENCE:
@@ -1508,7 +1573,7 @@ END:
 }
 
 
-
+/*
 ExpressionReference
 ExpressionFunctionCall_parse(
     Parser  parser
@@ -1592,12 +1657,115 @@ END:
     Logger_trc("[  END  ]%s", __func__);
     return expression;
 }
+*/
+ExpressionReference
+ExpressionFunctionCall_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Item position = Parser_getPosition(parser);
+    ExpressionReference expression = NULL;
+    String name = NULL;
+    ExpressionParameters parameters = NULL;
+    Token token = NULL;
+    Boolean is_block = FALSE;
+    ExpressionBlock block = NULL;
+    
+    token = Parser_getCurrent(parser);
+    if (token->type == TOKEN_TYPE_IDENTIFIER)
+    {
+        name = token->value;
+        is_block = FALSE;
+    }
+    else if (token->type == TOKEN_TYPE_BLOCK)
+    {
+        name = "<<block>>";
+        is_block = TRUE;
+    }
+    else
+    {
+		Logger_dbg("First token is not identifier.");
+        Parser_setPosition(parser, position);
+        goto END;
+    }
+        
+    
+    
+    Parser_next(parser);
+    token = Parser_getCurrent(parser);
+    
+    if (token->type != TOKEN_TYPE_PARENTHESIS_LEFT)
+    {
+        Logger_dbg("Second token is not left parenthesis.");
+        Parser_setPosition(parser, position);
+        goto END;
+    }
+	Logger_dbg("Second token is left parenthesis.");
+    
+    
+    Parser_next(parser);
+    parameters = ExpressionParameters_parse(parser);
+    if (parameters == NULL)
+    {
+        Logger_dbg("The tokens that before right parenthesis are not parameters.");
+        Parser_setPosition(parser, position);
+        goto END;
+    }
+	Logger_dbg("The tokens that before right parenthesis are parameters.");
+    
+    
+    token = Parser_getCurrent(parser);
+    
+    
+    if (token->type != TOKEN_TYPE_PARENTHESIS_RIGHT)
+    {
+        Logger_dbg("Last token is not right parenthesis.");
+        goto END;
+    }
+	Logger_dbg("Last token is right parenthesis.");
+    
+    
+    
+    //TODO: I have to write the parsing logic that a block as a argument for this function call. 
+    Parser_next(parser);
+    block = ExpressionBlock_parse(parser, FALSE);
+    
+    
+    ExpressionFunctionCall function = Memory_malloc(sizeof(struct ExpressionFunctionCallTag));
+    function->name = String_clone(name);
+    function->parameters = parameters;
+    function->block = block;
+    
+    expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
+    expression->type = REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL;
+    expression->of.function = function;
+    
+    
+    if (block != NULL)
+        goto END;
+    
+    
+    token = Parser_getCurrent(parser);
+    if (token->type == TOKEN_TYPE_PERIOD)
+    {
+        Parser_next(parser);
+        token = Parser_getCurrent(parser);
+        expression->next = ExpressionReference_parse(parser);
+		Logger_dbg("Created next expression.");
+    }
+
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
+}
 
 
 
 ExpressionBlock
 ExpressionBlock_parse(
-    Parser parser
+    Parser parser,
+    Boolean start_with_reserved
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -1609,17 +1777,26 @@ ExpressionBlock_parse(
     List statements = NULL;
     Statement statement = NULL;
     Token token = NULL;
+
     
-    token = Parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_BLOCK)
+    if (start_with_reserved == TRUE)
     {
-        Logger_dbg("Not block.");
-    	goto END;
+        token = Parser_getCurrent(parser);
+        if (token->type != TOKEN_TYPE_BLOCK)
+        {
+            Logger_dbg("Not block.");
+        	goto END;
+        }
+        Parser_next(parser);
+        Parser_eat(parser, TOKEN_TYPE_PARENTHESIS_LEFT, TRUE);
+    }
+    else
+    {
+        if (!Parser_eat(parser, TOKEN_TYPE_PARENTHESIS_LEFT, FALSE))
+            goto END;
     }
     
-    Parser_next(parser);
     
-    Parser_eat(parser, TOKEN_TYPE_PARENTHESIS_LEFT, TRUE);
     
 	parameters = DefinitionFunction_parse_parameters(parser);
 	if (parameters == NULL)
@@ -1764,7 +1941,7 @@ ExpressionFactor_parse(
     if (token->type == TOKEN_TYPE_BLOCK)
     {
         Logger_dbg("This is a block token.");
-        ExpressionBlock block = ExpressionBlock_parse(parser);
+        ExpressionBlock block = ExpressionBlock_parse(parser, TRUE);
         if (block != NULL)
         {
             expression = Expression_new(EXPRESSION_KIND_BLOCK);

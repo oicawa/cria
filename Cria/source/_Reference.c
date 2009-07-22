@@ -396,19 +396,16 @@ Reference_evaluate(
         Reference_evaluate(interpreter, object, parameters, reference, object);
         break;
     case REFERENCE_TYPE_VARIABLE:
-        //ReferenceVariable_evaluate(interpreter, object, parameters, reference->of.variable, parent);
         ReferenceVariable_evaluate(interpreter, object, parameters, reference, parent);
         break;
     case REFERENCE_TYPE_INDEXER:
-        //ReferenceIndexer_evaluate(interpreter, object, parameters, reference->of.indexer, parent);
         ReferenceIndexer_evaluate(interpreter, object, parameters, reference, parent);
         break;
     case REFERENCE_TYPE_FUNCTION_CALL:
-        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, reference->of.function, parent);
+        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, reference->of.function->block, reference->of.function, parent);
         Reference_evaluate(interpreter, object, parameters, reference->next, id);
         break;
     case REFERENCE_TYPE_CLASS:
-        //ReferenceClass_evaluate(interpreter, object, parameters, reference->of.klass, parent);
         ReferenceClass_evaluate(interpreter, object, parameters, reference, parent);
         break;
     default:
@@ -437,7 +434,7 @@ ReferenceFunctionCall_evaluate(
     ExpressionFunctionCall function = NULL;
     function = reference->of.function;
     
-    id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, function, parent);
+    id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, function->block, function, parent);
     
     Reference_evaluate(interpreter, object, parameters, reference->next, id);
     
@@ -513,7 +510,7 @@ ReferenceIndexer_evaluate(
     {
         //Evaluate next reference.
         function = ExpressionFunctionCall_new("get[]", indexer->parameters);
-        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, function, parent);
+        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, function->block, function, parent);
         Reference_evaluate(interpreter, object, parameters, reference->next, id);
     }
     else if (indexer != NULL)
@@ -521,7 +518,7 @@ ReferenceIndexer_evaluate(
         //Process function 'set[]' as substitution(?) !!add id to parameters.
         List_add(ExpressionParameters_get_list(indexer->parameters), indexer->value);
         function = ExpressionFunctionCall_new("set[]", indexer->parameters);
-        ExpressionFunctionCall_evaluate(interpreter, object, parameters, function, parent);
+        ExpressionFunctionCall_evaluate(interpreter, object, parameters, function->block, function, parent);
     }
     else
     {

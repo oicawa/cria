@@ -36,6 +36,7 @@ StatementWhile_execute(
 	Interpreter interpreter,
 	CriaId object,
 	List parameters,
+    ExpressionBlock block,
     StatementWhile statement
 )
 {
@@ -55,7 +56,7 @@ StatementWhile_execute(
     
     while (TRUE)
     {
-		id = Expression_evaluate(interpreter, object, parameters, statement->condition);
+		id = Expression_evaluate(interpreter, object, parameters, block, statement->condition);
 		if (id->type != CRIA_DATA_TYPE_BOOLEAN)
 		{
 			Logger_dbg("statement->condition was not CRIA_DATA_TYPE_BOOLEAN.");
@@ -69,7 +70,7 @@ StatementWhile_execute(
 			break;
 		
 		Logger_dbg("statement->condition was 'true'.");
-		result = Statement_executeList(interpreter, object, parameters, statement->statements);
+		result = Statement_executeList(interpreter, object, parameters, block, statement->statements);
 		if (result.type == STATEMENT_RESULT_BREAK)
 		{
 			result.type = STATEMENT_RESULT_NORMAL;
@@ -192,6 +193,7 @@ StatementGoto_execute(
 	Interpreter interpreter,
 	CriaId object,
 	List parameters,
+    ExpressionBlock block,
     StatementGoto statement
 )
 {
@@ -314,76 +316,6 @@ END:
 
 
 //==============================
-//StatementFunctionCall
-//==============================
-void
-StatementFunctionCall_execute(
-    Interpreter interpreter,
-    CriaId object,
-	List parameters,
-    StatementFunctionCall statement
-)
-{
-    Logger_trc("[ START ]%s(object is %p)", __func__, object);
-    ExpressionReference_evaluate(interpreter, object, parameters, statement->expression, NULL);
-    Logger_trc("[  END  ]%s", __func__);
-}
-
-
-
-Statement
-StatementFunctionCall_parse(
-    Parser parser
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    Statement statement = NULL;
-    StatementFunctionCall  function = NULL;
-    ExpressionReference expression = NULL;
-    Item position = Parser_getPosition(parser);
-    Token token = NULL;
-    
-    
-    Logger_dbg("Check 'FunctionCallExpression'");
-    expression = ExpressionReference_parse(parser);
-    if (expression == NULL)
-    {
-        Logger_dbg("Not reference expression.");
-        Parser_setPosition(parser, position);
-        goto END;
-    }
-    
-    
-    token = Parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_NEW_LINE)
-    {
-        Logger_dbg("Not new line token.");
-        Parser_setPosition(parser, position);
-        //Why parser error?
-        //This statement is not 'function call', but may be another statement.
-        //Parser_error(token);
-        goto END;
-    }
-    
-    
-    Parser_next(parser);
-    
-    
-    Logger_dbg("Create 'FunctionCallStatement'");
-    function = Memory_malloc(sizeof(struct StatementFunctionCallTag));
-    function->expression = expression;
-    
-    statement = Statement_new(STATEMENT_KIND_FUNCTION_CALL);
-    statement->of._functionCall_ = function;
-    
-END:
-    Logger_trc("[  END  ]%s", __func__);
-    return statement;
-}
-
-
-
-//==============================
 //StatementIf
 //==============================
 StatementResult
@@ -391,6 +323,7 @@ StatementIf_execute(
     Interpreter interpreter,
     CriaId object,
 	List parameters,
+    ExpressionBlock block,
     StatementIf statement
 )
 {
@@ -415,7 +348,7 @@ StatementIf_execute(
     else
     {
         Logger_dbg("statement->condition exists.");
-        id = Expression_evaluate(interpreter, object, parameters, statement->condition);
+        id = Expression_evaluate(interpreter, object, parameters, block, statement->condition);
         if (id->type != CRIA_DATA_TYPE_BOOLEAN)
         {
             Logger_dbg("statement->condition was not CRIA_DATA_TYPE_BOOLEAN.");
@@ -429,7 +362,7 @@ StatementIf_execute(
     if (boolean->value == TRUE)
     {
         Logger_dbg("statement->condition was 'true'.");
-        result = Statement_executeList(interpreter, object, parameters, statement->statements);
+        result = Statement_executeList(interpreter, object, parameters, block, statement->statements);
         Logger_dbg("result.type = %d", result.type);
         goto END;
     }
@@ -442,7 +375,7 @@ StatementIf_execute(
     }
     
     Logger_dbg("Execute next IfStatement.");
-    result = StatementIf_execute(interpreter, object, parameters, statement->_if_);
+    result = StatementIf_execute(interpreter, object, parameters, block, statement->_if_);
     
     
 END:
@@ -851,8 +784,9 @@ StatementResult
 Statement_execute(
     Interpreter interpreter,
     CriaId object,
-    List         parameters,
-    Statement   statement
+    List parameters,
+    ExpressionBlock block,
+    Statement statement
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -866,16 +800,16 @@ Statement_execute(
     switch (statement->kind)
     {
     case STATEMENT_KIND_REFERENCE:
-        StatementReference_execute(interpreter, object, parameters, statement->of._reference_);
+        StatementReference_execute(interpreter, object, parameters, block, statement->of._reference_);
         break;
     case STATEMENT_KIND_IF:
-        result = StatementIf_execute(interpreter, object, parameters, statement->of._if_);
+        result = StatementIf_execute(interpreter, object, parameters, block, statement->of._if_);
         break;
     case STATEMENT_KIND_WHILE:
-        result = StatementWhile_execute(interpreter, object, parameters, statement->of._while_);
+        result = StatementWhile_execute(interpreter, object, parameters, block, statement->of._while_);
         break;
     case STATEMENT_KIND_GOTO:
-        result = StatementGoto_execute(interpreter, object, parameters, statement->of._goto_);
+        result = StatementGoto_execute(interpreter, object, parameters, block, statement->of._goto_);
         break;
     default:
         Logger_err("Not supported statement.");
@@ -892,8 +826,9 @@ StatementResult
 Statement_executeList(
     Interpreter interpreter,
     CriaId object,
-    List		parameters,
-    List        statements
+    List parameters,
+    ExpressionBlock block,
+    List statements
 )
 {
     Logger_trc("[ START ]%s(object is %p)", __func__, object);
@@ -905,7 +840,7 @@ Statement_executeList(
     for (index = 0; index < count; index++)
     {
         Statement statement = (Statement)(List_get(statements, index));
-        result = Statement_execute(interpreter, object, parameters, statement);
+        result = Statement_execute(interpreter, object, parameters, block, statement);
         if (result.type != STATEMENT_RESULT_NORMAL)
         	break;
     }

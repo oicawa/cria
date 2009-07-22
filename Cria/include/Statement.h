@@ -2,6 +2,7 @@
 #define PUBLIC_STATEMENT_H_INCLUDED
 
 #include "Parser.h"
+#include "Expression.h"
 
 typedef struct StatementTag *Statement;
 typedef struct StatementFunctionCallTag *StatementFunctionCall;
@@ -43,8 +44,9 @@ StatementResult
 Statement_executeList(
     Interpreter interpreter,
     CriaId object,
-    List		parameters,
-    List        statements
+    List parameters,
+    ExpressionBlock block,
+    List statements
 );
 
 
