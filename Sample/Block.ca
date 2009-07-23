@@ -2,9 +2,9 @@ for(ini, max, skip):
     write("ini = %s, max = %s\n", ini, max)
     i = ini
     while i < max
-        write("%s-1\n", i)
+        #write("%s-1\n", i)
         block(i)
-        write("%s-2\n", i)
+        #write("%s-2\n", i)
         i = i + 1
 
 list = List()

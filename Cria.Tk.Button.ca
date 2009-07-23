@@ -1,24 +1,20 @@
 Button:
-    @text
-    @name
     @parent
-    @command
+    @tk
+    @name
     index = 0
     
-    new(text):
-        .text = text
-        .name = ".button" + class.index.to_string()
+    new(parent, text):
+        .parent = parent
+        .tk = .parent.tk
+        .name = .parent.name + ".button" + class.index.to_string()
         class.index = class.index + 1
+        .tk.do("button", .name, "-text", text, _
+              "-command", .name + "_command")
 
-    @get_name():
-        return .parent.name + .name
-    
-    @do(tk):
-        if .command == null
-            return
+    @click():
+        .tk[.name + "_command"] = block
         
-        tk[.get_name() + "_command"] = .command
-        
-        tk.do("button", .get_name(), _
-              "-text", .text, _
-              "-command", .get_name() + "_command")
+    @grid(row, column):
+        .tk.do("grid", .name, "-column", .column.to_string(), _
+              "-row", .row.to_string(), "-sticky", "w")

@@ -1,38 +1,29 @@
 Text:
-    @text
-    @name
     @parent
     @tk
+    @name
     index = 0
     
-    new():
-        .name = ".entry" + class.index.to_string()
+    new(parent):
+        .parent = parent
+        .tk = .parent.tk
+        .name = .parent.name + ".entry" + class.index.to_string()
         class.index = class.index + 1
+        .tk.do("entry", .name, "-bg", "white")
 
     @get_name():
         return .parent.name + .name
     
     @get_text():
-        if .tk == null
-            return .text
-        
-        return .tk.do(.get_name(), "get")
+        return .tk.do(.name, "get")
     
     @clear():
-        .text = ""
-        if .tk != null
-            .tk.do(.get_name(), "delete", "0", "end")
+        .tk.do(.name, "delete", "0", "end")
     
     @set_text(text):
         .clear()
-        .text = text
-        if .tk != null
-            .tk.do(.get_name(), "insert", "0", .text)
+        .tk.do(.name, "insert", "0", .text)
     
-    @do(tk):
-        if .tk == null
-            .tk = tk
-
-        .tk.do("entry", .get_name(), "-bg", "white")
-        if .text != null
-            .set_text(.text)
+    @grid(row, column):
+        .tk.do("grid", .name, "-column", .column.to_string(), _
+              "-row", .row.to_string(), "-sticky", "w")

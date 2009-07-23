@@ -4,46 +4,47 @@ load Cria::Tk::Text
 load Cria::Tk::Button
 
 window = Window("テストアプリですよ♪")
-member_info = Label("社員情報")
-member = Frame()
-window[0, 0].put(member_info)
-window[0, 1].put(member)
+member_info = Label(window, "社員情報")
+member_info.grid(0, 0)
+member = Frame(window)
+member.grid(0, 1)
 
-member_id = Label("社員番号")
-member_id_text = Text()
-member_name = Label("氏名")
-member_name_text = Text()
-member[0, 0].put(member_id)
-member[0, 1].put(member_id_text)
-member[0, 2].put(member_name)
-member[0, 3].put(member_name_text)
+member_id = Label(member, "社員番号")
+member_id.grid(0, 0)
+member_id_text = Text(member)
+member_id_text.grid(0, 1)
+member_name = Label(member, "氏名")
+member_name.grid(0, 2)
+member_name_text = Text(member)
+member_name_text.grid(0, 3)
 
-belonging_id = Label("所属コード")
-belonging_id_text = Text()
+belonging_id = Label(member, "所属コード")
+belonging_id.grid(1, 0)
+
+belonging_id_text = Text(member)
 belonging_id_text.set_text("3403")
-belonging_name = Label("BS-BA-3G")
-member[1, 0].put(belonging_id)
-member[1, 1].put(belonging_id_text)
-member[1, 2].put(belonging_name)
-#member[0, 3].put(member_name_text)
+belonging_id_text.grid(1, 1)
 
-save_button = Button("保存")
-save_button.command = block():
+belonging_name = Label(member, "BS-BA-3G")
+belonging_name.grid(1, 2)
+
+save_button = Button(window, "保存")
+save_button.click()():
     write("保\n")
     write("存\n")
+save_button.grid(2, 4)
 
-reset_button = Button("リセット")
-reset_button.command = block():
+reset_button = Button(window, "リセット")
+reset_button.click()():
     member_id_text.clear()
+reset_button.grid(3, 0)
 
-dummy_button = Button("ダミー")
-dummy_button.command = block():
+dummy_button = Button(window, "ダミー")
+dummy_button.click()():
     write("ダ\n")
     write("ミ\n")
     write("｜\n")
+dummy_button.grid(3, 1)
 
-window[2, 4].put(save_button)
-window[3, 0].put(reset_button)
-window[3, 1].put(dummy_button)
 window.show()
 

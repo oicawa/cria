@@ -1,16 +1,22 @@
 Label:
-    @text
-    @name
     @parent
+    @tk
+    @name
     index = 0
     
-    new(text):
-        .text = text
-        .name = ".label" + class.index.to_string()
+    new(parent, text):
+        .parent = parent
+        .tk = .parent.tk
+        .name = .parent.name + ".label" + class.index.to_string()
         class.index = class.index + 1
+        .tk.do("label", .name, "-text", text)
 
-    @get_name():
-        return .parent.name + .name
-    
-    @do(tk):
-        tk.do("label", .get_name(), "-text", .text)
+#    @get_name():
+#        return .parent.name + .name
+#    
+#    @do(tk):
+#        tk.do("label", .get_name(), "-text", .text)
+
+    @grid(row, column):
+        .tk.do("grid", .name, "-column", .column.to_string(), _
+              "-row", .row.to_string(), "-sticky", "w")

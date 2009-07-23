@@ -1048,7 +1048,7 @@ ExpressionFunctionCall_evaluate(
     List tmp = NULL;
     String target = NULL;
     List parameters = NULL;
-    
+    ExpressionBlock next_block = NULL;
     
     if (parent == NULL)
     {
@@ -1089,12 +1089,19 @@ ExpressionFunctionCall_evaluate(
 	}
 	
     
-    //引数の式を実行
-    parameters = ExpressionParameters_evaluate(interpreter, object, parameterList, block, expression->parameters);
+    if (expression->block == NULL)
+    {
+        next_block = block;
+    }
+    else
+    {
+        next_block = expression->block;
+    }
     
+    parameters = ExpressionParameters_evaluate(interpreter, object, parameterList, next_block, expression->parameters);
     
     tmp = DefinitionFunction_getParameterList(function);
-    id = DefinitionFunction_evaluate(interpreter, current, tmp, block, function, parameters, parent);
+    id = DefinitionFunction_evaluate(interpreter, current, tmp, next_block, function, parameters, parent);
     
 END:
     Logger_trc("[  END  ]%s", __func__);

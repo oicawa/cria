@@ -2,104 +2,107 @@ load Cria::Tk
 
 Window:
     @name
-    @caption
     @rows
     @tk
 
     new(caption):
         .tk = Tk()
-        .name = ""
-        .caption = caption
-        .rows = List()
+        .tk.do("wm", "title", ".", caption)
     
     @show():
-        .do()
+#        .do()
         .tk.main_loop()
 
-    @get[row, column]:
-        while .rows[row] == null
-            .rows.add(List())
-        line = .rows[row]
-        while line[column] == null
-            line.add(Cell(., row, column))
-        return line[column]
+#    @get[row, column]:
+#        while .rows[row] == null
+#            .rows.add(List())
+#        line = .rows[row]
+#        while line[column] == null
+#            line.add(Cell(., row, column))
+#        return line[column]
     
-    @do():
-        #geometry = .width.to_string() + "x" + .height.to_string()
-        #.tk.do("wm", "geometry", .name, geometry)
-        .tk.do("wm", "title", ".", .caption)
-
-        row = 0
-        while .rows[row] != null
-            column = 0
-            line = .rows[row]
-            while line[column] != null
-                #line[column].do(.tk)
-                cell = line[column]
-                cell.do(.tk)
-                column = column + 1
-            row = row + 1
+#    @do():
+#        #geometry = .width.to_string() + "x" + .height.to_string()
+#        #.tk.do("wm", "geometry", .name, geometry)
+#        .tk.do("wm", "title", ".", .caption)
+#
+#        row = 0
+#        while .rows[row] != null
+#            column = 0
+#            line = .rows[row]
+#            while line[column] != null
+#                #line[column].do(.tk)
+#                cell = line[column]
+#                cell.do(.tk)
+#                column = column + 1
+#            row = row + 1
         
 Frame:
     @name
     @parent
-    @rows
+    @tk
     index = 0
 
-    new():
-        .name = ".frame" + class.index.to_string()
-        class.index = class.index + 1
-        .rows = List()
-    
-    @get[row, column]:
-        while .rows[row] == null
-            .rows.add(List())
-        line = .rows[row]
-        while line[column] == null
-            line.add(Cell(., row, column))
-        return line[column]
-    
-    @get_name():
-        return .parent.name + .name
-    
-    @do(tk):
-        tk.do("frame", .get_name())
-        row = 0
-        while .rows[row] != null
-            column = 0
-            line = .rows[row]
-            while line[column] != null
-                #line[column].do(.tk)
-                cell = line[column]
-                cell.do(tk)
-                column = column + 1
-            row = row + 1
-
-Cell:
-    @control
-    @row
-    @column
-    @parent
-    
-    new(parent, row, column):
+    new(parent):
         .parent = parent
-        .row = row
-        .column = column
+        .tk = .parent.tk
+        .name = parent.name + ".frame" + class.index.to_string()
+        class.index = class.index + 1
+        tk.do("frame", .name)
+    
+#    @get[row, column]:
+#        while .rows[row] == null
+#            .rows.add(List())
+#        line = .rows[row]
+#        while line[column] == null
+#            line.add(Cell(., row, column))
+#        return line[column]
+#    
+#    @get_name():
+#        return .parent.name + .name
+#    
+#    @do(tk):
+#        tk.do("frame", .get_name())
+#        row = 0
+#        while .rows[row] != null
+#            column = 0
+#            line = .rows[row]
+#            while line[column] != null
+#                #line[column].do(.tk)
+#                cell = line[column]
+#                cell.do(tk)
+#                column = column + 1
+#            row = row + 1
 
-    @put(control):
-        .control = control
-        .control.parent = .parent
-        
-    @do(tk):
-        #tk.do("grid", .control.get_name(), _
-        #      "-column", .column.to_string(), _
-        #      "-row", .row.to_string(), "-sticky", "w")
-        if .control == null
-            return
-        .control.do(tk)
-        n = .control.get_name()
-        c = .column.to_string()
-        r = .row.to_string()
-        tk.do("grid", n, "-column", c, "-row", r, "-sticky", "w")
+    @grid(row, column):
+        .tk.do("grid", .name, "-column", .column.to_string(), _
+              "-row", .row.to_string(), "-sticky", "w")
+
+#Cell:
+#    @control
+#    @row
+#    @column
+#    @parent
+#    
+#    new(parent, row, column):
+#        .parent = parent
+#        .row = row
+#        .column = column
+#
+#    @put(control):
+#        .control = control
+#        .control.parent = .parent
+#        
+#    @do(tk):
+#        #tk.do("grid", .control.get_name(), _
+#        #      "-column", .column.to_string(), _
+#        #      "-row", .row.to_string(), "-sticky", "w")
+#        if .control == null
+#            return
+#        .control.do(tk)
+#        n = .control.get_name()
+#        c = .column.to_string()
+#        r = .row.to_string()
+#        tk.do("grid", n, "-column", c, "-row", r, "-sticky", "w")
 
 
