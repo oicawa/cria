@@ -16,7 +16,7 @@
 
 
 void ReferenceFunctionCall_evaluate(Interpreter interpreter, CriaId object, List parameters, ExpressionBlock block, Reference reference, CriaId parent);
-void ReferenceIndexer_evaluate(Interpreter interpreter, CriaId object, List parameters, Reference reference, CriaId parent);
+void ReferenceIndexer_evaluate(Interpreter interpreter, CriaId object, List parameters, ExpressionBlock block, Reference reference, CriaId parent);
 
 
 
@@ -402,7 +402,7 @@ Reference_evaluate(
         ReferenceVariable_evaluate(interpreter, object, parameters, block, reference, parent);
         break;
     case REFERENCE_TYPE_INDEXER:
-        ReferenceIndexer_evaluate(interpreter, object, parameters, reference, parent);
+        ReferenceIndexer_evaluate(interpreter, object, parameters, block, reference, parent);
         break;
     case REFERENCE_TYPE_FUNCTION_CALL:
         id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, block, reference->of.function, parent);
@@ -498,6 +498,7 @@ ReferenceIndexer_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
+    ExpressionBlock block,
     Reference reference,
     CriaId parent
 )
@@ -514,7 +515,7 @@ ReferenceIndexer_evaluate(
     {
         //Evaluate next reference.
         function = ExpressionFunctionCall_new("get[]", indexer->parameters);
-        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, NULL, function, parent);
+        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, block, function, parent);
         Reference_evaluate(interpreter, object, parameters, NULL, reference->next, id);
     }
     else if (indexer != NULL)
@@ -522,7 +523,7 @@ ReferenceIndexer_evaluate(
         //Process function 'set[]' as substitution(?) !!add id to parameters.
         List_add(ExpressionParameters_get_list(indexer->parameters), indexer->value);
         function = ExpressionFunctionCall_new("set[]", indexer->parameters);
-        ExpressionFunctionCall_evaluate(interpreter, object, parameters, NULL, function, parent);
+        ExpressionFunctionCall_evaluate(interpreter, object, parameters, block, function, parent);
     }
     else
     {

@@ -16,5 +16,5 @@ Button:
         .tk[.name + "_command"] = block
         
     @grid(row, column):
-        .tk.do("grid", .name, "-column", .column.to_string(), _
-              "-row", .row.to_string(), "-sticky", "w")
+        .tk.do("grid", .name, "-column", column.to_string(), _
+              "-row", row.to_string(), "-sticky", "w")

@@ -748,6 +748,13 @@ ExpressionBlock_evaluate(
     DefinitionFunction  function = NULL;
     
     
+	if (expression == NULL)
+	{
+		Runtime_error(interpreter, "Block expression is NULL.");
+		goto END;
+	}
+    
+    
     function = expression->function;
 	if (function == NULL)
 	{
