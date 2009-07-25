@@ -148,6 +148,11 @@ CriaTk_do(
     for (i = 0; i < args_count; i++)
     {
         CriaId arg = (CriaId)List_get(args, i);
+        if (arg == NULL)
+        {
+        	Runtime_error(interpreter, "Data type of argument '%d' is null.", i);
+        	goto END;
+        }
         if (arg->type != CRIA_DATA_TYPE_STRING)
         {
         	Runtime_error(interpreter, "Data type of argument '%d' is illegal.", i);

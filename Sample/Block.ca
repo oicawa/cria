@@ -15,6 +15,6 @@ list.add("3rd!")
 list.add("4th!")
 
 write("Start 'for' function.\n")
-for(0, list.count(), 1)(i):
-    item = list.get(i)
-    write("[%s : %s]\n", i, item)
+for(0, list.count(), 1)(index):
+    item = list.get(index)
+    write("[%s : %s]\n", index, item)

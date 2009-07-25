@@ -371,13 +371,23 @@ ExpressionVariable_evaluate(
     Logger_dbg("parent is %p", parent);
     if (parent == NULL)
     {
-		id = ExpressionVariable_evaluateFromParameters(interpreter, parameterList, expression->name);
-		if (id != NULL)
-			goto END;
+        if (strcmp(expression->name, "<<block>>") == 0)
+        {
+            id = ExpressionBlock_evaluate(interpreter, object, parameterList, block, parent);
+		    if (id != NULL)
+			    goto END;
+        }
+        else
+        {
+		    id = ExpressionVariable_evaluateFromParameters(interpreter, parameterList, expression->name);
+		    if (id != NULL)
+			    goto END;
 		
-		id = ExpressionVariable_evaluateFromInterpreter(interpreter, expression->name);
-		if (id != NULL)
-			goto END;
+		    id = ExpressionVariable_evaluateFromInterpreter(interpreter, expression->name);
+		    if (id != NULL)
+			    goto END;
+        }
+        
 		
         Runtime_error(interpreter, "The variable '%s' is not found in parameter variables or global variables.", expression->name);
         goto END;
@@ -1472,15 +1482,22 @@ ExpressionVariable_parse(
     Boolean isConstant = FALSE;
     
     token = Parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_IDENTIFIER &&
-        token->type != TOKEN_TYPE_CONSTANT)
+    if (token->type == TOKEN_TYPE_IDENTIFIER ||
+        token->type == TOKEN_TYPE_CONSTANT)
+    {
+        name = token->value;
+    }
+    else if (token->type == TOKEN_TYPE_BLOCK)
+    {
+        name = "<<block>>";
+    }
+    else
     {
         Logger_dbg("Not VariableExpression.");
         Parser_setPosition(parser, position);
         goto END;
-    }
+    }   
     
-    name = token->value;
     
     Parser_next(parser);
     token = Parser_getCurrent(parser);
@@ -1955,7 +1972,14 @@ ExpressionFactor_parse(
     Logger_dbg("Check block expression.");
     if (token->type == TOKEN_TYPE_BLOCK)
     {
-        Logger_dbg("This is a block token.");
+        ExpressionReference variable = ExpressionVariable_parse(parser);
+        if (variable != NULL)
+        {
+            expression = Expression_new(EXPRESSION_KIND_REFERENCE);
+            expression->of._reference_ = variable;
+            goto END;
+        }
+        
         ExpressionBlock block = ExpressionBlock_parse(parser, TRUE);
         if (block != NULL)
         {

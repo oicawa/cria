@@ -48,7 +48,7 @@ Frame:
         .tk = .parent.tk
         .name = parent.name + ".frame" + class.index.to_string()
         class.index = class.index + 1
-        tk.do("frame", .name)
+        .tk.do("frame", .name)
     
 #    @get[row, column]:
 #        while .rows[row] == null
@@ -75,8 +75,8 @@ Frame:
 #            row = row + 1
 
     @grid(row, column):
-        .tk.do("grid", .name, "-column", .column.to_string(), _
-              "-row", .row.to_string(), "-sticky", "w")
+        .tk.do("grid", .name, "-column", column.to_string(), _
+              "-row", row.to_string(), "-sticky", "w")
 
 #Cell:
 #    @control

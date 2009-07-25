@@ -22,8 +22,8 @@ Text:
     
     @set_text(text):
         .clear()
-        .tk.do(.name, "insert", "0", .text)
+        .tk.do(.name, "insert", "0", text)
     
     @grid(row, column):
-        .tk.do("grid", .name, "-column", .column.to_string(), _
-              "-row", .row.to_string(), "-sticky", "w")
+        .tk.do("grid", .name, "-column", column.to_string(), _
+              "-row", row.to_string(), "-sticky", "w")

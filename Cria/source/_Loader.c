@@ -293,6 +293,7 @@ Loader_load_cria(
     Logger_trc("[ START ]%s", __func__);
 	Boolean result = FALSE;
     List tokens = NULL;
+    library_path = String_new(library_path);
     
 	//Load target script file.
     tokens = Tokenizer_create_tokens(library_path, FALSE);

@@ -18,5 +18,5 @@ Label:
 #        tk.do("label", .get_name(), "-text", .text)
 
     @grid(row, column):
-        .tk.do("grid", .name, "-column", .column.to_string(), _
-              "-row", .row.to_string(), "-sticky", "w")
+        .tk.do("grid", .name, "-column", column.to_string(), _
+              "-row", row.to_string(), "-sticky", "w")

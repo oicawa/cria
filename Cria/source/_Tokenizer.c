@@ -551,6 +551,7 @@ Tokenizer_split(
 ADD_TOKEN:
         token->row = line;
         token->column = cursor - &target[0];
+        token->file_path = file_path;
         List_add(tokens, token);
         cursor += strlen(token->value);
     }
