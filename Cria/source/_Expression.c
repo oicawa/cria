@@ -16,7 +16,7 @@
 #include "Statement.h"
 #include "Runtime.h"
 
-#include "_Expression.h"
+#include "Expression.h"
 
 
 ExpressionReference ExpressionVariable_parse(Parser parser);
@@ -945,18 +945,28 @@ ExpressionFunctionCall_searchFromInterpreter(
 {
     Logger_trc("[ START ]%s", __func__);
     DefinitionFunction function = NULL;
+    DefinitionVariable variable = NULL;
+    CriaId id = NULL;
 
 
 	Logger_dbg("Search function named '%s'", functionName);
 	function = (DefinitionFunction)Hash_get(Interpreter_functions(interpreter), functionName);
-	if (function == NULL)
-	{
-		Logger_dbg("Function is not found.");
+	if (function != NULL)
 		goto END;
-	}
-	
-	
-	Logger_dbg("Function pointer is %p.", function);
+    
+    
+    variable = (DefinitionVariable)Hash_get(Interpreter_variables(interpreter), functionName);
+    if (variable == NULL)
+        goto END;
+    
+	id = DefinitionVariable_getObject(variable);
+    if (id == NULL)
+        goto END;
+    
+    if (id->type != CRIA_DATA_TYPE_BLOCK)
+        goto END;
+    
+    function = ((CriaBlock)id)->function;
 
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -981,73 +991,36 @@ ExpressionFunctionCall_new(
 }
 
 
-
-/*
-CriaId
-ExpressionFunctionCall_evaluate(
+DefinitionFunction
+ExpressionFunctionCall_searchFromParameters(
     Interpreter interpreter,
-    CriaId object,
-    List parameterList,
-    ExpressionFunctionCall expression,
-    CriaId parent
+    String name,
+    List parameterList
 )
 {
-    Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
-    CriaId current = NULL;
-    DefinitionFunction  function = NULL;
-    List tmp = NULL;
-    String target = NULL;
+    CriaBlock block = NULL;
+    DefinitionFunction function = NULL;
     
+    id = ExpressionVariable_evaluateFromParameters(interpreter, parameterList, name);
     
-    if (parent == NULL)
-    {
-		current = object;
-		function = ExpressionFunctionCall_searchFromInterpreter(interpreter, expression->name);
-        target = "Interpreter";
-    }
-    else if (parent->type == CRIA_DATA_TYPE_CRIA_OBJECT ||
-              parent->type == CRIA_DATA_TYPE_STRING ||
-              parent->type == CRIA_DATA_TYPE_INTEGER)
-    {
-    	current = parent;
-		function = ExpressionFunctionCall_searchFromObject(interpreter, parent, expression->name);
-        target = parent->name;
-    }
-    else if (parent->type == CRIA_DATA_TYPE_CRIA_CLASS)
-    {
-    	current = parent;
-		function = ExpressionFunctionCall_searchFromClass(interpreter, parent, expression->name);
-        target = parent->name;
-    }
+    if (id == NULL)
+        goto END;
     
-
-	if (function == NULL)
-	{
-		Logger_err("Function '%s' is not found.", expression->name);
-		Runtime_error(interpreter, "Function '%s' is not found in '%s'.", expression->name, target);
-		goto END;
-	}
-	
+    if (id->type != CRIA_DATA_TYPE_BLOCK)
+        goto END;
     
-    //引数の式を実行
-    Logger_dbg("expression->name->pointer = %s", expression->name);
-    Logger_dbg("expression->parameters->list->count = %d", List_count(expression->parameters->list));
-    if (strcmp(expression->name, "set[]") == 0)
-        Logger_dbg("Stop for Debug!");
-    List parameters = ExpressionParameters_evaluate(interpreter, object, parameterList, expression->parameters);
-    Logger_dbg("execute parameters count is '%d'", List_count(parameters));
+    block = (CriaBlock)id;
     
-    
-    Logger_dbg("Call cria function.(%s)", expression->name);
-    tmp = DefinitionFunction_getParameterList(function);
-    id = DefinitionFunction_evaluate(interpreter, current, tmp, function, parameters, parent);
+    function = block->function;
     
 END:
-    Logger_trc("[  END  ]%s", __func__);
-    return id;
+    
+    return function;
 }
-*/
+
+
+
 CriaId
 ExpressionFunctionCall_evaluate(
     Interpreter interpreter,
@@ -1080,6 +1053,13 @@ ExpressionFunctionCall_evaluate(
 		    current = object;
 		    function = ExpressionFunctionCall_searchFromInterpreter(interpreter, expression->name);
             target = "Interpreter";
+            
+            //Search from parameters.
+            if (function == NULL)
+            {
+                function = ExpressionFunctionCall_searchFromParameters(interpreter, expression->name, parameterList);
+                target = "Parameters";
+            }
         }
     }
     else if (parent->type == CRIA_DATA_TYPE_CRIA_OBJECT ||
@@ -1881,7 +1861,7 @@ ExpressionBlock_parse(
     
     block = Memory_malloc(sizeof(struct ExpressionBlockTag));
     block->function = functionDefinition;
-    block->parameters = ExpressionParameters_new(List_new());
+//    block->parameters = ExpressionParameters_new(List_new());
     
 END:
 	if (block == NULL)

@@ -11,7 +11,6 @@
 
 
 
-typedef struct CriaObjectTag *CriaObject;
 
 
 

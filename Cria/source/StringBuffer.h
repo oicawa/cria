@@ -7,7 +7,8 @@
 #include "String.h"
 
 
-typedef struct  ListTag *StringBuffer;
+#define STRING_BUFFER_SIZE  256
+
 
 
 StringBuffer

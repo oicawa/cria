@@ -9,7 +9,19 @@
 
 
 
-typedef struct InterpreterTag *Interpreter;
+struct InterpreterTag
+{
+    List statements;
+    Hash libraries;
+    Hash variables;
+    Hash functions;
+    Hash classes;
+    int row;
+    int column;
+    int indentLevel;
+    Hash loaded_files;
+    List stack;
+};
 
 
 

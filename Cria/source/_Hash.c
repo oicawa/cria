@@ -6,7 +6,7 @@
 
 #include "String.h"
 
-#include "_Hash.h"
+#include "Hash.h"
 
 
 Hash

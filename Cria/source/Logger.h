@@ -6,12 +6,6 @@
 
 #include "Cria.h"
 
-#define LOG_LEVEL_ERROR         0
-#define LOG_LEVEL_WARNING       1
-#define LOG_LEVEL_INFORMATION   2
-#define LOG_LEVEL_TRACE         3
-#define LOG_LEVEL_DEBUG         4
-#define LOG_LEVEL_CORE          5
 
 
 

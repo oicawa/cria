@@ -12,21 +12,61 @@
 #include "Boolean.h"
 
 
-typedef enum 
-{
-    DEFINITION_VARIABLE_TYPE_NORMAL,
-    DEFINITION_VARIABLE_TYPE_ITEM,
-} DefinitionVariableType;
-
-
-
-typedef struct DefinitionVariableTag *DefinitionVariable;
-typedef struct DefinitionVariableNormalTag *DefinitionVariableNormal;
-
 typedef CriaId CriaNativeFunction(Interpreter interpreter, CriaId object, List args);
 
-typedef struct DefinitionClassTag *DefinitionClass;
-typedef DefinitionClass CriaNativeClassLoader(char* name);
+
+struct DefinitionVariableNormalTag
+{
+    void* object;
+    String name;
+    Boolean isStatic;
+    Boolean isConstant;
+};
+
+
+struct DefinitionVariableTag
+{
+    DefinitionVariableType type;
+    union
+    {
+        DefinitionVariableNormal normal;
+        Item item;
+    } of;
+};
+
+
+
+struct DefinitionFunctionTag
+{
+    char* name;
+    Boolean isNative;
+    Boolean isStatic;
+    union
+    {
+        struct
+        {
+            List parameterList;
+            List statementList;
+        } cria;
+        struct
+        {
+            CriaNativeFunction* function;
+        } native;
+    } of;
+};
+
+
+
+struct DefinitionClassTag
+{
+    String name;
+    Boolean isNative;
+    List baseList;
+    Hash i_fields;
+    Hash s_fields;
+    Hash i_methods;
+    Hash s_methods;
+};
 
 
 

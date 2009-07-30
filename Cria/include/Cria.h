@@ -3,6 +3,72 @@
 
 
 //==============================
+//Cria
+//==============================
+typedef enum
+{
+    CRIA_DATA_TYPE_NULL,
+    CRIA_DATA_TYPE_VOID,
+    CRIA_DATA_TYPE_BOOLEAN,
+    CRIA_DATA_TYPE_INTEGER,
+    CRIA_DATA_TYPE_STRING,
+	CRIA_DATA_TYPE_FILE,
+    CRIA_DATA_TYPE_LIST,
+    CRIA_DATA_TYPE_FUNCTION,
+    CRIA_DATA_TYPE_CRIA_OBJECT,
+    CRIA_DATA_TYPE_CRIA_CLASS,
+    CRIA_DATA_TYPE_CRIA_FUNCTION,
+    CRIA_DATA_TYPE_VARIABLE,
+    CRIA_DATA_TYPE_BLOCK,
+} CriaDataType;
+
+
+typedef struct CriaBlockTag *CriaBlock;
+typedef struct CriaClassTag *CriaClass;
+typedef struct CriaObjectTag *CriaObject;
+
+
+//==============================
+//String
+//==============================
+typedef char* String;
+
+
+//==============================
+//List
+//==============================
+typedef struct ItemTag *Item;
+typedef struct ListTag *List;
+
+
+//==============================
+//StringBuffer
+//==============================
+typedef struct  ListTag *StringBuffer;
+
+
+//==============================
+//Interpreter
+//==============================
+typedef struct InterpreterTag *Interpreter;
+
+//==============================
+//Boolean
+//==============================
+typedef enum
+{
+    FALSE,
+    TRUE,
+} Boolean;
+
+
+//==============================
+//Hash
+//==============================
+typedef struct EntryTag *Entry;
+typedef struct HashTag *Hash;
+
+//==============================
 //Expression
 //==============================
 typedef enum
@@ -67,10 +133,193 @@ typedef struct  ExpressionBlockTag              *ExpressionBlock;
 
 
 
+//==============================
+//Definition
+//==============================
+typedef enum 
+{
+    DEFINITION_VARIABLE_TYPE_NORMAL,
+    DEFINITION_VARIABLE_TYPE_ITEM,
+} DefinitionVariableType;
+
+
+
+typedef struct DefinitionVariableTag *DefinitionVariable;
+typedef struct DefinitionVariableNormalTag *DefinitionVariableNormal;
+typedef struct DefinitionClassTag *DefinitionClass;
 typedef struct DefinitionFunctionTag *DefinitionFunction;
+typedef DefinitionClass CriaNativeClassLoader(char* name);
+
+
+//==============================
+//Loader
+//==============================
+typedef struct LoaderTag *Loader;
+
+
+//==============================
+//Logger
+//==============================
+#define LOG_LEVEL_ERROR         0
+#define LOG_LEVEL_WARNING       1
+#define LOG_LEVEL_INFORMATION   2
+#define LOG_LEVEL_TRACE         3
+#define LOG_LEVEL_DEBUG         4
+#define LOG_LEVEL_CORE          5
+
+
+//==============================
+//Parser
+//==============================
+typedef struct  ParserTag *Parser;
+
+
+//==============================
+//Reference
+//==============================
+typedef enum
+{
+	REFERENCE_TYPE_SELF,
+    REFERENCE_TYPE_VARIABLE,
+    REFERENCE_TYPE_FUNCTION_CALL,
+    REFERENCE_TYPE_INDEXER,
+    REFERENCE_TYPE_CLASS,
+} ReferenceType;
 
 
 
+typedef struct  ReferenceTag                    *Reference;
+typedef struct  ReferenceVariableTag            *ReferenceVariable;
+typedef struct  ReferenceFunctionCallTag        *ReferenceFunctionCall;
+typedef struct  ReferenceIndexerTag             *ReferenceIndexer;
+typedef struct  ReferenceClassTag               *ReferenceClass;
+
+
+
+//==============================
+//Statement
+//==============================
+typedef enum
+{
+    STATEMENT_KIND_SUBSTITUTE,
+    STATEMENT_KIND_REFERENCE,
+    STATEMENT_KIND_FUNCTION_CALL,
+    STATEMENT_KIND_IF,
+    STATEMENT_KIND_WHILE,
+    STATEMENT_KIND_FOR,
+    STATEMENT_KIND_GOTO,
+    STATEMENT_KIND_CATCH,
+    STATEMENT_KIND_FINALLY,
+    STATEMENT_KIND_VARIABLE_DEFINITION,
+    STATEMENT_KIND_FUNCTION_DEFINITION,
+    STATEMENT_KIND_CLASS_DEFINITION,
+} StatementKind;
+
+
+
+typedef enum
+{
+	GOTO_TYPE_CONTINUE,
+	GOTO_TYPE_BREAK,
+	GOTO_TYPE_LABEL,
+	GOTO_TYPE_RETURN,
+} GotoType;
+
+
+
+typedef struct StatementTag *Statement;
+typedef struct StatementFunctionCallTag *StatementFunctionCall;
+typedef struct StatementSubstituteTag *StatementSubstitute;
+typedef struct StatementReferenceTag *StatementReference;
+typedef struct StatementGotoTag *StatementGoto;
+typedef struct StatementIfTag *StatementIf;
+typedef struct StatementWhileTag *StatementWhile;
+
+
+typedef enum {
+    STATEMENT_RESULT_NORMAL = 1,
+    STATEMENT_RESULT_RETURN,
+    STATEMENT_RESULT_BREAK,
+    STATEMENT_RESULT_CONTINUE,
+    STATEMENT_RESULT_LABEL,
+} StatementResultType;
+
+
+
+//==============================
+//Tokenizer
+//==============================
+typedef enum
+{
+    TOKEN_TYPE_AND,
+    TOKEN_TYPE_ATMARK,
+    TOKEN_TYPE_BOOLEAN_LITERAL_TRUE,
+    TOKEN_TYPE_BOOLEAN_LITERAL_FALSE,
+    TOKEN_TYPE_BLOCK,
+    TOKEN_TYPE_BRACE_LEFT,
+    TOKEN_TYPE_BRACE_RIGHT,
+    TOKEN_TYPE_BRACKET_LEFT,
+    TOKEN_TYPE_BRACKET_RIGHT,
+    TOKEN_TYPE_BREAK,
+    TOKEN_TYPE_COLON,
+    TOKEN_TYPE_COMMA,
+    TOKEN_TYPE_CATCH,
+    TOKEN_TYPE_CLASS,
+    TOKEN_TYPE_CLASS_LITERAL,
+    TOKEN_TYPE_CONSTANT,
+    TOKEN_TYPE_CONTINUE,
+    TOKEN_TYPE_DECREMENT,
+    TOKEN_TYPE_DEDENT,
+    TOKEN_TYPE_DEVIDE,
+    TOKEN_TYPE_DUMMY,
+    TOKEN_TYPE_ELIF,
+    TOKEN_TYPE_ELSE,
+    TOKEN_TYPE_EQUAL,
+    TOKEN_TYPE_EXTENDS,
+    TOKEN_TYPE_FINALLY,
+    TOKEN_TYPE_FOR,
+    TOKEN_TYPE_GENERICS_LEFT,
+    TOKEN_TYPE_GENERICS_RIGHT,
+    TOKEN_TYPE_GOTO,
+    TOKEN_TYPE_GREATER_EQUAL,
+    TOKEN_TYPE_GREATER_THAN,
+    TOKEN_TYPE_IDENTIFIER,
+    TOKEN_TYPE_IF,
+    TOKEN_TYPE_IN,
+    TOKEN_TYPE_INCREMENT,
+    TOKEN_TYPE_INDENT,
+    TOKEN_TYPE_INTEGER_LITERAL,
+    TOKEN_TYPE_JOIN,
+    TOKEN_TYPE_LESS_THAN,
+    TOKEN_TYPE_LESS_EQUAL,
+    TOKEN_TYPE_LOAD,
+    TOKEN_TYPE_MINUS,
+    TOKEN_TYPE_MODULO,
+    TOKEN_TYPE_MONADIC_MINUS,
+    TOKEN_TYPE_MULTIPLY,
+    TOKEN_TYPE_NEW_LINE,
+    TOKEN_TYPE_NOT_EQUAL,
+    TOKEN_TYPE_NULL,
+    TOKEN_TYPE_OR,
+    TOKEN_TYPE_PACKAGE,
+    TOKEN_TYPE_PARENTHESIS_LEFT,
+    TOKEN_TYPE_PARENTHESIS_RIGHT,
+    TOKEN_TYPE_PERIOD,
+    TOKEN_TYPE_PLUS,
+    TOKEN_TYPE_RETURN,
+    TOKEN_TYPE_RETURN_VALUE,
+    TOKEN_TYPE_STRING_LITERAL,
+    TOKEN_TYPE_SUBSTITUTE,
+    TOKEN_TYPE_THROW,
+    TOKEN_TYPE_TERMINATE,
+    TOKEN_TYPE_WHILE,
+    TOKEN_TYPE_UNDER,
+    TOKEN_COUNT,
+} TokenType;
+
+
+typedef struct  TokenTag *Token;
+typedef struct  TokenizerTag *Tokenizer;
 
 
 #endif

@@ -10,7 +10,7 @@
 #include "StringBuffer.h"
 #include "Runtime.h"
 
-#include "_CriaIO.h"
+#include "CriaIO.h"
 
 
 #define BUFFER_SIZE 5

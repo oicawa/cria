@@ -8,15 +8,9 @@
 #include "Tokenizer.h"
 #include "CriaObject.h"
 #include "CriaClass.h"
-#include "CriaVariable.h"
 #include "Runtime.h"
 
-#include "_Reference.h"
-
-
-
-void ReferenceFunctionCall_evaluate(Interpreter interpreter, CriaId object, List parameters, ExpressionBlock block, Reference reference, CriaId parent);
-void ReferenceIndexer_evaluate(Interpreter interpreter, CriaId object, List parameters, ExpressionBlock block, Reference reference, CriaId parent);
+#include "Reference.h"
 
 
 

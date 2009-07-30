@@ -1,30 +1,13 @@
-#ifndef PRIVATE_STATEMENT_H_INCLUDED
-#define PRIVATE_STATEMENT_H_INCLUDED
-
+#ifndef PUBLIC_STATEMENT_H_INCLUDED
+#define PUBLIC_STATEMENT_H_INCLUDED
 
 #include "Cria.h"
+#include "Parser.h"
+#include "Expression.h"
+#include "Reference.h"
 #include "String.h"
 #include "CriaId.h"
 
-#include "Expression.h"
-#include "Reference.h"
-#include "Statement.h"
-
-typedef enum
-{
-    STATEMENT_KIND_SUBSTITUTE,
-    STATEMENT_KIND_REFERENCE,
-    STATEMENT_KIND_FUNCTION_CALL,
-    STATEMENT_KIND_IF,
-    STATEMENT_KIND_WHILE,
-    STATEMENT_KIND_FOR,
-    STATEMENT_KIND_GOTO,
-    STATEMENT_KIND_CATCH,
-    STATEMENT_KIND_FINALLY,
-    STATEMENT_KIND_VARIABLE_DEFINITION,
-    STATEMENT_KIND_FUNCTION_DEFINITION,
-    STATEMENT_KIND_CLASS_DEFINITION,
-} StatementKind;
 
 
 
@@ -65,16 +48,6 @@ struct StatementReferenceTag
 
 
 
-typedef enum
-{
-	GOTO_TYPE_CONTINUE,
-	GOTO_TYPE_BREAK,
-	GOTO_TYPE_LABEL,
-	GOTO_TYPE_RETURN,
-} GotoType;
-
-
-
 struct StatementGotoTag
 {
 	GotoType type;
@@ -107,6 +80,34 @@ struct StatementWhileTag
 Statement
 Statement_new(
     StatementKind   kind
+);
+
+
+
+typedef struct {
+    StatementResultType type;
+    union {
+        String label;
+        CriaId id;
+    } returns;
+} StatementResult;
+
+
+
+Statement
+Statement_parse(
+	Parser parser
+);
+
+
+
+StatementResult
+Statement_executeList(
+    Interpreter interpreter,
+    CriaId object,
+    List parameters,
+    ExpressionBlock block,
+    List statements
 );
 
 

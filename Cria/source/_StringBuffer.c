@@ -8,11 +8,7 @@
 #include "List.h"
 #include "String.h"
 
-#include "_StringBuffer.h"
-
-
-#define STRING_BUFFER_SIZE  256
-
+#include "StringBuffer.h"
 
 
 StringBuffer

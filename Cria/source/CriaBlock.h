@@ -11,7 +11,6 @@
 #include "Interpreter.h"
 
 
-typedef struct CriaBlockTag *CriaBlock;
 
 
 

@@ -8,7 +8,15 @@
 #include "List.h"
 
 
-typedef struct LoaderTag *Loader;
+
+#define MAX_PATH_LENGTH 1024
+
+struct LoaderTag
+{
+    String package_name;
+    String library_name;
+    void* library;
+};
 
 
 

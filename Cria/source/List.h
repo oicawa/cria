@@ -5,8 +5,21 @@
 #include "Cria.h"
 #include "Boolean.h"
 
-typedef struct ItemTag *Item;
-typedef struct ListTag *List;
+
+
+struct ItemTag {
+    void *object;
+    Item prev;
+    Item next;
+};
+
+
+
+struct ListTag {
+    Item item;
+    Item last;
+    int count;
+};
 
 
 

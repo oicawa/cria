@@ -9,7 +9,7 @@
 #include "CriaString.h"
 #include "Runtime.h"
 
-#include "_CriaInteger.h"
+#include "CriaInteger.h"
 
 
 

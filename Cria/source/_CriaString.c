@@ -13,7 +13,7 @@
 #include "StringBuffer.h"
 #include "Definition.h"
 
-#include "_CriaString.h"
+#include "CriaString.h"
 
 
 CriaString

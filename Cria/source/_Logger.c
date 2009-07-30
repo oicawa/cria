@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <stdarg.h>
 #include "Cria.h"
-#include "_Logger.h"
+#include "Logger.h"
 
 #define LOG_FILE_PATH   "./cria.log"
 

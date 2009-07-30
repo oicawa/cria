@@ -10,23 +10,48 @@
 #include "Definition.h"
 
 
-
-typedef struct  ReferenceTag                    *Reference;
-typedef struct  ReferenceVariableTag            *ReferenceVariable;
-typedef struct  ReferenceFunctionCallTag        *ReferenceFunctionCall;
-typedef struct  ReferenceIndexerTag             *ReferenceIndexer;
-typedef struct  ReferenceClassTag               *ReferenceClass;
-
-
-
-typedef enum
+struct ReferenceVariableTag
 {
-	REFERENCE_TYPE_SELF,
-    REFERENCE_TYPE_VARIABLE,
-    REFERENCE_TYPE_FUNCTION_CALL,
-    REFERENCE_TYPE_INDEXER,
-    REFERENCE_TYPE_CLASS,
-} ReferenceType;
+    String  name;
+    Expression value;
+};
+
+
+
+struct ReferenceIndexerTag
+{
+    ExpressionParameters parameters;
+    Expression value;
+};
+
+
+
+struct ReferenceClassTag
+{
+    String  name;
+};
+
+
+
+struct ReferenceTag
+{
+    ReferenceType type;
+    int line;
+    int column;
+    String file_path;
+    union {
+        ReferenceVariable variable;
+        ExpressionFunctionCall function;
+        ReferenceIndexer indexer;
+        ReferenceClass klass;
+    } of;
+    Reference next;
+};
+
+
+
+void ReferenceFunctionCall_evaluate(Interpreter interpreter, CriaId object, List parameters, ExpressionBlock block, Reference reference, CriaId parent);
+void ReferenceIndexer_evaluate(Interpreter interpreter, CriaId object, List parameters, ExpressionBlock block, Reference reference, CriaId parent);
 
 
 

@@ -9,7 +9,16 @@
 #include "Interpreter.h"
 
 
-typedef struct  ParserTag *Parser;
+
+struct ParserTag
+{
+    Interpreter interpreter;
+    List tokens;
+    Item current;
+    Item next;
+    Item mark;
+    String path;
+};
 
 
 

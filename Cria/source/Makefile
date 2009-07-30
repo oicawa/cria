@@ -29,7 +29,6 @@ OBJS =\
 	_CriaBoolean.o\
 	_CriaFile.o\
 	_CriaList.o\
-	_CriaVariable.o\
 
 all:$(OBJS)
 	$(CC) -shared -Wl,-soname,$(TARGET) -o ../../$(TARGET) $(OBJS) $(LDFLAGS)
@@ -41,29 +40,28 @@ all:$(OBJS)
 clean:
 	rm -f *.o ../../$(TARGET) $(GCLIB)
 
-_Logger.o: _Logger.c _Logger.h ../include/Logger.h
-_Memory.o: _Memory.c _Memory.h ../include/Memory.h
-_String.o: _String.c _String.h ../include/Memory.h ../include/Logger.h
-_List.o: _List.c _List.h ../include/Memory.h ../include/Logger.h
-_StringBuffer.o: _StringBuffer.c _StringBuffer.h ../include/Memory.h ../include/Logger.h
-_Interpreter.o: _Interpreter.c _Interpreter.h ../include/Memory.h ../include/Logger.h
-_CriaId.o: _CriaId.c _CriaId.h ../include/Memory.h ../include/Logger.h
-_CriaObject.o: _CriaObject.c _CriaObject.h ../include/Memory.h ../include/Logger.h
-_CriaBlock.o: _CriaBlock.c _CriaBlock.h ../include/Memory.h ../include/Logger.h
-_CriaClass.o: _CriaClass.c _CriaClass.h ../include/Memory.h ../include/Logger.h
-_Definition.o: _Definition.c _Definition.h ../include/Memory.h ../include/Logger.h
-_Tokenizer.o: _Tokenizer.c _Tokenizer.h ../include/Memory.h ../include/Logger.h
-_Parser.o: _Parser.c _Parser.h ../include/Memory.h ../include/Logger.h
-_Statement.o: _Statement.c _Statement.h ../include/Memory.h ../include/Logger.h
-_Expression.o: _Expression.c _Expression.h ../include/Memory.h ../include/Logger.h
-_Reference.o: _Reference.c _Reference.h ../include/Memory.h ../include/Logger.h
-_Runtime.o: _Runtime.c _Runtime.h ../include/Memory.h ../include/Logger.h
-_Hash.o: _Hash.c _Hash.h ../include/Hash.h
-_Loader.o: _Loader.c _Loader.h ../include/Memory.h ../include/Logger.h
-_CriaString.o: _CriaString.c _CriaString.h ../include/Memory.h ../include/Logger.h
-_CriaInteger.o: _CriaInteger.c _CriaInteger.h ../include/Memory.h ../include/Logger.h
-_CriaBoolean.o: _CriaBoolean.c _CriaBoolean.h ../include/Memory.h ../include/Logger.h
-_CriaFile.o: _CriaFile.c _CriaFile.h ../include/Memory.h ../include/Logger.h
-_CriaList.o: _CriaList.c _CriaList.h ../include/Memory.h ../include/Logger.h
-_CriaIO.o: _CriaIO.c _CriaIO.h ../include/Memory.h ../include/Logger.h
-_CriaVariable.o: _CriaVariable.c _CriaVariable.h ../include/Memory.h ../include/Logger.h
+_Logger.o: _Logger.c Logger.h
+_Memory.o: _Memory.c Memory.h
+_String.o: _String.c String.h Memory.h Logger.h
+_List.o: _List.c List.h Memory.h Logger.h
+_StringBuffer.o: _StringBuffer.c StringBuffer.h Memory.h Logger.h
+_Interpreter.o: _Interpreter.c Interpreter.h Memory.h Logger.h
+_CriaId.o: _CriaId.c CriaId.h Memory.h Logger.h
+_CriaObject.o: _CriaObject.c CriaObject.h Memory.h Logger.h
+_CriaBlock.o: _CriaBlock.c CriaBlock.h Memory.h Logger.h
+_CriaClass.o: _CriaClass.c CriaClass.h Memory.h Logger.h
+_Definition.o: _Definition.c Definition.h Memory.h Logger.h
+_Tokenizer.o: _Tokenizer.c Tokenizer.h Memory.h Logger.h
+_Parser.o: _Parser.c Parser.h Memory.h Logger.h
+_Statement.o: _Statement.c Statement.h Memory.h Logger.h
+_Expression.o: _Expression.c Expression.h Memory.h Logger.h
+_Reference.o: _Reference.c Reference.h Memory.h Logger.h
+_Runtime.o: _Runtime.c Runtime.h Memory.h Logger.h
+_Hash.o: _Hash.c Hash.h
+_Loader.o: _Loader.c Loader.h Memory.h Logger.h
+_CriaString.o: _CriaString.c CriaString.h Memory.h Logger.h
+_CriaInteger.o: _CriaInteger.c CriaInteger.h Memory.h Logger.h
+_CriaBoolean.o: _CriaBoolean.c CriaBoolean.h Memory.h Logger.h
+_CriaFile.o: _CriaFile.c CriaFile.h Memory.h Logger.h
+_CriaList.o: _CriaList.c CriaList.h Memory.h Logger.h
+_CriaIO.o: _CriaIO.c CriaIO.h Memory.h Logger.h

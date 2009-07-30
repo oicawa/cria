@@ -29,6 +29,6 @@ accumlator(ini):
 
 acum = accumlator(5)
 
-acum()
-acum()
-acum()
+#acum()
+#acum()
+#acum()

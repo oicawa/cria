@@ -5,7 +5,6 @@
 #include "Boolean.h"
 
 
-typedef char* String;
 
 String
 String_newFunction(

@@ -7,8 +7,23 @@
 
 
 
-typedef struct EntryTag *Entry;
-typedef struct HashTag *Hash;
+struct HashTag
+{
+	int size;
+    int count;
+    List keys;
+    Entry* entrys;
+};
+
+
+
+struct EntryTag
+{
+    unsigned int hash_value;
+    char* key;
+    void* object;
+    Entry next;
+};
 
 
 

@@ -11,9 +11,8 @@
 #include "CriaObject.h"
 #include "CriaInteger.h"
 #include "Definition.h"
-#include "CriaVariable.h"
 
-#include "_CriaList.h"
+#include "CriaList.h"
 
 
 CriaId
