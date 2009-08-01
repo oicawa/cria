@@ -1,10 +1,6 @@
-#include <string.h>
-
 #include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
-
-#include "Boolean.h"
 #include "String.h"
 #include "List.h"
 #include "Hash.h"
@@ -15,7 +11,6 @@
 #include "Parser.h"
 #include "CriaObject.h"
 #include "Expression.h"
-
 #include "Definition.h"
 
 
@@ -32,7 +27,7 @@ DefinitionVariableNormal_new(
 {
     DefinitionVariableNormal normal = NULL;
     normal = Memory_malloc(sizeof(struct DefinitionVariableNormalTag));
-    normal->name = String_clone(name);
+    normal->name = String_new(name);
     normal->isStatic = isStatic;
     normal->isConstant = isConstant;
 

@@ -1,7 +1,3 @@
-#include <unistd.h>
-#include <memory.h>
-#include <dlfcn.h>
-
 #include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
@@ -11,7 +7,6 @@
 #include "Tokenizer.h"
 #include "Parser.h"
 #include "Runtime.h"
-#include "Boolean.h"
 #include "Definition.h"
 
 #include "Loader.h"

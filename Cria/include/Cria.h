@@ -1,6 +1,19 @@
 #ifndef PUBLIC_CRIA_H_INCLUDED
 #define PUBLIC_CRIA_H_INCLUDED
 
+#include <assert.h>
+#include <ctype.h>
+#include <dlfcn.h>
+#include <memory.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <stdarg.h>
+#include <unistd.h>
+#include "gc.h"
+
+
+
 
 //==============================
 //Cria
@@ -22,6 +35,8 @@ typedef enum
     CRIA_DATA_TYPE_BLOCK,
 } CriaDataType;
 
+
+typedef struct CriaIdTag *CriaId;
 
 typedef struct CriaBlockTag *CriaBlock;
 typedef struct CriaClassTag *CriaClass;
@@ -320,6 +335,9 @@ typedef enum
 
 typedef struct  TokenTag *Token;
 typedef struct  TokenizerTag *Tokenizer;
+
+
+typedef CriaId CriaNativeFunction(Interpreter interpreter, CriaId object, List args);
 
 
 #endif

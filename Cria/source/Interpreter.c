@@ -251,7 +251,7 @@ Interpreter_add_loaded_file(
     Logger_trc("[ START ]%s", __func__);
     
 	Hash hash = interpreter->loaded_files;
-    Hash_put(hash, String_clone(file_path), String_clone(file_path));
+    Hash_put(hash, String_new(file_path), String_new(file_path));
     
     Logger_trc("[  END  ]%s", __func__);
     return;

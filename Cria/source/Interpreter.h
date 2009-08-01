@@ -2,7 +2,6 @@
 #define PUBLIC_INTERPRETER_H_INCLUDED
 
 #include "Cria.h"
-#include "Boolean.h"
 #include "List.h"
 #include "String.h"
 #include "Hash.h"

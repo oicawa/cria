@@ -3,7 +3,6 @@
 
 
 #include "Cria.h"
-#include "Boolean.h"
 #include "List.h"
 #include "Tokenizer.h"
 #include "Interpreter.h"

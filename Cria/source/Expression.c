@@ -1,9 +1,6 @@
-#include <string.h>
-
 #include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
-
 #include "StringBuffer.h"
 #include "CriaBoolean.h"
 #include "CriaInteger.h"
@@ -199,7 +196,7 @@ ExpressionSelf_parse(
     Logger_dbg("VariableExpression name = '_self_'");
     ExpressionVariable variable = NULL;
     variable = Memory_malloc(sizeof(struct ExpressionVariableTag));
-    variable->name = String_clone("_self_");
+    variable->name = String_new("_self_");
     
     expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
     expression->type = REFERENCE_EXPRESSION_TYPE_SELF;
@@ -502,7 +499,7 @@ ExpressionClass_parse(
     Logger_dbg("ExpressionClass name = %s", name);
     ExpressionClass klass = NULL;
     klass = Memory_malloc(sizeof(struct ExpressionClassTag));
-    klass->name = String_clone(name);
+    klass->name = String_new(name);
     
     expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
     expression->type = REFERENCE_EXPRESSION_TYPE_CLASS;
@@ -983,7 +980,7 @@ ExpressionFunctionCall_new(
 {
     ExpressionFunctionCall function = NULL;
     function = Memory_malloc(sizeof(struct ExpressionFunctionCallTag));
-    function->name = String_clone(name);
+    function->name = String_new(name);
     function->parameters = parameters;
     function->block = NULL;
     
@@ -1278,7 +1275,7 @@ ExpressionGenerate_parse(
     
     
     ExpressionGenerate generate = Memory_malloc(sizeof(struct ExpressionGenerateTag));
-    generate->name = String_clone(name);
+    generate->name = String_new(name);
     generate->parameters = parameters;
     Logger_dbg("Created GenerateExpression");
     
@@ -1499,7 +1496,7 @@ ExpressionVariable_parse(
     Logger_dbg("VariableExpression name = %s", name);
     ExpressionVariable variable = NULL;
     variable = Memory_malloc(sizeof(struct ExpressionVariableTag));
-    variable->name = String_clone(name);
+    variable->name = String_new(name);
     variable->isStatic = isStatic;
     variable->isConstant = isConstant;
     
@@ -1592,91 +1589,6 @@ END:
 }
 
 
-/*
-ExpressionReference
-ExpressionFunctionCall_parse(
-    Parser  parser
-)
-{
-    Logger_trc("[ START ]%s", __func__);
-    Item position = Parser_getPosition(parser);
-    ExpressionReference expression = NULL;
-    String name = NULL;
-    ExpressionParameters parameters = NULL;
-    Token token = NULL;
-    
-    token = Parser_getCurrent(parser);
-    if (token->type != TOKEN_TYPE_IDENTIFIER)
-    {
-		Logger_dbg("First token is not identifier.");
-        Parser_setPosition(parser, position);
-        goto END;
-    }
-	Logger_dbg("First token is identifier.");
-    
-    
-    name = token->value;
-	Logger_dbg("name = '%s'", name);
-    
-    
-    Parser_next(parser);
-    token = Parser_getCurrent(parser);
-    
-    if (token->type != TOKEN_TYPE_PARENTHESIS_LEFT)
-    {
-        Logger_dbg("Second token is not left parenthesis.");
-        Parser_setPosition(parser, position);
-        goto END;
-    }
-	Logger_dbg("Second token is left parenthesis.");
-    
-    
-    Parser_next(parser);
-    parameters = ExpressionParameters_parse(parser);
-    if (parameters == NULL)
-    {
-        Logger_dbg("The tokens that before right parenthesis are not parameters.");
-        Parser_setPosition(parser, position);
-        goto END;
-    }
-	Logger_dbg("The tokens that before right parenthesis are parameters.");
-    
-    
-    token = Parser_getCurrent(parser);
-    
-    
-    if (token->type != TOKEN_TYPE_PARENTHESIS_RIGHT)
-    {
-        Logger_dbg("Last token is not right parenthesis.");
-        goto END;
-    }
-	Logger_dbg("Last token is right parenthesis.");
-    
-    
-    ExpressionFunctionCall function = Memory_malloc(sizeof(struct ExpressionFunctionCallTag));
-    function->name = String_clone(name);
-    function->parameters = parameters;
-    
-    expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
-    expression->type = REFERENCE_EXPRESSION_TYPE_FUNCTION_CALL;
-    expression->of.function = function;
-    
-    
-    Parser_next(parser);
-    token = Parser_getCurrent(parser);
-    if (token->type == TOKEN_TYPE_PERIOD)
-    {
-        Parser_next(parser);
-        token = Parser_getCurrent(parser);
-        expression->next = ExpressionReference_parse(parser);
-		Logger_dbg("Created next expression.");
-    }
-
-END:
-    Logger_trc("[  END  ]%s", __func__);
-    return expression;
-}
-*/
 ExpressionReference
 ExpressionFunctionCall_parse(
     Parser  parser
@@ -1746,13 +1658,12 @@ ExpressionFunctionCall_parse(
     
     
     
-    //TODO: I have to write the parsing logic that a block as a argument for this function call. 
     Parser_next(parser);
     block = ExpressionBlock_parse(parser, FALSE);
     
     
     ExpressionFunctionCall function = Memory_malloc(sizeof(struct ExpressionFunctionCallTag));
-    function->name = String_clone(name);
+    function->name = String_new(name);
     function->parameters = parameters;
     function->block = block;
     
@@ -1861,7 +1772,6 @@ ExpressionBlock_parse(
     
     block = Memory_malloc(sizeof(struct ExpressionBlockTag));
     block->function = functionDefinition;
-//    block->parameters = ExpressionParameters_new(List_new());
     
 END:
 	if (block == NULL)
@@ -1930,7 +1840,7 @@ ExpressionFactor_parse(
     {
         Logger_dbg("This is a string literal token.");
         ExpressionStringLiteral stringLiteral = Memory_malloc(sizeof(struct ExpressionStringLiteralTag));
-        stringLiteral->value = String_clone(token->value);
+        stringLiteral->value = String_new(token->value);
         
         expression = Expression_new(EXPRESSION_KIND_STRING_LITERAL);
         expression->of._stringLiteral_ = stringLiteral;

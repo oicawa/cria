@@ -1,11 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
-#include <assert.h>
-#include <memory.h>
-
-#include "gc.h"
 #include "Cria.h"
 #include "Memory.h"
 

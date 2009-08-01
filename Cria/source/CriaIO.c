@@ -1,15 +1,11 @@
-#include <string.h>
-
 #include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
-
 #include "CriaInteger.h"
 #include "CriaString.h"
 #include "CriaBoolean.h"
 #include "StringBuffer.h"
 #include "Runtime.h"
-
 #include "CriaIO.h"
 
 

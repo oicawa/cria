@@ -1,10 +1,8 @@
 #include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
-
 #include "CriaString.h"
 #include "Runtime.h"
-
 #include "CriaBoolean.h"
 
 

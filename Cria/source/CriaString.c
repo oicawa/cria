@@ -1,5 +1,3 @@
-#include <string.h>
-
 #include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
@@ -28,7 +26,7 @@ CriaString_new(
     criaString->id.name = String_new("String");
     criaString->id.type = CRIA_DATA_TYPE_STRING;
     criaString->isLiteral = isLiteral;
-    criaString->value = String_clone(value);
+    criaString->value = String_new(value);
     
     Logger_trc("[  END  ]%s", __func__);
     return criaString;

@@ -8,14 +8,12 @@
 
 
 
-
-
-typedef struct CriaIdTag
+struct CriaIdTag
 {
     String          name;
     CriaDataType    type;
     int             refCount;
-} *CriaId;
+};
 
 
 

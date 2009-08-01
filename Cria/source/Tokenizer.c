@@ -1,12 +1,7 @@
-#include <string.h>
-#include <ctype.h>
-#include <stdarg.h>
-
 #include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
 #include "List.h"
-#include "StringBuffer.h"
 
 #include "Tokenizer.h"
 

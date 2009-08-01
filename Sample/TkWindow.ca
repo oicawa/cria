@@ -3,7 +3,7 @@ load Cria::Tk::Label
 load Cria::Tk::Text
 load Cria::Tk::Button
 
-window = Window("テストアプリですよ♪")
+window = Window("テストアプリですよＹＯ。 ")
 member_info = Label(window, "社員情報")
 member_info.grid(0, 0)
 member = Frame(window)

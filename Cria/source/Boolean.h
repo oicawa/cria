@@ -1,6 +1,0 @@
-#ifndef PUBLIC_BOOLEAN_H_INCLUDED
-#define PUBLIC_BOOLEAN_H_INCLUDED
-
-
-
-#endif

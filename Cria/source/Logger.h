@@ -1,8 +1,6 @@
 #ifndef PUBLIC_LOGGER_H_INCLUDED
 #define PUBLIC_LOGGER_H_INCLUDED
 
-#include <stdio.h>
-#include <stdlib.h>
 
 #include "Cria.h"
 

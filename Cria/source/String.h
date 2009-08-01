@@ -2,36 +2,19 @@
 #define PUBLIC_STRING_H_INCLUDED
 
 #include "Cria.h"
-#include "Boolean.h"
 
 
 
 String
-String_newFunction(
-    char    *input,
-    char    *fileName,
-    int     line
+String_new(
+    char    *input
 );
-#define String_new(input)\
-	String_newFunction(input, __FILE__, __LINE__)
 
 
 long
 String_length(
     String  string
 );
-
-
-
-String
-String_cloneFunction(
-    String  source,
-    char    *fileName,
-    int     line
-);
-#define String_clone(source)\
-	String_cloneFunction(source, __FILE__, __LINE__)
-
 
 
 String

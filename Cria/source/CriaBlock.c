@@ -1,7 +1,6 @@
 #include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
-
 #include "String.h"
 #include "Definition.h"
 #include "Interpreter.h"
@@ -23,7 +22,7 @@ CriaBlock_new(
     CriaBlock block = NULL;
     
     block = Memory_malloc(sizeof(struct CriaBlockTag));
-    block->id.name = String_clone("<<block>>");
+    block->id.name = String_new("<<block>>");
     block->id.type = CRIA_DATA_TYPE_BLOCK;
     block->interpreter = interpreter;
     block->object = object;

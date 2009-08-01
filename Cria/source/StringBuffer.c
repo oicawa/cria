@@ -12,9 +12,7 @@
 
 
 StringBuffer
-StringBuffer_newFunction(
-    char    *fileName,
-    int     line
+StringBuffer_new(
 )
 {
     Logger_cor("[ START ]%s", __func__);
@@ -26,11 +24,9 @@ StringBuffer_newFunction(
 
 
 void
-StringBuffer_appendFunction(
+StringBuffer_append(
     StringBuffer    stringBuffer,
-    char*           string,
-    char*           fileName,
-    int             line
+    char*           string
 )
 {
     Logger_cor("[ START ]%s", __func__);
@@ -47,7 +43,7 @@ StringBuffer_appendFunction(
     {
 	    Logger_cor("lastItem is NULL");
         buffer = Memory_malloc(STRING_BUFFER_SIZE);
-        List_addFunction(list, buffer, fileName, line);
+        List_add(list, buffer);
         lastItem = List_lastItem(list);
     }
     
@@ -72,7 +68,7 @@ StringBuffer_appendFunction(
     
     Logger_cor("Length is over.");
     buffer = Memory_malloc(STRING_BUFFER_SIZE);
-    List_addFunction(list, buffer, fileName, line);
+    List_add(list, buffer);
     StringBuffer_append(stringBuffer, &(string[filler]));
     Logger_cor("[  END  ]%s", __func__);
 
@@ -81,11 +77,9 @@ StringBuffer_appendFunction(
 
 
 void
-StringBuffer_appendCharFunction(
+StringBuffer_appendChar(
     StringBuffer    stringBuffer,
-    char            charactor,
-    char*           fileName,
-    int             line
+    char            charactor
 )
 {
     Logger_cor("[ START ]%s", __func__);
@@ -100,10 +94,8 @@ StringBuffer_appendCharFunction(
 
 
 String
-StringBuffer_toStringFunction(
-    StringBuffer    stringBuffer,
-    char*           fileName,
-    int             line
+StringBuffer_toString(
+    StringBuffer    stringBuffer
 )
 {
     Logger_cor("[ START ]%s", __func__);

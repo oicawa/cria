@@ -9,10 +9,6 @@
 #include "CriaId.h"
 #include "Parser.h"
 #include "String.h"
-#include "Boolean.h"
-
-
-typedef CriaId CriaNativeFunction(Interpreter interpreter, CriaId object, List args);
 
 
 struct DefinitionVariableNormalTag

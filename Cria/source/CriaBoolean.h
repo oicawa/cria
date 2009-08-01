@@ -5,7 +5,6 @@
 
 #include "Cria.h"
 #include "CriaId.h"
-#include "Boolean.h"
 #include "Interpreter.h"
 #include "Expression.h"
 

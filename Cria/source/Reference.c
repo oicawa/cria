@@ -1,5 +1,3 @@
-#include <string.h>
-
 #include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
@@ -327,7 +325,7 @@ ReferenceVariable_parse(
 
     
 	variable = Memory_malloc(sizeof(struct ReferenceVariableTag));
-    variable->name = String_clone(name);
+    variable->name = String_new(name);
     
     
     reference = Reference_new(REFERENCE_TYPE_VARIABLE);
@@ -725,7 +723,7 @@ ReferenceClass_parse(
 
     
 	klass = Memory_malloc(sizeof(struct ReferenceClassTag));
-    klass->name = String_clone(name);
+    klass->name = String_new(name);
     
     
     reference = Reference_new(REFERENCE_TYPE_CLASS);
@@ -768,7 +766,7 @@ ReferenceSelf_parse(
 
     
 	variable = Memory_malloc(sizeof(struct ReferenceVariableTag));
-    variable->name = String_clone("_self_");
+    variable->name = String_new("_self_");
     
     
     reference = Reference_new(REFERENCE_TYPE_SELF);

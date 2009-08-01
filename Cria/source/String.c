@@ -1,5 +1,3 @@
-#include <string.h>
-
 #include "Memory.h"
 #include "Logger.h"
 #include "Cria.h"
@@ -10,10 +8,8 @@
 
 
 String
-String_newFunction(
-    char    *input,
-    char    *fileName,
-    int     line
+String_new(
+    char *input
 )
 {
 	Logger_cor("[ START ]%s", __func__);
@@ -36,27 +32,6 @@ String_length(
 )
 {
     return strlen(string);
-}
-
-
-
-String
-String_cloneFunction(
-    String  source,
-    char    *fileName,
-    int     line
-)
-{
-    if (source == NULL)
-        return NULL;
-
-    long size = strlen(source);
-    char* buffer = Memory_malloc(size + 1);
-    strncpy(buffer, source, size);
-    
-    String string = String_newFunction(buffer, fileName, line);
-    buffer = NULL;
-    return string;
 }
 
 

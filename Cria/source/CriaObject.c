@@ -1,5 +1,3 @@
-#include <string.h>
-
 #include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
@@ -24,7 +22,7 @@ CriaObject_new(
     CriaObject object = NULL;
     
     object = Memory_malloc(sizeof(struct CriaObjectTag));
-    object->id.name = String_clone(className);
+    object->id.name = String_new(className);
     object->id.type = CRIA_DATA_TYPE_CRIA_OBJECT;
     object->fields = Hash_new(16);
     

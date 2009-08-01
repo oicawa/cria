@@ -1,7 +1,6 @@
+#include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
-
-#include "Cria.h"
 #include "Tokenizer.h"
 #include "Definition.h"
 #include "Statement.h"

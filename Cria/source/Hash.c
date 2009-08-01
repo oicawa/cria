@@ -1,11 +1,7 @@
-#include <string.h>
-
 #include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
-
 #include "String.h"
-
 #include "Hash.h"
 
 
@@ -135,7 +131,7 @@ Hash_put(
 
 
     entry = Memory_malloc(sizeof(struct EntryTag));
-    entry->key = String_clone(key);
+    entry->key = String_new(key);
     entry->hash_value = hash_value;
     entry->next = NULL;
 

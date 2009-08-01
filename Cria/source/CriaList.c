@@ -1,9 +1,6 @@
-#include <string.h>
-
 #include "Cria.h"
 #include "Memory.h"
 #include "Logger.h"
-
 #include "CriaBoolean.h"
 #include "Runtime.h"
 #include "String.h"
@@ -11,7 +8,6 @@
 #include "CriaObject.h"
 #include "CriaInteger.h"
 #include "Definition.h"
-
 #include "CriaList.h"
 
 
