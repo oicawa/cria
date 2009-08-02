@@ -41,6 +41,7 @@ typedef struct CriaIdTag *CriaId;
 typedef struct CriaBlockTag *CriaBlock;
 typedef struct CriaClassTag *CriaClass;
 typedef struct CriaObjectTag *CriaObject;
+typedef struct CriaStringTag  *CriaString;
 
 
 //==============================
@@ -181,6 +182,7 @@ typedef struct LoaderTag *Loader;
 #define LOG_LEVEL_TRACE         3
 #define LOG_LEVEL_DEBUG         4
 #define LOG_LEVEL_CORE          5
+
 
 
 //==============================
@@ -340,6 +342,29 @@ typedef struct  TokenizerTag *Tokenizer;
 typedef CriaId CriaNativeFunction(Interpreter interpreter, CriaId object, List args);
 
 
+
+
+
+struct CriaIdTag
+{
+    String          name;
+    CriaDataType    type;
+    int             refCount;
+};
+
+
+
+struct CriaStringTag
+{
+    struct CriaIdTag    id;
+    Boolean             isLiteral;
+    String              value;
+};
+
+
+
+
+
 Interpreter
 Interpreter_new(
     void
@@ -365,6 +390,183 @@ Interpreter_run(
 void
 Interpreter_dispose(
 	Interpreter interpreter
+);
+
+
+
+DefinitionVariable
+DefinitionVariable_new(
+    DefinitionVariableType type,
+    String name,
+    Boolean isStatic,
+    Boolean isConstant,
+    Item item
+);
+
+
+
+DefinitionFunction
+DefinitionFunction_new(
+    char*               name,
+    Boolean             isNative,
+    Boolean             isStatic,
+    List                parameterList,
+    List                statementList,
+    CriaNativeFunction* nativeFunctionPoint
+);
+
+
+
+DefinitionClass
+DefinitionClass_new(
+    String name,
+    Boolean isNative,
+    Hash i_fields,
+    Hash s_fields,
+    Hash i_methods,
+    Hash s_methods,
+    CriaNativeClassLoader* classLoader
+);
+
+
+
+String
+DefinitionFunction_get_name(
+	DefinitionFunction function
+);
+
+
+
+CriaObject
+CriaObject_new(
+	String className
+);
+
+
+
+void
+CriaObject_addField(
+	CriaObject object,
+    DefinitionVariable variable
+);
+
+
+
+void*
+CriaObject_get(
+	Interpreter interpreter,
+	CriaObject object,
+    String name
+);
+
+
+
+void
+CriaObject_set(
+	Interpreter interpreter,
+	CriaObject object,
+    String name,
+    void* value
+);
+
+
+
+CriaString
+CriaString_new(
+    Boolean         isLiteral,
+    String          value
+);
+
+
+
+CriaId
+CriaBlock_evaluate(
+    CriaBlock block
+);
+
+
+
+void
+Loader_add_class(
+    Interpreter interpreter,
+    char* className,
+    CriaNativeClassLoader* classLoader
+);
+
+
+
+void
+Logger_write(
+    char*       fileName,
+    const char* funcName,
+    int         line,
+    int         logLevel,
+    char*       format,
+    ...
+);
+#define Logger_err(...)\
+    (Logger_write(__FILE__, __func__, __LINE__, LOG_LEVEL_ERROR, __VA_ARGS__))
+#define Logger_wrn(...)\
+    (Logger_write(__FILE__, __func__, __LINE__, LOG_LEVEL_WARNING, __VA_ARGS__))
+#define Logger_inf(...)\
+    (Logger_write(__FILE__, __func__, __LINE__, LOG_LEVEL_INFORMATION, __VA_ARGS__))
+#define Logger_trc(...)\
+    (Logger_write(__FILE__, __func__, __LINE__, LOG_LEVEL_TRACE, __VA_ARGS__))
+#define Logger_dbg(...)\
+    (Logger_write(__FILE__, __func__, __LINE__, LOG_LEVEL_DEBUG, __VA_ARGS__))
+#define Logger_cor(...)\
+    (Logger_write(__FILE__, __func__, __LINE__, LOG_LEVEL_CORE, __VA_ARGS__))
+
+
+
+int
+List_count(
+    List    list
+);
+
+
+
+void
+Runtime_error_write(
+    Interpreter interpreter,
+    const char* file_name,
+    const char* func_name,
+    int line,
+    char*       format,
+    ...
+);
+#define Runtime_error(interpreter, ...) \
+    Runtime_error_write(interpreter, __FILE__, __func__, __LINE__, __VA_ARGS__);
+
+
+
+void*
+Memory_malloc(
+    size_t  size
+);
+
+
+
+void*
+List_get(
+    List    list,
+    int     index
+);
+
+
+
+Hash
+Hash_new(
+	int size
+);
+
+
+
+void
+Hash_put(
+	Hash hash,
+	char* key,
+	void* object
 );
 
 

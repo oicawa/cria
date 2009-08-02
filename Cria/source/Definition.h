@@ -70,17 +70,6 @@ struct DefinitionClassTag
 //DefinitionVariable
 //==============================
 DefinitionVariable
-DefinitionVariable_new(
-    DefinitionVariableType type,
-    String name,
-    Boolean isStatic,
-    Boolean isConstant,
-    Item item
-);
-
-
-
-DefinitionVariable
 DefinitionVariable_search(
     List parameters,
     String name
@@ -120,18 +109,6 @@ DefinitionVariable_parse(
 //==============================
 //DefinitionFunction
 //==============================
-DefinitionFunction
-DefinitionFunction_new(
-    char*               name,
-    Boolean             isNative,
-    Boolean             isStatic,
-    List                parameterList,
-    List                statementList,
-    CriaNativeFunction* nativeFunctionPoint
-);
-
-
-
 List
 DefinitionFunction_parse_parameters(
 	Parser parser
@@ -142,13 +119,6 @@ DefinitionFunction_parse_parameters(
 DefinitionFunction
 DefinitionFunction_parse(
     Parser parser
-);
-
-
-
-String
-DefinitionFunction_get_name(
-	DefinitionFunction function
 );
 
 
@@ -184,19 +154,6 @@ DefinitionFunction_getParameterList(
 //==============================
 //DefinitionClass
 //==============================
-DefinitionClass
-DefinitionClass_new(
-    String name,
-    Boolean isNative,
-    Hash i_fields,
-    Hash s_fields,
-    Hash i_methods,
-    Hash s_methods,
-    CriaNativeClassLoader* classLoader
-);
-
-
-
 String
 DefinitionClass_getName(
 	DefinitionClass klass

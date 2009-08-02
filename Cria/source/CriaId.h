@@ -8,15 +8,6 @@
 
 
 
-struct CriaIdTag
-{
-    String          name;
-    CriaDataType    type;
-    int             refCount;
-};
-
-
-
 CriaId
 CriaId_new(
     String          name,

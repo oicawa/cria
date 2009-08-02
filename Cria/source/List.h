@@ -99,14 +99,6 @@ List_insert(
 
 
 
-void*
-List_get(
-    List    list,
-    int     index
-);
-
-
-
 void
 List_cat(
     List list1,
@@ -127,13 +119,6 @@ List_set(
     List    list,
     int     index,
     void* object
-);
-
-
-
-int
-List_count(
-    List    list
 );
 
 

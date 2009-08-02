@@ -23,43 +23,9 @@ struct CriaObjectTag
 
 
 CriaObject
-CriaObject_new(
-	String className
-);
-
-
-
-CriaObject
 CriaObject_getObject(
 	CriaId id,
     String class_name
-);
-
-
-
-void
-CriaObject_addField(
-	CriaObject object,
-    DefinitionVariable variable
-);
-
-
-
-void*
-CriaObject_get(
-	Interpreter interpreter,
-	CriaObject object,
-    String name
-);
-
-
-
-void
-CriaObject_set(
-	Interpreter interpreter,
-	CriaObject object,
-    String name,
-    void* value
 );
 
 

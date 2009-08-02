@@ -27,13 +27,6 @@ struct EntryTag
 
 
 
-Hash
-Hash_new(
-	int size
-);
-
-
-
 int
 Hash_get_count(
 	Hash hash
@@ -52,15 +45,6 @@ void*
 Hash_get(
 	Hash hash,
 	char* key
-);
-
-
-
-void
-Hash_put(
-	Hash hash,
-	char* key,
-	void* object
 );
 
 

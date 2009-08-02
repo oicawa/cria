@@ -11,22 +11,6 @@
 #include "Definition.h"
 
 
-typedef struct CriaStringTag
-{
-    struct CriaIdTag    id;
-    Boolean             isLiteral;
-    String              value;
-} *CriaString;
-
-
-
-CriaString
-CriaString_new(
-    Boolean         isLiteral,
-    String          value
-);
-
-
 
 CriaId
 CriaString_operate(

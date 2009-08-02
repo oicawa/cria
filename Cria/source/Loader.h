@@ -59,15 +59,6 @@ Loader_add_function(
 
 
 void
-Loader_add_class(
-    Interpreter interpreter,
-    char* className,
-    CriaNativeClassLoader* classLoader
-);
-
-
-
-void
 Loader_unload(
 	Loader loader
 );

@@ -7,13 +7,6 @@
 
 
 void
-*Memory_malloc(
-    size_t  size
-);
-
-
-
-void
 Memory_reset(
     void* pointer,
     size_t size

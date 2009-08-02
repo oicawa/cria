@@ -39,11 +39,4 @@ CriaBlock_new(
 
 
 
-CriaId
-CriaBlock_evaluate(
-    CriaBlock block
-);
-
-
-
 #endif

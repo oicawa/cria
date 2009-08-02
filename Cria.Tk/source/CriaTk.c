@@ -1,3 +1,9 @@
+#include <X11/X.h>  /* 一応入れとく */
+#include <stdio.h>
+#include <tcl.h>
+#include <tk.h>
+#include <string.h>
+
 #include "Cria.h"
 #include "CriaTk.h"
 
@@ -195,11 +201,6 @@ CriaTk_bind(
     
     
     args_count = List_count(args);
-    //if (args_count != 2)
-    //{
-    //	Runtime_error(interpreter, "Illegal arguments count.");
-    //	goto END;
-    //}
     
     
     id = (CriaId)List_get(args, 0);
