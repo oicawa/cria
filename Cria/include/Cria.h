@@ -10,7 +10,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <unistd.h>
-#include "gc.h"
+#include <gc/gc.h>
 
 
 
@@ -338,6 +338,35 @@ typedef struct  TokenizerTag *Tokenizer;
 
 
 typedef CriaId CriaNativeFunction(Interpreter interpreter, CriaId object, List args);
+
+
+Interpreter
+Interpreter_new(
+    void
+);
+
+
+
+Boolean
+Interpreter_compile(
+    Interpreter interpreter,
+    char*       filePath
+);
+
+
+
+void
+Interpreter_run(
+    Interpreter interpreter
+);
+
+
+
+void
+Interpreter_dispose(
+	Interpreter interpreter
+);
+
 
 
 #endif

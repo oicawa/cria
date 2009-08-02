@@ -46,28 +46,6 @@ Interpreter_stack_pop(
 
 
 
-Interpreter
-Interpreter_new(
-    void
-);
-
-
-
-Boolean
-Interpreter_compile(
-    Interpreter interpreter,
-    char*       filePath
-);
-
-
-
-void
-Interpreter_run(
-    Interpreter interpreter
-);
-
-
-
 int
 Interpreter_row(
     Interpreter interpreter
@@ -114,13 +92,6 @@ Interpreter_classes(
 Hash
 Interpreter_get_imports(
     Interpreter interpreter
-);
-
-
-
-void
-Interpreter_dispose(
-	Interpreter interpreter
 );
 
 

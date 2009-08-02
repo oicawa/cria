@@ -1,6 +1,6 @@
 TARGET = libcria.so
-CFLAGS = -fPIC -c -g -DDEBUG -Wall -I../../Library/include/ -I../include
-LDFLAGS = -L../../Library/lib -lgc
+CFLAGS = -fPIC -c -g -DDEBUG -Wall -I../include
+LDFLAGS = -lgc
 GC = gc
 GCLIB = lib$(GC).so
 OBJS =\

@@ -30,12 +30,12 @@ Tokenizer_create_tokens(
     Boolean is_main
 );
 
-/*
+
 Token
 Token_new(
     TokenType type,
     String value
 );
-*/
+
 
 #endif
