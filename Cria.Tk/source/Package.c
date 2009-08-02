@@ -1,7 +1,4 @@
-#include <stdio.h>
-
-#include "Interpreter.h"
-#include "Loader.h"
+#include "Cria.h"
 #include "CriaTk.h"
 
 void

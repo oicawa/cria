@@ -6,4 +6,11 @@
 
 
 
+DefinitionClass
+CriaTk_loadClass(
+    String className
+);
+
+
+
 #endif

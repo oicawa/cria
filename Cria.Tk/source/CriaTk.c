@@ -1,25 +1,5 @@
-#include <X11/X.h>  /* 一応入れとく */
-#include <stdio.h>
-#include <tcl.h>
-#include <tk.h>
-#include <string.h>
-
-#include "Memory.h"
-#include "Logger.h"
-
-#include "CriaBoolean.h"
-#include "Runtime.h"
-#include "String.h"
-#include "StringBuffer.h"
-#include "CriaObject.h"
-#include "CriaString.h"
-#include "CriaInteger.h"
-#include "CriaList.h"
-#include "CriaBlock.h"
-#include "Definition.h"
-#include "CriaVariable.h"
-
-#include "_CriaTk.h"
+#include "Cria.h"
+#include "CriaTk.h"
 
 
 
