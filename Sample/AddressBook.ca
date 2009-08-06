@@ -23,8 +23,7 @@ AddressBook:
 
     @load(file_path):
         .file_path = file_path
-        file = File(.file_path)
-        file.open("r")
+        file = File.open(.file_path, "r")
         while file.is_end() == false
             line = file.read()
             fields = line.split(",")
@@ -36,7 +35,7 @@ AddressBook:
         file.close()
 
     @print(index):
-        write("[{0}] {1}", index, .entrys[index].to_string())
+        write("[%s] %s", index, .entrys[index].to_string())
 
     @save():
         if .file_path == null
@@ -44,8 +43,7 @@ AddressBook:
             .file_path = read()
             if .file_path == ""
                 .file_path = "TemplateAddressBook.csv"
-        file = File(.file_path, "w")
-        file.open()
+        file = File.open(.file_path, "w")
         index = 0
         while index < .entrys.count()
             file.write(.entrys[index].to_csv())
@@ -120,9 +118,9 @@ AddressBookCUI:
             entry.address = read()
             write(" - Input birthday >> ")
             entry.address = read()
-            write("----------\nName    : [{0}]\n" + _
-                              "Address : [{1}]\n" + _
-                              "Birthday: [{2}]\n----------\n", _
+            write("----------\nName    : [%s]\n" + _
+                              "Address : [%s]\n" + _
+                              "Birthday: [%s]\n----------\n", _
                   entry.name, entry.address, entry.birthday)
             write("Is it OK?(y/n) >> ")
             answer = read()

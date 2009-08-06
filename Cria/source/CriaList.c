@@ -15,7 +15,8 @@ CriaId
 CriaList__generator_(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -65,11 +66,15 @@ CriaId
 CriaList_new(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
     CriaObject list = NULL;
+    int count = 0;
+    int i = 0;
+    CriaId item = NULL;
     
     
     if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
@@ -80,16 +85,20 @@ CriaList_new(
     }
     
     
-    if (List_count(args) != 0)
+    list = (CriaObject)object;
+    List pointer = List_new();
+    CriaObject_set(interpreter, list, "pointer", pointer);
+
+    
+    count = List_count(args);
+    
+    for (i = 0; i < count; i++)
     {
-    	Runtime_error(interpreter, "Illegal arguments count.");
-    	goto END;
+        item = List_get(args, i);
+        List_add(pointer, item);
     }
     
 
-    list = (CriaObject)object;
-    CriaObject_set(interpreter, list, "pointer", List_new());
-    
 END:
     Logger_trc("[  END  ]%s", __func__);
     return (CriaId)list;
@@ -101,7 +110,8 @@ CriaId
 CriaList_add(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -137,7 +147,8 @@ CriaId
 CriaList_delete(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -178,7 +189,8 @@ CriaId
 CriaList_insert(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -221,7 +233,8 @@ CriaId
 CriaList_get(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -262,7 +275,8 @@ CriaId
 CriaList_set(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -304,7 +318,8 @@ CriaId
 CriaList_count(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);

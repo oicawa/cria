@@ -124,7 +124,8 @@ CriaId
 CriaInteger_parse(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -184,7 +185,8 @@ CriaId
 CriaInteger_to_string(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);

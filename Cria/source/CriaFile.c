@@ -16,7 +16,8 @@ CriaId
 CriaFile__generator_(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -35,7 +36,8 @@ CriaId
 CriaFile_new(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -83,42 +85,37 @@ CriaId
 CriaFile_open(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
     CriaObject file = NULL;
-    CriaString path = NULL;
     FILE* pointer = NULL;
-    void* tmp = NULL;
     CriaId arg = NULL;
+    String path = NULL;
     String mode = NULL;
 
     
-    Logger_dbg("Check object data type.");
-    if (object->type != CRIA_DATA_TYPE_CRIA_OBJECT)
-    {
-    	Runtime_error(interpreter, "Data type of scoped object is illegal.");
-    	goto END;
-    }
-    Logger_dbg("Cast object from CriaId.");
-    file = (CriaObject)object;
-    Logger_dbg("Casted object from CriaId.");
-    tmp = CriaObject_get(interpreter, file, "path");
-    Logger_dbg("object = %p.", tmp);
-    path = (CriaString)tmp;
-    
-    
     Logger_dbg("Check arguments count.");
-    if (List_count(args) != 1)
+    if (List_count(args) != 2)
     {
     	Runtime_error(interpreter, "Illegal arguments count.");
     	goto END;
     }
     
     
-    arg = (CriaId)(List_get(args, 0));
+    arg = (CriaId)List_get(args, 0);
+    if (arg->type != CRIA_DATA_TYPE_STRING)
+    {
+    	Runtime_error(interpreter, "Illegal arguments count.");
+    	goto END;
+    }
+    path = ((CriaString)arg)->value;
+    
+    
+    arg = (CriaId)(List_get(args, 1));
     if (arg->type != CRIA_DATA_TYPE_STRING)
     {
     	Runtime_error(interpreter, "1st argument is not string.");
@@ -127,17 +124,36 @@ CriaFile_open(
     mode = ((CriaString)arg)->value;
     
     
-    Logger_dbg("Path = '%s'", path->value);
-    Logger_dbg("Mode = '%s'", mode);
-    pointer = fopen(path->value, mode);
+    file = (CriaObject)CriaFile__generator_(interpreter, object, args, NULL);
+    
+    
+    pointer = fopen(path, mode);
     if (pointer == NULL)
     {
-    	Runtime_error(interpreter, "File open error. (%s)", path->value);
+    	Runtime_error(interpreter, "File open error. (%s)", path);
     	goto END;
     }
-    Logger_inf("File opened. (%s)", path->value);
     
     CriaObject_set(interpreter, file, "pointer", pointer);
+    
+    
+    
+    //TODO: Implement 'block' logic.
+    if (block == NULL)
+    {
+        id = (CriaId)file;
+        goto END;
+    }
+    
+    List parameterList = List_new();
+    DefinitionVariable variable = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "file", FALSE, FALSE, NULL);
+    DefinitionVariable_set(variable, (CriaId)file);
+    List_add(parameterList, variable);
+    CriaBlock block_value = (CriaBlock)ExpressionBlock_evaluate(interpreter, object, parameterList, block, NULL, List_new());
+    CriaBlock_evaluate(block_value);
+    
+    
+    fclose(pointer);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -150,7 +166,8 @@ CriaId
 CriaFile_close(
 	Interpreter interpreter,
 	CriaId object,
-    List        args
+    List args,
+    ExpressionBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -187,7 +204,8 @@ CriaId
 CriaFile_read(
 	Interpreter interpreter,
 	CriaId object,
-    List        args
+    List args,
+    ExpressionBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -252,7 +270,8 @@ CriaId
 CriaFile_write(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -370,7 +389,8 @@ CriaId
 CriaFile_isEnd(
 	Interpreter interpreter,
 	CriaId object,
-    List        args
+    List args,
+    ExpressionBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -438,8 +458,8 @@ CriaFile_loadClass(
     
     Logger_dbg("3");
     
-    function = DefinitionFunction_new("open", TRUE, FALSE, NULL, NULL, CriaFile_open);
-    Hash_put(i_methods, DefinitionFunction_get_name(function), function);
+    function = DefinitionFunction_new("open", TRUE, TRUE, NULL, NULL, CriaFile_open);
+    Hash_put(s_methods, DefinitionFunction_get_name(function), function);
     
     Logger_dbg("4");
     

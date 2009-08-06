@@ -694,7 +694,7 @@ DefinitionFunction_evaluate(
     if (function->isNative == TRUE)
     {
         Logger_dbg("Call native function.(%s)", function->name);
-        id = (*(function->of.native.function))(interpreter, object, parameters);
+        id = (*(function->of.native.function))(interpreter, object, parameters, block);
         goto END;
     }
     

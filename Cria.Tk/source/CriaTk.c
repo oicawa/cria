@@ -13,7 +13,8 @@ CriaId
 CriaTk__generator_(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -31,7 +32,8 @@ CriaId
 CriaTk_new(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -108,7 +110,8 @@ CriaId
 CriaTk_do(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -189,13 +192,14 @@ CriaId
 CriaTk_bind(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
     CriaString string = NULL;
-    CriaBlock block = NULL;
+    CriaBlock block_value = NULL;
     Tcl_Interp *interp;
     int args_count = 0;
     
@@ -218,14 +222,14 @@ CriaTk_bind(
         Runtime_error(interpreter, "Data type of 2nd argument is illegal.");
         goto END;
     }
-    block = (CriaBlock)id;
+    block_value = (CriaBlock)id;
     
     id = (CriaId)List_get(args, 2);
     
     interp = CriaTk__core_(interpreter, object);
     
     
-    Tcl_CreateCommand(interp, string->value, (Tcl_CmdProc*)CriaTk_handle_proc, (ClientData)block, NULL);
+    Tcl_CreateCommand(interp, string->value, (Tcl_CmdProc*)CriaTk_handle_proc, (ClientData)block_value, NULL);
     
     
     
@@ -240,7 +244,8 @@ CriaId
 CriaTk_main_loop(
 	Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);

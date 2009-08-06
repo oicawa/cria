@@ -20,7 +20,7 @@ ExpressionReference ExpressionVariable_parse(Parser parser);
 ExpressionReference ExpressionGenerate_parse(Parser parser);
 ExpressionReference ExpressionClass_parse(Parser parser);
 ExpressionParameters ExpressionParameters_parse(Parser parser);
-CriaId ExpressionBlock_evaluate(Interpreter interpreter, CriaId object, List parameterList, ExpressionBlock expression, CriaId parent);
+CriaId ExpressionBlock_evaluate(Interpreter interpreter, CriaId object, List parameterList, ExpressionBlock expression, CriaId parent, List parameters);
 ExpressionBlock ExpressionBlock_parse(Parser parser, Boolean start_with_reserved);
 
 
@@ -370,7 +370,7 @@ ExpressionVariable_evaluate(
     {
         if (strcmp(expression->name, "<<block>>") == 0)
         {
-            id = ExpressionBlock_evaluate(interpreter, object, parameterList, block, parent);
+            id = ExpressionBlock_evaluate(interpreter, object, parameterList, block, parent, List_new());
 		    if (id != NULL)
 			    goto END;
         }
@@ -702,7 +702,7 @@ ExpressionParameters_evaluate(
             Logger_dbg("Add 'Cria Id'");
             break;
         case EXPRESSION_KIND_BLOCK:
-            id = ExpressionBlock_evaluate(interpreter, object, parameterList, expression->of._block_, NULL);
+            id = ExpressionBlock_evaluate(interpreter, object, parameterList, expression->of._block_, NULL, List_new());
             List_add(list, id);
             break;
         case EXPRESSION_KIND_REFERENCE:
@@ -737,7 +737,8 @@ ExpressionBlock_evaluate(
     CriaId object,
     List parameterList,
     ExpressionBlock expression,
-    CriaId parent
+    CriaId parent,
+    List parameters
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -761,7 +762,7 @@ ExpressionBlock_evaluate(
 	}
     
 	
-    id = CriaBlock_new(interpreter, object, parameterList, List_new(), function, parent);
+    id = CriaBlock_new(interpreter, object, parameterList, parameters, function, parent);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -1439,7 +1440,7 @@ Expression_evaluate(
         break;
     case EXPRESSION_KIND_BLOCK:
         //TODO: Herre, I must implement binding environmental variables to block.
-        id = ExpressionBlock_evaluate(interpreter, object, parameters, expression->of._block_, NULL);
+        id = ExpressionBlock_evaluate(interpreter, object, parameters, expression->of._block_, NULL, List_new());
         break;
     default:
         Runtime_error(interpreter, "Illegal expression.");

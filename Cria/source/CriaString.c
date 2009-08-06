@@ -105,7 +105,8 @@ CriaId
 CriaString_sub(
     Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -169,7 +170,8 @@ CriaId
 CriaString_find(
     Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -232,7 +234,8 @@ CriaId
 CriaString_split(
     Interpreter interpreter,
 	CriaId object,
-    List args
+    List args,
+    ExpressionBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -284,7 +287,7 @@ CriaString_split(
         offset = index + length;
     }
     
-    id = CriaList__generator_(interpreter, NULL, NULL);
+    id = CriaList__generator_(interpreter, NULL, NULL, NULL);
     CriaObject_set(interpreter, (CriaObject)id, "pointer", list);
 
 END:

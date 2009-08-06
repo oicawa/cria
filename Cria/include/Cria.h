@@ -339,7 +339,7 @@ typedef struct  TokenTag *Token;
 typedef struct  TokenizerTag *Tokenizer;
 
 
-typedef CriaId CriaNativeFunction(Interpreter interpreter, CriaId object, List args);
+typedef CriaId CriaNativeFunction(Interpreter interpreter, CriaId object, List args, ExpressionBlock block);
 
 
 
@@ -567,6 +567,18 @@ Hash_put(
 	Hash hash,
 	char* key,
 	void* object
+);
+
+
+
+CriaId
+ExpressionBlock_evaluate(
+    Interpreter interpreter,
+    CriaId object,
+    List parameterList,
+    ExpressionBlock expression,
+    CriaId parent,
+    List parameters
 );
 
 
