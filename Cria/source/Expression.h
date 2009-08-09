@@ -125,7 +125,6 @@ struct ExpressionReferenceTag
 
 struct ExpressionBlockTag
 {
-//    ExpressionParameters parameters;
     DefinitionFunction function;
 };
 
@@ -136,7 +135,7 @@ ExpressionFunctionCall_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameterList,
-    ExpressionBlock block,
+    CriaBlock block,
     ExpressionFunctionCall expression,
     CriaId parent
 );
@@ -159,7 +158,7 @@ ExpressionGenerate_evaluate(
     Interpreter             interpreter,
     CriaId object,
     List parameterList,
-    ExpressionBlock block,
+    CriaBlock block,
     ExpressionGenerate  expression
 );
 
@@ -229,7 +228,7 @@ ExpressionFunctionCall_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameterList,
-    ExpressionBlock block,
+    CriaBlock block,
     ExpressionFunctionCall expression,
     CriaId parent
 );
@@ -255,7 +254,7 @@ ExpressionReference_evaluate(
     Interpreter         interpreter,
     CriaId variable,
     List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     ExpressionReference expression,
     CriaId parent
 );
@@ -274,7 +273,7 @@ Expression_evaluate(
     Interpreter interpreter,
     CriaId object,
 	List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     Expression  expression
 );
 

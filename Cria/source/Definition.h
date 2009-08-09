@@ -136,7 +136,7 @@ DefinitionFunction_evaluate(
 	Interpreter interpreter,
     CriaId id,
 	List parameterList,
-    ExpressionBlock block,
+    CriaBlock block,
 	DefinitionFunction function,
 	List parameters,
 	CriaId parent
@@ -174,7 +174,7 @@ DefinitionClass_evaluate(
     Interpreter interpreter,
     CriaId  id,
     List parameterList,
-    ExpressionBlock block,
+    CriaBlock block,
     char*   name,
     Boolean isStatic,
     DefinitionClass klass,
@@ -211,7 +211,7 @@ DefinitionClass_generateInstance(
     Interpreter interpreter,
     DefinitionClass klass,
     List parameters,
-    ExpressionBlock block
+    CriaBlock block
 );
 
 

@@ -37,7 +37,7 @@ StatementWhile_execute(
 	Interpreter interpreter,
 	CriaId object,
 	List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     StatementWhile statement
 )
 {
@@ -194,7 +194,7 @@ StatementGoto_execute(
 	Interpreter interpreter,
 	CriaId object,
 	List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     StatementGoto statement
 )
 {
@@ -324,7 +324,7 @@ StatementIf_execute(
     Interpreter interpreter,
     CriaId object,
 	List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     StatementIf statement
 )
 {
@@ -712,7 +712,7 @@ StatementReference_execute(
     Interpreter         interpreter,
     CriaId object,
 	List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     StatementReference statement
 )
 {
@@ -787,7 +787,7 @@ Statement_execute(
     Interpreter interpreter,
     CriaId object,
     List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     Statement statement
 )
 {
@@ -829,7 +829,7 @@ Statement_executeList(
     Interpreter interpreter,
     CriaId object,
     List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     List statements
 )
 {

@@ -339,7 +339,7 @@ typedef struct  TokenTag *Token;
 typedef struct  TokenizerTag *Tokenizer;
 
 
-typedef CriaId CriaNativeFunction(Interpreter interpreter, CriaId object, List args, ExpressionBlock block);
+typedef CriaId CriaNativeFunction(Interpreter interpreter, CriaId object, List args, CriaBlock block);
 
 
 
@@ -481,7 +481,8 @@ CriaString_new(
 
 CriaId
 CriaBlock_evaluate(
-    CriaBlock block
+    CriaBlock block,
+    List parameters
 );
 
 
@@ -516,6 +517,13 @@ Logger_write(
     (Logger_write(__FILE__, __func__, __LINE__, LOG_LEVEL_DEBUG, __VA_ARGS__))
 #define Logger_cor(...)\
     (Logger_write(__FILE__, __func__, __LINE__, LOG_LEVEL_CORE, __VA_ARGS__))
+
+
+
+List
+List_new(
+    void
+);
 
 
 
@@ -576,9 +584,7 @@ ExpressionBlock_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameterList,
-    ExpressionBlock expression,
-    CriaId parent,
-    List parameters
+    ExpressionBlock expression
 );
 
 

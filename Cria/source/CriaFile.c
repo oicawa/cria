@@ -17,7 +17,7 @@ CriaFile__generator_(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -37,7 +37,7 @@ CriaFile_new(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -86,7 +86,7 @@ CriaFile_open(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -145,12 +145,9 @@ CriaFile_open(
         goto END;
     }
     
-    List parameterList = List_new();
-    DefinitionVariable variable = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "file", FALSE, FALSE, NULL);
-    DefinitionVariable_set(variable, (CriaId)file);
-    List_add(parameterList, variable);
-    CriaBlock block_value = (CriaBlock)ExpressionBlock_evaluate(interpreter, object, parameterList, block, NULL, List_new());
-    CriaBlock_evaluate(block_value);
+    List parameters = List_new();
+    List_add(parameters, file);
+    CriaBlock_evaluate(block, parameters);
     
     
     fclose(pointer);
@@ -167,7 +164,7 @@ CriaFile_close(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -205,7 +202,7 @@ CriaFile_read(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -271,7 +268,7 @@ CriaFile_write(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -390,7 +387,7 @@ CriaFile_isEnd(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);

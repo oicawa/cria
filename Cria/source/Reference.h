@@ -50,8 +50,8 @@ struct ReferenceTag
 
 
 
-void ReferenceFunctionCall_evaluate(Interpreter interpreter, CriaId object, List parameters, ExpressionBlock block, Reference reference, CriaId parent);
-void ReferenceIndexer_evaluate(Interpreter interpreter, CriaId object, List parameters, ExpressionBlock block, Reference reference, CriaId parent);
+void ReferenceFunctionCall_evaluate(Interpreter interpreter, CriaId object, List parameters, CriaBlock block, Reference reference, CriaId parent);
+void ReferenceIndexer_evaluate(Interpreter interpreter, CriaId object, List parameters, CriaBlock block, Reference reference, CriaId parent);
 
 
 
@@ -82,7 +82,7 @@ ReferenceVariable_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     Reference reference,
     CriaId parent
 );
@@ -95,7 +95,7 @@ ReferenceClass_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     Reference reference,
     CriaId parent
 );
@@ -128,7 +128,7 @@ Reference_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     Reference   reference,
     CriaId parent
 );

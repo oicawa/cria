@@ -62,14 +62,12 @@ Item_getPrev(
 
 
 List
-List_newFunction(
-    char    *fileName,
-    int     line
+List_new(
+    void
 )
 {
     List list = Memory_malloc(sizeof(struct ListTag));
     list->item = NULL;
-    Logger_cor("&(list->item) = %p", &(list->item));
     list->last = NULL;
     return list;
 }

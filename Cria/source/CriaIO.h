@@ -13,7 +13,7 @@ CriaIO_write(
     Interpreter interpreter,
     CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 );
 
 
@@ -23,7 +23,7 @@ CriaIO_read(
     Interpreter interpreter,
     CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 );
 
 

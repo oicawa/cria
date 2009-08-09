@@ -23,16 +23,15 @@ AddressBook:
 
     @load(file_path):
         .file_path = file_path
-        file = File.open(.file_path, "r")
-        while file.is_end() == false
-            line = file.read()
-            fields = line.split(",")
-            entry = Entry()
-            entry.name = fields[class.NAME]
-            entry.address = fields[class.ADDRESS]
-            entry.birthday = fields[class.BIRTHDAY]
-            .entrys.add(entry)
-        file.close()
+        File.open(.file_path, "r")(file):
+            while file.is_end() == false
+                line = file.read()
+                fields = line.split(",")
+                entry = Entry()
+                entry.name = fields[class.NAME]
+                entry.address = fields[class.ADDRESS]
+                entry.birthday = fields[class.BIRTHDAY]
+                .entrys.add(entry)
 
     @print(index):
         write("[%s] %s", index, .entrys[index].to_string())

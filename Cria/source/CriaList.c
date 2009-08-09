@@ -16,7 +16,7 @@ CriaList__generator_(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -67,7 +67,7 @@ CriaList_new(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -111,7 +111,7 @@ CriaList_add(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -148,7 +148,7 @@ CriaList_delete(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -190,7 +190,7 @@ CriaList_insert(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -234,7 +234,7 @@ CriaList_get(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -276,7 +276,7 @@ CriaList_set(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -319,7 +319,7 @@ CriaList_count(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);

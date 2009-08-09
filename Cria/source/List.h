@@ -51,16 +51,6 @@ Item_getNext(
 
 
 
-List
-List_newFunction(
-    char    *fileName,
-    int     line
-);
-#define List_new()\
-    (List_newFunction(__FILE__, __LINE__))
-
-
-
 void
 List_addFunction(
     List    list,

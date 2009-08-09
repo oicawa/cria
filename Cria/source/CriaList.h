@@ -23,7 +23,7 @@ CriaList__generator_(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 );
 
 

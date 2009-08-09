@@ -17,7 +17,7 @@ CriaIO_write(
     Interpreter interpreter,
     CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -128,7 +128,7 @@ CriaIO_read(
     Interpreter interpreter,
     CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);

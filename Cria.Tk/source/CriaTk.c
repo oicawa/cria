@@ -14,7 +14,7 @@ CriaTk__generator_(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -33,7 +33,7 @@ CriaTk_new(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -111,7 +111,7 @@ CriaTk_do(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -181,7 +181,7 @@ CriaTk_handle_proc(
     Logger_trc("[ START ]%s", __func__);
     CriaBlock block = (CriaBlock)data;
     
-    CriaBlock_evaluate(block);
+    CriaBlock_evaluate(block, List_new());
     
     Logger_trc("[  END  ]%s", __func__);
     return 0;
@@ -193,7 +193,7 @@ CriaTk_bind(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);
@@ -245,7 +245,7 @@ CriaTk_main_loop(
 	Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )	
 {
     Logger_trc("[ START ]%s", __func__);

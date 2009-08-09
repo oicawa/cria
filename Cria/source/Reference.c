@@ -198,7 +198,7 @@ ReferenceVariable_evaluate(
     Interpreter         interpreter,
     CriaId object,
     List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     Reference reference,
     CriaId parent
 )
@@ -369,7 +369,7 @@ Reference_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     Reference   reference,
     CriaId parent
 )
@@ -420,7 +420,7 @@ ReferenceFunctionCall_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     Reference reference,
     CriaId parent
 )
@@ -490,7 +490,7 @@ ReferenceIndexer_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     Reference reference,
     CriaId parent
 )
@@ -624,7 +624,7 @@ ReferenceClass_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     Reference reference,
     CriaId parent
 )

@@ -20,9 +20,7 @@ struct CriaBlockTag
     Interpreter interpreter;
     CriaId object;
     List parameterList;
-    List parameters;
     DefinitionFunction function;
-    CriaId parent;
 };
 
 
@@ -32,9 +30,7 @@ CriaBlock_new(
     Interpreter interpreter,
     CriaId object,
     List parameterList,
-    List parameters,
-    DefinitionFunction function,
-    CriaId parent
+    DefinitionFunction function
 );
 
 

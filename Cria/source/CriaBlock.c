@@ -13,9 +13,7 @@ CriaBlock_new(
     Interpreter interpreter,
     CriaId object,
     List parameterList,
-    List parameters,
-    DefinitionFunction function,
-    CriaId parent
+    DefinitionFunction function
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -27,9 +25,7 @@ CriaBlock_new(
     block->interpreter = interpreter;
     block->object = object;
     block->parameterList = parameterList;
-    block->parameters = parameters;
     block->function = function;
-    block->parent = parent;
     
     Logger_trc("[  END  ]%s", __func__);
     return block;
@@ -38,18 +34,17 @@ CriaBlock_new(
 
 CriaId
 CriaBlock_evaluate(
-    CriaBlock block
+    CriaBlock block,
+    List parameters
 )
 {
     CriaId id = NULL;
     Interpreter interpreter = block->interpreter;
     CriaId object = block->object;
     List parameterList = block->parameterList;
-    List parameters = block->parameters;
     DefinitionFunction function = block->function;
-    CriaId parent = block->parent;
     
-    id = DefinitionFunction_evaluate(interpreter, object, parameterList, NULL, function, parameters, parent);
+    id = DefinitionFunction_evaluate(interpreter, object, parameterList, NULL, function, parameters, NULL);
     
     return id;
 }

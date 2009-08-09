@@ -679,7 +679,7 @@ DefinitionFunction_evaluate(
 	Interpreter interpreter,
     CriaId object,
 	List parameterList,
-    ExpressionBlock block,
+    CriaBlock block,
 	DefinitionFunction function,
 	List parameters,
     CriaId parent
@@ -698,11 +698,6 @@ DefinitionFunction_evaluate(
         goto END;
     }
     
-    Logger_dbg("function is %p", function);
-    Logger_dbg("function->name is '%s'", function->name);
-    Logger_dbg("function->of.cria.parameterList is %p", function->of.cria.parameterList);
-    Logger_dbg("function->of.cria.parameterList->count is %d", List_count(function->of.cria.parameterList));
-    Logger_dbg("parameters->count is %d", List_count(parameters));
     
     
     //パラメータをセット
@@ -812,7 +807,7 @@ DefinitionClass_evaluate(
     Interpreter interpreter,
     CriaId  id,
     List parameterList,
-    ExpressionBlock block,
+    CriaBlock block,
     char*   name,
     Boolean isStatic,
     DefinitionClass klass,
@@ -882,7 +877,7 @@ DefinitionClass_generateInstance(
     Interpreter interpreter,
     DefinitionClass klass,
     List parameters,
-    ExpressionBlock block
+    CriaBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);

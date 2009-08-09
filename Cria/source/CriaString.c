@@ -106,7 +106,7 @@ CriaString_sub(
     Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -171,7 +171,7 @@ CriaString_find(
     Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -235,7 +235,7 @@ CriaString_split(
     Interpreter interpreter,
 	CriaId object,
     List args,
-    ExpressionBlock block
+    CriaBlock block
 )
 {
     Logger_trc("[ START ]%s", __func__);

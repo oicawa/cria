@@ -20,7 +20,7 @@ ExpressionReference ExpressionVariable_parse(Parser parser);
 ExpressionReference ExpressionGenerate_parse(Parser parser);
 ExpressionReference ExpressionClass_parse(Parser parser);
 ExpressionParameters ExpressionParameters_parse(Parser parser);
-CriaId ExpressionBlock_evaluate(Interpreter interpreter, CriaId object, List parameterList, ExpressionBlock expression, CriaId parent, List parameters);
+CriaId ExpressionBlock_evaluate(Interpreter interpreter, CriaId object, List parameterList, ExpressionBlock expression);
 ExpressionBlock ExpressionBlock_parse(Parser parser, Boolean start_with_reserved);
 
 
@@ -102,7 +102,7 @@ ExpressionOperation_evaluate(
     Interpreter         interpreter,
     CriaId object,
     List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     ExpressionOperation expression
 )
 {
@@ -356,7 +356,7 @@ ExpressionVariable_evaluate(
     Interpreter         interpreter,
     CriaId object,
     List parameterList,
-    ExpressionBlock block,
+    CriaBlock block,
     ExpressionVariable  expression,
     CriaId parent
 )
@@ -370,7 +370,7 @@ ExpressionVariable_evaluate(
     {
         if (strcmp(expression->name, "<<block>>") == 0)
         {
-            id = ExpressionBlock_evaluate(interpreter, object, parameterList, block, parent, List_new());
+            id = (CriaId)block;
 		    if (id != NULL)
 			    goto END;
         }
@@ -420,7 +420,7 @@ ExpressionClass_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     ExpressionClass klass,
     CriaId parent
 )
@@ -524,7 +524,7 @@ ExpressionReference_evaluate(
     Interpreter         interpreter,
     CriaId object,
     List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     ExpressionReference expression,
     CriaId parent
 )
@@ -655,7 +655,7 @@ ExpressionParameters_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameterList,
-    ExpressionBlock block,
+    CriaBlock block,
     ExpressionParameters parametersExpression
 )
 {
@@ -702,7 +702,7 @@ ExpressionParameters_evaluate(
             Logger_dbg("Add 'Cria Id'");
             break;
         case EXPRESSION_KIND_BLOCK:
-            id = ExpressionBlock_evaluate(interpreter, object, parameterList, expression->of._block_, NULL, List_new());
+            id = ExpressionBlock_evaluate(interpreter, object, parameterList, expression->of._block_);
             List_add(list, id);
             break;
         case EXPRESSION_KIND_REFERENCE:
@@ -736,9 +736,7 @@ ExpressionBlock_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameterList,
-    ExpressionBlock expression,
-    CriaId parent,
-    List parameters
+    ExpressionBlock expression
 )
 {
     Logger_trc("[ START ]%s", __func__);
@@ -761,8 +759,8 @@ ExpressionBlock_evaluate(
 		goto END;
 	}
     
-	
-    id = CriaBlock_new(interpreter, object, parameterList, parameters, function, parent);
+    
+    id = CriaBlock_new(interpreter, object, parameterList, function);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -1024,7 +1022,7 @@ ExpressionFunctionCall_evaluate(
     Interpreter interpreter,
     CriaId object,
     List parameterList,
-    ExpressionBlock block,
+    CriaBlock block,
     ExpressionFunctionCall expression,
     CriaId parent
 )
@@ -1036,7 +1034,7 @@ ExpressionFunctionCall_evaluate(
     List tmp = NULL;
     String target = NULL;
     List parameters = NULL;
-    ExpressionBlock next_block = NULL;
+    CriaBlock next_block = NULL;
     
     if (parent == NULL)
     {
@@ -1083,18 +1081,18 @@ ExpressionFunctionCall_evaluate(
 		goto END;
 	}
 	
-    
-    if (expression->block == NULL)
+    //TODO: ここでブロックの評価（CriaBlockオブジェクトの生成）を行う。
+    //従って、今引数としてExpressionBlockを渡している関数は、ほとんどをCriaBlockに修正する必要がある。
+    if (expression->block != NULL)
     {
-        next_block = block;
+        next_block = (CriaBlock)ExpressionBlock_evaluate(interpreter, object, parameterList, expression->block);
     }
     else
     {
-        next_block = expression->block;
+        next_block = block;
     }
     
     parameters = ExpressionParameters_evaluate(interpreter, object, parameterList, next_block, expression->parameters);
-    
     tmp = DefinitionFunction_getParameterList(function);
     id = DefinitionFunction_evaluate(interpreter, current, tmp, next_block, function, parameters, parent);
     
@@ -1188,7 +1186,7 @@ ExpressionGenerate_evaluate(
     Interpreter             interpreter,
     CriaId object,
     List parameterList,
-    ExpressionBlock block,
+    CriaBlock block,
     ExpressionGenerate  expression
 )
 {
@@ -1386,7 +1384,7 @@ Expression_evaluate(
     Interpreter interpreter,
     CriaId object,
 	List parameters,
-    ExpressionBlock block,
+    CriaBlock block,
     Expression  expression
 )
 {
@@ -1420,7 +1418,7 @@ Expression_evaluate(
         break;
     case EXPRESSION_KIND_FUNCTION_CALL:
         Logger_dbg("Do 'Function call expression'");
-        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, expression->of._functionCall_->block, expression->of._functionCall_, NULL);
+        id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, block, expression->of._functionCall_, NULL);
         Logger_dbg("Done 'Function call expression'");
         break;
     case EXPRESSION_KIND_REFERENCE:
@@ -1440,7 +1438,7 @@ Expression_evaluate(
         break;
     case EXPRESSION_KIND_BLOCK:
         //TODO: Herre, I must implement binding environmental variables to block.
-        id = ExpressionBlock_evaluate(interpreter, object, parameters, expression->of._block_, NULL, List_new());
+        id = ExpressionBlock_evaluate(interpreter, object, parameters, expression->of._block_);
         break;
     default:
         Runtime_error(interpreter, "Illegal expression.");
