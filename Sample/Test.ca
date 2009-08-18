@@ -1,8 +1,0 @@
-Test:
-    @hoge
-    @fuga
-    new(value1, value2):
-        .hoge = value1
-        .fuga = value2
-
-test = Test(0, 0)
