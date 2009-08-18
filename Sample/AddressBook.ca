@@ -33,6 +33,13 @@ AddressBook:
                 entry.birthday = fields[class.BIRTHDAY]
                 .entrys.add(entry)
 
+    @print_all():
+        index = 0
+        .entrys.each()(entry):
+            index = index + 1
+            write("[%s] %s", index, entry.to_string())
+            
+
     @print(index):
         write("[%s] %s", index, .entrys[index].to_string())
 
@@ -42,12 +49,12 @@ AddressBook:
             .file_path = read()
             if .file_path == ""
                 .file_path = "TemplateAddressBook.csv"
-        file = File.open(.file_path, "w")
-        index = 0
-        while index < .entrys.count()
-            file.write(.entrys[index].to_csv())
-            index = index + 1
-        file.close()
+
+        File.open(.file_path, "w")(tmp):
+            index = 0
+            .entrys.each()(entry):
+                tmp.write(entry.to_csv())
+                index = index + 1
 
     @add(entry):
         .entrys.add(entry)
@@ -91,10 +98,7 @@ AddressBookCUI:
         .address_book.load(file_path)
 
     @print_all():
-        index = 0
-        while index < .address_book.entrys.count()
-            .address_book.print(index)
-            index = index + 1
+        .address_book.print_all()
         write("Input any key.")
         read()
 
