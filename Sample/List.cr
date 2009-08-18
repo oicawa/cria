@@ -27,7 +27,7 @@ write("delete 1.\n\n")
 list.delete(1)
 print_list_contents(list)
 
-value = "I love Fumie!"
+value = "Insert new item!"
 write("insert '%s' at index 1.\n\n", value)
 list.insert(1, value)
 print_list_contents(list)
@@ -40,3 +40,6 @@ list[2] = "Indexer reference test, SUCCESSED!"
 print_list_contents_by_indexer(list)
 print_list_contents(list)
 
+write("!!ECHO!!\n")
+list.each()(tmp):
+    write("echo! >> %s\n", tmp)
