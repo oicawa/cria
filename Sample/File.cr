@@ -9,11 +9,12 @@ File.open("/home/masamitsu/Programing/cria/Sample/Integer.cr", "r")(file):
         write(line)
 
 
-#file = File("test.txt")
-#file.open("w")
-#file.write("write test!\n")
-#file.write("write test2!\n")
-#file.write("write test3!\n")
-#file.close()
+write("---------------------------------\n")
+write("Write to File named 'test.txt'.\n")
+write("---------------------------------\n")
+File.open("test.txt", "w")(tmp):
+    tmp.write("write test!\n")
+    tmp.write("write test2!\n")
+    tmp.write("write test3!\n")
 
 
