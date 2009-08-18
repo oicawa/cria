@@ -347,6 +347,55 @@ END:
 
 
 
+CriaId
+CriaList_each(
+	Interpreter interpreter,
+	CriaId object,
+    List args,
+    CriaBlock block
+)	
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    List pointer = NULL;
+
+    
+    pointer = CriaList__core_(interpreter, object);
+    
+    
+    Logger_dbg("Check arguments count.");
+    if (List_count(args) != 0)
+    {
+    	Runtime_error(interpreter, "Illegal arguments count.");
+    	goto END;
+    }
+    
+    
+    if (block == NULL)
+    {
+    	Runtime_error(interpreter, "'block' is not defined.");
+    	goto END;
+    }
+    
+    
+    int count = List_count(pointer);
+    int i = 0;
+    CriaId item = NULL;
+    for (i = 0; i < count; i++)
+    {
+        item = (CriaId)List_get(pointer, i);
+        List parameters = List_new();
+        List_add(parameters, item);
+        CriaBlock_evaluate(block, parameters);
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
 DefinitionClass
 CriaList_loadClass(
     String className
@@ -390,6 +439,9 @@ CriaList_loadClass(
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     function = DefinitionFunction_new("count", TRUE, FALSE, NULL, NULL, CriaList_count);
+    Hash_put(i_methods, DefinitionFunction_get_name(function), function);
+    
+    function = DefinitionFunction_new("each", TRUE, FALSE, NULL, NULL, CriaList_each);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     

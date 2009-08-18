@@ -89,8 +89,16 @@ List_insert(
 
 
 
-void
+List
 List_cat(
+    List list1,
+    List list2
+);
+
+
+
+void
+List_append(
     List list1,
     List list2
 );

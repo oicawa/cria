@@ -797,7 +797,7 @@ Tokenizer_create_tokens(
         skip = Tokenizer_check_join(tmp, line, strlen(buffer));
         
         
-        List_cat(tokens, tmp);
+        List_append(tokens, tmp);
         
         
         line++;

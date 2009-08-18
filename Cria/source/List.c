@@ -278,13 +278,49 @@ List_get_last(
 
 
 
-void
+List
 List_cat(
     List list1,
     List list2
 )
 {
     int i = 0;
+    List list = List_new();
+    
+    if (list1 != NULL)
+    {
+        for (i = 0; i < List_count(list1); i++)
+        {
+            List_add(list, List_get(list1, i));
+        }
+    }
+    
+    if (list2 != NULL)
+    {
+        for (i = 0; i < List_count(list2); i++)
+        {
+            List_add(list, List_get(list2, i));
+        }
+    }
+    
+    return list;
+}
+
+
+
+void
+List_append(
+    List list1,
+    List list2
+)
+{
+    int i = 0;
+    
+    if (list1 == NULL)
+        return;
+    
+    if (list2 == NULL)
+        return;
     
     for (i = 0; i < List_count(list2); i++)
     {

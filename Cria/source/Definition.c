@@ -699,20 +699,19 @@ DefinitionFunction_evaluate(
     }
     
     
-    
     //パラメータをセット
     for (i = 0; i < List_count(parameters); i++)
     {
     	id = (CriaId)List_get(parameters, i);
-    	definition = (DefinitionVariable)List_get(function->of.cria.parameterList, i);
+    	definition = (DefinitionVariable)List_get(parameterList, i);
     	DefinitionVariable_set(definition, id);
     }
-    
+
     //実行
     if (parent != NULL)
     	object = parent;
-    Logger_dbg("object is %p", object);
-	result = Statement_executeList(interpreter, object, parameterList, block, function->of.cria.statementList);
+
+    result = Statement_executeList(interpreter, object, parameterList, block, function->of.cria.statementList);
     id = result.returns.id;
     
 END:

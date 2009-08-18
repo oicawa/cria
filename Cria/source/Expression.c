@@ -759,6 +759,8 @@ ExpressionBlock_evaluate(
 		goto END;
 	}
     
+    //この時点では、ブロックにどんな引数が渡されるかまだ不明。
+    //なので、ここで記述すべきは、「ブロックが定義された場所の環境を保存するロジック」
     
     id = CriaBlock_new(interpreter, object, parameterList, function);
     
@@ -1081,8 +1083,7 @@ ExpressionFunctionCall_evaluate(
 		goto END;
 	}
 	
-    //TODO: ここでブロックの評価（CriaBlockオブジェクトの生成）を行う。
-    //従って、今引数としてExpressionBlockを渡している関数は、ほとんどをCriaBlockに修正する必要がある。
+
     if (expression->block != NULL)
     {
         next_block = (CriaBlock)ExpressionBlock_evaluate(interpreter, object, parameterList, expression->block);
