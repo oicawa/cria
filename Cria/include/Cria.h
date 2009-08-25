@@ -89,10 +89,6 @@ typedef struct HashTag *Hash;
 //==============================
 typedef enum
 {
-    EXPRESSION_KIND_STRING_LITERAL,
-    EXPRESSION_KIND_INTEGER_LITERAL,
-    EXPRESSION_KIND_REAL_LITERAL,
-    EXPRESSION_KIND_BOOLEAN_LITERAL,
     EXPRESSION_KIND_NULL,
     EXPRESSION_KIND_GENERATE,
     EXPRESSION_KIND_FUNCTION_CALL,
@@ -129,6 +125,9 @@ typedef enum
     REFERENCE_EXPRESSION_TYPE_INDEXER,
     REFERENCE_EXPRESSION_TYPE_CLASS,
     REFERENCE_EXPRESSION_TYPE_GENERATE,
+    REFERENCE_EXPRESSION_TYPE_STRING,
+    REFERENCE_EXPRESSION_TYPE_INTEGER,
+    REFERENCE_EXPRESSION_TYPE_BOOLEAN,
 } ExpressionReferenceType;
 
 
@@ -201,8 +200,16 @@ typedef enum
     REFERENCE_TYPE_FUNCTION_CALL,
     REFERENCE_TYPE_INDEXER,
     REFERENCE_TYPE_CLASS,
+    REFERENCE_TYPE_LITERAL,
 } ReferenceType;
 
+
+typedef enum
+{
+	REFERENCE_LITERAL_TYPE_STRING,
+	REFERENCE_LITERAL_TYPE_INTEGER,
+	REFERENCE_LITERAL_TYPE_BOOLEAN,
+} ReferenceLiteralType;
 
 
 typedef struct  ReferenceTag                    *Reference;
@@ -210,6 +217,7 @@ typedef struct  ReferenceVariableTag            *ReferenceVariable;
 typedef struct  ReferenceFunctionCallTag        *ReferenceFunctionCall;
 typedef struct  ReferenceIndexerTag             *ReferenceIndexer;
 typedef struct  ReferenceClassTag               *ReferenceClass;
+typedef struct  ReferenceLiteralTag             *ReferenceLiteral;
 
 
 
