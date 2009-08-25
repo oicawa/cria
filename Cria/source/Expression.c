@@ -16,6 +16,9 @@
 #include "Expression.h"
 
 
+ExpressionReference ExpressionStringLiteral_parse(Parser parser);
+ExpressionReference ExpressionIntegerLiteral_parse(Parser parser);
+ExpressionReference ExpressionBooleanLiteral_parse(Parser parser);
 ExpressionReference ExpressionVariable_parse(Parser parser);
 ExpressionReference ExpressionGenerate_parse(Parser parser);
 ExpressionReference ExpressionClass_parse(Parser parser);
@@ -552,6 +555,15 @@ ExpressionReference_evaluate(
     case REFERENCE_EXPRESSION_TYPE_GENERATE:
         id = ExpressionGenerate_evaluate(interpreter, object, parameters, block, expression->of.generate);
         break;
+    case REFERENCE_EXPRESSION_TYPE_STRING:
+        id = ExpressionStringLiteral_evaluate(interpreter, object, parameters, expression->of.string);
+        break;
+    case REFERENCE_EXPRESSION_TYPE_INTEGER:
+        id = ExpressionIntegerLiteral_evaluate(interpreter, object, parameters, expression->of.integer);
+        break;
+    case REFERENCE_EXPRESSION_TYPE_BOOLEAN:
+        id = ExpressionBooleanLiteral_evaluate(interpreter, object, parameters, expression->of.boolean);
+        break;
     default:
         break;
     }
@@ -618,6 +630,27 @@ ExpressionReference_parse(
         goto END;
     }
     
+    expression = ExpressionStringLiteral_parse(parser);
+    if (expression != NULL)
+    {
+    	Logger_dbg("Created Expression of string literal.");
+        goto END;
+    }
+    
+    expression = ExpressionIntegerLiteral_parse(parser);
+    if (expression != NULL)
+    {
+    	Logger_dbg("Created Expression of integer literal.");
+        goto END;
+    }
+    
+    expression = ExpressionBooleanLiteral_parse(parser);
+    if (expression != NULL)
+    {
+    	Logger_dbg("Created Expression of boolean literal.");
+        goto END;
+    }
+    
 END:
     Logger_trc("[  END  ]%s", __func__);
     return expression;
@@ -673,27 +706,6 @@ ExpressionParameters_evaluate(
         expression = (Expression)(List_get(expressions, i));
         switch (expression->kind)
         {
-        case EXPRESSION_KIND_STRING_LITERAL:
-            Logger_dbg("Do 'String literal expression'");
-            id = (CriaId)ExpressionStringLiteral_evaluate(interpreter, object, parameterList, expression->of._stringLiteral_);
-            Logger_dbg("Done 'String literal expression'");
-            List_add(list, id);
-            Logger_dbg("Add 'Cria Id'");
-            break;
-        case EXPRESSION_KIND_INTEGER_LITERAL:
-            Logger_dbg("Do 'Integer literal expression'");
-            id = ExpressionIntegerLiteral_evaluate(interpreter, object, parameterList, expression->of._integerLiteral_);
-            Logger_dbg("Done 'Integer literal expression'");
-            List_add(list, id);
-            Logger_dbg("Add 'Cria Id'");
-            break;
-        case EXPRESSION_KIND_BOOLEAN_LITERAL:
-            Logger_dbg("Do 'Boolean literal expression'");
-            id = ExpressionBooleanLiteral_evaluate(interpreter, object, parameterList, expression->of._booleanLiteral_);
-            Logger_dbg("Done 'Boolean literal expression'");
-            List_add(list, id);
-            Logger_dbg("Add 'Cria Id'");
-            break;
         case EXPRESSION_KIND_FUNCTION_CALL:
             Logger_dbg("Do 'Function call expression'");
             id = ExpressionFunctionCall_evaluate(interpreter, object, parameterList, block, expression->of._functionCall_, NULL);
@@ -1179,6 +1191,49 @@ ExpressionBooleanLiteral_evaluate(
 
 
 
+ExpressionReference
+ExpressionBooleanLiteral_parse(
+    Parser parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Item position = Parser_getPosition(parser);
+    Token token = NULL;
+    ExpressionReference expression = NULL;
+    
+    token = Parser_getCurrent(parser);
+    if (token->type != TOKEN_TYPE_BOOLEAN_LITERAL_FALSE &&
+        token->type != TOKEN_TYPE_BOOLEAN_LITERAL_TRUE)
+    {
+        Parser_setPosition(parser, position);
+        goto END;
+    }   
+    
+    
+    ExpressionBooleanLiteral boolean = NULL;
+    boolean = Memory_malloc(sizeof(struct ExpressionBooleanLiteralTag));
+    boolean->value = String_toBoolean(token->value);
+    
+    expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
+    expression->type = REFERENCE_EXPRESSION_TYPE_BOOLEAN;
+    expression->of.boolean = boolean;
+
+	
+    Parser_next(parser);
+    token = Parser_getCurrent(parser);
+    if (token->type == TOKEN_TYPE_PERIOD)
+    {
+        Parser_next(parser);
+        expression->next = ExpressionReference_parse(parser);
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
+}
+
+
+
 //==============================
 //ExpressionGenerate
 //==============================
@@ -1317,6 +1372,48 @@ ExpressionIntegerLiteral_evaluate(
 
 
 
+ExpressionReference
+ExpressionIntegerLiteral_parse(
+    Parser parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Item position = Parser_getPosition(parser);
+    Token token = NULL;
+    ExpressionReference expression = NULL;
+    
+    token = Parser_getCurrent(parser);
+    if (token->type != TOKEN_TYPE_INTEGER_LITERAL)
+    {
+        Parser_setPosition(parser, position);
+        goto END;
+    }   
+    
+    
+    ExpressionIntegerLiteral integer = NULL;
+    integer = Memory_malloc(sizeof(struct ExpressionIntegerLiteralTag));
+    integer->value = String_toInteger(token->value);
+    
+    expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
+    expression->type = REFERENCE_EXPRESSION_TYPE_INTEGER;
+    expression->of.integer = integer;
+
+	
+	Parser_next(parser);
+    token = Parser_getCurrent(parser);
+    if (token->type == TOKEN_TYPE_PERIOD)
+    {
+        Parser_next(parser);
+        expression->next = ExpressionReference_parse(parser);
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
+}
+
+
+
 CriaId
 ExpressionStringLiteral_evaluate(
     Interpreter             interpreter,
@@ -1379,6 +1476,47 @@ ExpressionStringLiteral_evaluate(
 }
 
 
+ExpressionReference
+ExpressionStringLiteral_parse(
+    Parser parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Item position = Parser_getPosition(parser);
+    Token token = NULL;
+    ExpressionReference expression = NULL;
+    
+    token = Parser_getCurrent(parser);
+    if (token->type != TOKEN_TYPE_STRING_LITERAL)
+    {
+        Parser_setPosition(parser, position);
+        goto END;
+    }   
+    
+    
+    ExpressionStringLiteral string = NULL;
+    string = Memory_malloc(sizeof(struct ExpressionStringLiteralTag));
+    string->value = String_new(token->value);
+    
+    expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
+    expression->type = REFERENCE_EXPRESSION_TYPE_STRING;
+    expression->of.string = string;
+
+	
+	Parser_next(parser);
+    token = Parser_getCurrent(parser);
+    if (token->type == TOKEN_TYPE_PERIOD)
+    {
+        Parser_next(parser);
+        expression->next = ExpressionReference_parse(parser);
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return expression;
+}
+
+
 
 CriaId
 Expression_evaluate(
@@ -1394,16 +1532,6 @@ Expression_evaluate(
     
     switch (expression->kind)
     {
-    case EXPRESSION_KIND_STRING_LITERAL:
-        Logger_dbg("Do 'String literal expression'");
-        id = (CriaId)ExpressionStringLiteral_evaluate(interpreter, object, parameters, expression->of._stringLiteral_);
-        Logger_dbg("Done 'String literal expression'");
-        break;
-    case EXPRESSION_KIND_INTEGER_LITERAL:
-        Logger_dbg("Do 'Integer literal expression'");
-        id = ExpressionIntegerLiteral_evaluate(interpreter, object, parameters, expression->of._integerLiteral_);
-        Logger_dbg("Done 'Integer literal expression'");
-        break;
     case EXPRESSION_KIND_GENERATE:
         Logger_dbg("Do 'Generate expression'");
         id = ExpressionGenerate_evaluate(interpreter, object, parameters, block, expression->of._generate_);
@@ -1413,9 +1541,6 @@ Expression_evaluate(
         Logger_dbg("Do 'Null expression'");
         id = NULL;
         Logger_dbg("Done 'Generate  expression'");
-        break;
-    case EXPRESSION_KIND_BOOLEAN_LITERAL:
-        id = ExpressionBooleanLiteral_evaluate(interpreter, object, parameters, expression->of._booleanLiteral_);
         break;
     case EXPRESSION_KIND_FUNCTION_CALL:
         Logger_dbg("Do 'Function call expression'");
@@ -1794,37 +1919,6 @@ ExpressionFactor_parse(
     Token token = Parser_getCurrent(parser);
     
     
-    Logger_dbg("Check integer literal.");
-    if (token->type == TOKEN_TYPE_INTEGER_LITERAL)
-    {
-        Logger_dbg("This is an integer literal token.");
-        ExpressionIntegerLiteral integerLiteral = Memory_malloc(sizeof(struct ExpressionIntegerLiteralTag));
-        integerLiteral->value = String_toInteger(token->value);
-        
-        expression = Expression_new(EXPRESSION_KIND_INTEGER_LITERAL);
-        expression->of._integerLiteral_ = integerLiteral;
-        
-        Parser_next(parser);
-        goto END;
-    }
-    
-    
-    Logger_dbg("Check boolean literal.");
-    if (token->type == TOKEN_TYPE_BOOLEAN_LITERAL_FALSE
-        || token->type == TOKEN_TYPE_BOOLEAN_LITERAL_TRUE)
-    {
-        Logger_dbg("This is an integer literal token.");
-        ExpressionBooleanLiteral booleanLiteral = Memory_malloc(sizeof(struct ExpressionBooleanLiteralTag));
-        booleanLiteral->value = String_toBoolean(token->value);
-        
-        expression = Expression_new(EXPRESSION_KIND_BOOLEAN_LITERAL);
-        expression->of._booleanLiteral_ = booleanLiteral;
-        
-        Parser_next(parser);
-        goto END;
-    }
-    
-    
     Logger_dbg("Check null literal.");
     if (token->type == TOKEN_TYPE_NULL)
     {
@@ -1833,22 +1927,6 @@ ExpressionFactor_parse(
         Parser_next(parser);
         goto END;
     }
-    
-    
-    Logger_dbg("Check string literal.");
-    if (token->type == TOKEN_TYPE_STRING_LITERAL)
-    {
-        Logger_dbg("This is a string literal token.");
-        ExpressionStringLiteral stringLiteral = Memory_malloc(sizeof(struct ExpressionStringLiteralTag));
-        stringLiteral->value = String_new(token->value);
-        
-        expression = Expression_new(EXPRESSION_KIND_STRING_LITERAL);
-        expression->of._stringLiteral_ = stringLiteral;
-        
-        Parser_next(parser);
-        goto END;
-    }
-    
     
     Logger_dbg("Check new expression.");
     if (token->type == TOKEN_TYPE_PARENTHESIS_LEFT)
@@ -1886,9 +1964,12 @@ ExpressionFactor_parse(
         }
     }
     
-    
     Logger_dbg("Check reference expression.");
-    if (token->type == TOKEN_TYPE_PERIOD ||
+    if (token->type == TOKEN_TYPE_STRING_LITERAL ||
+        token->type == TOKEN_TYPE_INTEGER_LITERAL ||
+        token->type == TOKEN_TYPE_BOOLEAN_LITERAL_TRUE ||
+        token->type == TOKEN_TYPE_BOOLEAN_LITERAL_FALSE ||
+        token->type == TOKEN_TYPE_PERIOD ||
         token->type == TOKEN_TYPE_IDENTIFIER ||
         token->type == TOKEN_TYPE_CLASS ||
         token->type == TOKEN_TYPE_CLASS_LITERAL ||

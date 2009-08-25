@@ -343,13 +343,11 @@ DefinitionFunction_parse_parameters(
 		
 		Parser_next(parser);
 		token = Parser_getCurrent(parser);
-		if (token->type != TOKEN_TYPE_COMMA)
+		if (token->type == TOKEN_TYPE_COMMA)
 	    {
-	        Logger_dbg("Not ', '");
-			break;
+    		Parser_next(parser);
+			continue;
 	    }
-	    
-		Parser_next(parser);
 	}
 	
     Logger_dbg("parameters count = %d", List_count(parameters));

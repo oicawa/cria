@@ -33,6 +33,17 @@ struct ReferenceClassTag
 
 
 
+struct ReferenceLiteralTag
+{
+    ReferenceLiteralType type;
+    union {
+        String string;
+        int integer;
+        Boolean boolean;
+    } of;
+};
+
+
 struct ReferenceTag
 {
     ReferenceType type;
@@ -44,6 +55,7 @@ struct ReferenceTag
         ExpressionFunctionCall function;
         ReferenceIndexer indexer;
         ReferenceClass klass;
+        ReferenceLiteral literal;
     } of;
     Reference next;
 };

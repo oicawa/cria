@@ -151,6 +151,7 @@ Tokenizer_number(
     Token token = NULL;
     char* start = cursor;
     Boolean point = FALSE;
+    Boolean is_real = FALSE;
     long size = 0;
 
     
@@ -161,11 +162,15 @@ Tokenizer_number(
     {
         if (isdigit(*cursor) != 0)
         {
+            is_real = point;
             cursor++;
             continue;
         }
         
-        if (*cursor == '.' && point == FALSE)
+        if (*cursor != '.')
+            break;
+        
+        if (point == FALSE)
         {
             cursor++;
             point = TRUE;
@@ -174,6 +179,15 @@ Tokenizer_number(
         
         break;
     }
+    
+    if (is_real == TRUE)
+    {
+        //TODO: It hasn't implemented 'Real Number'.
+        goto END;
+    }
+    
+    if (point == TRUE)
+        cursor--;
     
     size = cursor - start;
     token = Token_new(TOKEN_TYPE_INTEGER_LITERAL, String_sub(start, 0, size));

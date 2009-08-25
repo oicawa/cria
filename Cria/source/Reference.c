@@ -6,6 +6,9 @@
 #include "Tokenizer.h"
 #include "CriaObject.h"
 #include "CriaClass.h"
+#include "CriaString.h"
+#include "CriaInteger.h"
+#include "CriaBoolean.h"
 #include "Runtime.h"
 
 #include "Reference.h"
@@ -365,6 +368,112 @@ END:
 
 
 void
+ReferenceLiteral_evaluate(
+    Interpreter interpreter,
+    CriaId object,
+    List parameters,
+    CriaBlock block,
+    Reference reference,
+    CriaId parent
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    ReferenceLiteral literal = NULL;
+    literal = reference->of.literal;
+    
+    switch (literal->type)
+    {
+        case REFERENCE_LITERAL_TYPE_STRING:
+            id = (CriaId)CriaString_new(TRUE, literal->of.string);
+            break;
+        case REFERENCE_LITERAL_TYPE_INTEGER:
+            id = (CriaId)CriaInteger_new(TRUE, literal->of.integer);
+            break;
+        case REFERENCE_LITERAL_TYPE_BOOLEAN:
+            id = (CriaId)CriaBoolean_new(TRUE, literal->of.boolean);
+            break;
+        default:
+            Runtime_error(interpreter, "Illegal literal type.");
+            goto END;
+    }
+    
+    Reference_evaluate(interpreter, object, parameters, block, reference->next, id);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return;
+}
+
+
+Reference
+ReferenceLiteral_parse(
+    Parser  parser
+)
+{
+    Logger_trc("[ START ]%s", __func__);
+    Reference reference = NULL;
+    ReferenceLiteral literal = NULL;
+    Item position = Parser_getPosition(parser);
+    Token token = NULL;
+    
+    token = Parser_getCurrent(parser);
+    switch (token->type)
+    {
+        case TOKEN_TYPE_STRING_LITERAL:
+	        literal = Memory_malloc(sizeof(struct ReferenceLiteralTag));
+            literal->type = REFERENCE_LITERAL_TYPE_STRING;
+            literal->of.string = String_new(token->value);
+            break;
+        case TOKEN_TYPE_INTEGER_LITERAL:
+	        literal = Memory_malloc(sizeof(struct ReferenceLiteralTag));
+            literal->type = REFERENCE_LITERAL_TYPE_INTEGER;
+            literal->of.integer = atoi(token->value);
+            break;
+        case TOKEN_TYPE_BOOLEAN_LITERAL_TRUE:
+	        literal = Memory_malloc(sizeof(struct ReferenceLiteralTag));
+            literal->type = REFERENCE_LITERAL_TYPE_BOOLEAN;
+            literal->of.boolean = TRUE;
+            break;
+        case TOKEN_TYPE_BOOLEAN_LITERAL_FALSE:
+	        literal = Memory_malloc(sizeof(struct ReferenceLiteralTag));
+            literal->type = REFERENCE_LITERAL_TYPE_BOOLEAN;
+            literal->of.boolean = FALSE;
+            break;
+        default:
+        	Logger_dbg("Not identifier.");
+            Parser_setPosition(parser, position);
+            goto END;
+    }
+    
+    Parser_next(parser);
+    token = Parser_getCurrent(parser);
+    if (token->type != TOKEN_TYPE_PERIOD)
+    {
+    	Logger_dbg("Not '.' and ' = '");
+        Parser_setPosition(parser, position);
+        goto END;
+    }
+    
+    
+    reference = Reference_new(REFERENCE_TYPE_LITERAL);
+    reference->of.literal = literal;
+    
+    
+    Parser_next(parser);
+    token = Parser_getCurrent(parser);
+    reference->next = Reference_parse(parser);
+    if (reference->next == NULL)
+        Parser_error(parser, token);
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return reference;
+}
+
+
+
+void
 Reference_evaluate(
     Interpreter interpreter,
     CriaId object,
@@ -402,6 +511,9 @@ Reference_evaluate(
         break;
     case REFERENCE_TYPE_CLASS:
         ReferenceClass_evaluate(interpreter, object, parameters, block, reference, parent);
+        break;
+    case REFERENCE_TYPE_LITERAL:
+        ReferenceLiteral_evaluate(interpreter, object, parameters, block, reference, parent);
         break;
     default:
         break;
@@ -820,6 +932,10 @@ Reference_parse(
     if (reference != NULL)
         goto STACK;
 
+    reference = ReferenceLiteral_parse(parser);
+    if (reference != NULL)
+        goto STACK;
+    
     Parser_setPosition(parser, position);
     goto END;
     

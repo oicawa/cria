@@ -219,6 +219,59 @@ END:
 
 
 
+CriaId
+CriaInteger_times(
+	Interpreter interpreter,
+	CriaId object,
+    List args,
+    CriaBlock block
+)	
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    CriaId arg = NULL;
+    int value = 0;
+    int offset = 1;
+
+    
+    if (List_count(args) == 0)
+    {
+        offset = 1;
+    }
+    else if (List_count(args) == 1)
+    {
+        arg = (CriaId)List_get(args, 0);
+        if (arg->type != CRIA_DATA_TYPE_INTEGER)
+        {
+        	Runtime_error(interpreter, "Illegal argument type.");
+        	goto END;
+        }
+        offset = ((CriaInteger)arg)->value;
+    }
+    else
+    {
+    	Runtime_error(interpreter, "Illegal argument count.");
+    	goto END;
+    }
+    
+    
+    value = CriaInteger__core_(interpreter, object);
+    
+    int i = 0;
+    for (i = 0; i < value; i += offset)
+    {
+        List parameters = List_new();
+        List_add(parameters, CriaInteger_new(FALSE, i));
+        CriaBlock_evaluate(block, parameters);
+    }
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
+
+
+
 DefinitionClass
 CriaInteger_loadClass(
     String className
@@ -237,6 +290,9 @@ CriaInteger_loadClass(
     Hash_put(s_methods, DefinitionFunction_get_name(function), function);
     
     function = DefinitionFunction_new("to_string", TRUE, FALSE, NULL, NULL, CriaInteger_to_string);
+    Hash_put(i_methods, DefinitionFunction_get_name(function), function);
+    
+    function = DefinitionFunction_new("times", TRUE, FALSE, NULL, NULL, CriaInteger_times);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     klass = DefinitionClass_new(className, TRUE, i_fields, s_fields, i_methods, s_methods, NULL);

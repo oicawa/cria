@@ -17,9 +17,6 @@ struct ExpressionTag
     ExpressionKind  kind;
     union {
         ExpressionFunctionCall      _functionCall_;
-        ExpressionStringLiteral     _stringLiteral_;
-        ExpressionIntegerLiteral    _integerLiteral_;
-        ExpressionBooleanLiteral    _booleanLiteral_;
         ExpressionOperation         _operation_;
         ExpressionGenerate          _generate_;
         ExpressionVariable          _variable_;
@@ -117,6 +114,9 @@ struct ExpressionReferenceTag
         ExpressionFunctionCall  function;
         ExpressionIndexer       indexer;
         ExpressionGenerate      generate;
+        ExpressionStringLiteral     string;
+        ExpressionIntegerLiteral    integer;
+        ExpressionBooleanLiteral    boolean;
     } of;
     ExpressionReference         next;
 };
