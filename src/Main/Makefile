@@ -11,14 +11,23 @@ CC = gcc
 CFLAGS = -c -g -DDEBUG -Wall
 INCLUDES = -I$(CRIAINC)
 
+OBJS =\
+	main.o\
+	$(CRIALIB)
 
-all:main.o
+
+#all:main.o
+#	cd $(CRIADIR)/source;make;
+#	$(CC) -Wl,-rpath,'$$ORIGIN' -o ../../pkg/$(TARGET) main.o -L../../pkg -l$(TARGET) -l$(GC)
+all:$(OBJS)
+	$(CC) -Wl,-rpath,'$$ORIGIN' -o ../../pkg/$(TARGET) main.o -L../../pkg -l$(TARGET) -l$(GC)
+
+$(CRIALIB):
 	cd $(CRIADIR)/source;make;
-	$(CC) -Wl,-rpath,'$$ORIGIN' -o ../$(TARGET) main.o -L.. -l$(TARGET) -l$(GC)
 
 main.o: main.c
 	$(CC) $(CFLAGS) main.c $(INCLUDES)
 
 clean:
-	rm -f *.o ../$(TARGET)
+	rm -f *.o ../../pkg/$(TARGET)
 

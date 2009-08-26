@@ -8,14 +8,14 @@ OBJS =\
 
 
 all:$(OBJS)
-	$(CC) -Wl,-rpath,'$$ORIGIN' -shared -o ../../$(TARGET) $(OBJS) -L../.. -lcria -ltcl8.5 -ltk8.5
+	$(CC) -Wl,-rpath,'$$ORIGIN' -shared -o ../../../pkg/$(TARGET) $(OBJS) -L../../../pkg -lcria -ltcl8.5 -ltk8.5
 
 
 .c.o:
 	$(CC) $(CFLAGS) $*.c
 
 clean:
-	rm -f *.o ../../$(TARGET)
+	rm -f *.o ../../../pkg/$(TARGET)
 
 Package.o: Package.c
 CriaTk.o: CriaTk.c CriaTk.h

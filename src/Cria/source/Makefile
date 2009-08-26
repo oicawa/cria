@@ -31,14 +31,14 @@ OBJS =\
 	CriaList.o\
 
 all:$(OBJS)
-	$(CC) -shared -Wl,-soname,$(TARGET) -o ../../$(TARGET) $(OBJS) $(LDFLAGS)
+	$(CC) -shared -Wl,-soname,$(TARGET) -o ../../../pkg/$(TARGET) $(OBJS) $(LDFLAGS)
 
 
 .c.o:
 	$(CC) $(CFLAGS) $*.c
 
 clean:
-	rm -f *.o ../../$(TARGET) $(GCLIB)
+	rm -f *.o ../../../pkg/$(TARGET) $(GCLIB)
 
 Logger.o: Logger.c Logger.h
 Memory.o: Memory.c Memory.h
