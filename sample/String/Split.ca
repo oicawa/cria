@@ -1,0 +1,12 @@
+write("Input sample string...    >> ")
+hoge = read()
+write("Input separator string... >> ")
+separator = read()
+
+write(hoge + "\n----------\n\n")
+fields = hoge.split(separator)
+index = 0
+while index < fields.count()
+    write("field %s : [%s]\n", index, fields.get(index))
+    index = index + 1
+

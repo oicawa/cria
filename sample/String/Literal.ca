@@ -1,0 +1,2 @@
+write("hogefuga".sub(3) + "\n")
+#value = "hogefuga".sub(3)

@@ -1,0 +1,15 @@
+hoge = "sample1 sample2 sample3 sample4 sample2 sample5"
+memory = "012345678901234567890123456789012345678901234567890"
+
+write(hoge + "\n")
+write(memory + "\n----------\n\n")
+
+
+index = hoge.find("sample2")
+write("Search from head:\n")
+write("index = %s : [%s]\n\n", index, hoge.sub(index))
+
+index = hoge.find("sample2", index + 1)
+write("Search from index:\n")
+write("index = %s : [%s]\n", index, hoge.sub(index))
+

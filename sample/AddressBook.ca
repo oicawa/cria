@@ -1,0 +1,177 @@
+Entry:
+    @name
+    @address
+    @birthday
+
+    @to_string():
+        return "----------\nName    : " + .name + _
+               "\nAddress : " + .address + _
+               "\nBirthday: " + .birthday + "\n"
+
+    @to_csv():
+        return .name + "," + .address + "," + .birthday + "\n"
+
+AddressBook:
+    @entrys
+    @file_path
+    NAME = 0
+    ADDRESS = 1
+    BIRTHDAY = 2
+
+    new():
+        .entrys = List()
+
+    @load(file_path):
+        .file_path = file_path
+        File.open(.file_path, "r")(file):
+            while file.is_end() == false
+                line = file.read()
+                fields = line.split(",")
+                entry = Entry()
+                entry.name = fields[class.NAME]
+                entry.address = fields[class.ADDRESS]
+                entry.birthday = fields[class.BIRTHDAY]
+                .entrys.add(entry)
+
+    @print_all():
+        index = 0
+        .entrys.each()(entry):
+            index = index + 1
+            write("[%s] %s", index, entry.to_string())
+            
+
+    @print(index):
+        write("[%s] %s", index, .entrys[index].to_string())
+
+    @save():
+        if .file_path == null
+            write("Input save file name >> ")
+            .file_path = read()
+            if .file_path == ""
+                .file_path = "TemplateAddressBook.csv"
+
+        File.open(.file_path, "w")(tmp):
+            index = 0
+            .entrys.each()(entry):
+                tmp.write(entry.to_csv())
+                index = index + 1
+
+    @add(entry):
+        .entrys.add(entry)
+
+    @delete(index):
+        .entrys.delete(index)
+
+    @edit(index, entry):
+        .entrys.insert(index, entry)
+        .entrys.delete(index + 1)
+
+AddressBookCUI:
+    @address_book
+
+    new():
+        .address_book = AddressBook()
+
+    @menu():
+        write("\n")
+        write("===<< MENU >> ===========================\n")
+        write("  1. Load exist address book.\n")
+        write("  2. Save.\n")
+        write("  3. Print all entries.\n")
+        write("  4. Print specified entry.\n")
+        write("  5. Delete specified entry.\n")
+        write("  6. Delete specified entry.\n")
+        write("  7. Edit specified entry.\n")
+        write("  q. Quit.\n")
+        write("=========================================\n")
+        write("Select menu. >> ")
+        return read()
+
+    @error():
+        write("<<ERROR>>\n")
+        write("Illegal menu. Select again.\n")
+        read()
+
+    @load():
+        write("> Input file name. >> ")
+        file_path = read()
+        .address_book.load(file_path)
+
+    @print_all():
+        .address_book.print_all()
+        write("Input any key.")
+        read()
+
+    @print():
+        write(" Input entry number. >> ")
+        number = read()
+        .address_book.print(Integer.parse(number))
+        write("Input any key.")
+        read()
+
+    @add():
+        write("Create new entry.\n\n")
+        ok = false
+        entry = null
+        while ok == false
+            entry = Entry()
+            write(" - Input name     >> ")
+            entry.name = read()
+            write(" - Input address  >> ")
+            entry.address = read()
+            write(" - Input birthday >> ")
+            entry.address = read()
+            write("----------\nName    : [%s]\n" + _
+                              "Address : [%s]\n" + _
+                              "Birthday: [%s]\n----------\n", _
+                  entry.name, entry.address, entry.birthday)
+            write("Is it OK?(y/n) >> ")
+            answer = read()
+            if answer == "y"
+                ok = true
+        
+            write("\n")
+        .address_book.add(entry)
+
+    @quit():
+        write(" Good bye.\n\n")
+        
+
+    @run():
+        while true
+            number = .menu()
+            if (number == "1")
+                .load()
+            elif (number == "2")
+                .save()
+            elif (number == "3")
+                .print_all()
+            elif (number == "4")
+                .print()
+            elif (number == "5")
+                .add()
+                #.delete()
+            elif (number == "6")
+                .print()
+                #.edit()
+            elif (number == "7")
+                .print()
+                #.delete()
+            elif (number == "q")
+                .quit()
+                break
+            else
+                .error()
+
+ 
+cui = AddressBookCUI()
+cui.run()
+
+#write("Press return key. >>")
+#read()
+#list = List()
+#list.add(List())
+#list.get(0).add(List())
+#list.get(0).get(0).add("hogehoge")
+#write(list.get(0).get(0).get(0) + "\n\n")
+
