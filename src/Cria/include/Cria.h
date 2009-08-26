@@ -1,5 +1,7 @@
 /*
- * Cria.h
+ *  $Id$
+ *
+ *  ===============================================================================
  *
  *   Copyright (C) 2008-2009  Masamitsu Oikawa  <oicawa@gmail.com>
  *   
@@ -21,7 +23,7 @@
  *   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  *   THE SOFTWARE.
  *
- *  $Id$
+ *  ===============================================================================
  */
 
  
