@@ -7,16 +7,13 @@ TARGET_DIR=""
 TARGET_TAR=""
 
 
-function print_usage_message {
+print_usage_message() {
 	echo "Useage:"
 	echo $0" {mode} {version}"
 	echo "    {mode}   : 'src' or 'pkg'"
 	echo "    {version}: ex) 0.0.1"
 }
 
-function delete_backup_file {
-	
-}
 
 
 if [ ${COUNT} != '2' ]
@@ -45,28 +42,7 @@ rm -rf ${TARGET_DIR}
 rm -rf ${TARGET_TAR}
 
 
-echo "Create target directory. ["${TARGET_DIR}"]"
-mkdir ${TARGET_DIR}
-
-echo "Copy files and directories."
-
-echo "... 'COPYLIGHT' file."
-cp ../COPYRIGHT ${TARGET_DIR}
-
-echo "... 'README' file."
-cp ../README ${TARGET_DIR}
-
-echo "... 'pkg' directory"
-cp -r ../pkg ${TARGET_DIR}
-
-echo "... 'sample' directory"
-cp -r ../sample ${TARGET_DIR}
-
-echo "... 'src' directory."
-cp -r ../src ${TARGET_DIR}
-
-
-
+svn export http://svn.sourceforge.jp/svnroot/cria ${TARGET_DIR}
 
 
 if [ ${MODE} = 'pkg' ]
@@ -79,5 +55,6 @@ then
 	cd ${CURRENT_DIR}
 	rm -rf ${TARGET_DIR}/src
 fi
+rm -rf ${TARGET_DIR}/util
 
 tar zcvf ${TARGET_TAR} ${TARGET_DIR} 
