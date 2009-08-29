@@ -10,7 +10,7 @@ TARGET_TAR=""
 print_usage_message() {
 	echo "Useage:"
 	echo $0" {mode} {version}"
-	echo "    {mode}   : 'src' or 'pkg'"
+	echo "    {mode}   : 'src' or 'pkg' or 'del'"
 	echo "    {version}: ex) 0.0.1"
 }
 
@@ -20,17 +20,19 @@ if [ ${COUNT} != '2' ]
 then
 	print_usage_message
 	exit
-
 elif [ ${MODE} = 'src' ]
 then
-	TARGET_DIR="cria-src-"${VERSION}
+	TARGET_DIR="cria-"${VERSION}"-src"
 	TARGET_TAR=${TARGET_DIR}.tar.gz
-
 elif [ ${MODE} = 'pkg' ]
 then
 	TARGET_DIR="cria-"${VERSION}
 	TARGET_TAR=${TARGET_DIR}.tar.gz
-
+elif [ ${MODE} = 'del' ]
+then
+	TARGET_DIR="cria-"${VERSION}
+	rm -rf ${TARGET_DIR}*
+	exit
 else
 	print_usage_message()
 	exit
