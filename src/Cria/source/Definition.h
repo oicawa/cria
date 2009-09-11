@@ -63,7 +63,7 @@ struct DefinitionVariableTag
 
 struct DefinitionFunctionTag
 {
-    char* name;
+    String name;
     Boolean isNative;
     Boolean isStatic;
     union

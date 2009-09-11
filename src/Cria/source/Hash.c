@@ -73,18 +73,18 @@ Hash_get_keys(
 
 
 
-unsigned int
+unsigned long
 Hash_get_key_value(
-	int size,
-    char* key
+	long size,
+    String key
 )
 {
-    int hash_value = 0;
-    int c;
+    long hash_value = 0;
+    long c;
     
     while ((c = *key) != '\0')
     {
-        hash_value += (int)c;
+        hash_value += (long)c;
         key++;
     }
     
@@ -141,12 +141,12 @@ END:
 void
 Hash_put(
 	Hash hash,
-	char* key,
+	String key,
 	void* object
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    unsigned int hash_value;
+    unsigned long hash_value;
     Entry entry;
     Entry cursor;
     
@@ -191,14 +191,14 @@ END:
 void*
 Hash_get(
 	Hash hash,
-	char* key
+	String key
 )
 {
     Logger_trc("[ START ]%s", __func__);
 	void* object = NULL;
 	Entry entry = NULL;
 	
-	unsigned int hash_value = Hash_get_key_value(hash->size, key);
+	unsigned long hash_value = Hash_get_key_value(hash->size, key);
 	
 	entry = Hash_get_entry(hash, hash_value, key);
 	if (entry == NULL)

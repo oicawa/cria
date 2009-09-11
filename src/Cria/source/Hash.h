@@ -38,8 +38,8 @@
 
 struct HashTag
 {
-	int size;
-    int count;
+	long size;
+    long count;
     List keys;
     Entry* entrys;
 };
@@ -48,8 +48,8 @@ struct HashTag
 
 struct EntryTag
 {
-    unsigned int hash_value;
-    char* key;
+    unsigned long hash_value;
+    String key;
     void* object;
     Entry next;
 };
@@ -73,7 +73,7 @@ Hash_get_keys(
 void*
 Hash_get(
 	Hash hash,
-	char* key
+	String key
 );
 
 

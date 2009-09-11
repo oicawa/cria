@@ -40,6 +40,7 @@
 #include <stdarg.h>
 #include <unistd.h>
 #include <gc/gc.h>
+#include <wchar.h>
 
 
 
@@ -76,7 +77,7 @@ typedef struct CriaStringTag  *CriaString;
 //==============================
 //String
 //==============================
-typedef char* String;
+typedef wchar_t* String;
 
 
 //==============================
@@ -610,7 +611,7 @@ Hash_new(
 void
 Hash_put(
 	Hash hash,
-	char* key,
+	String key,
 	void* object
 );
 

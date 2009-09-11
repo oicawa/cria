@@ -543,7 +543,7 @@ Token_type(
 
 List
 Tokenizer_split(
-    char* target,
+    String target,
     Boolean skip,
     String file_path,
     int line
@@ -551,17 +551,17 @@ Tokenizer_split(
 {
     List tokens = List_new();
     Token token = NULL;
-    char* cursor = &target[0];
+    String cursor = &target[0];
     
     
     if (skip == TRUE)
     {
-        while (*cursor == ' ')
+        while (*cursor == L' ')
             cursor++;
     }
     
     
-    while (*cursor != '\0')
+    while (*cursor != L'\0')
     {
         token = Tokenizer_number(cursor);
         if (token != NULL)
@@ -597,7 +597,7 @@ ADD_TOKEN:
     return tokens;
 }
 
-
+/*
 Boolean
 Tokenizer_read_line(FILE* file, char* buffer, long size)
 {
@@ -619,6 +619,33 @@ Tokenizer_read_line(FILE* file, char* buffer, long size)
     result = TRUE;
 END:
     return result;
+}
+*/
+
+
+String
+Tokenizer_read_line(FILE* file)
+{
+    char buffer[80 + 1 + 1];
+    char* lf = NULL;
+    String string = NULL;
+
+    memset(buffer, 0x00, sizeof(buffer));
+    
+    fgets(buffer, sizeof(buffer) - 1, file);
+    lf = strchr(buffer, '\n'); 
+    if (lf != NULL)
+    {
+        *lf = '\0';
+    }
+    else if (feof(file) == FALSE)
+    {
+        goto END;
+    }
+    
+    string = String_mbsrtowcs(buffer);
+END:
+    return string;
 }
 
 
@@ -713,18 +740,18 @@ Tokenizer_check_join(List tokens, int line, int column)
 
 
 Boolean
-Tokenizer_is_blank_line(char* buffer)
+Tokenizer_is_blank_line(String buffer)
 {
     Boolean result = TRUE;
-    char* cursor = buffer;
+    wchar_t* cursor = buffer;
     
-    while (*cursor == ' ')
+    while (*cursor == L' ')
         cursor++;
     
-    if (*cursor == '\0')
+    if (*cursor == L'\0')
         goto END;
     
-    if (*cursor == '#')
+    if (*cursor == L'#')
         goto END;
     
     result = FALSE;
@@ -777,7 +804,6 @@ Tokenizer_print_all_tokens(
     }
 }
 
-#define BUFFER_SIZE 80
 List
 Tokenizer_create_tokens(
     char*   filePath,
@@ -789,8 +815,9 @@ Tokenizer_create_tokens(
     int indent_current = 0;
     List tokens = NULL;
     
-    char buffer[BUFFER_SIZE + 1];
-    int size = sizeof(buffer);
+    //char buffer[BUFFER_SIZE + 1];
+    //int size = sizeof(buffer);
+    String buffer = NULL;
     List tmp = NULL;
     Boolean skip = FALSE;
     
@@ -810,11 +837,12 @@ Tokenizer_create_tokens(
     
     while (feof(file) == 0)
     {
-        if (!Tokenizer_read_line(file, buffer, size))
-        {
-            fprintf(stderr, "[%s] line %3d : Too long sentence. Please get the line under %d columns.\n\n", filePath, line, size);
-            goto END;
-        }
+        //if (!Tokenizer_read_line(file, buffer, size))
+        //{
+        //    fprintf(stderr, "[%s] line %3d : Too long sentence. Please get the line under %d columns.\n\n", filePath, line, size);
+        //    goto END;
+        //}
+        buffer = Tokenizer_read_line(file);
         
         
         if (Tokenizer_is_blank_line(buffer))

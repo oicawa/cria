@@ -36,7 +36,7 @@
 
 String
 String_new(
-    char    *input
+    String input
 );
 
 
@@ -64,7 +64,7 @@ String_find(
 
 
 
-int
+long
 String_toInteger(
     String  source
 );

@@ -195,7 +195,7 @@ Loader_get_package_name(
 void
 Loader_add_function(
     Interpreter interpreter,
-    char* functionName,
+    String functionName,
     CriaNativeFunction* functionPoint
 )
 {
@@ -212,7 +212,7 @@ Loader_add_function(
 void
 Loader_add_class(
     Interpreter interpreter,
-    char* className,
+    String className,
     CriaNativeClassLoader* classLoader
 )
 {
@@ -344,93 +344,75 @@ Loader_load(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    char buffer[MAX_PATH_LENGTH];
+    char current_path_buffer[MAX_PATH_LENGTH];
+    char exefile_path_buffer[MAX_PATH_LENGTH];
+    wchar_t wcbuffer[MAX_PATH_LENGTH];
 	String cria_package_base = NULL;
 	String current_package_base = NULL;
-	Boolean result = FALSE;
     
     
     //カレントディレクトリのパスを取得StringBuffer_toString(current_path)
-    memset(buffer, 0x00, MAX_PATH_LENGTH);
-    getcwd(buffer, MAX_PATH_LENGTH);
-	strcat(buffer, "/");
-	strcat(buffer, loader->library_name);
-	current_package_base = String_new(buffer);
-    //printf("*** current is [%s] ***\n", current_package_base);
+    memset(current_path_buffer, 0x00, sizeof(current_path_buffer));
+    getcwd(current_path_buffer, MAX_PATH_LENGTH);
+	strcat(current_path_buffer, "/");
     
     
     //実行ファイルが存在するパスを取得
     //（※これで実行ファイルのフルパスは取得できるので、
     //　　あとはこのフルパスからディレクトリパスだけ取得すればいい。）
-    memset(buffer, 0x00, MAX_PATH_LENGTH);
-    readlink("/proc/self/exe", buffer, MAX_PATH_LENGTH);
-    
-
-    //ディレクトリパスだけ取得
-	size_t length = strlen(buffer);
-    char* pointer = strrchr(buffer, '/');
-    size_t index = pointer - buffer;
+    memset(exefile_path_buffer, 0x00, sizeof(exefile_path_buffer));
+    readlink("/proc/self/exe", exefile_path_buffer, MAX_PATH_LENGTH);
+	size_t length = strlen(exefile_path_buffer);
+    char* pointer = strrchr(exefile_path_buffer, '/');
+    size_t index = pointer - exefile_path_buffer;
     memset(pointer + 1, 0x00, length - index);
     
     
-    strcat(buffer, loader->library_name);
-	cria_package_base = String_new(buffer);
-    //printf("*** [%s] ***\n", cria_package_base);
+    memset(wcbuffer, 0x00, sizeof(wcbuffer));
+	wcscat(wcbuffer, (wchar_t*)String_mbsrtowcs(current_path_buffer));
+	wcscat(wcbuffer, loader->library_name);
+	current_package_base = String_new(wcbuffer);
+    
+    memset(wcbuffer, 0x00, sizeof(wcbuffer));
+	wcscat(wcbuffer, (wchar_t*)String_mbsrtowcs(exefile_path_buffer));
+    wcscat(wcbuffer, loader->library_name);
+	cria_package_base = String_new(wcbuffer);
     
     
-    memset(buffer, 0x00, MAX_PATH_LENGTH);
-    strcat(buffer, cria_package_base);
-    strcat(buffer, ".so");
-    if (Interpreter_has_loaded(interpreter, buffer) == FALSE)
+    memset(wcbuffer, 0x00, sizeof(wcbuffer));
+    wcscat(wcbuffer, cria_package_base);
+    wcscat(wcbuffer, L".so");
+    if (Interpreter_has_loaded(interpreter, wcbuffer) == FALSE)
     {
-        Interpreter_add_loaded_file(interpreter, buffer);
-	    result = Loader_load_native(loader, interpreter, buffer);
-	    if (result == TRUE)
-	    {
-		    Logger_dbg("Loaded native package. [%s]", buffer);
-	    }
+        Interpreter_add_loaded_file(interpreter, wcbuffer);
+	    Loader_load_native(loader, interpreter, wcbuffer);
     }
 
-    memset(buffer, 0x00, MAX_PATH_LENGTH);
-    strcat(buffer, cria_package_base);
-    strcat(buffer, ".ca");
-    if (Interpreter_has_loaded(interpreter, buffer) == FALSE)
+    memset(wcbuffer, 0x00, sizeof(wcbuffer));
+    wcscat(wcbuffer, cria_package_base);
+    wcscat(wcbuffer, L".ca");
+    if (Interpreter_has_loaded(interpreter, wcbuffer) == FALSE)
     {
-        Interpreter_add_loaded_file(interpreter, buffer);
-	    result = Loader_load_cria(loader, interpreter, buffer);
-	    if (result == TRUE)
-	    {
-		    Logger_dbg("Loaded cria package. [%s]", buffer);
-		    //goto END;
-	    }
+        Interpreter_add_loaded_file(interpreter, wcbuffer);
+	    Loader_load_cria(loader, interpreter, wcbuffer);
     }
 
-    memset(buffer, 0x00, MAX_PATH_LENGTH);
-    strcat(buffer, current_package_base);
-    strcat(buffer, ".so");
-    if (Interpreter_has_loaded(interpreter, buffer) == FALSE)
+    memset(wcbuffer, 0x00, sizeof(wcbuffer));
+    wcscat(wcbuffer, current_package_base);
+    wcscat(wcbuffer, L".so");
+    if (Interpreter_has_loaded(interpreter, wcbuffer) == FALSE)
     {
-        Interpreter_add_loaded_file(interpreter, buffer);
-	    result = Loader_load_native(loader, interpreter, buffer);
-	    if (result == TRUE)
-	    {
-		    Logger_dbg("Loaded native package. [%s]", buffer);
-		    //goto END;
-	    }
+        Interpreter_add_loaded_file(interpreter, wcbuffer);
+	    Loader_load_native(loader, interpreter, wcbuffer);
     }
 
-    memset(buffer, 0x00, MAX_PATH_LENGTH);
-    strcat(buffer, current_package_base);
-    strcat(buffer, ".ca");
-    if (Interpreter_has_loaded(interpreter, buffer) == FALSE)
+    memset(wcbuffer, 0x00, sizeof(wcbuffer));
+    wcscat(wcbuffer, current_package_base);
+    wcscat(wcbuffer, L".ca");
+    if (Interpreter_has_loaded(interpreter, wcbuffer) == FALSE)
     {
-        Interpreter_add_loaded_file(interpreter, buffer);
-	    result = Loader_load_cria(loader, interpreter, buffer);
-	    if (result == TRUE)
-	    {
-		    Logger_dbg("Loaded cria package. [%s]", buffer);
-		    //goto END;
-	    }
+        Interpreter_add_loaded_file(interpreter, wcbuffer);
+	    Loader_load_cria(loader, interpreter, wcbuffer);
     }	
 	
 	//Logger_err("Not found library named %s.", loader->library_name);

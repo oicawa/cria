@@ -112,12 +112,12 @@ Interpreter_compile(
     Boolean result = FALSE;
     List tokens = NULL;
 	
-	Loader_add_function(interpreter, "write", CriaIO_write);
-	Loader_add_function(interpreter, "read", CriaIO_read);
-	Loader_add_class(interpreter, "String", CriaString_loadClass);
-	Loader_add_class(interpreter, "File", CriaFile_loadClass);
-	Loader_add_class(interpreter, "List", CriaList_loadClass);
-	Loader_add_class(interpreter, "Integer", CriaInteger_loadClass);
+	Loader_add_function(interpreter, L"write", CriaIO_write);
+	Loader_add_function(interpreter, L"read", CriaIO_read);
+	Loader_add_class(interpreter, L"String", CriaString_loadClass);
+	Loader_add_class(interpreter, L"File", CriaFile_loadClass);
+	Loader_add_class(interpreter, L"List", CriaList_loadClass);
+	Loader_add_class(interpreter, L"Integer", CriaInteger_loadClass);
     
 	
 	//Load target script file.

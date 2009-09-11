@@ -38,21 +38,46 @@
 
 String
 String_new(
-    char *input
+    wchar_t *input
 )
 {
 	Logger_cor("[ START ]%s", __func__);
-    char* string = NULL;
+    wchar_t* string = NULL;
+    int length = wcslen(input);
     
     if (input == NULL)
         return NULL;
     
-    string = Memory_malloc(strlen(input) + 1);
-    strcpy(string, input);
+    string = Memory_malloc(sizeof(wchar_t) * (length + 1));
+    wcsncpy(string, input, length);
 	Logger_cor("[  END  ]%s", __func__);
     return (String)string;
 }
 
+
+String
+String_mbsrtowcs(
+    char* value
+)
+{
+    wchar_t wcbuffer[256 + 1];
+    const char* multi = NULL;
+    mbstate_t ps;
+    String string = NULL;
+    
+    memset(wcbuffer, 0x00, sizeof(wcbuffer));
+    memset(&ps, 0x00, sizeof(mbstate_t));
+    
+    multi = value;
+    if (mbsrtowcs(wcbuffer, &multi, sizeof(wcbuffer), &ps) < 0)
+    {
+        goto END;
+    }
+    
+    string = String_new(wcbuffer);
+END:
+    return string;
+}
 
 
 long
@@ -60,7 +85,7 @@ String_length(
     String  string
 )
 {
-    return strlen(string);
+    return wcslen(string);
 }
 
 
@@ -75,7 +100,7 @@ String_sub(
     if (source == NULL)
         return NULL;
     
-    long size = strlen(source);
+    long size = wcslen(source);
     
     if (start < 0 || length < 0)
         return NULL;
@@ -83,8 +108,8 @@ String_sub(
     if (size < start + length)
         return NULL;
     
-    char* buffer = Memory_malloc(length + 1);
-    strncpy(buffer, &(source[start]), length);
+    String buffer = Memory_malloc(sizeof(wchar_t) * (length + 1));
+    wcsncpy(buffer, &(source[start]), length);
     
     String string = String_new(buffer);
     buffer = NULL;
@@ -101,7 +126,8 @@ String_find(
 )
 {
     long index = 0;
-    char* pointer = NULL;
+    String pointer = NULL;
+    
     
     if (source == NULL)
         return -1;
@@ -109,7 +135,7 @@ String_find(
     if (source == NULL)
         return -1;
     
-    pointer = strstr(&(source[offset]), string);
+    pointer = wcsstr(&(source[offset]), string);
     if (pointer == NULL)
         return -1;
 
@@ -120,12 +146,12 @@ String_find(
 
 
 
-int
+long
 String_toInteger(
     String  source
 )
 {
-    return atoi(source);
+    return wcstol(source, NULL, 10);
 }
 
 
@@ -136,11 +162,11 @@ String_toBoolean(
 {
     Boolean boolean = -1;
     
-    if (strcmp(source, "true") == 0)
+    if (wcscmp(source, L"true") == 0)
     {
         boolean = TRUE;
     }
-    else if (strcmp(source, "false") == 0)
+    else if (wcscmp(source, L"false") == 0)
     {
         boolean = FALSE;
     }

@@ -154,14 +154,14 @@ StringBuffer_toString(
     
     
     Logger_cor("buffer set.");
-    char* buffer = Memory_malloc(length + 1);
+    String buffer = Memory_malloc(sizeof(wchar_t) * (length + 1));
     
     
     Logger_cor("start concat.");
     item = List_startItem(list);
     while(item != NULL)
     {
-        strcat(buffer, (char*)(Item_getObject(item)));
+        wcscat(buffer, (String)(Item_getObject(item)));
         item = Item_getNext(item);
     }
     Logger_cor("stringBuffer all = [%s]", buffer);

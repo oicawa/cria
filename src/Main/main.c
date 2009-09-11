@@ -53,6 +53,7 @@ main(
         goto END;
     }
     
+    setlocale(LC_CTYPE, "");    //for wide charactors.
     
     interpreter = Interpreter_new();
     if (interpreter == NULL)

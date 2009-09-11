@@ -81,7 +81,7 @@ Loader_load(
 void
 Loader_add_function(
     Interpreter interpreter,
-    char* functionName,
+    String functionName,
     CriaNativeFunction* functionPoint
 );
 

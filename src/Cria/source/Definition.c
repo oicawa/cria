@@ -763,7 +763,7 @@ DefinitionFunction_getParameterList(
 //==============================
 DefinitionClass
 DefinitionClass_new(
-    char* name,
+    String name,
     Boolean isNative,
     Hash i_fields,
     Hash s_fields,
@@ -777,15 +777,10 @@ DefinitionClass_new(
     
     if (loader != NULL)
     {
-        Logger_dbg("Load Native Class ('%s')", name);
-        Logger_dbg("Load Native Class constractor is %p", loader);
-        Logger_dbg("Load Native Class constractor is *%p", *loader);
         definition = (*loader)(name);
         goto END;
     }
     
-    Logger_dbg("Cria Function (Field  instance=%d, static=%d)", Hash_get_count(i_fields), Hash_get_count(s_fields));
-    Logger_dbg("Cria Function (Method instance=%d, static=%d)", Hash_get_count(i_methods), Hash_get_count(s_methods));
     definition = Memory_malloc(sizeof(struct DefinitionClassTag));
     definition->i_fields = i_fields;
     definition->s_fields = s_fields;
