@@ -52,7 +52,7 @@ CriaString_new(
     Logger_trc("[ START ]%s(%s)", __func__, value);
     CriaString criaString = Memory_malloc(sizeof(struct CriaStringTag));
     
-    criaString->id.name = String_new("String");
+    criaString->id.name = String_new(L"String");
     criaString->id.type = CRIA_DATA_TYPE_STRING;
     criaString->isLiteral = isLiteral;
     criaString->value = String_new(value);
@@ -86,12 +86,12 @@ CriaString_operate(
         id = (CriaId)CriaString_new(FALSE, StringBuffer_toString(buffer));
         break;
     case OPERATION_KIND_EQUAL:
-        if (strcmp(leftValue, rightValue) == 0)
+        if (wcscmp(leftValue, rightValue) == 0)
             result = TRUE;
         id = (CriaId)CriaBoolean_new(FALSE, result);
         break;
     case OPERATION_KIND_NOT_EQUAL:
-        if (strcmp(leftValue, rightValue) != 0)
+        if (wcscmp(leftValue, rightValue) != 0)
             result = TRUE;
         id = (CriaId)CriaBoolean_new(FALSE, result);
         break;
@@ -157,7 +157,7 @@ CriaString_sub(
     
     
     value = CriaString__core_(interpreter, object);
-    length = strlen(value);
+    length = wcslen(value);
     
     
     tmp = (CriaId)(List_get(args, 0));
@@ -298,7 +298,7 @@ CriaString_split(
     	goto END;
     }
     separator = ((CriaString)tmp)->value;
-    length = strlen(separator);
+    length = wcslen(separator);
     
     
     list = List_new();
@@ -307,7 +307,7 @@ CriaString_split(
         index = String_find(value, separator, offset);
         if (index < 0)
         {
-            sub = String_sub(value, offset, strlen(value) - offset);
+            sub = String_sub(value, offset, wcslen(value) - offset);
             List_add(list, CriaString_new(FALSE, sub));
             break;
         }
@@ -317,7 +317,7 @@ CriaString_split(
     }
     
     id = CriaList__generator_(interpreter, NULL, NULL, NULL);
-    CriaObject_set(interpreter, (CriaObject)id, "pointer", list);
+    CriaObject_set(interpreter, (CriaObject)id, L"pointer", list);
 
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -340,13 +340,13 @@ CriaString_loadClass(
     Hash i_methods = Hash_new(32);
     Hash s_methods = Hash_new(32);
     
-    function = DefinitionFunction_new("sub", TRUE, FALSE, NULL, NULL, CriaString_sub);
+    function = DefinitionFunction_new(L"sub", TRUE, FALSE, NULL, NULL, CriaString_sub);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
-    function = DefinitionFunction_new("find", TRUE, FALSE, NULL, NULL, CriaString_find);
+    function = DefinitionFunction_new(L"find", TRUE, FALSE, NULL, NULL, CriaString_find);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
-    function = DefinitionFunction_new("split", TRUE, FALSE, NULL, NULL, CriaString_split);
+    function = DefinitionFunction_new(L"split", TRUE, FALSE, NULL, NULL, CriaString_split);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     klass = DefinitionClass_new(className, TRUE, i_fields, s_fields, i_methods, s_methods, NULL);

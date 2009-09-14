@@ -154,8 +154,8 @@ DefinitionFunction_parse(
 
 DefinitionFunction
 DefinitionFunction_search(
-    List    functions,
-    char*   name
+    List functions,
+    String name
 );
 
 
@@ -193,7 +193,7 @@ DefinitionClass_getName(
 DefinitionClass
 DefinitionClass_search(
     List classList,
-    char* name
+    String name
 );
 
 
@@ -204,7 +204,7 @@ DefinitionClass_evaluate(
     CriaId  id,
     List parameterList,
     CriaBlock block,
-    char*   name,
+    String  name,
     Boolean isStatic,
     DefinitionClass klass,
     List parameters

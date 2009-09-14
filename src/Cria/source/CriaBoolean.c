@@ -45,8 +45,7 @@ CriaBoolean_new(
     Logger_trc("[ START ]%s", __func__);
     CriaBoolean boolean = Memory_malloc(sizeof(struct CriaBooleanTag));
     
-    char name[] = "Boolean";
-    boolean->id.name = String_new(name);
+    boolean->id.name = String_new(L"Boolean");
     boolean->id.type = CRIA_DATA_TYPE_BOOLEAN;
     boolean->isLiteral = isLiteral;
     boolean->value = value;
@@ -102,9 +101,9 @@ CriaBoolean_toString(
     CriaString string = NULL;
     
     if (boolean->value == TRUE)
-        value = String_new("true");
+        value = String_new(L"true");
     else if (boolean->value == FALSE)
-        value = String_new("false");
+        value = String_new(L"false");
     else
         Runtime_error(interpreter, "Illegal data format as boolean.");
     

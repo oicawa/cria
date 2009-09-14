@@ -42,7 +42,7 @@
 
 DefinitionClass
 CriaList_loadClass(
-    char* name
+    String name
 );
 
 

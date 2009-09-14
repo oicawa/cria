@@ -50,8 +50,8 @@ CriaList__generator_(
 {
     Logger_trc("[ START ]%s", __func__);
     
-    CriaObject list = CriaObject_new("List");
-    CriaObject_addField(list, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "pointer", FALSE, FALSE, NULL));
+    CriaObject list = CriaObject_new(L"List");
+    CriaObject_addField(list, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, L"pointer", FALSE, FALSE, NULL));
     
     Logger_trc("[  END  ]%s", __func__);
     return (CriaId)list;
@@ -76,13 +76,13 @@ CriaList__core_(
     	goto END;
     }
 
-    if (strcmp(object->name, "List") != 0)
+    if (wcscmp(object->name, L"List") != 0)
     {
     	Runtime_error(interpreter, "Data type name of scoped object is not 'List'.");
     	goto END;
     }
 
-    list = (List)CriaObject_get(interpreter, (CriaObject)object, "pointer");
+    list = (List)CriaObject_get(interpreter, (CriaObject)object, L"pointer");
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -116,7 +116,7 @@ CriaList_new(
     
     list = (CriaObject)object;
     List pointer = List_new();
-    CriaObject_set(interpreter, list, "pointer", pointer);
+    CriaObject_set(interpreter, list, L"pointer", pointer);
 
     
     count = List_count(args);
@@ -443,34 +443,34 @@ CriaList_loadClass(
     //variable = DefinitionVariable_new("file", FALSE, FALSE);
     //Hash_put(i_fields, DefinitionVariable_name(variable), variable);
     
-    function = DefinitionFunction_new(" generator ", TRUE, TRUE, NULL, NULL, CriaList__generator_);
+    function = DefinitionFunction_new(L" generator ", TRUE, TRUE, NULL, NULL, CriaList__generator_);
     Hash_put(s_methods, DefinitionFunction_get_name(function), function);
     
-    function = DefinitionFunction_new("new", TRUE, TRUE, NULL, NULL, CriaList_new);
+    function = DefinitionFunction_new(L"new", TRUE, TRUE, NULL, NULL, CriaList_new);
     Hash_put(s_methods, DefinitionFunction_get_name(function), function);
     
-    function = DefinitionFunction_new("add", TRUE, FALSE, NULL, NULL, CriaList_add);
+    function = DefinitionFunction_new(L"add", TRUE, FALSE, NULL, NULL, CriaList_add);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
-    function = DefinitionFunction_new("delete", TRUE, FALSE, NULL, NULL, CriaList_delete);
+    function = DefinitionFunction_new(L"delete", TRUE, FALSE, NULL, NULL, CriaList_delete);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
-    function = DefinitionFunction_new("insert", TRUE, FALSE, NULL, NULL, CriaList_insert);
+    function = DefinitionFunction_new(L"insert", TRUE, FALSE, NULL, NULL, CriaList_insert);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
-    function = DefinitionFunction_new("get", TRUE, FALSE, NULL, NULL, CriaList_get);
+    function = DefinitionFunction_new(L"get", TRUE, FALSE, NULL, NULL, CriaList_get);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
-    function = DefinitionFunction_new("get[]", TRUE, FALSE, NULL, NULL, CriaList_get);
+    function = DefinitionFunction_new(L"get[]", TRUE, FALSE, NULL, NULL, CriaList_get);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
 
-    function = DefinitionFunction_new("set[]", TRUE, FALSE, NULL, NULL, CriaList_set);
+    function = DefinitionFunction_new(L"set[]", TRUE, FALSE, NULL, NULL, CriaList_set);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
-    function = DefinitionFunction_new("count", TRUE, FALSE, NULL, NULL, CriaList_count);
+    function = DefinitionFunction_new(L"count", TRUE, FALSE, NULL, NULL, CriaList_count);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
-    function = DefinitionFunction_new("each", TRUE, FALSE, NULL, NULL, CriaList_each);
+    function = DefinitionFunction_new(L"each", TRUE, FALSE, NULL, NULL, CriaList_each);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     

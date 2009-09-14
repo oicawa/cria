@@ -49,25 +49,25 @@ Loader_create_path(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    char buffer[MAX_PATH_LENGTH];
+    wchar_t buffer[MAX_PATH_LENGTH];
 	int count = List_count(path);
 	int index = 0;
 	int end = 0;
 	int length = 0;
 	
-	memset(buffer, 0x00, MAX_PATH_LENGTH);
+	memset(buffer, 0x00, sizeof(buffer));
 	
 	count = List_count(path);
 	index = 0;
 	for (index = 0; index < count; index++)
 	{
-		strcat(buffer, (String)(List_get(path, index)));
-		strcat(buffer, separator);
+		wcscat(buffer, (String)(List_get(path, index)));
+		wcscat(buffer, separator);
 	}
 	
 	
-	end = strlen(buffer);
-	length = strlen(separator);
+	end = wcslen(buffer);
+	length = wcslen(separator);
 	memset(&buffer[end - length], 0x00, length);
 
 	
@@ -88,8 +88,8 @@ Loader_new(
 	
 	
     loader = Memory_malloc(sizeof(struct LoaderTag));
-	loader->package_name = Loader_create_path(path, "::");
-    loader->library_name = Loader_create_path(path, ".");
+	loader->package_name = Loader_create_path(path, L"::");
+    loader->library_name = Loader_create_path(path, L".");
 	loader->library = NULL;
     
 
@@ -239,7 +239,7 @@ Loader_load_native(
 	Boolean result = FALSE;
     
     
-	library = dlopen(library_path, RTLD_LAZY);
+	library = dlopen(String_wcsrtombs(library_path), RTLD_LAZY);
 	if (library == NULL)
 	{
 		Logger_err("%s", dlerror());

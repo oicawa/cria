@@ -457,7 +457,7 @@ ReferenceLiteral_parse(
         case TOKEN_TYPE_INTEGER_LITERAL:
 	        literal = Memory_malloc(sizeof(struct ReferenceLiteralTag));
             literal->type = REFERENCE_LITERAL_TYPE_INTEGER;
-            literal->of.integer = atoi(token->value);
+            literal->of.integer = wcstol(token->value, NULL, 10);
             break;
         case TOKEN_TYPE_BOOLEAN_LITERAL_TRUE:
 	        literal = Memory_malloc(sizeof(struct ReferenceLiteralTag));
@@ -647,7 +647,7 @@ ReferenceIndexer_evaluate(
     if (reference->next != NULL)
     {
         //Evaluate next reference.
-        function = ExpressionFunctionCall_new("get[]", indexer->parameters);
+        function = ExpressionFunctionCall_new(L"get[]", indexer->parameters);
         id = ExpressionFunctionCall_evaluate(interpreter, object, parameters, block, function, parent);
         Reference_evaluate(interpreter, object, parameters, NULL, reference->next, id);
     }
@@ -655,7 +655,7 @@ ReferenceIndexer_evaluate(
     {
         //Process function 'set[]' as substitution(?) !!add id to parameters.
         List_add(ExpressionParameters_get_list(indexer->parameters), indexer->value);
-        function = ExpressionFunctionCall_new("set[]", indexer->parameters);
+        function = ExpressionFunctionCall_new(L"set[]", indexer->parameters);
         ExpressionFunctionCall_evaluate(interpreter, object, parameters, block, function, parent);
     }
     else
@@ -780,7 +780,7 @@ ReferenceClass_evaluate(
     klass = reference->of.klass;
     
     classes = Interpreter_classes(interpreter);
-    if (strcmp(klass->name, "class") != 0)
+    if (wcscmp(klass->name, L"class") != 0)
     {
         definition = (DefinitionClass)Hash_get(classes, klass->name);
     }
@@ -907,7 +907,7 @@ ReferenceSelf_parse(
 
     
 	variable = Memory_malloc(sizeof(struct ReferenceVariableTag));
-    variable->name = String_new("_self_");
+    variable->name = String_new(L"_self_");
     
     
     reference = Reference_new(REFERENCE_TYPE_SELF);

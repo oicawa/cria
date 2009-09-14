@@ -46,7 +46,7 @@ CriaInteger_new(
     Logger_trc("[ START ]%s", __func__);
     CriaInteger integer = Memory_malloc(sizeof(struct CriaIntegerTag));
     
-    integer->id.name = String_new("Integer");
+    integer->id.name = String_new(L"Integer");
     integer->id.type = CRIA_DATA_TYPE_INTEGER;
     integer->isLiteral = isLiteral;
     integer->value = value;
@@ -134,7 +134,7 @@ CriaInteger__core_(
     	goto END;
     }
 
-    if (strcmp(object->name, "Integer") != 0)
+    if (wcscmp(object->name, L"Integer") != 0)
     {
     	Runtime_error(interpreter, "Scoped object data type name is not Integer.");
     	goto END;
@@ -159,12 +159,12 @@ CriaInteger_parse(
 {
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
-    int value = 0;
+    long value = 0;
     CriaId arg = NULL;
     String string = NULL;
     long length = 0;
     int index = 0;
-    char c = '\0';
+    wchar_t c = L'\0';
 
     
     //value = CriaInteger__core_(interpreter, object);
@@ -187,19 +187,19 @@ CriaInteger_parse(
     
     
     string = ((CriaString)arg)->value;
-    length = strlen(string);
+    length = wcslen(string);
     for (index = 0; index < length; index++)
     {
         c = string[index];
-        if (isdigit(c) == 0)
+        if (iswdigit(c) == 0)
         {
-        	Runtime_error(interpreter, "Illegal charactor '%c' in target string.", c);
+        	Runtime_error(interpreter, "Illegal charactor in target string.");
         	goto END;
         }
     }
     
     
-    value = atoi(string);
+    value = wcstol(string, NULL, 10);
     id = (CriaId)CriaInteger_new(FALSE, value);
     
     
@@ -237,7 +237,7 @@ CriaInteger_to_string(
     memset(buffer, 0x00, sizeof(buffer));
     sprintf(buffer, "%d", value);
     
-    string = String_new(buffer);
+    string = String_mbsrtowcs(buffer);
     
     id = (CriaId)CriaString_new(FALSE, string);
     
@@ -315,13 +315,13 @@ CriaInteger_loadClass(
     Hash i_methods = Hash_new(32);
     Hash s_methods = Hash_new(32);
     
-    function = DefinitionFunction_new("parse", TRUE, TRUE, NULL, NULL, CriaInteger_parse);
+    function = DefinitionFunction_new(L"parse", TRUE, TRUE, NULL, NULL, CriaInteger_parse);
     Hash_put(s_methods, DefinitionFunction_get_name(function), function);
     
-    function = DefinitionFunction_new("to_string", TRUE, FALSE, NULL, NULL, CriaInteger_to_string);
+    function = DefinitionFunction_new(L"to_string", TRUE, FALSE, NULL, NULL, CriaInteger_to_string);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
-    function = DefinitionFunction_new("times", TRUE, FALSE, NULL, NULL, CriaInteger_times);
+    function = DefinitionFunction_new(L"times", TRUE, FALSE, NULL, NULL, CriaInteger_times);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     klass = DefinitionClass_new(className, TRUE, i_fields, s_fields, i_methods, s_methods, NULL);

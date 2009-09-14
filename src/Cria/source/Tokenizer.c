@@ -38,79 +38,79 @@
 
 static struct TokenCheckerTag TOKEN_TABLE_1[] =
 {
-    { TOKEN_TYPE_PARENTHESIS_LEFT,  "(",  FALSE },
-    { TOKEN_TYPE_PARENTHESIS_RIGHT, ")",  FALSE },
-    { TOKEN_TYPE_BRACKET_LEFT,      "[",  FALSE },
-    { TOKEN_TYPE_BRACKET_RIGHT,     "]",  FALSE },
-    { TOKEN_TYPE_BRACE_LEFT,        "{",  FALSE },
-    { TOKEN_TYPE_BRACE_RIGHT,       "}",  FALSE },
-    { TOKEN_TYPE_GENERICS_LEFT,     "<",  FALSE },
-    { TOKEN_TYPE_GENERICS_RIGHT,    ">",  FALSE },
-    { TOKEN_TYPE_COLON,             ":",  FALSE },
-    { TOKEN_TYPE_ATMARK,            "@",  FALSE },
-    { TOKEN_TYPE_PERIOD,            ".",  FALSE },
-    { TOKEN_TYPE_MONADIC_MINUS,     "-",  FALSE },
-    { TOKEN_TYPE_JOIN,              "_",  TRUE },
+    { TOKEN_TYPE_PARENTHESIS_LEFT,  L"(",  FALSE },
+    { TOKEN_TYPE_PARENTHESIS_RIGHT, L")",  FALSE },
+    { TOKEN_TYPE_BRACKET_LEFT,      L"[",  FALSE },
+    { TOKEN_TYPE_BRACKET_RIGHT,     L"]",  FALSE },
+    { TOKEN_TYPE_BRACE_LEFT,        L"{",  FALSE },
+    { TOKEN_TYPE_BRACE_RIGHT,       L"}",  FALSE },
+    { TOKEN_TYPE_GENERICS_LEFT,     L"<",  FALSE },
+    { TOKEN_TYPE_GENERICS_RIGHT,    L">",  FALSE },
+    { TOKEN_TYPE_COLON,             L":",  FALSE },
+    { TOKEN_TYPE_ATMARK,            L"@",  FALSE },
+    { TOKEN_TYPE_PERIOD,            L".",  FALSE },
+    { TOKEN_TYPE_MONADIC_MINUS,     L"-",  FALSE },
+    { TOKEN_TYPE_JOIN,              L"_",  TRUE },
     { TOKEN_TYPE_DUMMY,             NULL, FALSE }
 };
 
 
 static struct TokenCheckerTag TOKEN_TABLE_2[] =
 {
-    { TOKEN_TYPE_COMMA,             ", ", FALSE },
+    { TOKEN_TYPE_COMMA,             L", ", FALSE },
     { TOKEN_TYPE_DUMMY,             NULL, FALSE }
 };
 
 static struct TokenCheckerTag TOKENS_RESERVED_0[] =
 {
-    { TOKEN_TYPE_NULL,                  "null",     TRUE },
-    { TOKEN_TYPE_BOOLEAN_LITERAL_TRUE,  "true",     TRUE },
-    { TOKEN_TYPE_BOOLEAN_LITERAL_FALSE, "false",    TRUE },
-    { TOKEN_TYPE_BLOCK,                 "block",    TRUE },
-    { TOKEN_TYPE_CLASS,                 "class",    TRUE },
+    { TOKEN_TYPE_NULL,                  L"null",     TRUE },
+    { TOKEN_TYPE_BOOLEAN_LITERAL_TRUE,  L"true",     TRUE },
+    { TOKEN_TYPE_BOOLEAN_LITERAL_FALSE, L"false",    TRUE },
+    { TOKEN_TYPE_BLOCK,                 L"block",    TRUE },
+    { TOKEN_TYPE_CLASS,                 L"class",    TRUE },
     { TOKEN_TYPE_DUMMY,                 NULL,       FALSE }
 };
 
 static struct TokenCheckerTag TOKENS_RESERVED_1[] =
 {
-    { TOKEN_TYPE_BREAK,                 "break",    TRUE },
-    { TOKEN_TYPE_ELSE,                  "else",     TRUE },
-    { TOKEN_TYPE_RETURN,                "return",   TRUE },
-    { TOKEN_TYPE_CONTINUE,              "continue", TRUE },
+    { TOKEN_TYPE_BREAK,                 L"break",    TRUE },
+    { TOKEN_TYPE_ELSE,                  L"else",     TRUE },
+    { TOKEN_TYPE_RETURN,                L"return",   TRUE },
+    { TOKEN_TYPE_CONTINUE,              L"continue", TRUE },
     { TOKEN_TYPE_DUMMY,                 NULL,       FALSE }
 };
 
 static struct TokenCheckerTag TOKENS_RESERVED_2[] =
 {
-    { TOKEN_TYPE_IF,           "if ",     FALSE },
-    { TOKEN_TYPE_ELIF,         "elif ",   FALSE },
-    { TOKEN_TYPE_WHILE,        "while ",  FALSE },
-    { TOKEN_TYPE_LOAD,         "load ",   FALSE },
-    { TOKEN_TYPE_RETURN_VALUE, "return ", FALSE },
+    { TOKEN_TYPE_IF,           L"if ",     FALSE },
+    { TOKEN_TYPE_ELIF,         L"elif ",   FALSE },
+    { TOKEN_TYPE_WHILE,        L"while ",  FALSE },
+    { TOKEN_TYPE_LOAD,         L"load ",   FALSE },
+    { TOKEN_TYPE_RETURN_VALUE, L"return ", FALSE },
     { TOKEN_TYPE_DUMMY,        NULL,      FALSE }
 };
 
 static struct TokenCheckerTag TOKENS_START_WITH_SPACE[] =
 {
-    { TOKEN_TYPE_AND,           " && ", FALSE },
-    { TOKEN_TYPE_DECREMENT,     " -= ", FALSE },
-    { TOKEN_TYPE_DEVIDE,        " / ",  FALSE },
-    { TOKEN_TYPE_EQUAL,         " == ", FALSE },
-    { TOKEN_TYPE_EXTENDS,       " -> ", FALSE },
-    { TOKEN_TYPE_GREATER_EQUAL, " >= ", FALSE },
-    { TOKEN_TYPE_GREATER_THAN,  " > ",  FALSE },
-    { TOKEN_TYPE_INCREMENT,     " += ", FALSE },
-    { TOKEN_TYPE_INDENT,        "    ", FALSE },
-    { TOKEN_TYPE_JOIN,          " _",   TRUE },
-    { TOKEN_TYPE_LESS_THAN,     " < ",  FALSE },
-    { TOKEN_TYPE_LESS_EQUAL,    " <= ", FALSE },
-    { TOKEN_TYPE_MINUS,         " - ", FALSE },
-    { TOKEN_TYPE_MODULO,        " % ", FALSE },
-    { TOKEN_TYPE_MULTIPLY,      " * ", FALSE },
-    { TOKEN_TYPE_NOT_EQUAL,     " != ", FALSE },
-    { TOKEN_TYPE_OR,            " || ", FALSE },
-    { TOKEN_TYPE_PLUS,          " + ", FALSE },
-    { TOKEN_TYPE_SUBSTITUTE,    " = ", FALSE },
+    { TOKEN_TYPE_AND,           L" && ", FALSE },
+    { TOKEN_TYPE_DECREMENT,     L" -= ", FALSE },
+    { TOKEN_TYPE_DEVIDE,        L" / ",  FALSE },
+    { TOKEN_TYPE_EQUAL,         L" == ", FALSE },
+    { TOKEN_TYPE_EXTENDS,       L" -> ", FALSE },
+    { TOKEN_TYPE_GREATER_EQUAL, L" >= ", FALSE },
+    { TOKEN_TYPE_GREATER_THAN,  L" > ",  FALSE },
+    { TOKEN_TYPE_INCREMENT,     L" += ", FALSE },
+    { TOKEN_TYPE_INDENT,        L"    ", FALSE },
+    { TOKEN_TYPE_JOIN,          L" _",   TRUE },
+    { TOKEN_TYPE_LESS_THAN,     L" < ",  FALSE },
+    { TOKEN_TYPE_LESS_EQUAL,    L" <= ", FALSE },
+    { TOKEN_TYPE_MINUS,         L" - ", FALSE },
+    { TOKEN_TYPE_MODULO,        L" % ", FALSE },
+    { TOKEN_TYPE_MULTIPLY,      L" * ", FALSE },
+    { TOKEN_TYPE_NOT_EQUAL,     L" != ", FALSE },
+    { TOKEN_TYPE_OR,            L" || ", FALSE },
+    { TOKEN_TYPE_PLUS,          L" + ", FALSE },
+    { TOKEN_TYPE_SUBSTITUTE,    L" = ", FALSE },
     { TOKEN_TYPE_DUMMY,         NULL,  FALSE }
 };
 
@@ -131,13 +131,13 @@ Token_new(
 
 Token
 Token_parse(
-    char* start,
+    String start,
     struct TokenCheckerTag *table
 )
 {
     Token token = NULL;
     struct TokenCheckerTag *checker = NULL;
-    char c = '0';
+    wchar_t c = L'0';
     
     while (table != NULL)
     {
@@ -145,7 +145,7 @@ Token_parse(
         if (checker->type == TOKEN_TYPE_DUMMY)
             break;
         
-        if (strncmp(start, checker->value, strlen(checker->value)) != 0)
+        if (wcsncmp(start, checker->value, wcslen(checker->value)) != 0)
         {
             table++;
             continue;
@@ -157,8 +157,8 @@ Token_parse(
             break;
         }
         
-        c = start[strlen(checker->value)];
-        if (isalnum(c) == 0)
+        c = start[wcslen(checker->value)];
+        if (iswalnum(c) == 0)
         {
             token = Token_new(checker->type, checker->value);
             break;
@@ -174,29 +174,29 @@ Token_parse(
 
 Token
 Tokenizer_number(
-    char* cursor
+    String cursor
 )
 {
     Token token = NULL;
-    char* start = cursor;
+    String start = cursor;
     Boolean point = FALSE;
     Boolean is_real = FALSE;
     long size = 0;
 
     
-    if (isdigit(*cursor) == 0)
+    if (iswdigit(*cursor) == 0)
         goto END;
     
     while (TRUE)
     {
-        if (isdigit(*cursor) != 0)
+        if (iswdigit(*cursor) != 0)
         {
             is_real = point;
             cursor++;
             continue;
         }
         
-        if (*cursor != '.')
+        if (*cursor != L'.')
             break;
         
         if (point == FALSE)
@@ -218,7 +218,7 @@ Tokenizer_number(
     if (point == TRUE)
         cursor--;
     
-    size = cursor - start;
+    size = wcslen(cursor) - wcslen(start);
     token = Token_new(TOKEN_TYPE_INTEGER_LITERAL, String_sub(start, 0, size));
     
 END:
@@ -228,7 +228,7 @@ END:
 
 Token
 Tokenizer_reserved(
-    char* start,
+    String start,
     long length
 )
 {
@@ -239,8 +239,8 @@ Tokenizer_reserved(
     if (token != NULL)
         goto END;
     
-    char c = start[length];
-    if (c != ' ' && c != '\0')
+    wchar_t c = start[length];
+    if (c != L' ' && c != L'\0')
         goto END;
 
     //It's important that checking order of TOKENS_RESERVED_2, TOKENS_RESERVED_1.
@@ -260,28 +260,28 @@ END:
 
 Token
 Tokenizer_identifier(
-    char* start,
+    String start,
     long length
 )
 {
     Token token = NULL;
-    char* cursor = start;
+    String cursor = start;
     int i = 0;
     
-    if (islower(*cursor) == 0)
+    if (iswlower(*cursor) == 0)
         goto END;
 
 
     cursor++;
     for (i = 0; i < length - 1; i++)
     {
-        if (islower(*cursor) != 0)
+        if (iswlower(*cursor) != 0)
             goto NEXT;
         
-        if (isdigit(*cursor) != 0)
+        if (iswdigit(*cursor) != 0)
             goto NEXT;
         
-        if (*cursor == '_')
+        if (*cursor == L'_')
             goto NEXT;
         
 		goto END;
@@ -299,12 +299,12 @@ END:
 
 Token
 Tokenizer_class_or_constant(
-    char* start,
+    String start,
     long length
 )
 {
     Token token = NULL;
-    char* cursor = start;
+    String cursor = start;
     TokenType type = TOKEN_TYPE_CONSTANT;
     int i = 0;
     
@@ -312,16 +312,16 @@ Tokenizer_class_or_constant(
         goto END;
     
     //Check 1st charactor.
-    if (isupper(*cursor) == 0)
+    if (iswupper(*cursor) == 0)
         goto END;
 
     //Check 2nd charactor.
     cursor++;
-    if ((isupper(*cursor) != 0) || (*cursor == '_'))
+    if ((iswupper(*cursor) != 0) || (*cursor == L'_'))
     {
         type = TOKEN_TYPE_CONSTANT;
     }
-    else if (islower(*cursor) != 0)
+    else if (iswlower(*cursor) != 0)
     {
         type = TOKEN_TYPE_CLASS_LITERAL;
     }
@@ -333,16 +333,16 @@ Tokenizer_class_or_constant(
     cursor++;
     for (i = 0; i < length - 2; i++)
     {
-    	if ((type == TOKEN_TYPE_CLASS_LITERAL) && (isalnum(*cursor) != 0))
+    	if ((type == TOKEN_TYPE_CLASS_LITERAL) && (iswalnum(*cursor) != 0))
     	{
     		cursor++;
     		continue;
     	}
     	
     	if ((type == TOKEN_TYPE_CONSTANT)
-            && ((isupper(*cursor) != 0)
-                || *cursor == '_'
-                || isdigit(*cursor) != 0))
+            && ((iswupper(*cursor) != 0)
+                || *cursor == L'_'
+                || iswdigit(*cursor) != 0))
     	{
     		cursor++;
     		continue;
@@ -361,20 +361,20 @@ END:
 
 Token
 Tokenizer_word(
-    char* cursor
+    String cursor
 )
 {
     Token token = NULL;
-    char* start = cursor;
+    String start = cursor;
     long length = 0;
     
-    if (isalpha(*cursor) == 0)
+    if (iswalpha(*cursor) == 0)
         goto END;
     
     while (TRUE)
     {
-        if ((isalnum(*cursor) != 0)
-            || *cursor == '_')
+        if ((iswalnum(*cursor) != 0)
+            || *cursor == L'_')
         {
             cursor++;
             continue;
@@ -404,14 +404,14 @@ END:
 
 Token
 Tokenizer_space(
-    char* start
+    String start
 )
 {
     Token token = NULL;
     
 
     //Check 1 charactor.
-    if (*start != ' ')
+    if (*start != L' ')
         goto END;
     
     //Check 2 charactor.
@@ -426,27 +426,27 @@ END:
 
 Token
 Tokenizer_string(
-    char* start
+    String start
 )
 {
     Token token = NULL;
-    char* cursor = start;
+    String cursor = start;
     Boolean is_end = FALSE;
     long length = 0;
     
-    if (*start != '"')
+    if (*start != L'"')
         goto END;
     
     cursor++;
-    while (*cursor != '\0')
+    while (*cursor != L'\0')
     {
-        if (*cursor == '\\')
+        if (*cursor == L'\\')
         {
             cursor += 2;
             continue;
         }
         
-        if (*cursor == '"')
+        if (*cursor == L'"')
         {
             is_end = TRUE;
             cursor++;
@@ -460,7 +460,7 @@ Tokenizer_string(
     if (is_end == FALSE)
         goto END;
     
-    length = cursor - start;
+    length = wcslen(cursor) - wcslen(start);
     token = Token_new(TOKEN_TYPE_STRING_LITERAL, String_sub(start, 0, length));
     
 END:
@@ -470,7 +470,7 @@ END:
 
 Token
 Tokenizer_other(
-    char* start
+    String start
 )
 {
     Token token = NULL;
@@ -494,10 +494,10 @@ END:
 
 void
 Tokenizer_error(
-    char* file_path,
+    String file_path,
     int line,
-    char* target,
-    char* cursor,
+    String target,
+    String cursor,
     char* format,
     ...
 )
@@ -506,15 +506,15 @@ Tokenizer_error(
     va_start(argp, format);
     long column = 0;
 
-    fprintf(stderr, "Illegal token error. [%s, %d]\n", file_path, line);
+    fprintf(stderr, "Illegal token error. [%s, %d]\n", String_wcsrtombs(file_path), line);
     
     vfprintf(stderr, format, argp );
     fprintf(stderr, "\n");
     
     
     fprintf(stderr, "--------------------\n");
-    fprintf(stderr, "%s\n", target);
-    column = cursor - target;
+    fprintf(stderr, "%s\n", String_wcsrtombs(target));
+    column = wcslen(cursor) - wcslen(target);
     while (0 < column)
     {
         fprintf(stderr, " ");
@@ -591,36 +591,12 @@ ADD_TOKEN:
         token->column = cursor - &target[0];
         token->file_path = file_path;
         List_add(tokens, token);
-        cursor += strlen(token->value);
+        cursor += wcslen(token->value);
     }
     
     return tokens;
 }
 
-/*
-Boolean
-Tokenizer_read_line(FILE* file, char* buffer, long size)
-{
-    memset(buffer, 0x00, size);
-    char* lf = NULL;
-    Boolean result = FALSE;
-    
-    fgets(buffer, size, file);
-    lf = strchr(buffer, '\n'); 
-    if (lf != NULL)
-    {
-        *lf = '\0';
-    }
-    else if (feof(file) == FALSE)
-    {
-        goto END;
-    }
-    
-    result = TRUE;
-END:
-    return result;
-}
-*/
 
 
 String
@@ -685,7 +661,7 @@ Tokenizer_get_indent(List tokens, int indent_current, int line)
     
     if (indent == 1)
     {
-        token = Token_new(TOKEN_TYPE_INDENT, "<<INDENT>>");
+        token = Token_new(TOKEN_TYPE_INDENT, L"<<INDENT>>");
         token->row = line;
         token->column = indent_new * 4;
         List_insert(tokens, 0, token);
@@ -700,7 +676,7 @@ Tokenizer_get_indent(List tokens, int indent_current, int line)
     //  indent < 0
     while (indent < 0)
     {
-        token = Token_new(TOKEN_TYPE_DEDENT, "<<DEDENT>>");
+        token = Token_new(TOKEN_TYPE_DEDENT, L"<<DEDENT>>");
         token->row = line;
         token->column = indent_new * 4;
         List_insert(tokens, 0, token);
@@ -728,7 +704,7 @@ Tokenizer_check_join(List tokens, int line, int column)
     }
     else
     {
-        token = Token_new(TOKEN_TYPE_NEW_LINE, "<<NEW_LINE>>");
+        token = Token_new(TOKEN_TYPE_NEW_LINE, L"<<NEW_LINE>>");
         token->row = line;
         token->column = column;
         List_add(tokens, token);
@@ -769,14 +745,14 @@ Tokenizer_terminate(List tokens, int indent_current, int line)
     
     while (0 < indent_current)
     {
-        token = Token_new(TOKEN_TYPE_DEDENT, "<<DEDENT>>");
+        token = Token_new(TOKEN_TYPE_DEDENT, L"<<DEDENT>>");
         token->row = line;
         token->column = indent_current * 4;
         List_add(tokens, token);
         indent_current--;
     }
     
-    token = Token_new(TOKEN_TYPE_TERMINATE, "<<TERMINATE>>");
+    token = Token_new(TOKEN_TYPE_TERMINATE, L"<<TERMINATE>>");
     token->row = line;
     token->column = 0;
     List_add(tokens, token);
@@ -788,7 +764,7 @@ Tokenizer_terminate(List tokens, int indent_current, int line)
 void
 Tokenizer_print_all_tokens(
     List tokens,
-    char* filePath
+    String filePath
 )
 {
     int c = List_count(tokens);
@@ -800,13 +776,13 @@ Tokenizer_print_all_tokens(
         if (token == NULL)
             printf("(!!null!!)\n");
         else
-            printf("[%s]%3d : %s\n", filePath, token->row, token->value);
+            printf("[%s]%3d : %s\n", String_wcsrtombs(filePath), token->row, String_wcsrtombs(token->value));
     }
 }
 
 List
 Tokenizer_create_tokens(
-    char*   filePath,
+    String filePath,
     Boolean is_main
 )
 {
@@ -815,20 +791,18 @@ Tokenizer_create_tokens(
     int indent_current = 0;
     List tokens = NULL;
     
-    //char buffer[BUFFER_SIZE + 1];
-    //int size = sizeof(buffer);
     String buffer = NULL;
     List tmp = NULL;
     Boolean skip = FALSE;
     
     
-    file = fopen(filePath, "r");
+    file = fopen(String_wcsrtombs(filePath), "r");
     if (file == NULL)
     {
         if (!is_main)
             goto END;
 
-        fprintf(stderr, "File open error. [%s]\n\n", filePath);
+        fprintf(stderr, "File open error. [%s]\n\n", String_wcsrtombs(filePath));
         exit(0);
     }
     
@@ -837,11 +811,6 @@ Tokenizer_create_tokens(
     
     while (feof(file) == 0)
     {
-        //if (!Tokenizer_read_line(file, buffer, size))
-        //{
-        //    fprintf(stderr, "[%s] line %3d : Too long sentence. Please get the line under %d columns.\n\n", filePath, line, size);
-        //    goto END;
-        //}
         buffer = Tokenizer_read_line(file);
         
         
@@ -860,12 +829,12 @@ Tokenizer_create_tokens(
             indent_current = Tokenizer_get_indent(tmp, indent_current, line);
             if (indent_current < 0)
             {
-                fprintf(stderr, "[%s] line %3d : Indent level error.\n\n", filePath, line);
+                fprintf(stderr, "[%s] line %3d : Indent level error.\n\n", String_wcsrtombs(filePath), line);
                 goto END;
             }
         }
         
-        skip = Tokenizer_check_join(tmp, line, strlen(buffer));
+        skip = Tokenizer_check_join(tmp, line, wcslen(buffer));
         
         
         List_append(tokens, tmp);

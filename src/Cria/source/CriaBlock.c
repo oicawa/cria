@@ -49,7 +49,7 @@ CriaBlock_new(
     CriaBlock block = NULL;
     
     block = Memory_malloc(sizeof(struct CriaBlockTag));
-    block->id.name = String_new("<<block>>");
+    block->id.name = String_new(L"<<block>>");
     block->id.type = CRIA_DATA_TYPE_BLOCK;
     block->interpreter = interpreter;
     block->object = object;

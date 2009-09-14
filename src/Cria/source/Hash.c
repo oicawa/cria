@@ -97,7 +97,7 @@ Entry
 Hash_get_entry(
 	Hash hash,
 	unsigned int hash_value,
-	char* key
+	String key
 )
 {
     Logger_trc("[ START ]%s(hash is %p, hash_value='%d', key='%s')", __func__, hash, hash_value, key);
@@ -119,7 +119,7 @@ Hash_get_entry(
 		goto END;
 	
 	Logger_dbg("entry->key = '%s'", entry->key);
-	while (strcmp(entry->key, key) != 0)
+	while (wcscmp(entry->key, key) != 0)
 	{
 		Logger_dbg("entry->next is %p", entry->next);
 		if (entry->next == NULL)

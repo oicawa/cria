@@ -132,7 +132,7 @@ DefinitionVariable_search(
             continue;
 
         Logger_dbg("tmp->of.normal->name = %s", tmp->of.normal->name);
-        if (strcmp(tmp->of.normal->name, name) != 0)
+        if (wcscmp(tmp->of.normal->name, name) != 0)
             continue;
         
         definition = tmp;
@@ -315,7 +315,7 @@ END:
 //==============================
 DefinitionFunction
 DefinitionFunction_new(
-    char*               name,
+    String              name,
     Boolean             isNative,
     Boolean             isStatic,
     List                parameterList,
@@ -404,7 +404,7 @@ DefinitionFunction_parse(
     Statement statement = NULL;
     Token token = NULL;
     Boolean isBracket = FALSE;
-    char buffer[6];
+    wchar_t buffer[6];
     
     token = Parser_getCurrent(parser);
     if (token->type == TOKEN_TYPE_ATMARK)
@@ -460,16 +460,16 @@ DefinitionFunction_parse(
     
     if (isBracket == TRUE)
     {
-        if (strcmp(name, "get") == 0 || strcmp(name, "set") == 0)
+        if (wcscmp(name, L"get") == 0 || wcscmp(name, L"set") == 0)
         {
             memset(buffer, 0x00, sizeof(buffer));
-            strcat(buffer, name);
-            strcat(buffer, "[]");
+            wcscat(buffer, name);
+            wcscat(buffer, L"[]");
             name = String_new(buffer);
         }
         else
         {
-            Logger_dbg("Illegal function name as indexer. [%s]", name);
+            Logger_dbg("Illegal function name as indexer. [%s]", String_wcsrtombs(name));
             goto END;
         }
     }
@@ -543,7 +543,7 @@ DefinitionIndexer_parse(
     Item restore = Parser_getPosition(parser);
     Boolean isStatic = TRUE;
     String name = NULL;
-    char buffer[6];
+    wchar_t buffer[6];
     List parameters = NULL;
     List statements = NULL;
     Statement statement = NULL;
@@ -566,11 +566,11 @@ DefinitionIndexer_parse(
     
     name = token->value;
     
-    if (strcmp(name, "get") == 0)
+    if (wcscmp(name, L"get") == 0)
     {
         isGetter = TRUE;
     }
-    else if (strcmp(name, "set") == 0)
+    else if (wcscmp(name, L"set") == 0)
     {
         isGetter = FALSE;
     }
@@ -647,13 +647,12 @@ DefinitionIndexer_parse(
 	
     //Edit name
     memset(buffer, 0x00, sizeof(buffer));
-    strcat(buffer, name);
-    strcat(buffer, "[");
-    strcat(buffer, "]");
+    wcscat(buffer, name);
+    wcscat(buffer, L"[");
+    wcscat(buffer, L"]");
     Parser_next(parser);
     name = String_new(buffer);
     
-    Logger_dbg("Create FunctionDefinition. (name=%s, parameter=%p)", name, parameters);
     functionDefinition = DefinitionFunction_new(name, FALSE, isStatic, parameters, statements, NULL);
     
 END:
@@ -677,7 +676,7 @@ DefinitionFunction_get_name(
 DefinitionFunction
 DefinitionFunction_search(
     List    functions,
-    char*   name
+    String  name
 )
 {
     int count = List_count(functions);
@@ -688,7 +687,7 @@ DefinitionFunction_search(
     for (index = 0; index < count; index++)
     {
         tmp = (DefinitionFunction)(List_get(functions, index));
-        if (strcmp(tmp->name, name) == 0)
+        if (wcscmp(tmp->name, name) == 0)
         {
             definition = tmp;
             break;
@@ -799,7 +798,7 @@ END:
 DefinitionClass
 DefinitionClass_search(
     List classList,
-    char* name
+    String name
 )
 {
     int count = List_count(classList);
@@ -810,7 +809,7 @@ DefinitionClass_search(
     for (index = 0; index < count; index++)
     {
         tmp = (DefinitionClass)(List_get(classList, index));
-        if (strcmp(tmp->name, name) == 0)
+        if (wcscmp(tmp->name, name) == 0)
         {
             definition = tmp;
             break;
@@ -829,7 +828,7 @@ DefinitionClass_evaluate(
     CriaId  id,
     List parameterList,
     CriaBlock block,
-    char*   name,
+    String  name,
     Boolean isStatic,
     DefinitionClass klass,
     List parameters
@@ -839,10 +838,6 @@ DefinitionClass_evaluate(
     CriaId value = NULL;
     DefinitionFunction function = NULL;
     
-    Logger_dbg("Method name is '%s'", name);
-    Logger_dbg("klass is '%p'", klass);
-    Logger_dbg("klass->i_methods is '%p'", klass->i_methods);
-    Logger_dbg("klass->s_methods is '%p'", klass->s_methods);
     if (isStatic == TRUE)
     {
     	Hash_log_key(klass->s_methods);
@@ -856,7 +851,7 @@ DefinitionClass_evaluate(
     if (function == NULL)
     {
     	Logger_err("Method is not found. (%s)/%d", name, Hash_get_count(klass->i_methods));
-        Runtime_error(interpreter, "Method is not found. (%s)/%d", name, Hash_get_count(klass->i_methods));
+        Runtime_error(interpreter, "Method is not found. (%s)/%d", String_wcsrtombs(name), Hash_get_count(klass->i_methods));
     }
     
     Logger_dbg("parameters->count = %d", List_count(parameters));
@@ -916,7 +911,7 @@ DefinitionClass_generateInstance(
     if (klass->isNative == TRUE)
     {
     	Logger_dbg("Create object from native class.(%s)", klass->name);
-    	id = DefinitionClass_evaluate(interpreter, NULL, NULL, block, " generator ", TRUE, klass, parameters);
+    	id = DefinitionClass_evaluate(interpreter, NULL, NULL, block, L" generator ", TRUE, klass, parameters);
     }
     else
     {
@@ -939,7 +934,7 @@ DefinitionClass_generateInstance(
     }
     
     
-    constractor = Hash_get(klass->s_methods, "new");
+    constractor = Hash_get(klass->s_methods, L"new");
     
     if (constractor != NULL)
     {

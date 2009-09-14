@@ -55,8 +55,8 @@ Parser_errorFunction(
     int row = token->row;
     int column = token->column;
     
-    Logger_err("Syntax error near '%s'. (file:%s, line:%d, column:%d) [%s, %d]\n", buffer, file_path, row, column, file, line);
-    fprintf(stderr, "Syntax error near '%s'. (file:%s, line:%d, column:%d) [%s, %d]\n", buffer, file_path, row, column, file, line);
+    Logger_err("Syntax error near '%s'. (file:%s, line:%d, column:%d) [%s, %d]\n", String_wcsrtombs(buffer), String_wcsrtombs(file_path), row, column, file, line);
+    fprintf(stderr, "Syntax error near '%s'. (file:%s, line:%d, column:%d) [%s, %d]\n", String_wcsrtombs(buffer), String_wcsrtombs(file_path), row, column, file, line);
 	exit(1);
 }
 
@@ -274,7 +274,7 @@ Parser_insert(
 )
 {
     Logger_trc("[ START ]%s", __func__);
-    Token token = Token_new(type, "<<NEW_LINE>>(dummy for block)");
+    Token token = Token_new(type, L"<<NEW_LINE>>(dummy for block)");
     
     Item new_line = Item_new(token);
     List_insert_item(parser->tokens, parser->current, new_line);

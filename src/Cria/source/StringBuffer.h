@@ -49,7 +49,7 @@ StringBuffer_new(
 void
 StringBuffer_appendChar(
     StringBuffer    stringBuffer,
-    char            charactor
+    wchar_t        charactor
 );
 
 
@@ -57,7 +57,7 @@ StringBuffer_appendChar(
 void
 StringBuffer_append(
     StringBuffer    stringBuffer,
-    char*           string
+    String          string
 );
 
 

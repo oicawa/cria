@@ -228,7 +228,7 @@ ExpressionSelf_parse(
     Logger_dbg("VariableExpression name = '_self_'");
     ExpressionVariable variable = NULL;
     variable = Memory_malloc(sizeof(struct ExpressionVariableTag));
-    variable->name = String_new("_self_");
+    variable->name = String_new(L"_self_");
     
     expression = Memory_malloc(sizeof(struct ExpressionReferenceTag));
     expression->type = REFERENCE_EXPRESSION_TYPE_SELF;
@@ -400,7 +400,7 @@ ExpressionVariable_evaluate(
     Logger_dbg("parent is %p", parent);
     if (parent == NULL)
     {
-        if (strcmp(expression->name, "<<block>>") == 0)
+        if (wcscmp(expression->name, L"<<block>>") == 0)
         {
             id = (CriaId)block;
 		    if (id != NULL)
@@ -465,7 +465,7 @@ ExpressionClass_evaluate(
 
     
     classes = Interpreter_classes(interpreter);
-    if (strcmp(klass->name, "class") != 0)
+    if (wcscmp(klass->name, L"class") != 0)
     {
         definition = (DefinitionClass)Hash_get(classes, klass->name);
     }
@@ -1081,23 +1081,23 @@ ExpressionFunctionCall_evaluate(
     
     if (parent == NULL)
     {
-        if (strcmp(expression->name, "<<block>>") == 0)
+        if (wcscmp(expression->name, L"<<block>>") == 0)
         {
             //TODO: block expression have to be a argument in this function.
             function = block->function;
-            target = "<<block>>";
+            target = L"<<block>>";
         }
         else
         {
 		    current = object;
 		    function = ExpressionFunctionCall_searchFromInterpreter(interpreter, expression->name);
-            target = "Interpreter";
+            target = L"Interpreter";
             
             //Search from parameters.
             if (function == NULL)
             {
                 function = ExpressionFunctionCall_searchFromParameters(interpreter, expression->name, parameterList);
-                target = "Parameters";
+                target = L"Parameters";
             }
         }
     }
@@ -1170,7 +1170,7 @@ ExpressionIndexer_evaluate(
               parent->type == CRIA_DATA_TYPE_STRING)
     {
     	current = parent;
-		function = ExpressionFunctionCall_searchFromObject(interpreter, parent, "get[]");
+		function = ExpressionFunctionCall_searchFromObject(interpreter, parent, L"get[]");
     }
     else
     {
@@ -1453,18 +1453,18 @@ ExpressionStringLiteral_evaluate(
 {
     Logger_trc("[ START ]%s", __func__);
     CriaString string = NULL;
-    char* buffer = expression->value;
-    char* start = &buffer[1];
-    char* next = NULL;
+    String buffer = expression->value;
+    String start = &buffer[1];
+    String next = NULL;
     StringBuffer stringBuffer = StringBuffer_new();
     
     
     Logger_dbg("Literal is '%s'", buffer);
     
-    while (*start != '\0')
+    while (*start != L'\0')
     {
         Logger_dbg("literal check");
-        next = strchr(start, '\\');
+        next = wcschr(start, L'\\');
         if (next == NULL)
         {
             Logger_dbg("set all ");
@@ -1473,29 +1473,29 @@ ExpressionStringLiteral_evaluate(
         }
         
         long length = next - start;
-        char* tmp = Memory_malloc(length + 1);
-        strncpy(tmp, start, length);
+        String tmp = Memory_malloc(length + sizeof(wchar_t) * 1);
+        wcsncpy(tmp, start, length);
         StringBuffer_append(stringBuffer, tmp);
         
         switch (*(next + 1))
         {
-        case 'n':
-            StringBuffer_appendChar(stringBuffer, '\n');
+        case L'n':
+            StringBuffer_appendChar(stringBuffer, L'\n');
             break;
-        case '"':
-            StringBuffer_appendChar(stringBuffer, '"');
+        case L'"':
+            StringBuffer_appendChar(stringBuffer, L'"');
             break;
         default:
             StringBuffer_appendChar(stringBuffer, *(next + 1));
             break;
         }
         
-        start = next + 2;
+        start = next + sizeof(wchar_t) * 2;
     }
     
     
     String value = StringBuffer_toString(stringBuffer);
-    value[strlen(value) - 1] = '\0';
+    value[wcslen(value) - 1] = L'\0';
     Logger_dbg("Edited string is '%s'", value);
     
     
@@ -1627,7 +1627,7 @@ ExpressionVariable_parse(
     }
     else if (token->type == TOKEN_TYPE_BLOCK)
     {
-        name = "<<block>>";
+        name = L"<<block>>";
     }
     else
     {
@@ -1765,7 +1765,7 @@ ExpressionFunctionCall_parse(
     }
     else if (token->type == TOKEN_TYPE_BLOCK)
     {
-        name = "<<block>>";
+        name = L"<<block>>";
         is_block = TRUE;
     }
     else

@@ -41,7 +41,7 @@
 
 DefinitionClass
 CriaFile_loadClass(
-    char* name
+    String name
 );
 
 

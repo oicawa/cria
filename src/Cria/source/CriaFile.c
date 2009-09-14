@@ -51,9 +51,9 @@ CriaFile__generator_(
 {
     Logger_trc("[ START ]%s", __func__);
     
-    CriaObject file = CriaObject_new("File");
-    CriaObject_addField(file, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "path", FALSE, FALSE, NULL));
-    CriaObject_addField(file, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "pointer", FALSE, FALSE, NULL));
+    CriaObject file = CriaObject_new(L"File");
+    CriaObject_addField(file, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, L"path", FALSE, FALSE, NULL));
+    CriaObject_addField(file, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, L"pointer", FALSE, FALSE, NULL));
     
     Logger_trc("[  END  ]%s", __func__);
     return (CriaId)file;
@@ -101,7 +101,7 @@ CriaFile_new(
     
     file = (CriaObject)object;
     
-    CriaObject_set(interpreter, file, "path", CriaString_new(TRUE, path->value));
+    CriaObject_set(interpreter, file, L"path", CriaString_new(TRUE, path->value));
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -156,14 +156,14 @@ CriaFile_open(
     file = (CriaObject)CriaFile__generator_(interpreter, object, args, NULL);
     
     
-    pointer = fopen(path, mode);
+    pointer = fopen(String_wcsrtombs(path), String_wcsrtombs(mode));
     if (pointer == NULL)
     {
     	Runtime_error(interpreter, "File open error. (%s)", path);
     	goto END;
     }
     
-    CriaObject_set(interpreter, file, "pointer", pointer);
+    CriaObject_set(interpreter, file, L"pointer", pointer);
     
     
     
@@ -215,7 +215,7 @@ CriaFile_close(
     
     file = (CriaObject)object;
     
-    pointer = (FILE*)CriaObject_get(interpreter, file, "pointer");
+    pointer = (FILE*)CriaObject_get(interpreter, file, L"pointer");
     
     fclose(pointer);
     
@@ -257,7 +257,7 @@ CriaFile_read(
     
     
     file = (CriaObject)object;
-    pointer = (FILE*)CriaObject_get(interpreter, file, "pointer");
+    pointer = (FILE*)CriaObject_get(interpreter, file, L"pointer");
     Logger_dbg("pointer is %p", pointer);
     
     
@@ -273,7 +273,7 @@ CriaFile_read(
 		if (length == 0)
 			break;
 		
-		StringBuffer_append(stringBuffer, buffer);
+		StringBuffer_append(stringBuffer, String_mbsrtowcs(buffer));
 		
 		if (buffer[length - 1] == '\n')
 			break;
@@ -306,8 +306,8 @@ CriaFile_write(
     
     
     CriaId id;
-    char* start = NULL;
-    char* end = NULL;
+    String start = NULL;
+    String end = NULL;
     long index = 0;
     int count = 0;
     
@@ -318,7 +318,7 @@ CriaFile_write(
     	goto END;
     }
     file = (CriaObject)object;
-    pointer = (FILE*)CriaObject_get(interpreter, file, "pointer");
+    pointer = (FILE*)CriaObject_get(interpreter, file, L"pointer");
     
     
     count = List_count(args);
@@ -334,7 +334,7 @@ CriaFile_write(
     {
         Logger_dbg("Integer");
         int value = ((CriaInteger)id)->value;
-        printf("%d", value);
+        fprintf(pointer, "%d", value);
         goto END;
     }
     
@@ -342,7 +342,7 @@ CriaFile_write(
     {
         Logger_dbg("Boolean");
         CriaString string = (CriaString)CriaBoolean_toString(interpreter, (CriaBoolean)id);
-        printf("%s", string->value);
+        fprintf(pointer, "%s", String_wcsrtombs(string->value));
         goto END;
     }
     
@@ -354,14 +354,14 @@ CriaFile_write(
     
 	Logger_dbg("String");
 	start = ((CriaString)id)->value;
-	while((end = strstr(start, "%s")) != NULL)
+	while((end = wcsstr(start, L"%s")) != NULL)
 	{
-		long size = end - start;
-		char* buffer = Memory_malloc(size + 1);
-		strncpy(buffer, start, size);
-		fprintf(pointer, buffer);
+		long size = wcslen(start) - wcslen(end);
+		String buffer = Memory_malloc(sizeof(wchar_t) * (size + 1));
+		wcsncpy(buffer, start, size);
+		fprintf(pointer, String_wcsrtombs(buffer));
 		buffer = NULL;
-		start = end + 2;
+		start = &end[2];
 		
 		if (count < index)
 		{
@@ -380,7 +380,7 @@ CriaFile_write(
 		if (id->type == CRIA_DATA_TYPE_STRING)
 		{
 			Logger_dbg("[print]%s", ((CriaString)id));
-			fprintf(pointer, "%s", ((CriaString)id)->value);
+			fprintf(pointer, "%s", String_wcsrtombs(((CriaString)id)->value));
 			continue;
 		}
 		
@@ -393,15 +393,14 @@ CriaFile_write(
 		if (id->type == CRIA_DATA_TYPE_BOOLEAN)
 		{
 			CriaString string = (CriaString)CriaBoolean_toString(interpreter, (CriaBoolean)id);
-			fprintf(pointer, "%s", string->value);
+			fprintf(pointer, "%s", String_wcsrtombs(string->value));
 			continue;
 		}
 		
 		Logger_err("id->type = %d", id->type);
         Runtime_error(interpreter, "Data type of argument %d is not Integer, Boolean, and String.", index + 1);
 	}
-	Logger_dbg("[print]%s", start);
-	fprintf(pointer, start);
+	fprintf(pointer, String_wcsrtombs(start));
     
 END:
     fflush(pointer);
@@ -437,7 +436,7 @@ CriaFile_isEnd(
     }
     
     file = (CriaObject)object;
-    pointer = (FILE*)CriaObject_get(interpreter, file, "pointer");
+    pointer = (FILE*)CriaObject_get(interpreter, file, L"pointer");
     
     if (feof(pointer) != 0)
     {
@@ -466,7 +465,7 @@ CriaFile_loadClass(
     Hash i_methods = Hash_new(32);
     Hash s_methods = Hash_new(32);
     
-    variable = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "file", FALSE, FALSE, NULL);
+    variable = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, L"file", FALSE, FALSE, NULL);
     
     Logger_dbg("0");
     
@@ -474,37 +473,37 @@ CriaFile_loadClass(
     
     Logger_dbg("1");
     
-    function = DefinitionFunction_new(" generator ", TRUE, TRUE, NULL, NULL, CriaFile__generator_);
+    function = DefinitionFunction_new(L" generator ", TRUE, TRUE, NULL, NULL, CriaFile__generator_);
     Hash_put(s_methods, DefinitionFunction_get_name(function), function);
     
     Logger_dbg("2");
     
-    function = DefinitionFunction_new("new", TRUE, TRUE, NULL, NULL, CriaFile_new);
+    function = DefinitionFunction_new(L"new", TRUE, TRUE, NULL, NULL, CriaFile_new);
     Hash_put(s_methods, DefinitionFunction_get_name(function), function);
     
     Logger_dbg("3");
     
-    function = DefinitionFunction_new("open", TRUE, TRUE, NULL, NULL, CriaFile_open);
+    function = DefinitionFunction_new(L"open", TRUE, TRUE, NULL, NULL, CriaFile_open);
     Hash_put(s_methods, DefinitionFunction_get_name(function), function);
     
     Logger_dbg("4");
     
-    function = DefinitionFunction_new("close", TRUE, FALSE, NULL, NULL, CriaFile_close);
+    function = DefinitionFunction_new(L"close", TRUE, FALSE, NULL, NULL, CriaFile_close);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     Logger_dbg("5");
     
-    function = DefinitionFunction_new("read", TRUE, FALSE, NULL, NULL, CriaFile_read);
+    function = DefinitionFunction_new(L"read", TRUE, FALSE, NULL, NULL, CriaFile_read);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     Logger_dbg("6");
     
-    function = DefinitionFunction_new("write", TRUE, FALSE, NULL, NULL, CriaFile_write);
+    function = DefinitionFunction_new(L"write", TRUE, FALSE, NULL, NULL, CriaFile_write);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     Logger_dbg("7");
     
-    function = DefinitionFunction_new("is_end", TRUE, FALSE, NULL, NULL, CriaFile_isEnd);
+    function = DefinitionFunction_new(L"is_end", TRUE, FALSE, NULL, NULL, CriaFile_isEnd);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     Logger_dbg("Create class definition.");

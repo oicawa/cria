@@ -105,7 +105,7 @@ Interpreter_new(
 Boolean
 Interpreter_compile(
     Interpreter interpreter,
-    char* filePath
+    String filePath
 )
 {
     Logger_trc("[ START ]%s", __func__);

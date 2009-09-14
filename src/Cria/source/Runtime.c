@@ -64,7 +64,7 @@ Runtime_error_write(
         String file_path = Reference_file_path(reference);
         int row = Reference_line(reference);
         int column = Reference_column(reference);
-        fprintf(stderr, "[%s] line: %d, column: %d\n", file_path, row, column); 
+        fprintf(stderr, "[%s] line: %d, column: %d\n", String_wcsrtombs(file_path), row, column); 
     }
     
     exit(1);

@@ -55,7 +55,7 @@ struct TokenCheckerTag
 
 List
 Tokenizer_create_tokens(
-    char* filePath,
+    String filePath,
     Boolean is_main
 );
 

@@ -41,6 +41,7 @@
 #include <unistd.h>
 #include <gc/gc.h>
 #include <wchar.h>
+#include <wctype.h>
 
 
 
@@ -193,7 +194,7 @@ typedef struct DefinitionVariableTag *DefinitionVariable;
 typedef struct DefinitionVariableNormalTag *DefinitionVariableNormal;
 typedef struct DefinitionClassTag *DefinitionClass;
 typedef struct DefinitionFunctionTag *DefinitionFunction;
-typedef DefinitionClass CriaNativeClassLoader(char* name);
+typedef DefinitionClass CriaNativeClassLoader(String name);
 
 
 //==============================
@@ -413,7 +414,7 @@ Interpreter_new(
 Boolean
 Interpreter_compile(
     Interpreter interpreter,
-    char*       filePath
+    String filePath
 );
 
 
@@ -445,7 +446,7 @@ DefinitionVariable_new(
 
 DefinitionFunction
 DefinitionFunction_new(
-    char*               name,
+    String              name,
     Boolean             isNative,
     Boolean             isStatic,
     List                parameterList,
@@ -528,7 +529,7 @@ CriaBlock_evaluate(
 void
 Loader_add_class(
     Interpreter interpreter,
-    char* className,
+    String className,
     CriaNativeClassLoader* classLoader
 );
 

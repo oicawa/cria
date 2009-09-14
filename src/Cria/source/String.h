@@ -40,6 +40,18 @@ String_new(
 );
 
 
+String
+String_mbsrtowcs(
+    char* value
+);
+
+
+char*
+String_wcsrtombs(
+    String value
+);
+
+
 long
 String_length(
     String  string

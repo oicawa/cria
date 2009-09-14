@@ -77,7 +77,7 @@ CriaObject_getObject(
     	goto END;
     }
     
-    if (strcmp(id->name, class_name) != 0)
+    if (wcscmp(id->name, class_name) != 0)
     {
     	goto END;
     }

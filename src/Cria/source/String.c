@@ -80,6 +80,31 @@ END:
 }
 
 
+char*
+String_wcsrtombs(
+    String value
+)
+{
+    char buffer[256 + 1];
+    const wchar_t* wide = value;
+    mbstate_t ps;
+    char* string = NULL;
+    
+    memset(buffer, 0x00, sizeof(buffer));
+    memset(&ps, 0x00, sizeof(mbstate_t));
+    
+    if (wcsrtombs(buffer, &wide, sizeof(buffer), &ps) < 0)
+    {
+        goto END;
+    }
+    
+    string = Memory_malloc(strlen(buffer) + 1);
+    strncpy(string, buffer, strlen(buffer));
+END:
+    return string;
+}
+
+
 long
 String_length(
     String  string

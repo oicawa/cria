@@ -55,12 +55,12 @@ StringBuffer_new(
 void
 StringBuffer_append(
     StringBuffer    stringBuffer,
-    char*           string
+    String          string
 )
 {
     Logger_cor("[ START ]%s", __func__);
     List    list = (List)stringBuffer;
-    char*   buffer = NULL;
+    String  buffer = NULL;
     Item    lastItem = NULL;
     long    length = 0;
     long    filler = 0;
@@ -71,23 +71,23 @@ StringBuffer_append(
     if (lastItem == NULL)
     {
 	    Logger_cor("lastItem is NULL");
-        buffer = Memory_malloc(STRING_BUFFER_SIZE);
+        buffer = Memory_malloc(sizeof(wchar_t) * STRING_BUFFER_SIZE);
         List_add(list, buffer);
         lastItem = List_lastItem(list);
     }
     
     
     Logger_cor("Get lastItem object");
-    buffer = (char*)(Item_getObject(lastItem));
+    buffer = (String)(Item_getObject(lastItem));
     Logger_cor("Got lastItem object");
     
-    length = strlen(string);
+    length = wcslen(string);
     Logger_cor("string length = %d", length);
     
-    filler = STRING_BUFFER_SIZE - strlen(buffer) - 1;
+    filler = STRING_BUFFER_SIZE - wcslen(buffer) - 1;
     Logger_cor("filter = %d", filler);
     
-    strncat(buffer, string, filler);
+    wcsncat(buffer, string, filler);
     
     if (length <= filler)
     {
@@ -96,7 +96,7 @@ StringBuffer_append(
     
     
     Logger_cor("Length is over.");
-    buffer = Memory_malloc(STRING_BUFFER_SIZE);
+    buffer = Memory_malloc(sizeof(wchar_t) * STRING_BUFFER_SIZE);
     List_add(list, buffer);
     StringBuffer_append(stringBuffer, &(string[filler]));
     Logger_cor("[  END  ]%s", __func__);
@@ -108,14 +108,13 @@ StringBuffer_append(
 void
 StringBuffer_appendChar(
     StringBuffer    stringBuffer,
-    char            charactor
+    wchar_t         charactor
 )
 {
     Logger_cor("[ START ]%s", __func__);
-    char buffer[1 + 1];
+    wchar_t buffer[1 + 1];
     Memory_reset(buffer, sizeof(buffer));
-    sprintf(buffer, "%c", charactor);
-    Logger_cor("buffer = [%s]", buffer);
+    buffer[0] = charactor;
     StringBuffer_append(stringBuffer, buffer);
     Logger_cor("[  END  ]%s", __func__);
 }

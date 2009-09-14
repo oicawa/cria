@@ -67,7 +67,7 @@ struct ReferenceLiteralTag
     ReferenceLiteralType type;
     union {
         String string;
-        int integer;
+        long integer;
         Boolean boolean;
     } of;
 };

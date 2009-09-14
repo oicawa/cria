@@ -63,14 +63,14 @@ main(
     }
     
     
-    Interpreter_compile(interpreter, argv[1]);
+    Interpreter_compile(interpreter, String_mbsrtowcs(argv[1]));
     
     
     Interpreter_run(interpreter);
     
     
     //TODO: I have to improve that this function called, when the process is killed.
-    //      Use signal?
+    //      Do I have to use a signal?
     Interpreter_dispose(interpreter);
     
     

@@ -55,9 +55,9 @@ CriaIO_write(
     
     
     CriaId id;
-    char*       start = NULL;
-    char*       end = NULL;
-    long        index = 0;
+    wchar_t* start = NULL;
+    wchar_t* end = NULL;
+    long index = 0;
     int count = List_count(args);
     
     
@@ -81,7 +81,7 @@ CriaIO_write(
     {
         Logger_dbg("Boolean");
         CriaString string = (CriaString)CriaBoolean_toString(interpreter, (CriaBoolean)id);
-        printf("%s", string->value);
+        printf("%s", String_wcsrtombs(string->value));
         goto END;
     }
     
@@ -89,14 +89,14 @@ CriaIO_write(
     {
         Logger_dbg("String");
         start = ((CriaString)id)->value;
-        while((end = strstr(start, "%s")) != NULL)
+        while((end = wcsstr(start, L"%s")) != NULL)
         {
             long size = end - start;
-            char* buffer = Memory_malloc(size + 1);
-            strncpy(buffer, start, size);
-            printf(buffer);
+            wchar_t* buffer = Memory_malloc(size + 1);
+            wcsncpy(buffer, start, size);
+            printf(String_wcsrtombs(buffer));
             buffer = NULL;
-            start = end + 2;
+            start = end + sizeof(wchar_t) * 2;
             
             if (count < index)
             {
@@ -115,7 +115,7 @@ CriaIO_write(
             if (id->type == CRIA_DATA_TYPE_STRING)
             {
                 Logger_dbg("[print]%p", ((CriaString)id));
-                printf("%s", ((CriaString)id)->value);
+                printf("%s", String_wcsrtombs(((CriaString)id)->value));
                 continue;
             }
             
@@ -129,7 +129,7 @@ CriaIO_write(
             if (id->type == CRIA_DATA_TYPE_BOOLEAN)
             {
                 CriaString string = (CriaString)CriaBoolean_toString(interpreter, (CriaBoolean)id);
-                printf("%s", string->value);
+                printf("%s", String_wcsrtombs(string->value));
                 continue;
             }
             
@@ -137,7 +137,7 @@ CriaIO_write(
             Runtime_error(interpreter, "Data type is not String, Integer, Boolean.");
         }
         Logger_dbg("[print]%s", start);
-        printf(start);
+        printf(String_wcsrtombs(start));
     }
     else
     {
@@ -182,10 +182,10 @@ CriaIO_read(
         if (buffer[strlen(buffer) - 1] == '\n')
         {
             buffer[strlen(buffer) - 1] = '\0';
-            StringBuffer_append(stringBuffer, buffer);
+            StringBuffer_append(stringBuffer, String_mbsrtowcs(buffer));
             break;
         }
-        StringBuffer_append(stringBuffer, buffer);
+        StringBuffer_append(stringBuffer, String_mbsrtowcs(buffer));
         Memory_reset(buffer, sizeof(buffer));
     }
     
