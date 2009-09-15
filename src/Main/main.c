@@ -62,8 +62,8 @@ main(
         goto END;
     }
     
-    
-    Interpreter_compile(interpreter, String_mbsrtowcs(argv[1]));
+    String path = String_mbsrtowcs(argv[1]);
+    Interpreter_compile(interpreter, path);
     
     
     Interpreter_run(interpreter);

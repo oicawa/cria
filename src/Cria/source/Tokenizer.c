@@ -460,7 +460,7 @@ Tokenizer_string(
     if (is_end == FALSE)
         goto END;
     
-    length = wcslen(cursor) - wcslen(start);
+    length = wcslen(start) - wcslen(cursor);
     token = Token_new(TOKEN_TYPE_STRING_LITERAL, String_sub(start, 0, length));
     
 END:
@@ -591,6 +591,8 @@ ADD_TOKEN:
         token->column = cursor - &target[0];
         token->file_path = file_path;
         List_add(tokens, token);
+        char* tmp0 = String_wcsrtombs(token->value);
+        char* tmp1 = String_wcsrtombs(cursor);
         cursor += wcslen(token->value);
     }
     

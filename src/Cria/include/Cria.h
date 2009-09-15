@@ -42,6 +42,7 @@
 #include <gc/gc.h>
 #include <wchar.h>
 #include <wctype.h>
+#include <locale.h>
 
 
 
@@ -401,6 +402,13 @@ struct CriaStringTag
 };
 
 
+
+
+
+String
+String_mbsrtowcs(
+    char* value
+);
 
 
 
