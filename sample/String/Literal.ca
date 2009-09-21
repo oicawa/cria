@@ -1,2 +1,2 @@
-write("hogefuga".sub(3) + "\n")
-#value = "hogefuga".sub(3)
+write("ほげほげふがふが".sub(1) + "\n")
+write("ほげほげふがふがもがもが".sub(3, 4) + "\n")
