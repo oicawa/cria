@@ -1285,7 +1285,7 @@ ExpressionGenerate_evaluate(
     if (klass == NULL)
     {
         Logger_dbg("Class is not found.");
-        Runtime_error(interpreter, "Class '%s' is not found.", expression->name);
+        Runtime_error(interpreter, "Class '%s' is not found.", String_wcsrtombs(expression->name));
         goto END;
     }
     Logger_dbg("Class matched.");
@@ -1452,6 +1452,11 @@ ExpressionStringLiteral_evaluate(
 )
 {
     Logger_trc("[ START ]%s", __func__);
+    char* tmp_buffer = NULL;
+    char* tmp_start = NULL;
+    char* tmp_next = NULL;
+    char* tmp_tmp = NULL;
+    
     CriaString string = NULL;
     String buffer = expression->value;
     String start = &buffer[1];
@@ -1459,7 +1464,8 @@ ExpressionStringLiteral_evaluate(
     StringBuffer stringBuffer = StringBuffer_new();
     
     
-    Logger_dbg("Literal is '%s'", buffer);
+    tmp_buffer = String_wcsrtombs(buffer);
+    tmp_start = String_wcsrtombs(start);
     
     while (*start != L'\0')
     {
@@ -1471,10 +1477,12 @@ ExpressionStringLiteral_evaluate(
             StringBuffer_append(stringBuffer, start);
             break;
         }
+        tmp_next = String_wcsrtombs(next);
         
-        long length = next - start;
-        String tmp = Memory_malloc(length + sizeof(wchar_t) * 1);
+        long length = wcslen(start) - wcslen(next);
+        String tmp = Memory_malloc(sizeof(wchar_t) * (length + 1));
         wcsncpy(tmp, start, length);
+        tmp_tmp = String_wcsrtombs(tmp);
         StringBuffer_append(stringBuffer, tmp);
         
         switch (*(next + 1))
@@ -1490,7 +1498,8 @@ ExpressionStringLiteral_evaluate(
             break;
         }
         
-        start = next + sizeof(wchar_t) * 2;
+        start = next + 2;
+        tmp_start = String_wcsrtombs(start);
     }
     
     

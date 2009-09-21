@@ -412,6 +412,13 @@ String_mbsrtowcs(
 
 
 
+char*
+String_wcsrtombs(
+    String value
+);
+
+
+
 Interpreter
 Interpreter_new(
     void

@@ -2,6 +2,7 @@ load Cria::Tk::Window
 load Cria::Tk::Label
 load Cria::Tk::Text
 load Cria::Tk::Button
+load Cria::Tk::Check
 
 window = Window("テストアプリですＹＯ。 ")
 member_info = Label(window, "社員情報")
@@ -28,10 +29,17 @@ belonging_id_text.grid(1, 1)
 belonging_name = Label(member, "BS-BA-3G")
 belonging_name.grid(1, 2)
 
+check_button = Check(window, "チェックボックスです。")
+check_button.grid(2, 3)
+
 save_button = Button(window, "保存")
 save_button.click()():
-    write("保\n")
-    write("存\n")
+    value = check_button.checked()
+    write("チェックボックスは")
+    if value == true
+        write("ＯＮです。\n")
+    else
+        write("ＯＦＦです。\n")
 save_button.grid(2, 4)
 
 reset_button = Button(window, "リセット")

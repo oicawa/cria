@@ -11,7 +11,8 @@ tk.do("button", ".button2", "-text", "Test Button2", _
       "-command", ".button2_command")
 tk.do("entry", ".entry1", "-bg", "white")
 tk.do("checkbutton", ".check1", "-text", "ほげほげ", _
-      "-command", ".check1_command")
+      "-command", ".check1_command", _
+      "-variable", ".check1_variable")
 
 tk.do("grid", ".label1", "-column", "0", "-row", "0", "-sticky", "ew")
 tk.do("grid", ".entry1", "-column", "0", "-row", "1", "-sticky", "ew")
@@ -19,17 +20,19 @@ tk.do("grid", ".button1", "-column", "1", "-row", "0", "-sticky", "ew")
 tk.do("grid", ".button2", "-column", "1", "-row", "1", "-sticky", "ew")
 tk.do("grid", ".check1", "-column", "0", "-row", "2", "-sticky", "ew")
 
-tk[".button1_command"] = block():
+tk.command(".button1_command")():
     write("ボタン１のクリックテスト。\n")
     value = tk.do(".entry1", "get")
     tk.do(".label1", "configure", "-text", value)
 
-tk[".button2_command"] = block():
+
+tk.command(".button2_command")():
     tk.do(".entry1", "delete", "0")
     tk.do(".entry1", "insert", "0", "クリック♪")
 
-tk[".check1_command"] = block():
+tk.command(".check1_command")():
+    value = tk[".check1_variable"]
     tk.do(".entry1", "delete", "0")
-    tk.do(".entry1", "insert", "0", "チェック♪")
+    tk.do(".entry1", "insert", "0", value)
 
 tk.main_loop()

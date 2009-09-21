@@ -13,7 +13,7 @@ Button:
               "-command", .name + "_command")
 
     @click():
-        .tk[.name + "_command"] = block
+        .tk.command(.name + "_command", block)
         
     @grid(row, column):
         .tk.do("grid", .name, "-column", column.to_string(), _

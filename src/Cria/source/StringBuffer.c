@@ -146,8 +146,7 @@ StringBuffer_toString(
     Logger_cor("item set. (%p)", item);
     while(item != NULL)
     {
-        Logger_cor("stringBuffer = [%s]", (char*)(Item_getObject(item)));
-        length = length + strlen((char*)(Item_getObject(item)));
+        length = length + wcslen((String)(Item_getObject(item)));
         item = Item_getNext(item);
     }
     
@@ -169,8 +168,6 @@ StringBuffer_toString(
     Logger_cor("Create string value.");
     value = String_new(buffer);
     buffer = NULL;
-    
-    
 END:
     Logger_cor("[  END  ]%s", __func__);
     return value;

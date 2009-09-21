@@ -2,6 +2,7 @@ Entry:
     @name
     @address
     @birthday
+    HOGE = 0
 
     @to_string():
         return "----------\nName    : " + .name + _

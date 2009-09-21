@@ -55,8 +55,8 @@ CriaIO_write(
     
     
     CriaId id;
-    wchar_t* start = NULL;
-    wchar_t* end = NULL;
+    String start = NULL;
+    String end = NULL;
     long index = 0;
     int count = List_count(args);
     
@@ -91,12 +91,12 @@ CriaIO_write(
         start = ((CriaString)id)->value;
         while((end = wcsstr(start, L"%s")) != NULL)
         {
-            long size = end - start;
-            wchar_t* buffer = Memory_malloc(size + 1);
+            long size = wcslen(start) - wcslen(end);
+            String buffer = Memory_malloc(sizeof(wchar_t) * (size + 1));
             wcsncpy(buffer, start, size);
             printf(String_wcsrtombs(buffer));
             buffer = NULL;
-            start = end + sizeof(wchar_t) * 2;
+            start = end + 2;
             
             if (count < index)
             {
@@ -124,7 +124,6 @@ CriaIO_write(
                 printf("%d", ((CriaInteger)id)->value);
                 continue;
             }
-                        Runtime_error(interpreter, "Data type is not String, Integer, Boolean.");
 
             if (id->type == CRIA_DATA_TYPE_BOOLEAN)
             {
@@ -163,7 +162,7 @@ CriaIO_read(
     Logger_trc("[ START ]%s", __func__);
     CriaString  returnString = NULL;
     StringBuffer stringBuffer = NULL;
-    char buffer[BUFFER_SIZE];
+    wchar_t buffer[BUFFER_SIZE + 1];
     
     if (List_count(args) != 0)
     {
@@ -176,20 +175,19 @@ CriaIO_read(
     stringBuffer = StringBuffer_new();
     
     Memory_reset(buffer, sizeof(buffer));
-    while (fgets(buffer, sizeof(buffer), stdin) != NULL)
+    while (fgetws(buffer, BUFFER_SIZE, stdin) != NULL)
     {
-        Logger_dbg("input = '%s'", buffer);
-        if (buffer[strlen(buffer) - 1] == '\n')
+        if (buffer[wcslen(buffer) - 1] == L'\n')
         {
-            buffer[strlen(buffer) - 1] = '\0';
-            StringBuffer_append(stringBuffer, String_mbsrtowcs(buffer));
+            buffer[wcslen(buffer) - 1] = L'\0';
+            StringBuffer_append(stringBuffer, buffer);
             break;
         }
-        StringBuffer_append(stringBuffer, String_mbsrtowcs(buffer));
+        StringBuffer_append(stringBuffer, buffer);
         Memory_reset(buffer, sizeof(buffer));
     }
     
-    returnString = CriaString_new(TRUE, StringBuffer_toString(stringBuffer));
+    returnString = CriaString_new(FALSE, StringBuffer_toString(stringBuffer));
     
 END:
     Logger_trc("[  END  ]%s", __func__);

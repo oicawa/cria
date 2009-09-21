@@ -48,8 +48,8 @@ CriaTk__generator_(
 {
     Logger_trc("[ START ]%s", __func__);
     
-    CriaObject tk = CriaObject_new("Tk");
-    CriaObject_addField(tk, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "pointer", FALSE, FALSE, NULL));
+    CriaObject tk = CriaObject_new(L"Tk");
+    CriaObject_addField(tk, DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, L"pointer", FALSE, FALSE, NULL));
     
     Logger_trc("[  END  ]%s", __func__);
     return (CriaId)tk;
@@ -99,7 +99,7 @@ CriaTk_new(
     }
     
     
-    CriaObject_set(interpreter, (CriaObject)object, "pointer", interp);
+    CriaObject_set(interpreter, (CriaObject)object, L"pointer", interp);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -126,7 +126,7 @@ CriaTk__core_(
     }
     
     
-    interp = CriaObject_get(interpreter, (CriaObject)object, "pointer");
+    interp = CriaObject_get(interpreter, (CriaObject)object, L"pointer");
     
 END:
     Logger_trc("[  END  ]%s", __func__);
@@ -177,7 +177,7 @@ CriaTk_do(
         	goto END;
         }
         CriaString string = (CriaString)arg;
-        command[i] = Tcl_NewStringObj(string->value, -1);
+        command[i] = Tcl_NewStringObj((char*)String_wcsrtombs(string->value), -1);
     }
     
     
@@ -228,7 +228,6 @@ CriaTk_bind(
     Logger_trc("[ START ]%s", __func__);
     CriaId id = NULL;
     CriaString string = NULL;
-    CriaBlock block_value = NULL;
     Tcl_Interp *interp;
     int args_count = 0;
     
@@ -245,28 +244,133 @@ CriaTk_bind(
     string = (CriaString)id;
     
     
-    id = (CriaId)List_get(args, 1);
-    if (id->type != CRIA_DATA_TYPE_BLOCK)
+    if (args_count == 2)
     {
-        Runtime_error(interpreter, "Data type of 2nd argument is illegal.");
+        id = (CriaId)List_get(args, 1);
+        if (id->type != CRIA_DATA_TYPE_BLOCK)
+        {
+            Runtime_error(interpreter, "Data type of 1st argument is illegal.");
+            goto END;
+        }
+        block = (CriaBlock)id;
+    }
+    else if (block == NULL)
+    {
+        Runtime_error(interpreter, "Block is not defined.");
         goto END;
     }
-    block_value = (CriaBlock)id;
-    
-    id = (CriaId)List_get(args, 2);
     
     interp = CriaTk__core_(interpreter, object);
     
     
-    Tcl_CreateCommand(interp, string->value, (Tcl_CmdProc*)CriaTk_handle_proc, (ClientData)block_value, NULL);
-    
-    
+    Tcl_CreateCommand(interp, String_wcsrtombs(string->value), (Tcl_CmdProc*)CriaTk_handle_proc, (ClientData)block, NULL);
     
 END:
     Logger_trc("[  END  ]%s", __func__);
     return id;
 }
 
+
+/*
+CriaId
+CriaTk_set_value(
+	Interpreter interpreter,
+	CriaId object,
+    List args,
+    CriaBlock block
+)	
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    CriaString variable = NULL;
+    CriaString value = NULL;
+    Tcl_Interp *interp;
+    int args_count = 0;
+    
+    
+    args_count = List_count(args);
+    if (args_count != 2)
+    {
+        Runtime_error(interpreter, "Argument count is illegal.");
+        goto END;
+    }
+    
+    
+    id = (CriaId)List_get(args, 0);
+    if (id->type != CRIA_DATA_TYPE_STRING)
+    {
+        Runtime_error(interpreter, "Data type of 1st argument is illegal.");
+        goto END;
+    }
+    variable = (CriaString)id;
+    
+    
+    id = (CriaId)List_get(args, 1);
+    if (id->type != CRIA_DATA_TYPE_STRING)
+    {
+        Runtime_error(interpreter, "Data type of 2nd argument is illegal.");
+        goto END;
+    }
+    value = (CriaString)id;
+    
+    
+    interp = CriaTk__core_(interpreter, object);
+    
+    
+    Tcl_SetValue(interp, String_wcsrtombs(variable->value), String_wcsrtombs(value->value));
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    id = NULL;
+    return id;
+}
+*/
+
+
+
+CriaId
+CriaTk_get_value(
+	Interpreter interpreter,
+	CriaId object,
+    List args,
+    CriaBlock block
+)	
+{
+    Logger_trc("[ START ]%s", __func__);
+    CriaId id = NULL;
+    CriaString variable = NULL;
+    char* value = NULL;
+    Tcl_Interp *interp;
+    int args_count = 0;
+    
+    
+    args_count = List_count(args);
+    if (args_count != 1)
+    {
+        Runtime_error(interpreter, "Argument count is illegal.");
+        goto END;
+    }
+    
+    
+    id = (CriaId)List_get(args, 0);
+    if (id->type != CRIA_DATA_TYPE_STRING)
+    {
+        Runtime_error(interpreter, "Data type of 1st argument is illegal.");
+        goto END;
+    }
+    variable = (CriaString)id;
+    
+    
+    interp = CriaTk__core_(interpreter, object);
+    
+    
+    value = Tcl_GetVar(interp, String_wcsrtombs(variable->value), TCL_GLOBAL_ONLY);
+    id = (CriaId)CriaString_new(FALSE, String_mbsrtowcs(value));
+    
+END:
+    Logger_trc("[  END  ]%s", __func__);
+    return id;
+}
 
 
 CriaId
@@ -316,19 +420,25 @@ CriaTk_loadClass(
     //variable = DefinitionVariable_new(DEFINITION_VARIABLE_TYPE_NORMAL, "command", FALSE, FALSE, NULL);
     //Hash_put(i_fields, DefinitionVariable_name(variable), variable);
     
-    function = DefinitionFunction_new(" generator ", TRUE, TRUE, NULL, NULL, CriaTk__generator_);
+    function = DefinitionFunction_new(L" generator ", TRUE, TRUE, NULL, NULL, CriaTk__generator_);
     Hash_put(s_methods, DefinitionFunction_get_name(function), function);
     
-    function = DefinitionFunction_new("new", TRUE, TRUE, NULL, NULL, CriaTk_new);
+    function = DefinitionFunction_new(L"new", TRUE, TRUE, NULL, NULL, CriaTk_new);
     Hash_put(s_methods, DefinitionFunction_get_name(function), function);
 
-    function = DefinitionFunction_new("do", TRUE, FALSE, NULL, NULL, CriaTk_do);
+    function = DefinitionFunction_new(L"do", TRUE, FALSE, NULL, NULL, CriaTk_do);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
-    function = DefinitionFunction_new("set[]", TRUE, FALSE, NULL, NULL, CriaTk_bind);
+    function = DefinitionFunction_new(L"command", TRUE, FALSE, NULL, NULL, CriaTk_bind);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
-    function = DefinitionFunction_new("main_loop", TRUE, FALSE, NULL, NULL, CriaTk_main_loop);
+//    function = DefinitionFunction_new(L"set[]", TRUE, FALSE, NULL, NULL, CriaTk_set_value);
+//    Hash_put(i_methods, DefinitionFunction_get_name(function), function);
+    
+    function = DefinitionFunction_new(L"get[]", TRUE, FALSE, NULL, NULL, CriaTk_get_value);
+    Hash_put(i_methods, DefinitionFunction_get_name(function), function);
+    
+    function = DefinitionFunction_new(L"main_loop", TRUE, FALSE, NULL, NULL, CriaTk_main_loop);
     Hash_put(i_methods, DefinitionFunction_get_name(function), function);
     
     klass = DefinitionClass_new(className, TRUE, i_fields, s_fields, i_methods, s_methods, NULL);

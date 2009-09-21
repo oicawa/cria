@@ -181,7 +181,7 @@ Tokenizer_number(
     String start = cursor;
     Boolean point = FALSE;
     Boolean is_real = FALSE;
-    long size = 0;
+    long length = 0;
 
     
     if (iswdigit(*cursor) == 0)
@@ -218,8 +218,8 @@ Tokenizer_number(
     if (point == TRUE)
         cursor--;
     
-    size = wcslen(cursor) - wcslen(start);
-    token = Token_new(TOKEN_TYPE_INTEGER_LITERAL, String_sub(start, 0, size));
+    length = wcslen(start) - wcslen(cursor);
+    token = Token_new(TOKEN_TYPE_INTEGER_LITERAL, String_sub(start, 0, length));
     
 END:
     return token;
@@ -382,7 +382,7 @@ Tokenizer_word(
         break;
     }
     
-    length = cursor - start;
+    length = wcslen(start) - wcslen(cursor);
     
     token = Tokenizer_reserved(start, length);
     if (token != NULL)
@@ -591,8 +591,6 @@ ADD_TOKEN:
         token->column = cursor - &target[0];
         token->file_path = file_path;
         List_add(tokens, token);
-        char* tmp0 = String_wcsrtombs(token->value);
-        char* tmp1 = String_wcsrtombs(cursor);
         cursor += wcslen(token->value);
     }
     
@@ -855,3 +853,27 @@ END:
     return tokens;
 }
 
+/*
+void
+Tokenizer_reverce(String filePath, List tokens)
+{
+    char path[1024];
+    
+    memset(path, 0x00, sizeof(path));
+    strcat(path, String_wcsrtombs(filePath));
+    strcat(path, ".rev");
+    FILE* file = fopen(path, "w");
+    if (file == NULL)
+    {
+        Runtime_error("Reverced file open error.");
+    }
+    
+    long count = List_count(tokens);
+    long i = 0;
+    for (i = 0; i < count; i++)
+    {
+    }
+    
+    fclose(file);
+}
+*/

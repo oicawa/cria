@@ -43,11 +43,11 @@ String_new(
 {
 	Logger_cor("[ START ]%s", __func__);
     wchar_t* string = NULL;
-    int length = wcslen(input);
     
     if (input == NULL)
         return NULL;
     
+    int length = wcslen(input);
     string = Memory_malloc(sizeof(wchar_t) * (length + 1));
     wcsncpy(string, input, length);
 	Logger_cor("[  END  ]%s", __func__);
